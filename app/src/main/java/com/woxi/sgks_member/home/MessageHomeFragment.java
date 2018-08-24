@@ -19,19 +19,18 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.woxi.adapters.MessageListAdapter;
-import com.woxi.interfaces.AppConstants;
-import com.woxi.interfaces.EndlessRvScrollListener;
-import com.woxi.interfaces.FragmentInterface;
-import com.woxi.local_storage.DatabaseQueryHandler;
-import com.woxi.models.MessageAndClassifiedResponseItem;
-import com.woxi.models.MessageDetailsItem;
 import com.woxi.sgks_member.AppController;
-import com.woxi.sgks_member.MessageDetailsActivity;
 import com.woxi.sgks_member.R;
-import com.woxi.utils.AppCommonMethods;
-import com.woxi.utils.AppParser;
-import com.woxi.utils.AppURLs;
+import com.woxi.sgks_member.adapters.MessageListAdapter;
+import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.interfaces.EndlessRvScrollListener;
+import com.woxi.sgks_member.interfaces.FragmentInterface;
+import com.woxi.sgks_member.local_storage.DatabaseQueryHandler;
+import com.woxi.sgks_member.models.MessageAndClassifiedResponseItem;
+import com.woxi.sgks_member.models.MessageDetailsItem;
+import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppParser;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,8 +83,8 @@ public class MessageHomeFragment extends Fragment implements AppConstants, Fragm
      */
     private void initializeViews() {
         mContext = getActivity();
-        mRvMessageList = (RecyclerView) mParentView.findViewById(R.id.rvNewsAndClassified);
-        mPbLazyLoad = ((RelativeLayout) mParentView.findViewById(R.id.rlLazyLoad));
+        mRvMessageList =  mParentView.findViewById(R.id.rvNewsAndClassified);
+        mPbLazyLoad =  mParentView.findViewById(R.id.rlLazyLoad);
         mPbLazyLoad.setVisibility(View.GONE);
         setUpRecyclerView();
     }
@@ -98,10 +97,10 @@ public class MessageHomeFragment extends Fragment implements AppConstants, Fragm
         onRvItemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MessageDetailsItem messageDetailsItem = mArrMessageDetails.get(mRvMessageList.getChildAdapterPosition(v));
+                /*MessageDetailsItem messageDetailsItem = mArrMessageDetails.get(mRvMessageList.getChildAdapterPosition(v));
                 Intent intentDetails = new Intent(mContext, MessageDetailsActivity.class);
                 intentDetails.putExtra("currentNewsDetail", messageDetailsItem);
-                startActivity(intentDetails);
+                startActivity(intentDetails);*/
             }
         };
         //Following method call is for listening to scroll events
