@@ -22,15 +22,12 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.woxi.adapters.EventsListAdapter;
-import com.woxi.interfaces.FragmentInterface;
-import com.woxi.models.EventDataItem;
 import com.woxi.sgks_member.AppController;
-import com.woxi.sgks_member.EventAndClassifiedDetailActivity;
 import com.woxi.sgks_member.R;
-import com.woxi.utils.AppCommonMethods;
-import com.woxi.utils.AppParser;
-import com.woxi.utils.AppURLs;
+import com.woxi.sgks_member.interfaces.FragmentInterface;
+import com.woxi.sgks_member.models.EventDataItem;
+import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,9 +37,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.woxi.interfaces.AppConstants.PREFS_CURRENT_CITY;
-import static com.woxi.interfaces.AppConstants.STATUS_NO_RESULTS_FOUND;
-import static com.woxi.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
+import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_NO_RESULTS_FOUND;
+import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
 
 /**
  * <b><b>public class EventHomeFragment extends Fragment implements AdapterView.OnItemClickListener, FragmentInterface</b></b>
@@ -96,11 +93,11 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
         onEventClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View selectedView) {
-                Intent intent = new Intent(mContext, EventAndClassifiedDetailActivity.class);
+               /* Intent intent = new Intent(mContext, EventAndClassifiedDetailActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("eventDetails", mArrEventData.get(mRvEventList.getChildAdapterPosition(selectedView)));
                 intent.putExtras(bundle);
-                startActivity(intent);
+                startActivity(intent);*/
             }
         };
 
