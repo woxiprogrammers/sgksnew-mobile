@@ -19,17 +19,15 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.woxi.adapters.ClassifiedListAdapter;
-import com.woxi.interfaces.AppConstants;
-import com.woxi.interfaces.EndlessRvScrollListener;
-import com.woxi.interfaces.FragmentInterface;
-import com.woxi.models.ClassifiedDetailsItem;
-import com.woxi.models.MessageAndClassifiedResponseItem;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
-import com.woxi.utils.AppCommonMethods;
-import com.woxi.utils.AppParser;
-import com.woxi.utils.AppURLs;
+import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.interfaces.FragmentInterface;
+import com.woxi.sgks_member.models.ClassifiedDetailsItem;
+import com.woxi.sgks_member.models.MessageAndClassifiedResponseItem;
+import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppParser;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,10 +94,10 @@ public class ClassifiedHomeFragment extends Fragment implements AppConstants, Fr
         onRvItemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ClassifiedDetailsItem classifiedDetailsItem = mArrClassifiedDetails.get(mRvClassifiedList.getChildAdapterPosition(v));
+                /*ClassifiedDetailsItem classifiedDetailsItem = mArrClassifiedDetails.get(mRvClassifiedList.getChildAdapterPosition(v));
                 Intent intentDetails = new Intent(mContext, EventAndClassifiedDetailActivity.class);
                 intentDetails.putExtra("currentClassifiedDetail", classifiedDetailsItem);
-                startActivity(intentDetails);
+                startActivity(intentDetails);*/
             }
         };
         //Following method call is for listening to scroll events

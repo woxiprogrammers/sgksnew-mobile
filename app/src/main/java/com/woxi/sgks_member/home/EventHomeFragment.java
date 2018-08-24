@@ -27,6 +27,7 @@ import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.interfaces.FragmentInterface;
 import com.woxi.sgks_member.models.EventDataItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppParser;
 import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
@@ -81,8 +82,8 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
      */
     public void initializeViews() {
         mContext = getActivity();
-        mRvEventList = (RecyclerView) mParentView.findViewById(R.id.rvAccountImages);
-        mSpinAccountYear = (Spinner) mParentView.findViewById(R.id.spinAccountYear);
+        mRvEventList =  mParentView.findViewById(R.id.rvAccountImages);
+        mSpinAccountYear = mParentView.findViewById(R.id.spinAccountYear);
         ((TextView) mParentView.findViewById(R.id.tvYearTitle)).setText("Select Event Year");
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mRvEventList.setLayoutManager(linearLayoutManager);
