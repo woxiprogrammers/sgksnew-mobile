@@ -17,17 +17,16 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.woxi.adapters.CommitteeListsAdapter;
-import com.woxi.interfaces.AppConstants;
-import com.woxi.interfaces.FragmentInterface;
-import com.woxi.local_storage.DatabaseQueryHandler;
-import com.woxi.models.CommitteeDetailsItem;
 import com.woxi.sgks_member.AppController;
-import com.woxi.sgks_member.CommitteeDetailsActivity;
 import com.woxi.sgks_member.R;
-import com.woxi.utils.AppCommonMethods;
-import com.woxi.utils.AppParser;
-import com.woxi.utils.AppURLs;
+import com.woxi.sgks_member.adapters.CommitteeListsAdapter;
+import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.interfaces.FragmentInterface;
+import com.woxi.sgks_member.local_storage.DatabaseQueryHandler;
+import com.woxi.sgks_member.models.CommitteeDetailsItem;
+import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppParser;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -157,12 +156,12 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
             @Override
             public void onClick(View selectedView) {
                 CommitteeDetailsItem committeeListItem = arrMainCommList.get(mRvCommitteeHome.getChildAdapterPosition(selectedView));
-                Intent intentDetails = new Intent(mContext, CommitteeDetailsActivity.class);
+                /*Intent intentDetails = new Intent(mContext, CommitteeDetailsActivity.class);
                 intentDetails.putExtra("committeeID", committeeListItem.getCommitteeID());
                 intentDetails.putExtra("committeeName", committeeListItem.getCommitteeName());
                 intentDetails.putExtra("isLocalData", isLocalData);
                 intentDetails.putExtra("committeeItem", committeeListItem);
-                startActivity(intentDetails);
+                startActivity(intentDetails);*/
             }
         };
     }

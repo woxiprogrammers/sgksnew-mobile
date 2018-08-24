@@ -24,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
+import com.woxi.sgks_member.adapters.EventsListAdapter;
 import com.woxi.sgks_member.interfaces.FragmentInterface;
 import com.woxi.sgks_member.models.EventDataItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;

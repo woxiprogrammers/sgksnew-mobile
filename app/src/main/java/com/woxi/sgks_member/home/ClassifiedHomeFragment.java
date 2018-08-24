@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
+import com.woxi.sgks_member.adapters.ClassifiedListAdapter;
 import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.interfaces.EndlessRvScrollListener;
 import com.woxi.sgks_member.interfaces.FragmentInterface;
