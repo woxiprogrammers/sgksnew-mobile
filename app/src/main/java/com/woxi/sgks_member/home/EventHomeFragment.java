@@ -225,7 +225,6 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                         pDialog.dismiss();
                         isApiRequested = true;
                     }

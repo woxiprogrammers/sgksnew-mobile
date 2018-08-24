@@ -22,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.interfaces.EndlessRvScrollListener;
 import com.woxi.sgks_member.interfaces.FragmentInterface;
 import com.woxi.sgks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgks_member.models.MessageAndClassifiedResponseItem;
@@ -80,8 +81,8 @@ public class ClassifiedHomeFragment extends Fragment implements AppConstants, Fr
      */
     private void initializeViews() {
         mContext = getActivity();
-        mRvClassifiedList = (RecyclerView) mParentView.findViewById(R.id.rvNewsAndClassified);
-        mPbLazyLoad = ((RelativeLayout) mParentView.findViewById(R.id.rlLazyLoad));
+        mRvClassifiedList =  mParentView.findViewById(R.id.rvNewsAndClassified);
+        mPbLazyLoad =  mParentView.findViewById(R.id.rlLazyLoad);
         mPbLazyLoad.setVisibility(View.GONE);
         setUpRecyclerView();
     }
