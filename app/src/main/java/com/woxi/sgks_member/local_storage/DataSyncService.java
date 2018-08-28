@@ -13,18 +13,18 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.woxi.home.HomeActivity;
-import com.woxi.models.CommitteeDetailsItem;
-import com.woxi.models.FamilyDetailsItem;
-import com.woxi.models.LocalDataSyncItem;
-import com.woxi.models.MemberAddressItem;
-import com.woxi.models.MemberDetailsItem;
-import com.woxi.models.MessageDetailsItem;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
-import com.woxi.utils.AppCommonMethods;
-import com.woxi.utils.AppParser;
-import com.woxi.utils.AppURLs;
+import com.woxi.sgks_member.home.HomeActivity;
+import com.woxi.sgks_member.models.CommitteeDetailsItem;
+import com.woxi.sgks_member.models.FamilyDetailsItem;
+import com.woxi.sgks_member.models.LocalDataSyncItem;
+import com.woxi.sgks_member.models.MemberAddressItem;
+import com.woxi.sgks_member.models.MemberDetailsItem;
+import com.woxi.sgks_member.models.MessageDetailsItem;
+import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppParser;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,13 +36,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.woxi.interfaces.AppConstants.IS_DATABASE_VERSION_CHANGED;
-import static com.woxi.interfaces.AppConstants.PREFS_LAST_COMMITTEE_ID;
-import static com.woxi.interfaces.AppConstants.PREFS_LAST_FAMILY_ID;
-import static com.woxi.interfaces.AppConstants.PREFS_LAST_MESSAGE_ID;
-import static com.woxi.interfaces.AppConstants.PREFS_LAST_UPDATED_DATE;
-import static com.woxi.interfaces.AppConstants.STATUS_NO_RESULTS_FOUND;
-import static com.woxi.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
+import static com.woxi.sgks_member.interfaces.AppConstants.IS_DATABASE_VERSION_CHANGED;
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_LAST_COMMITTEE_ID;
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_LAST_FAMILY_ID;
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_LAST_MESSAGE_ID;
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_LAST_UPDATED_DATE;
+import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_NO_RESULTS_FOUND;
+import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
 
 /**
  * <b>public class DataSyncService extends Service </b>
@@ -91,7 +91,7 @@ public class DataSyncService extends Service {
     public void onDestroy() {
         super.onDestroy();
         //Stop Data Sync Api
-        HomeActivity.stopLocalStorageSyncService(getApplicationContext());
+//        HomeActivity.stopLocalStorageSyncService(getApplicationContext());
         new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Destroyed DataSyncService");
     }
 
@@ -210,14 +210,14 @@ current_timestamp:2017-01-25 11:09:11 */
                                     requestLocalDataSyncAPI();
                                 } else {
                                     //All transactions false so stop service
-                                    HomeActivity.stopLocalStorageSyncService(getApplicationContext());
+//                                    HomeActivity.stopLocalStorageSyncService(getApplicationContext());
                                     AppCommonMethods.putStringPref(PREFS_LAST_UPDATED_DATE, strCurrentServerTime, getApplicationContext());
                                     new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Data Sync Complete At " + strCurrentServerTime);
                                 }
                             } else {
                                 //Response Parsing Failed so stop service
                                 new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Service Response Parse Failed");
-                                HomeActivity.stopLocalStorageSyncService(getApplicationContext());
+//                                HomeActivity.stopLocalStorageSyncService(getApplicationContext());
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -228,7 +228,7 @@ current_timestamp:2017-01-25 11:09:11 */
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse response = error.networkResponse;
                 //Stop Service if api failed
-                HomeActivity.stopLocalStorageSyncService(getApplicationContext());
+//                HomeActivity.stopLocalStorageSyncService(getApplicationContext());
                 if (response != null) {
                     new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));
                     try {

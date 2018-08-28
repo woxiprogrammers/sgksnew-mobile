@@ -83,14 +83,14 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
             public void onClick(View v) {
                 ((EditText) mParentView.findViewById(R.id.etSearchMember)).setText("");
                 strNoResults = "";
-                functionToGetMembersList(false);
+//                functionToGetMembersList(false);
             }
         });
         mParentView.findViewById(R.id.ivSearchMember).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Call Function to Load All Members
-                functionToGetMembersList(true);
+//                functionToGetMembersList(true);
             }
         });
         return mParentView;
@@ -111,7 +111,8 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
 
         setUpRecyclerView();
-        functionToGetMembersList(false);
+        requestSearchMembersAPI(false,false);
+//        functionToGetMembersList(false);
 
         //Setup Member Auto Search
         mEtMemberSearch.addTextChangedListener(new TextWatcher() {
@@ -126,7 +127,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                     String currentSearch = charSequence.toString().toLowerCase();
                     if (strNoResults.equalsIgnoreCase("") || !strNoResults.matches("^" + currentSearch + "*")) {
                         strNoResults = "";
-                        functionToGetMembersList(true);
+//                        functionToGetMembersList(true);
                     }
                 }
             }
@@ -163,7 +164,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                 mRvAdapter = new MemberListAdapter(new ArrayList<MemberDetailsItem>());
                 mRvMemberList.setAdapter(mRvAdapter);
                 mRvMemberList.getAdapter().notifyDataSetChanged();
-                searchMemberOnline();
+//                searchMemberOnline();
             } else {
                 new AppCommonMethods().LOG(0, TAG + " Local Search", mArrMemDetails.toString());
                 mRvAdapter = new MemberListAdapter(mArrMemDetails);
@@ -171,7 +172,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                 mRvMemberList.getAdapter().notifyDataSetChanged();
             }
         } else {
-            searchMemberOnline();
+//            searchMemberOnline();
         }
     }
 
@@ -179,7 +180,8 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
         mRvMemberList.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(mContext);
         mRvMemberList.setLayoutManager(linearLayoutManager);
-
+        mRvAdapter = new MemberListAdapter(new ArrayList<MemberDetailsItem>());
+        mRvMemberList.setAdapter(mRvAdapter);
         onMemberClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,7 +192,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
             }
         };
         //Following method call is for listening to scroll events
-        recyclerViewScrollListener();
+//        recyclerViewScrollListener();
     }
 
     /**
@@ -203,7 +205,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
         mRvMemberList.addOnScrollListener(new EndlessRvScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                requestLazyLoadMembersApi();
+//                requestLazyLoadMembersApi();
             }
         });
     }
@@ -213,7 +215,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
             JSONObject params = getParamsToPass();
             //Cancelling Pending Request
             AppController.getInstance().cancelPendingRequests("memberSearchList");
-            requestSearchMembersAPI(false, params, strNextPageUrl, false);
+//            requestSearchMembersAPI(false, params, strNextPageUrl, false);
         }
     }
 
@@ -249,9 +251,9 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
             JSONObject params = getParamsToPass();
             //Cancelling Pending Request
             AppController.getInstance().cancelPendingRequests("memberSearchList");
-            requestSearchMembersAPI(true, params, strMemberLoadUrl, true);
+//            requestSearchMembersAPI(true, params, strMemberLoadUrl, true);
             //Following method call is for listening to scroll events
-            recyclerViewScrollListener();
+//            recyclerViewScrollListener();
         } else {
             new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.noInternet));
         }
@@ -267,7 +269,8 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
      * @param isFirstTime      "true" if first time else "false"
      *                         Created By Rohit
      */
-    private void requestSearchMembersAPI(boolean isProgressDialog, JSONObject params, String strMemberLoadUrl, final boolean isFirstTime) {
+    private void requestSearchMembersAPI(boolean isProgressDialog /*JSONObject params, String strMemberLoadUrl*/, final boolean isFirstTime) {
+        String url="http://www.mocky.io/v2/5b8529413000000f00729152";
         isApiInProgress = true;
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         if (isProgressDialog) {
@@ -278,7 +281,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
             mPbLazyLoad.setVisibility(View.VISIBLE);
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, strMemberLoadUrl, params,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -299,8 +302,22 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                             } else {
                                 showNoRecordMessage();
                             }*/
+                            if (resp instanceof ArrayList) {
+                                ArrayList<MemberDetailsItem> mNextArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
+                                if (mNextArrMemDetails != null) {
+//                                    mArrMemDetails.addAll(mNextArrMemDetails);
+//                                    mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
+//                                    mRvMemberList.getAdapter().notifyDataSetChanged();
+                                    setUpRecyclerView();
+                                    mRvAdapter = new MemberListAdapter(mNextArrMemDetails);
+                                    mRvMemberList.setAdapter(mRvAdapter);
+                                }
+                            }else if (resp instanceof MemberSearchDataItem) {
+                                Toast.makeText(mContext,"False",Toast.LENGTH_SHORT).show();
+                            }
 
-                            if (resp instanceof MemberSearchDataItem) {
+
+                           /* if (resp instanceof MemberSearchDataItem) {
                                 MemberSearchDataItem jsonResultObject = (MemberSearchDataItem) resp;
                                 if (isFirstTime) {
                                     mArrMemDetails = jsonResultObject.getArrMemberList();
@@ -315,6 +332,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                                         mArrMemDetails.addAll(mNextArrMemDetails);
                                         mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
                                         mRvMemberList.getAdapter().notifyDataSetChanged();
+                                        setUpRecyclerView();
                                     } else {
                                         showNoRecordMessage();
                                     }
@@ -324,7 +342,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
 
                             } else {
                                 showNoRecordMessage();
-                            }
+                            }*/
                         } catch (
                                 JSONException e
                                 ) {

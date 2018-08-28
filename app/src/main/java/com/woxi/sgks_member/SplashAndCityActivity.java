@@ -30,6 +30,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext=SplashAndCityActivity.this;
         getNextScreen();
     }
 
@@ -40,6 +41,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
             public void run() {
                 Intent intentHome = new Intent(mContext, HomeActivity.class);
                 startActivity(intentHome);
+                finish();
 //                boolean notFirstRun = AppCommonMethods.getBooleanPref(APP_FIRST_RUN, mContext);
                 /*if (!notFirstRun) {
                     getCitySelectionScreen();

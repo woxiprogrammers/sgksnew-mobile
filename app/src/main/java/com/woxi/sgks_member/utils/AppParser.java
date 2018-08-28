@@ -230,6 +230,12 @@ public class AppParser implements AppConstants {
                     if (jsonMemberObject.has("area") && jsonMemberObject.getString("area") != null) {
                         memberDetailsItem.setMemSgksArea(jsonMemberObject.optString("area"));
                     }
+                    if (jsonMemberObject.has("mobile") && jsonMemberObject.getString("mobile") != null) {
+                        memberDetailsItem.setMemMobile(jsonMemberObject.optString("mobile"));
+                    }
+                    if (jsonMemberObject.has("member_image_url") && jsonMemberObject.getString("member_image_url") != null) {
+                        memberDetailsItem.setMemberImageURL(jsonMemberObject.optString("member_image_url"));
+                    }
                     arrMemberList.add(memberDetailsItem);
                 }
 

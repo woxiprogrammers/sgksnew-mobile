@@ -68,8 +68,8 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
             memberAddress.setText(mArrMemDetails.get(position).getMemSgksArea() + ", " + mArrMemDetails.get(position).getMemSgksMainCity());
         }
 
-        if (mArrMemDetails.get(position).getMemSgksMemberId() != null) {
-            memberID.setText("SGKS ID : " + "SGKS-" + mArrMemDetails.get(position).getMemSgksMainCity() + "-" + mArrMemDetails.get(position).getMemSgksMemberId());
+        if (mArrMemDetails.get(position).getMemSgksMainCity() != null) {
+            memberID.setText("SGKS ID : " + "SGKS-" + mArrMemDetails.get(position).getMemSgksMainCity() + "-" + mArrMemDetails.get(position).getMemID());
         }
 
         if (mArrMemDetails.get(position).getMemLatitude() != null && !mArrMemDetails.get(position).getMemLatitude().equalsIgnoreCase("null")) {
@@ -145,12 +145,12 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
         MemDetailsHolder(View view) {
             super(view);
             this.mContext = view.getContext();
-            this.memberImage = (ImageView) view.findViewById(R.id.ivMemberImage);
-            this.memberName = (TextView) view.findViewById(R.id.tvMemberName);
-            this.memberAddress = (TextView) view.findViewById(R.id.tvMemberAddress);
-            this.memberCallNo = ((TextView) view.findViewById(R.id.tvMemberCallNo));
-            this.memberLocation = ((TextView) view.findViewById(R.id.tvMemberLocation));
-            this.memberID = ((TextView) view.findViewById(R.id.tvMemberID));
+            this.memberImage =  view.findViewById(R.id.ivMemberImage);
+            this.memberName =  view.findViewById(R.id.tvMemberName);
+            this.memberAddress =  view.findViewById(R.id.tvMemberAddress);
+            this.memberCallNo =  view.findViewById(R.id.tvMemberCallNo);
+            this.memberLocation =  view.findViewById(R.id.tvMemberLocation);
+            this.memberID = view.findViewById(R.id.tvMemberID);
         }
     }
 }
