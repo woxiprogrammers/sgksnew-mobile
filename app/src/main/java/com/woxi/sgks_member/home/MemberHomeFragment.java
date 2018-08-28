@@ -23,19 +23,17 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.woxi.adapters.MemberListAdapter;
-import com.woxi.interfaces.AppConstants;
-import com.woxi.interfaces.EndlessRvScrollListener;
-import com.woxi.interfaces.FragmentInterface;
-import com.woxi.local_storage.DatabaseQueryHandler;
-import com.woxi.models.MemberDetailsItem;
-import com.woxi.models.MemberSearchDataItem;
 import com.woxi.sgks_member.AppController;
-import com.woxi.sgks_member.MemberDetailsActivity;
 import com.woxi.sgks_member.R;
-import com.woxi.utils.AppCommonMethods;
-import com.woxi.utils.AppParser;
-import com.woxi.utils.AppURLs;
+import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.interfaces.EndlessRvScrollListener;
+import com.woxi.sgks_member.interfaces.FragmentInterface;
+import com.woxi.sgks_member.local_storage.DatabaseQueryHandler;
+import com.woxi.sgks_member.models.MemberDetailsItem;
+import com.woxi.sgks_member.models.MemberSearchDataItem;
+import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppParser;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,9 +102,9 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
      */
     private void initializeViews() {
         mContext = getActivity();
-        mRvMemberList = (RecyclerView) mParentView.findViewById(R.id.rvMemberList);
-        mPbLazyLoad = ((RelativeLayout) mParentView.findViewById(R.id.rlLazyLoad));
-        mEtMemberSearch = (EditText) mParentView.findViewById(R.id.etSearchMember);
+        mRvMemberList = mParentView.findViewById(R.id.rvMemberList);
+        mPbLazyLoad =  mParentView.findViewById(R.id.rlLazyLoad);
+        mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
@@ -184,10 +182,10 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
         onMemberClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(v));
+                /*MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(v));
                 Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
                 intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
-                startActivity(intentDetails);
+                startActivity(intentDetails);*/
             }
         };
         //Following method call is for listening to scroll events

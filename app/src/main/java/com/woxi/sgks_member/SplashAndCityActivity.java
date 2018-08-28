@@ -38,6 +38,8 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
         sleepHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Intent intentHome = new Intent(mContext, HomeActivity.class);
+                startActivity(intentHome);
 //                boolean notFirstRun = AppCommonMethods.getBooleanPref(APP_FIRST_RUN, mContext);
                 /*if (!notFirstRun) {
                     getCitySelectionScreen();
