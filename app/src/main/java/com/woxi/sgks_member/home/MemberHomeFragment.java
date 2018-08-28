@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
+import com.woxi.sgks_member.adapters.MemberListAdapter;
 import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.interfaces.EndlessRvScrollListener;
 import com.woxi.sgks_member.interfaces.FragmentInterface;
@@ -285,9 +286,9 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                         new AppCommonMethods().LOG(0, TAG, response.toString());
                         //{"pagination":null,"data":null,"stats":null,"message":"No records found."}
                         try {
-                            Object resp = AppParser.parseMemberSearchResponse(response.toString());
+                            Object resp = AppParser.parseNewMemberList(response.toString());
 
-                            if (response.has("pagination") && response.optJSONObject("pagination") != null) {
+                            /*if (response.has("pagination") && response.optJSONObject("pagination") != null) {
                                 JSONObject jsonPaginationObject = response.optJSONObject("pagination");
                                 if (jsonPaginationObject.has("next_page_url") && jsonPaginationObject.optString("next_page_url") != null) {
                                     strNextPageUrl = jsonPaginationObject.optString("next_page_url");
@@ -297,7 +298,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                                 }
                             } else {
                                 showNoRecordMessage();
-                            }
+                            }*/
 
                             if (resp instanceof MemberSearchDataItem) {
                                 MemberSearchDataItem jsonResultObject = (MemberSearchDataItem) resp;
@@ -307,7 +308,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                                     mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                     mRvMemberList.setAdapter(mRvAdapter);
                                     mRvMemberList.getAdapter().notifyDataSetChanged();
-                                } else {
+                                } else if(resp instanceof ArrayList){
                                     //API requested on next load
                                     ArrayList<MemberDetailsItem> mNextArrMemDetails = jsonResultObject.getArrMemberList();
                                     if (mNextArrMemDetails != null) {
@@ -317,7 +318,8 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                                     } else {
                                         showNoRecordMessage();
                                     }
-//                                    Toast.makeText(mContext, "Api Requested", Toast.LENGTH_SHORT).show();
+                                }else {
+                                    Toast.makeText(mContext, "Api Fail", Toast.LENGTH_SHORT).show();
                                 }
 
                             } else {

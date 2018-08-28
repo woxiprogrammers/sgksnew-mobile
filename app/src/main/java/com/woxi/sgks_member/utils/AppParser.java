@@ -1,6 +1,5 @@
 package com.woxi.sgks_member.utils;
 
-
 import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.models.AccountDetailsItem;
 import com.woxi.sgks_member.models.AccountYearItem;
@@ -29,7 +28,6 @@ import java.util.Iterator;
  * created by - Rohit
  */
 public class AppParser implements AppConstants {
-
     /*{"data":[{"_id":"57e4c80272bdde4d5f37e164","name":"managing"},{"_id":"57ee08a472bdde3a2c635942","name":"annadan"}],"message":"success"}*/
     public static Object parseCommitteeListResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
@@ -54,7 +52,6 @@ public class AppParser implements AppConstants {
                     if (jsonListObject.has("city") && jsonListObject.getString("city") != null) {
                         mainCommDetailsItem.setCommitteeCity(jsonListObject.getString("city"));
                     }
-
                     if (jsonListObject.has("members") && jsonListObject.getString("members") != null) {
                         mainCommDetailsItem.setCommAllMembers(jsonListObject.getString("members"));
                     }
@@ -196,6 +193,52 @@ public class AppParser implements AppConstants {
         return false;
     }
 
+    public static Object parseNewMemberList(String response) throws JSONException {
+        JSONObject jsonResponseObject = new JSONObject(response);
+        MemberSearchDataItem memberSearchDataItem = new MemberSearchDataItem();
+        if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
+            JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
+            ArrayList<MemberDetailsItem> arrMemberList = new ArrayList<>();
+            if (jsonDataArray != null) {
+                for (int arrIndexData = 0; arrIndexData < jsonDataArray.length(); arrIndexData++) {
+                    MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
+                    JSONObject jsonMemberObject = jsonDataArray.optJSONObject(arrIndexData);
+                    if (jsonMemberObject.has("surname") && jsonMemberObject.optString("surname") != null && !jsonMemberObject.optString("surname").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setMemSurname(jsonMemberObject.optString("surname"));
+                    }
+                    if (jsonMemberObject.has("native_place") && jsonMemberObject.optString("native_place") != null && !jsonMemberObject.optString("native_place").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setMemNativePlace(jsonMemberObject.optString("native_place"));
+                    }
+                    if (jsonMemberObject.has("sgks_city") && jsonMemberObject.optString("sgks_city") != null && !jsonMemberObject.optString("sgks_city").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setMemSgksMainCity(jsonMemberObject.optString("sgks_city"));
+                    }
+                    if (jsonMemberObject.has("sgks_member_id") && jsonMemberObject.getString("sgks_member_id") != null) {
+                        memberDetailsItem.setMemSgksMemberId(jsonMemberObject.getString("sgks_member_id"));
+                    }
+                    if (jsonMemberObject.has("member_id") && jsonMemberObject.optString("member_id") != null && !jsonMemberObject.optString("member_id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setMemID(jsonMemberObject.optString("member_id"));
+                    }
+                    if (jsonMemberObject.has("first_name") && jsonMemberObject.optString("first_name") != null && !jsonMemberObject.optString("first_name").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setMemFirstName(jsonMemberObject.optString("first_name"));
+                    }
+                    if (jsonMemberObject.has("middle_name") && jsonMemberObject.optString("middle_name") != null && !jsonMemberObject.optString("middle_name").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setMemMidName(jsonMemberObject.optString("middle_name"));
+                    }
+                    if (jsonMemberObject.has("gender") && jsonMemberObject.optString("gender") != null && !jsonMemberObject.optString("gender").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setMemGender(jsonMemberObject.optString("gender"));
+                    }
+                    if (jsonMemberObject.has("area") && jsonMemberObject.getString("area") != null) {
+                        memberDetailsItem.setMemSgksArea(jsonMemberObject.optString("area"));
+                    }
+                    arrMemberList.add(memberDetailsItem);
+                }
+
+            }
+            return arrMemberList;
+        }
+        return false;
+    }
+
     //News Listing and Details Response
     /*{"pagination":{"current_page":1,"next_page_url":"http://sgksapi.woxi.co.in/v1/sgksmain/membersearch/master_lazy?page=2",
     "prev_page_url":null},"data":[{"_id":"58240e6c72bdde7d610c62e1","title":"Happy BD PQR!","msg_desc":"Happy BD PQR.",
@@ -291,9 +334,7 @@ public class AppParser implements AppConstants {
 
     public static Object parseLocalDataSyncResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
-
         LocalDataSyncItem localDataSyncItem = new LocalDataSyncItem();
-
         if (jsonResponseObject.has("families") && jsonResponseObject.optString("families") != null) {
             ArrayList<FamilyDetailsItem> arrFamilyDetailsItems = new ArrayList<>();
             JSONArray jsonFamilyArray = jsonResponseObject.optJSONArray("families");
@@ -302,7 +343,6 @@ public class AppParser implements AppConstants {
                 for (int arrIndex = 0; arrIndex < jsonFamilyArray.length(); arrIndex++) {
                     familyDetailsItem = new FamilyDetailsItem();
                     JSONObject jsonObject = jsonFamilyArray.optJSONObject(arrIndex);
-
                     if (jsonObject.has("family_id") && jsonObject.getString("family_id") != null) {
                         familyDetailsItem.setFamily_id(jsonObject.getString("family_id"));
                     }
@@ -323,7 +363,6 @@ public class AppParser implements AppConstants {
             }
             localDataSyncItem.setArrFamilyDetailsItems(arrFamilyDetailsItems);
         }
-
         if (jsonResponseObject.has("members") && jsonResponseObject.optString("members") != null) {
             ArrayList<MemberDetailsItem> arrMemberDetailsItems = new ArrayList<>();
             JSONArray jsonMemberArray = jsonResponseObject.optJSONArray("members");
@@ -332,7 +371,6 @@ public class AppParser implements AppConstants {
                 for (int arrIndex = 0; arrIndex < jsonMemberArray.length(); arrIndex++) {
                     memberDetailsItem = new MemberDetailsItem();
                     JSONObject jsonObject = jsonMemberArray.optJSONObject(arrIndex);
-
                     if (jsonObject.has("member_id") && jsonObject.getString("member_id") != null) {
                         memberDetailsItem.setMemID(jsonObject.getString("member_id"));
                     }
@@ -395,7 +433,6 @@ public class AppParser implements AppConstants {
             }
             localDataSyncItem.setArrMemberDetailsItems(arrMemberDetailsItems);
         }
-
         if (jsonResponseObject.has("address") && jsonResponseObject.optString("address") != null) {
             ArrayList<MemberAddressItem> arrMemberAddressItems = new ArrayList<>();
             JSONArray jsonAddressArray = jsonResponseObject.optJSONArray("address");
@@ -404,7 +441,6 @@ public class AppParser implements AppConstants {
                 for (int arrIndex = 0; arrIndex < jsonAddressArray.length(); arrIndex++) {
                     memberAddressItem = new MemberAddressItem();
                     JSONObject jsonObject = jsonAddressArray.optJSONObject(arrIndex);
-
                     if (jsonObject.has("address_line") && jsonObject.getString("address_line") != null) {
                         memberAddressItem.setAddAddressLine(jsonObject.getString("address_line"));
                     }
@@ -437,7 +473,6 @@ public class AppParser implements AppConstants {
             }
             localDataSyncItem.setArrMemberAddressItems(arrMemberAddressItems);
         }
-
         if (jsonResponseObject.has("committees") && jsonResponseObject.optString("committees") != null) {
             ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems = new ArrayList<>();
             JSONArray jsonCommitteeArray = jsonResponseObject.optJSONArray("committees");
@@ -446,7 +481,6 @@ public class AppParser implements AppConstants {
                 for (int arrIndex = 0; arrIndex < jsonCommitteeArray.length(); arrIndex++) {
                     committeeDetailsItem = new CommitteeDetailsItem();
                     JSONObject jsonObject = jsonCommitteeArray.optJSONObject(arrIndex);
-
                     if (jsonObject.has("name") && jsonObject.getString("name") != null) {
                         committeeDetailsItem.setCommitteeName(jsonObject.getString("name"));
                     }
@@ -470,7 +504,6 @@ public class AppParser implements AppConstants {
             }
             localDataSyncItem.setArrCommitteeDetailsItems(arrCommitteeDetailsItems);
         }
-
         if (jsonResponseObject.has("messages") && jsonResponseObject.optString("messages") != null) {
             ArrayList<MessageDetailsItem> arrMessageDetailsItems = new ArrayList<>();
             JSONArray jsonMessageArray = jsonResponseObject.optJSONArray("messages");
@@ -479,7 +512,6 @@ public class AppParser implements AppConstants {
                 for (int arrIndex = 0; arrIndex < jsonMessageArray.length(); arrIndex++) {
                     messageDetailsItem = new MessageDetailsItem();
                     JSONObject jsonObject = jsonMessageArray.optJSONObject(arrIndex);
-
                     if (jsonObject.has("message_id") && jsonObject.getString("message_id") != null) {
                         messageDetailsItem.setMessageID(jsonObject.getString("message_id"));
                     }
@@ -514,7 +546,6 @@ public class AppParser implements AppConstants {
 
     public static Object parseAccountDetailsResponse(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
-
         if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
             ArrayList<AccountYearItem> arrAccountYear = new ArrayList<>();
             AccountYearItem accountYearItem;
@@ -529,7 +560,6 @@ public class AppParser implements AppConstants {
                     currentKey = iterator.next();
                 }
                 accountYearItem.setStrYear(currentKey);
-
                 if (jsonYearObject.has(currentKey) && jsonYearObject.optJSONArray(currentKey) != null) {
                     AccountDetailsItem accountDetailsItem;
                     arrAccountDetails = new ArrayList<>();
@@ -558,7 +588,6 @@ public class AppParser implements AppConstants {
     "year":"2017","event_images":["http:\/\/api.sgks.co.in\/uploads\/events\/c256c6333dcb32253025.jpg"]}],"message":"success"}*/
     public static Object parseEventDetailsResponse(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
-
         if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
             ArrayList<EventDataItem> mArrEventData = new ArrayList<>();
             EventDataItem eventDataItem;
@@ -567,7 +596,6 @@ public class AppParser implements AppConstants {
                 ArrayList<String> arrEventImages;
                 eventDataItem = new EventDataItem();
                 JSONObject jsonEventObject = jsonDataArray.optJSONObject(indexYear);
-
                 if (jsonEventObject.has("event_name") && jsonEventObject.optString("event_name") != null) {
                     String strEventName = jsonEventObject.optString("event_name");
                     eventDataItem.setEventName(strEventName);
@@ -603,7 +631,6 @@ public class AppParser implements AppConstants {
     public static Object parseClassifiedResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
         MessageAndClassifiedResponseItem classifiedResponseItem = new MessageAndClassifiedResponseItem();
-
         if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
             JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
             ArrayList<ClassifiedDetailsItem> arrClassifiedDetails = new ArrayList<ClassifiedDetailsItem>();

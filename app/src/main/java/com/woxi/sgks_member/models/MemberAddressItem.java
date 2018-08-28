@@ -9,6 +9,7 @@ import java.io.Serializable;
 public class MemberAddressItem implements Serializable {
     private String addFamilyId, addAddressId, addAddressLine, addArea, addLandMark, addCity, addState, addCountry, addPincode;
 
+
     public MemberAddressItem() {
     }
 

@@ -16,9 +16,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.woxi.home.MemberHomeFragment;
-import com.woxi.models.MemberDetailsItem;
 import com.woxi.sgks_member.R;
+import com.woxi.sgks_member.home.MemberHomeFragment;
+import com.woxi.sgks_member.models.MemberDetailsItem;
 
 import java.util.ArrayList;
 
