@@ -393,7 +393,6 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
     /**
      * <b>private void showNoRecordMessage()</b>
      * <p>This function is used to show no record found message</p>
-     * Created By Rohit
      */
     private void showNoRecordMessage() {
         Snackbar.make(mParentView.findViewById(R.id.rlMemberHome), "No more members to show", Snackbar.LENGTH_LONG).show();

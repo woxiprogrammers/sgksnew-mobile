@@ -1,10 +1,17 @@
 package com.woxi.sgks_member.home;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -22,6 +29,7 @@ import com.woxi.sgks_member.adapters.HomeViewPagerAdapter;
 import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.interfaces.FragmentInterface;
 import com.woxi.sgks_member.local_storage.DataSyncService;
+import com.woxi.sgks_member.miscellaneous.SettingsActivity;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 
 import java.util.ArrayList;
@@ -139,7 +147,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             if (!strLocalBuzzId.contains(strBuzzId)) {
                 setUpNewsBuzz();
             }
-        } else mLL_MemberCount.setVisibility(View.GONE);
+        } else mLL_MemberCount.setVisibility(View.GONE);*/
         boolean notDataBaseCreated = AppCommonMethods.getBooleanPref(APP_DATABASE_CREATED, mContext);
         if (!notDataBaseCreated) {
             //Local Storage Sync is enabled by-default.
@@ -157,7 +165,33 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.alert_sync_failed));
             }
-        }*/
+        }
+    }
+    private boolean isSyncServiceRunning(Class<?> serviceClass) {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo runningServiceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(runningServiceInfo.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private void syncLocalStorageSyncService(Context applicationContext) {
+        Intent intentSyncService = new Intent(applicationContext, DataSyncService.class);
+        applicationContext.startService(intentSyncService);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(applicationContext);
+        mBuilder.setSmallIcon(R.drawable.ic_sync);
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+        mBuilder.setLargeIcon(largeIcon);
+        mBuilder.setContentTitle(getString(R.string.notification_title_database_sync_in_progress));
+        mBuilder.setContentText(getString(R.string.notification_detail_please_wait));
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivities(getApplicationContext(), 1, new Intent[]{intent}, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendingIntent);
+        mBuilder.setOngoing(true);
+        // Builds the notification and issues it.
+        NotificationManager mNotifyMgr = (NotificationManager) applicationContext.getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.notify(AppConstants.SYNC_NOTIFICATION_ID, mBuilder.build());
     }
 
 }
