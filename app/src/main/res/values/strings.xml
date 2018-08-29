@@ -60,4 +60,6 @@
     <string name="city_name_amroli">AMROLI</string>
     <string name="contact_info_amroli">Shree Gurjar Kshatriya Samaj, Amroli (Halar Vibhag)</string>
     <string name="sgks_address_amroli">Address : 87-88, Jalaram society, Opp. Vishwakarma temple, Amroli, Surat, Gujarat</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
