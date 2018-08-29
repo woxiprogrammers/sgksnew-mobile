@@ -91,7 +91,7 @@ public class DataSyncService extends Service {
     public void onDestroy() {
         super.onDestroy();
         //Stop Data Sync Api
-//        HomeActivity.stopLocalStorageSyncService(getApplicationContext());
+        HomeActivity.stopLocalStorageSyncService(getApplicationContext());
         new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Destroyed DataSyncService");
     }
 
@@ -210,14 +210,14 @@ current_timestamp:2017-01-25 11:09:11 */
                                     requestLocalDataSyncAPI();
                                 } else {
                                     //All transactions false so stop service
-//                                    HomeActivity.stopLocalStorageSyncService(getApplicationContext());
+                                    HomeActivity.stopLocalStorageSyncService(getApplicationContext());
                                     AppCommonMethods.putStringPref(PREFS_LAST_UPDATED_DATE, strCurrentServerTime, getApplicationContext());
                                     new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Data Sync Complete At " + strCurrentServerTime);
                                 }
                             } else {
                                 //Response Parsing Failed so stop service
                                 new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Service Response Parse Failed");
-//                                HomeActivity.stopLocalStorageSyncService(getApplicationContext());
+                                HomeActivity.stopLocalStorageSyncService(getApplicationContext());
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -228,7 +228,7 @@ current_timestamp:2017-01-25 11:09:11 */
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse response = error.networkResponse;
                 //Stop Service if api failed
-//                HomeActivity.stopLocalStorageSyncService(getApplicationContext());
+                HomeActivity.stopLocalStorageSyncService(getApplicationContext());
                 if (response != null) {
                     new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));
                     try {

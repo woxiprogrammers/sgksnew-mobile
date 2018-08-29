@@ -20,11 +20,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.adapters.HomeViewPagerAdapter;
 import com.woxi.sgks_member.interfaces.AppConstants;
@@ -129,7 +131,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //Stop Data Sync Api
+        HomeActivity.stopLocalStorageSyncService(getApplicationContext());
+        new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Destroyed DataSyncService");
+    }
 
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
@@ -244,6 +252,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // Builds the notification and issues it.
         NotificationManager mNotifyMgr = (NotificationManager) applicationContext.getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(AppConstants.SYNC_NOTIFICATION_ID, mBuilder.build());
+    }
+    public static void stopLocalStorageSyncService(Context applicationContext) {
+        Log.i("@@Stop","Stop");
+        AppController.getInstance().cancelPendingRequests(applicationContext.getString(R.string.tag_local_storage_sync));
+        Intent intentSyncService = new Intent(applicationContext, DataSyncService.class);
+        applicationContext.stopService(intentSyncService);
+        NotificationManager mNotifyMgr = (NotificationManager) applicationContext.getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.cancel(AppConstants.SYNC_NOTIFICATION_ID);
     }
 
 

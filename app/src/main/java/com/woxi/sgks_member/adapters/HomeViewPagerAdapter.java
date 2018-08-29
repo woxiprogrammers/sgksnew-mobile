@@ -27,8 +27,8 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
     private int[] imageResId = {
 //            R.drawable.ic_events,
 //            R.drawable.ic_committee,
-            R.drawable.ic_members
-//            R.drawable.ic_messages,
+            R.drawable.ic_members,
+            R.drawable.ic_messages
 //            R.drawable.ic_classified,
     };
 
@@ -50,10 +50,10 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
             /*case 1:
                 return CommitteeHomeFragment.newInstance();
             case 2:
-                return MemberHomeFragment.newInstance();
+                return MemberHomeFragment.newInstance();*/
             case 3:
                 return MessageHomeFragment.newInstance();
-            case 4:
+            /*case 4:
                 return ClassifiedHomeFragment.newInstance();*/
             default:
                 return null;

@@ -78,6 +78,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
         mParentView = inflater.inflate(R.layout.fragment_members_home, container, false);
         //Calling function to initialize required views.
         initializeViews();
+        functionToGetMembersList(false);
         mParentView.findViewById(R.id.ivMemberHome).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

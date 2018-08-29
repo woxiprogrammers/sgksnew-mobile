@@ -163,6 +163,7 @@ public class MessageHomeFragment extends Fragment implements AppConstants, Fragm
     }
 
     private void requestNewsListAPI(boolean isProgressDialog, JSONObject params, String strMemberLoadUrl, final boolean isFirstTime) {
+        String url="http://www.mocky.io/v2/5b865635340000db018b54e0";
         isMessageApiInProgress = true;
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         if (isProgressDialog) {
@@ -172,7 +173,7 @@ public class MessageHomeFragment extends Fragment implements AppConstants, Fragm
         } else {
             mPbLazyLoad.setVisibility(View.VISIBLE);
         }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, strMemberLoadUrl, params,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
