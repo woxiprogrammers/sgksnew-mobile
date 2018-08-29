@@ -99,11 +99,11 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         NewsDetailsHolder(View itemView) {
             super(itemView);
             this.mContext = itemView.getContext();
-            this.ivNewsListImg = (ImageView) itemView.findViewById(R.id.ivNewsListImg);
-            this.tvNewsListTitle = (TextView) itemView.findViewById(R.id.tvNewsListTitle);
-            this.tvNewsListDescription = (TextView) itemView.findViewById(R.id.tvNewsListDescription);
-            this.tvNewsCreatedAt = (TextView) itemView.findViewById(R.id.tvNewsCreatedAt);
-            this.ivNewsImg = (ImageView) itemView.findViewById(R.id.ivNewsImg);
+            this.ivNewsListImg =  itemView.findViewById(R.id.ivNewsListImg);
+            this.tvNewsListTitle = itemView.findViewById(R.id.tvNewsListTitle);
+            this.tvNewsListDescription =  itemView.findViewById(R.id.tvNewsListDescription);
+            this.tvNewsCreatedAt =  itemView.findViewById(R.id.tvNewsCreatedAt);
+            this.ivNewsImg =  itemView.findViewById(R.id.ivNewsImg);
         }
     }
 }

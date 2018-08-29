@@ -87,7 +87,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    boolean insertOrUpdateAllMembers(ArrayList<MemberDetailsItem> arrMemDetails) {
+    public boolean insertOrUpdateAllMembers(ArrayList<MemberDetailsItem> arrMemDetails) {
         //SQL Prepared Statement
         String insertMemberPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_MEMBER_DETAILS + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
@@ -428,7 +428,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         if (cursorMember.moveToFirst()) {
             do {
                 String isMemberActive = cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IS_ACTIVE));
-                if (isMemberActive.equalsIgnoreCase("true")) {
+//                if (isMemberActive.equalsIgnoreCase("true")) {
                     MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
                     memberDetailsItem.setMemID(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY)));
                     memberDetailsItem.setMemFamilyId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FAMILY_ID_FOREIGN_KEY)));
@@ -452,11 +452,11 @@ public class DatabaseQueryHandler implements DatabaseConstants {
 //////////////////
                     String strFamilyId = cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FAMILY_ID_FOREIGN_KEY));
                     String strMemberAddressId = cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS_ID));
-                    MemberAddressItem memberAddressItem = queryAddress(strFamilyId, strMemberAddressId);
-                    memberDetailsItem.setMemAddress(memberAddressItem);
+                    /*MemberAddressItem memberAddressItem = queryAddress(strFamilyId, strMemberAddressId);
+                    memberDetailsItem.setMemAddress(memberAddressItem);*/
 /////////////////
                     arrMemDetails.add(memberDetailsItem);
-                }
+//                }
             } while (cursorMember.moveToNext());
         }
         if (cursorMember != null && !cursorMember.isClosed()) {

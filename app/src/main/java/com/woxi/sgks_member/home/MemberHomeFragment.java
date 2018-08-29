@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,7 +112,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
         mPbLazyLoad.setVisibility(View.GONE);
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
 
-        setUpRecyclerView();
+//        setUpRecyclerView();
         requestSearchMembersAPI(false,false);
 //        functionToGetMembersList(false);
 
@@ -159,14 +160,16 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                 return;
             }
             String strCurrentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
-            mArrMemDetails = databaseQueryHandler.queryMembers(strSearchTerm, strCurrentCity);
+            mArrMemDetails = databaseQueryHandler.queryMembers(strSearchTerm, "PUNE");
             //If there are no results from local database go online else show local results.
             if (mArrMemDetails == null || mArrMemDetails.size() == 0) {
+                Log.i("@@","@@");
                 mRvAdapter = new MemberListAdapter(new ArrayList<MemberDetailsItem>());
                 mRvMemberList.setAdapter(mRvAdapter);
                 mRvMemberList.getAdapter().notifyDataSetChanged();
 //                searchMemberOnline();
             } else {
+                Log.i("@@1","@@");
                 new AppCommonMethods().LOG(0, TAG + " Local Search", mArrMemDetails.toString());
                 mRvAdapter = new MemberListAdapter(mArrMemDetails);
                 mRvMemberList.setAdapter(mRvAdapter);
@@ -177,11 +180,11 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
         }
     }
 
-    private void setUpRecyclerView() {
+    private void setUpRecyclerView(ArrayList<MemberDetailsItem> mNextArrMemDetails) {
         mRvMemberList.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(mContext);
         mRvMemberList.setLayoutManager(linearLayoutManager);
-        mRvAdapter = new MemberListAdapter(new ArrayList<MemberDetailsItem>());
+        mRvAdapter = new MemberListAdapter(mNextArrMemDetails);
         mRvMemberList.setAdapter(mRvAdapter);
         onMemberClickListener = new View.OnClickListener() {
             @Override
@@ -306,19 +309,15 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                             if (resp instanceof ArrayList) {
                                 ArrayList<MemberDetailsItem> mNextArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
                                 if (mNextArrMemDetails != null) {
-//                                    mArrMemDetails.addAll(mNextArrMemDetails);
-//                                    mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
-//                                    mRvMemberList.getAdapter().notifyDataSetChanged();
-                                    setUpRecyclerView();
-                                    mRvAdapter = new MemberListAdapter(mNextArrMemDetails);
-                                    mRvMemberList.setAdapter(mRvAdapter);
+                                    setUpRecyclerView(mNextArrMemDetails);
+                                    databaseQueryHandler.insertOrUpdateAllMembers(mNextArrMemDetails);
+                                    /*mRvAdapter = new MemberListAdapter(mNextArrMemDetails);
+                                    mRvMemberList.setAdapter(mRvAdapter);*/
                                 }
                             }else if (resp instanceof MemberSearchDataItem) {
                                 Toast.makeText(mContext,"False",Toast.LENGTH_SHORT).show();
                             }
-
-
-                           /* if (resp instanceof MemberSearchDataItem) {
+                            /* if (resp instanceof MemberSearchDataItem) {
                                 MemberSearchDataItem jsonResultObject = (MemberSearchDataItem) resp;
                                 if (isFirstTime) {
                                     mArrMemDetails = jsonResultObject.getArrMemberList();

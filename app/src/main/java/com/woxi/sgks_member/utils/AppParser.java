@@ -238,7 +238,6 @@ public class AppParser implements AppConstants {
                     }
                     arrMemberList.add(memberDetailsItem);
                 }
-
             }
             return arrMemberList;
         }
@@ -295,6 +294,44 @@ public class AppParser implements AppConstants {
                 messageAndClassifiedResponseItem.setArrMessageList(arrNewsDetails);
             }
             return messageAndClassifiedResponseItem;
+        }
+        return false;
+    }
+
+    public static Object parseMessageNewResponse(String response) throws JSONException {
+        JSONObject jsonResponseObject = new JSONObject(response);
+        if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
+            JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
+            ArrayList<MessageDetailsItem> arrNewsDetails = new ArrayList<>();
+            if (jsonDataArray != null) {
+                for (int arrIndexData = 0; arrIndexData < jsonDataArray.length(); arrIndexData++) {
+                    MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
+                    JSONObject jsonNewsObject = jsonDataArray.optJSONObject(arrIndexData);
+                    if (jsonNewsObject.has("_id") && jsonNewsObject.optString("_id") != null && !jsonNewsObject.optString("_id").equalsIgnoreCase("null")) {
+                        messageDetailsItem.setMessageID(jsonNewsObject.optString("_id"));
+                    }
+                    if (jsonNewsObject.has("title") && jsonNewsObject.optString("title") != null && !jsonNewsObject.optString("title").equalsIgnoreCase("null")) {
+                        messageDetailsItem.setMessageTitle(jsonNewsObject.optString("title"));
+                    }
+                    if (jsonNewsObject.has("sgks_city") && jsonNewsObject.optString("sgks_city") != null && !jsonNewsObject.optString("sgks_city").equalsIgnoreCase("null")) {
+                        messageDetailsItem.setMessageCity(jsonNewsObject.optString("sgks_city"));
+                    }
+                    if (jsonNewsObject.has("msg_desc") && jsonNewsObject.optString("msg_desc") != null && !jsonNewsObject.optString("msg_desc").equalsIgnoreCase("null")) {
+                        messageDetailsItem.setMessageDescription(jsonNewsObject.optString("msg_desc"));
+                    }
+                    if (jsonNewsObject.has("msg_img") && jsonNewsObject.optString("msg_img") != null && !jsonNewsObject.optString("msg_img").equalsIgnoreCase("null")) {
+                        messageDetailsItem.setMessageImage(jsonNewsObject.optString("msg_img"));
+                    }
+                    if (jsonNewsObject.has("created_at") && jsonNewsObject.optString("created_at") != null && !jsonNewsObject.optString("created_at").equalsIgnoreCase("null")) {
+                        messageDetailsItem.setMessageCreateDate(jsonNewsObject.optString("created_at"));
+                    }
+                    if (jsonNewsObject.has("msg_type") && jsonNewsObject.optString("msg_type") != null && !jsonNewsObject.optString("msg_type").equalsIgnoreCase("null")) {
+                        messageDetailsItem.setMessageType(jsonNewsObject.optString("msg_type"));
+                    }
+                    arrNewsDetails.add(messageDetailsItem);
+                }
+            }
+            return arrNewsDetails;
         }
         return false;
     }

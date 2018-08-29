@@ -83,6 +83,7 @@ public class DataSyncService extends Service {
             e.printStackTrace();
         }
         //Request Data Sync Api
+
         requestLocalDataSyncAPI();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -138,6 +139,7 @@ current_timestamp:2017-01-25 11:09:11 */
                                         //If family(so member & address) not available then isFamilySuccessful=false
                                         if (arrFamilyDetailsItems.size() != 0) {
                                             isFamilySuccessful = databaseQueryHandler.insertOrUpdateAllFamilies(arrFamilyDetailsItems, false);
+
                                             if (isFamilySuccessful) {
                                                 if (arrMemberDetailsItems.size() != 0) {
                                                     isMemberSuccessful = databaseQueryHandler.insertOrUpdateAllMembers(arrMemberDetailsItems);
