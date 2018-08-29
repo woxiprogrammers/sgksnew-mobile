@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -75,7 +76,58 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        switch (id) {
+            /*case R.id.nav_add_me_sgks:
+                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
+                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+                startActivity(intentAdd);
+                break;
+            case R.id.nav_suggestion:
+                Intent intentSug = new Intent(mContext, SuggestionActivity.class);
+                intentSug.putExtra("activityType", getString(R.string.suggestion_box));
+                startActivity(intentSug);
+                break;
+            case R.id.nav_accounts:
+                Intent intentAccount = new Intent(mContext, AccountsActivity.class);
+                intentAccount.putExtra("activityType", getString(R.string.accounts));
+                startActivity(intentAccount);
+                break;
+            case R.id.nav_contact_us:
+                Intent intentCon = new Intent(mContext, ContactUsActivity.class);
+                intentCon.putExtra("activityType", getString(R.string.contactUs));
+                startActivity(intentCon);
+                break;
+            case R.id.nav_health_plus:
+                Intent intentIntro = new Intent(mContext, MiscellaneousViewActivity.class);
+                intentIntro.putExtra("activityType", getString(R.string.healthPlus));
+                startActivity(intentIntro);
+                break;
+            case R.id.nav_help:
+                Intent intentHelp = new Intent(mContext, MiscellaneousViewActivity.class);
+                intentHelp.putExtra("activityType", getString(R.string.help));
+                startActivity(intentHelp);
+                break;
+            case R.id.nav_privacy_policy:
+                Intent intentPP = new Intent(mContext, MiscellaneousViewActivity.class);
+                intentPP.putExtra("activityType", getString(R.string.privacyPolicy));
+                startActivity(intentPP);
+                break;
+            case R.id.nav_qa:
+                Intent intentQA = new Intent(mContext, MiscellaneousViewActivity.class);
+                intentQA.putExtra("activityType", getString(R.string.q_and_a));
+                startActivity(intentQA);
+                break;*/
+            case R.id.app_settings:
+                Intent intentSettings = new Intent(mContext, SettingsActivity.class);
+                intentSettings.putExtra("activityType", getString(R.string.settings));
+                startActivity(intentSettings);
+                break;
+        }
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
 
@@ -89,8 +141,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initializeViews() {
-        mViewPager = (ViewPager) findViewById(R.id.homeViewPager);
-        TabLayout mTabLayout = (TabLayout) findViewById(R.id.tavLayout);
+        mViewPager =  findViewById(R.id.homeViewPager);
+        TabLayout mTabLayout =  findViewById(R.id.tavLayout);
         viewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), mContext);
         mViewPager.setAdapter(viewPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -193,5 +245,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NotificationManager mNotifyMgr = (NotificationManager) applicationContext.getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(AppConstants.SYNC_NOTIFICATION_ID, mBuilder.build());
     }
+
+
 
 }
