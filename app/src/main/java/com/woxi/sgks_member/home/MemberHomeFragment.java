@@ -111,7 +111,8 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
-
+        linearLayoutManager = new LinearLayoutManager(mContext);
+        mRvMemberList.setLayoutManager(linearLayoutManager);
 //        setUpRecyclerView();
         requestSearchMembersAPI(false,false);
 //        functionToGetMembersList(false);
@@ -163,17 +164,14 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
             mArrMemDetails = databaseQueryHandler.queryMembers(strSearchTerm, "PUNE");
             //If there are no results from local database go online else show local results.
             if (mArrMemDetails == null || mArrMemDetails.size() == 0) {
-                Log.i("@@","@@");
                 mRvAdapter = new MemberListAdapter(new ArrayList<MemberDetailsItem>());
                 mRvMemberList.setAdapter(mRvAdapter);
                 mRvMemberList.getAdapter().notifyDataSetChanged();
 //                searchMemberOnline();
             } else {
-                Log.i("@@1","@@");
                 new AppCommonMethods().LOG(0, TAG + " Local Search", mArrMemDetails.toString());
                 mRvAdapter = new MemberListAdapter(mArrMemDetails);
                 mRvMemberList.setAdapter(mRvAdapter);
-                mRvMemberList.getAdapter().notifyDataSetChanged();
             }
         } else {
 //            searchMemberOnline();
@@ -182,8 +180,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
 
     private void setUpRecyclerView(ArrayList<MemberDetailsItem> mNextArrMemDetails) {
         mRvMemberList.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(mContext);
-        mRvMemberList.setLayoutManager(linearLayoutManager);
+
         mRvAdapter = new MemberListAdapter(mNextArrMemDetails);
         mRvMemberList.setAdapter(mRvAdapter);
         onMemberClickListener = new View.OnClickListener() {
@@ -274,7 +271,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
      *                         Created By Rohit
      */
     private void requestSearchMembersAPI(boolean isProgressDialog /*JSONObject params, String strMemberLoadUrl*/, final boolean isFirstTime) {
-        String url="http://www.mocky.io/v2/5b8529413000000f00729152";
+        String url="http://www.mocky.io/v2/5b87865b2e00004b0005f8f9";
         isApiInProgress = true;
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         if (isProgressDialog) {
@@ -294,18 +291,6 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                         //{"pagination":null,"data":null,"stats":null,"message":"No records found."}
                         try {
                             Object resp = AppParser.parseNewMemberList(response.toString());
-
-                            /*if (response.has("pagination") && response.optJSONObject("pagination") != null) {
-                                JSONObject jsonPaginationObject = response.optJSONObject("pagination");
-                                if (jsonPaginationObject.has("next_page_url") && jsonPaginationObject.optString("next_page_url") != null) {
-                                    strNextPageUrl = jsonPaginationObject.optString("next_page_url");
-                                    new AppCommonMethods().LOG(0, TAG, strNextPageUrl);
-                                } else {
-                                    showNoRecordMessage();
-                                }
-                            } else {
-                                showNoRecordMessage();
-                            }*/
                             if (resp instanceof ArrayList) {
                                 ArrayList<MemberDetailsItem> mNextArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
                                 if (mNextArrMemDetails != null) {
@@ -317,35 +302,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                             }else if (resp instanceof MemberSearchDataItem) {
                                 Toast.makeText(mContext,"False",Toast.LENGTH_SHORT).show();
                             }
-                            /* if (resp instanceof MemberSearchDataItem) {
-                                MemberSearchDataItem jsonResultObject = (MemberSearchDataItem) resp;
-                                if (isFirstTime) {
-                                    mArrMemDetails = jsonResultObject.getArrMemberList();
-                                    arrSize = mArrMemDetails.size();
-                                    mRvAdapter = new MemberListAdapter(mArrMemDetails);
-                                    mRvMemberList.setAdapter(mRvAdapter);
-                                    mRvMemberList.getAdapter().notifyDataSetChanged();
-                                } else if(resp instanceof ArrayList){
-                                    //API requested on next load
-                                    ArrayList<MemberDetailsItem> mNextArrMemDetails = jsonResultObject.getArrMemberList();
-                                    if (mNextArrMemDetails != null) {
-                                        mArrMemDetails.addAll(mNextArrMemDetails);
-                                        mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
-                                        mRvMemberList.getAdapter().notifyDataSetChanged();
-                                        setUpRecyclerView();
-                                    } else {
-                                        showNoRecordMessage();
-                                    }
-                                }else {
-                                    Toast.makeText(mContext, "Api Fail", Toast.LENGTH_SHORT).show();
-                                }
-
-                            } else {
-                                showNoRecordMessage();
-                            }*/
-                        } catch (
-                                JSONException e
-                                ) {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         isApiInProgress = false;
@@ -358,9 +315,8 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
                 pDialog.dismiss();
                 mPbLazyLoad.setVisibility(View.GONE);
                 isApiInProgress = false;
-//                isSearchTermChanged = false;
+//              isSearchTermChanged = false;
                 strNoResults = strSearchTerm.toLowerCase();
-
                 NetworkResponse response = error.networkResponse;
                 if (response != null) {
                     new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));

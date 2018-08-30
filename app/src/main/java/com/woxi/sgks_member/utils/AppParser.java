@@ -236,6 +236,12 @@ public class AppParser implements AppConstants {
                     if (jsonMemberObject.has("member_image_url") && jsonMemberObject.getString("member_image_url") != null) {
                         memberDetailsItem.setMemberImageURL(jsonMemberObject.optString("member_image_url"));
                     }
+                    if (jsonMemberObject.has("latitude") && jsonMemberObject.getString("latitude") != null) {
+                        memberDetailsItem.setMemLatitude(jsonMemberObject.optString("latitude"));
+                    }
+                    if (jsonMemberObject.has("longitude") && jsonMemberObject.getString("longitude") != null) {
+                        memberDetailsItem.setMemLongitude(jsonMemberObject.optString("longitude"));
+                    }
                     arrMemberList.add(memberDetailsItem);
                 }
             }

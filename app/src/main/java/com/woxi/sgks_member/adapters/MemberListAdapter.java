@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +27,15 @@ import java.util.ArrayList;
  * <b><b>public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.MemDetailsHolder> </b></b>
  * <p>This class is used as an adapter for App-home Member-listing </p>
  * Created by Rohit.
+ *
+ * Modified By Sharvari
  */
 public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.MemDetailsHolder> {
     private ArrayList<MemberDetailsItem> mArrMemDetails;
 
     public MemberListAdapter(ArrayList<MemberDetailsItem> mArrMemDetails) {
         this.mArrMemDetails = mArrMemDetails;
+        Log.i("@@1", String.valueOf(mArrMemDetails.size()));
     }
 
     @Override
@@ -43,6 +47,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
 
     @Override
     public void onBindViewHolder(final MemDetailsHolder holder, int position) {
+        Log.i("@@","OnBindViewHolder");
         final ImageView memberImage = holder.memberImage;
         final Context mContext = holder.mContext;
         TextView memberName = holder.memberName;
@@ -107,7 +112,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
         } else {
             memberCallNo.setVisibility(View.GONE);
         }
-
         //Loading member image from url.
         memberImage.setImageDrawable(null);
         String strUrl = mArrMemDetails.get(position).getMemberImageURL();
@@ -134,6 +138,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
 
     @Override
     public int getItemCount() {
+        Log.i("@@2", String.valueOf(mArrMemDetails.size()));
         return mArrMemDetails.size();
     }
 

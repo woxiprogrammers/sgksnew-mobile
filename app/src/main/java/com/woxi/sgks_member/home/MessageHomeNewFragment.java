@@ -45,7 +45,6 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     }
 
     public static MessageHomeNewFragment newInstance() {
-
         return new MessageHomeNewFragment();
     }
     @Override
@@ -58,11 +57,11 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     }
 
     private void initializeViews() {
-        Log.i("@@","Frag");
         mContext = getActivity();
         mRvMessageList = mParentView.findViewById(R.id.rvNewsAndClassified);
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
-
+        linearLayoutManager = new LinearLayoutManager(mContext);
+        mRvMessageList.setLayoutManager(linearLayoutManager);
         if (new AppCommonMethods(mContext).isNetworkAvailable()) {
             requestMessageList();
         }else {
@@ -71,8 +70,6 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     }
     private void setUpRecyclerView(ArrayList<MessageDetailsItem> messageDetailsItems){
         mRvMessageList.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(mContext);
-        mRvMessageList.setLayoutManager(linearLayoutManager);
         mRvAdapter = new MessageListAdapter(messageDetailsItems);
         mRvMessageList.setAdapter(mRvAdapter);
     }
@@ -88,11 +85,9 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                             Object resp= AppParser.parseMessageNewResponse(response.toString());
                             if(resp instanceof Boolean){
                                 Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
-
                             }else if(resp instanceof ArrayList){
                                 ArrayList<MessageDetailsItem> messageDetailsItems= (ArrayList<MessageDetailsItem>) resp;
                                 setUpRecyclerView(messageDetailsItems);
-
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
