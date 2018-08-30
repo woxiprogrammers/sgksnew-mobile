@@ -15,6 +15,7 @@ import com.woxi.sgks_member.home.ClassifiedHomeFragment;
 import com.woxi.sgks_member.home.CommitteeHomeFragment;
 import com.woxi.sgks_member.home.EventHomeFragment;
 import com.woxi.sgks_member.home.MemberHomeFragment;
+import com.woxi.sgks_member.home.MemberHomeNewFragment;
 import com.woxi.sgks_member.home.MessageHomeFragment;
 import com.woxi.sgks_member.home.MessageHomeNewFragment;
 
@@ -47,7 +48,7 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return MemberHomeFragment.newInstance();
+                return MemberHomeNewFragment.newInstance();
             /*case 1:
                 return CommitteeHomeFragment.newInstance();
             case 2:

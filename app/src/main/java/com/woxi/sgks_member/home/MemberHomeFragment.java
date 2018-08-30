@@ -147,6 +147,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
      *
      * @param isFromAutoSearch boolean to decide whether to get all member or search results only
      *                         Created By Rohit.
+     *                         Modified by Sharvari
      */
     private void functionToGetMembersList(boolean isFromAutoSearch) {
         boolean isOfflineSupportEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_OFFLINE_SUPPORT_ENABLED, mContext);
@@ -180,7 +181,6 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
 
     private void setUpRecyclerView(ArrayList<MemberDetailsItem> mNextArrMemDetails) {
         mRvMemberList.setHasFixedSize(true);
-
         mRvAdapter = new MemberListAdapter(mNextArrMemDetails);
         mRvMemberList.setAdapter(mRvAdapter);
         onMemberClickListener = new View.OnClickListener() {
