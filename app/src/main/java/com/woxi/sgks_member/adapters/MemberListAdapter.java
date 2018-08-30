@@ -19,6 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.home.MemberHomeFragment;
+import com.woxi.sgks_member.home.MemberHomeNewFragment;
 import com.woxi.sgks_member.models.MemberDetailsItem;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
     @Override
     public MemDetailsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemViewMain = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_member_listing, parent, false);
-        itemViewMain.setOnClickListener(MemberHomeFragment.onMemberClickListener);
+        itemViewMain.setOnClickListener(MemberHomeNewFragment.onMemberClickListener);
         return new MemDetailsHolder(itemViewMain);
     }
 

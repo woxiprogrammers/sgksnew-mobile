@@ -1,6 +1,7 @@
 package com.woxi.sgks_member.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -105,6 +106,15 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         });
         functionToGetMembersList();
 //        requestToGetMembersData();
+        onMemberClickListener=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(v));
+                Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
+                intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
+                startActivity(intentDetails);
+            }
+        };
     }
 
     private void functionToGetMembersList() {
@@ -136,7 +146,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     }
 
     private void requestToGetMembersData() {
-        String url = "http://www.mocky.io/v2/5b87a15e2e0000570005f9a8";
+        String url = "http://www.mocky.io/v2/5b87c73a2e0000710c05fae1";
         final JsonObjectRequest req = new JsonObjectRequest(url, null,
                 new Response.Listener<JSONObject>() {
                     @Override

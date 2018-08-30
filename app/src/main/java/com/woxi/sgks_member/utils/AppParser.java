@@ -242,6 +242,33 @@ public class AppParser implements AppConstants {
                     if (jsonMemberObject.has("longitude") && jsonMemberObject.getString("longitude") != null) {
                         memberDetailsItem.setMemLongitude(jsonMemberObject.optString("longitude"));
                     }
+
+                    if (jsonMemberObject.has("address") && jsonMemberObject.optString("address") != null && !jsonMemberObject.optString("address").equalsIgnoreCase("null")) {
+                        MemberAddressItem memAddressItem = new MemberAddressItem();
+                        JSONObject jsonAddressObject = jsonMemberObject.optJSONObject("address");
+                        if (jsonAddressObject.has("address_line") && jsonAddressObject.optString("address_line") != null && !jsonAddressObject.optString("address_line").equalsIgnoreCase("null")) {
+                            memAddressItem.setAddAddressLine(jsonAddressObject.optString("address_line"));
+                        }
+                        if (jsonAddressObject.has("area") && jsonAddressObject.optString("area") != null && !jsonAddressObject.optString("area").equalsIgnoreCase("null")) {
+                            memAddressItem.setAddArea(jsonAddressObject.optString("area"));
+                        }
+                        if (jsonAddressObject.has("city") && jsonAddressObject.optString("city") != null && !jsonAddressObject.optString("city").equalsIgnoreCase("null")) {
+                            memAddressItem.setAddCity(jsonAddressObject.optString("city"));
+                        }
+                        if (jsonAddressObject.has("state") && jsonAddressObject.optString("state") != null && !jsonAddressObject.optString("state").equalsIgnoreCase("null")) {
+                            memAddressItem.setAddState(jsonAddressObject.optString("state"));
+                        }
+                        if (jsonAddressObject.has("country") && jsonAddressObject.optString("country") != null && !jsonAddressObject.optString("country").equalsIgnoreCase("null")) {
+                            memAddressItem.setAddCountry(jsonAddressObject.optString("country"));
+                        }
+                        if (jsonAddressObject.has("landmark") && jsonAddressObject.optString("landmark") != null && !jsonAddressObject.optString("landmark").equalsIgnoreCase("null")) {
+                            memAddressItem.setAddLandMark(jsonAddressObject.optString("landmark"));
+                        }
+                        if (jsonAddressObject.has("pincode") && jsonAddressObject.optString("pincode") != null && !jsonAddressObject.optString("pincode").equalsIgnoreCase("null")) {
+                            memAddressItem.setAddPincode(jsonAddressObject.optString("pincode"));
+                        }
+                        memberDetailsItem.setMemAddress(memAddressItem);
+                    }
                     arrMemberList.add(memberDetailsItem);
                 }
             }
