@@ -13,17 +13,20 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.woxi.interfaces.AppConstants;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
-import com.woxi.utils.AppCommonMethods;
-import com.woxi.utils.AppURLs;
+import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
+import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
 
 /**
  * <b>public class MiscellaneousViewActivity extends AppCompatActivity implements AppConstants</b>
@@ -40,7 +43,7 @@ public class MiscellaneousViewActivity extends AppCompatActivity implements AppC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
         mContext = MiscellaneousViewActivity.this;
-        mWebView = (WebView) findViewById(R.id.webView);
+        mWebView = findViewById(R.id.webView);
 
         Bundle bundleExtras = getIntent().getExtras();
         if (bundleExtras != null) {

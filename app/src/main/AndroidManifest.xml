@@ -36,6 +36,15 @@
         <activity
             android:name=".home.MemberDetailsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".home.CommitteeDetailsActivity"/>
+        <activity
+            android:name=".home.CommitteeDetailsActivity"/>
+        <activity
+            android:name=".home.EventAndClassifiedDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".miscellaneous.AddMeToSgksActivity"/>
+        <activity android:name=".miscellaneous.SuggestionActivity"/>
+        <activity android:name=".miscellaneous.AccountsActivity"/>
+        <activity android:name=".miscellaneous.ContactUsActivity"/>
+        <activity android:name=".miscellaneous.MiscellaneousViewActivity"/>
     </application>
 </manifest>
