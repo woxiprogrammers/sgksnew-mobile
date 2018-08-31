@@ -17,10 +17,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
+import com.woxi.sgks_member.adapters.CommMemListAdapter;
+import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.models.CommMemberDetailsItem;
 import com.woxi.sgks_member.models.CommitteeDetailsItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppParser;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -106,13 +109,14 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
     }
 
     private void requestCommitteeDetailsAPI(String strCommId) {
+        String url="http://www.mocky.io/v2/5b88e95630000047033381bc";
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
         String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_COMMITTEE_DETAILS + currentCity + AppURLs.API_COMMITTEE_ID + strCommId, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, /*AppURLs.API_COMMITTEE_DETAILS + currentCity + AppURLs.API_COMMITTEE_ID + strCommId*/url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

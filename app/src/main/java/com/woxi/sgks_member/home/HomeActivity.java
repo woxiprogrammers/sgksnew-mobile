@@ -81,7 +81,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (id) {
-            /*case R.id.nav_add_me_sgks:
+            case R.id.nav_add_me_sgks:
                 Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
                 intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
@@ -120,7 +120,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 Intent intentQA = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentQA.putExtra("activityType", getString(R.string.q_and_a));
                 startActivity(intentQA);
-                break;*/
+                break;
             case R.id.app_settings:
                 Intent intentSettings = new Intent(mContext, SettingsActivity.class);
                 intentSettings.putExtra("activityType", getString(R.string.settings));

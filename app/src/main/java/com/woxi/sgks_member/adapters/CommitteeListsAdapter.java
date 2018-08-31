@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.home.CommitteeHomeFragment;
 import com.woxi.sgks_member.models.CommitteeDetailsItem;

@@ -84,7 +84,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
     }
 
     private void requestCommitteeListAPI() {
-        String url="http://www.mocky.io/v2/5b88e011300000460333819a";
+        String url="http://www.mocky.io/v2/5b88e95630000047033381bc";
 
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
