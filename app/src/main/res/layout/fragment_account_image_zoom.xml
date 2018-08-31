@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ivDialogClose"
+        android:layout_width="@dimen/zoom_dialog_close_height_width"
+        android:layout_height="@dimen/zoom_dialog_close_height_width"
+        android:layout_gravity="end|top"
+        android:layout_marginEnd="@dimen/v8"
+        android:layout_marginTop="@dimen/v8"
+        android:contentDescription="close dialog"
+        android:padding="@dimen/v4"
+        android:src="@drawable/ic_close"
+        android:tint="@color/colorBlueMedium" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/v32"
+        android:layout_marginStart="@dimen/v32"
+        android:layout_marginTop="@dimen/v32"
+        android:background="@color/colorAppBackground"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvImageName"
+            style="@style/customTextView_16"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:padding="@dimen/v8" />
+
+        <com.woxi.utils.TouchImageView
+            android:id="@+id/ivAccountImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingImageDownloadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/v16"
+        android:layout_marginEnd="48dp"
+        android:clickable="true"
+        android:src="@drawable/ic_download"
+        app:backgroundTint="@color/colorBlueMedium"
+        app:fabSize="auto" />
+</FrameLayout>

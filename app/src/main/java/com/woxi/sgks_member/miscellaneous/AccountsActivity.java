@@ -22,8 +22,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
+import com.woxi.sgks_member.adapters.AccountAndEventDetailsAdapter;
 import com.woxi.sgks_member.models.AccountDetailsItem;
 import com.woxi.sgks_member.models.AccountYearItem;
+import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +35,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
+import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_NO_RESULTS_FOUND;
+import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
 
 /**
  * <b>public class AccountsActivity extends AppCompatActivity</b>
