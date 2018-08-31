@@ -114,8 +114,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
         } else {
             ((TextView) findViewById(R.id.tvMemMaritalStatus)).setText("-");
         }
-        if (memberDetailsItem.getMemSgksMemberId() != null && !memberDetailsItem.getMemSgksMemberId().equalsIgnoreCase("null")) {
-            ((TextView) findViewById(R.id.tvMemMemberId)).setText("SGKS-" + memberDetailsItem.getMemSgksMainCity() + "-" + memberDetailsItem.getMemSgksMemberId());
+        if (memberDetailsItem.getMemID() != null && !memberDetailsItem.getMemID().equalsIgnoreCase("null")) {
+            ((TextView) findViewById(R.id.tvMemMemberId)).setText("SGKS-" + memberDetailsItem.getMemSgksMainCity() + "-" + memberDetailsItem.getMemID());
         } else {
             ((TextView) findViewById(R.id.tvMemMemberId)).setText("-");
         }
@@ -125,7 +125,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.tvMemFamilyId)).setText("-");
         }
 
-        FloatingActionButton mFloatingLocation = ((FloatingActionButton) findViewById(R.id.memFloatingLocation));
+        FloatingActionButton mFloatingLocation =  findViewById(R.id.memFloatingLocation);
         if (memberDetailsItem.getMemLatitude() != null && !memberDetailsItem.getMemLatitude().equalsIgnoreCase("null")) {
             final String strLatitude = memberDetailsItem.getMemLatitude();
             final String strLongitude = memberDetailsItem.getMemLongitude();

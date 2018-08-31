@@ -84,6 +84,8 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
     }
 
     private void requestCommitteeListAPI() {
+        String url="http://www.mocky.io/v2/5b88e011300000460333819a";
+
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
@@ -91,7 +93,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
 
         String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_COMMITTEE_LAZY_LOADING_LIST + currentCity, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, /*AppURLs.API_COMMITTEE_LAZY_LOADING_LIST + currentCity*/url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -156,19 +158,20 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
             @Override
             public void onClick(View selectedView) {
                 CommitteeDetailsItem committeeListItem = arrMainCommList.get(mRvCommitteeHome.getChildAdapterPosition(selectedView));
-                /*Intent intentDetails = new Intent(mContext, CommitteeDetailsActivity.class);
+                Intent intentDetails = new Intent(mContext, CommitteeDetailsActivity.class);
                 intentDetails.putExtra("committeeID", committeeListItem.getCommitteeID());
                 intentDetails.putExtra("committeeName", committeeListItem.getCommitteeName());
                 intentDetails.putExtra("isLocalData", isLocalData);
                 intentDetails.putExtra("committeeItem", committeeListItem);
-                startActivity(intentDetails);*/
+                startActivity(intentDetails);
             }
         };
     }
 
     @Override
     public void fragmentBecameVisible() {
-        if (!isApiRequested) {
+        getAllCommitteesOnline();
+        /*if (!isApiRequested) {
             boolean isOfflineSupportEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_OFFLINE_SUPPORT_ENABLED, mContext);
             if (isOfflineSupportEnabled) {
                 databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
@@ -183,7 +186,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
             } else {
                 getAllCommitteesOnline();
             }
-        }
+        }*/
     }
 
     private void getAllCommitteesOnline() {

@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +81,6 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
         mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
-        ;
         mPbLazyLoad.setVisibility(View.GONE);
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
         linearLayoutManager = new LinearLayoutManager(mContext);
@@ -109,7 +109,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         onMemberClickListener=new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(v));
+                MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(view));
                 Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
                 intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
                 startActivity(intentDetails);
@@ -146,22 +146,22 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     }
 
     private void requestToGetMembersData() {
-        String url = "http://www.mocky.io/v2/5b87c73a2e0000710c05fae1";
+        String url = "http://www.mocky.io/v2/5b87dba02e0000f81a05fb7d";
         final JsonObjectRequest req = new JsonObjectRequest(url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
                             Object resp = AppParser.parseNewMemberList(response.toString());
-                            ArrayList<MemberDetailsItem> mNextArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
+                            mArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
                             if (resp instanceof Boolean) {
                                 Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
                             } else if (resp instanceof ArrayList) {
-                                if (mNextArrMemDetails.size() > 0) {
+                                if (mArrMemDetails.size() > 0) {
                                     mRvMemberList.setHasFixedSize(true);
-                                    mRvAdapter = new MemberListAdapter(mNextArrMemDetails);
+                                    mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                     mRvMemberList.setAdapter(mRvAdapter);
-                                    databaseQueryHandler.insertOrUpdateAllMembers(mNextArrMemDetails);
+                                    databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
                                 } else {
                                     Toast.makeText(mContext, "No Record Found", Toast.LENGTH_SHORT).show();
                                 }

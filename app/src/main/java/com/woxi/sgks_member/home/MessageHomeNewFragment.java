@@ -21,6 +21,7 @@ import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.adapters.MessageListAdapter;
 import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.interfaces.FragmentInterface;
+import com.woxi.sgks_member.local_storage.DatabaseQueryHandler;
 import com.woxi.sgks_member.models.MessageDetailsItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppParser;
@@ -40,6 +41,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     private RelativeLayout mPbLazyLoad;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerView.Adapter mRvAdapter;
+    private DatabaseQueryHandler databaseQueryHandler;
     public MessageHomeNewFragment() {
         // Required empty public constructor
     }
@@ -58,6 +60,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
 
     private void initializeViews() {
         mContext = getActivity();
+        databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
         mRvMessageList = mParentView.findViewById(R.id.rvNewsAndClassified);
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
         linearLayoutManager = new LinearLayoutManager(mContext);
@@ -88,6 +91,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                             }else if(resp instanceof ArrayList){
                                 ArrayList<MessageDetailsItem> messageDetailsItems= (ArrayList<MessageDetailsItem>) resp;
                                 setUpRecyclerView(messageDetailsItems);
+                                databaseQueryHandler.insertOrUpdateAllMessages(messageDetailsItems,false);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

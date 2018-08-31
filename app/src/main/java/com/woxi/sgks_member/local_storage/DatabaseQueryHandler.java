@@ -318,7 +318,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    boolean insertOrUpdateAllMessages(ArrayList<MessageDetailsItem> mArrNewsDetails, boolean isUpdate) {
+    public boolean insertOrUpdateAllMessages(ArrayList<MessageDetailsItem> mArrNewsDetails, boolean isUpdate) {
         String insertMessagePreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_MESSAGE_NEWS_DETAILS + " VALUES (?,?,?,?,?,?,?,?);";
 
         SQLiteStatement messageStatement = mSqLiteDatabase.compileStatement(insertMessagePreparedStatement);

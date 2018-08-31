@@ -28,7 +28,7 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
     private Context mContext;
     private int[] imageResId = {
 //            R.drawable.ic_events,
-//            R.drawable.ic_committee,
+            R.drawable.ic_committee,
             R.drawable.ic_members,
             R.drawable.ic_messages
 //            R.drawable.ic_classified,
@@ -49,11 +49,11 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 return MemberHomeNewFragment.newInstance();
-            /*case 1:
-                return CommitteeHomeFragment.newInstance();
-            case 2:
-                return MemberHomeFragment.newInstance();*/
             case 1:
+                return CommitteeHomeFragment.newInstance();
+            /*case 2:
+                return MemberHomeFragment.newInstance();*/
+            case 2:
                 return MessageHomeNewFragment.newInstance();
             /*case 4:
                 return ClassifiedHomeFragment.newInstance();*/

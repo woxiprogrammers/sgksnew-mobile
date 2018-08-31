@@ -1,5 +1,7 @@
 package com.woxi.sgks_member.utils;
 
+import android.util.Log;
+
 import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.models.AccountDetailsItem;
 import com.woxi.sgks_member.models.AccountYearItem;
@@ -242,8 +244,15 @@ public class AppParser implements AppConstants {
                     if (jsonMemberObject.has("longitude") && jsonMemberObject.getString("longitude") != null) {
                         memberDetailsItem.setMemLongitude(jsonMemberObject.optString("longitude"));
                     }
+                    if (jsonMemberObject.has("blood_group") && jsonMemberObject.optString("blood_group") != null && !jsonMemberObject.optString("blood_group").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setMemBloodGroup(jsonMemberObject.optString("blood_group"));
+                    }
+                    if (jsonMemberObject.has("marital_status") && jsonMemberObject.optString("marital_status") != null && !jsonMemberObject.optString("marital_status").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setMemMaritalStatus(jsonMemberObject.optString("marital_status"));
+                    }
 
                     if (jsonMemberObject.has("address") && jsonMemberObject.optString("address") != null && !jsonMemberObject.optString("address").equalsIgnoreCase("null")) {
+                        Log.i("@@","here");
                         MemberAddressItem memAddressItem = new MemberAddressItem();
                         JSONObject jsonAddressObject = jsonMemberObject.optJSONObject("address");
                         if (jsonAddressObject.has("address_line") && jsonAddressObject.optString("address_line") != null && !jsonAddressObject.optString("address_line").equalsIgnoreCase("null")) {
