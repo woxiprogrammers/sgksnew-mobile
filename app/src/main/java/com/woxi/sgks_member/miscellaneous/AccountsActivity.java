@@ -27,6 +27,8 @@ import com.woxi.sgks_member.models.AccountDetailsItem;
 import com.woxi.sgks_member.models.AccountYearItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppParser;
+import com.woxi.sgks_member.utils.AppURLs;
+import com.woxi.sgks_member.utils.ImageZoomDialogFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,11 +75,11 @@ public class AccountsActivity extends AppCompatActivity {
      */
     private void initializeViews() {
         mContext = AccountsActivity.this;
-        mSpinAccountYear = (Spinner) findViewById(R.id.spinAccountYear);
+        mSpinAccountYear =  findViewById(R.id.spinAccountYear);
         ((TextView) findViewById(R.id.tvYearTitle)).setText("Select Account Year");
 
         //Set-up RecyclerView
-        mRvAccountImages = (RecyclerView) findViewById(R.id.rvAccountImages);
+        mRvAccountImages = findViewById(R.id.rvAccountImages);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 2);
         mRvAccountImages.setLayoutManager(layoutManager);
         mArrAccountDetails = new ArrayList<>();
@@ -156,9 +158,9 @@ public class AccountsActivity extends AppCompatActivity {
 
                 NetworkResponse response = error.networkResponse;
                 if (response != null) {
-                    ((TextView) findViewById(R.id.tvNotAvailable)).setVisibility(View.VISIBLE);
+                    ( findViewById(R.id.tvNotAvailable)).setVisibility(View.VISIBLE);
                     ((TextView) findViewById(R.id.tvNotAvailable)).setText("No Account To Show");
-                    ((LinearLayout) findViewById(R.id.llSelectYear)).setVisibility(View.GONE);
+                    ( findViewById(R.id.llSelectYear)).setVisibility(View.GONE);
                     new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));
                     try {
                         if (response.statusCode == STATUS_SOMETHING_WENT_WRONG) {

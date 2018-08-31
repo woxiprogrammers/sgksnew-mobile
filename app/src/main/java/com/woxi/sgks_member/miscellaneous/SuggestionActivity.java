@@ -24,8 +24,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
-import com.woxi.utils.AppCommonMethods;
-import com.woxi.utils.AppURLs;
+import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,9 +35,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.woxi.interfaces.AppConstants.PREFS_CURRENT_CITY;
-import static com.woxi.interfaces.AppConstants.PREFS_SUGGESTION_CATEGORY;
-import static com.woxi.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_SUGGESTION_CATEGORY;
+import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
 
 /**
  * <b>public class SuggestionActivity extends AppCompatActivity</b>
@@ -63,7 +63,7 @@ public class SuggestionActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         initializeViews();
-        TextView tv = (TextView) findViewById(R.id.tvSubmit);
+        TextView tv =  findViewById(R.id.tvSubmit);
         tv.setOnClickListener(new View.OnClickListener() {
                                   @Override
                                   public void onClick(View v) {
@@ -100,10 +100,10 @@ public class SuggestionActivity extends AppCompatActivity {
 
     private void initializeViews() {
         mContext = SuggestionActivity.this;
-        RadioGroup mRgSuggestionType = (RadioGroup) findViewById(R.id.radioGroup);
-        mRbSuggestion = (RadioButton) findViewById(R.id.radioButtonSuggestion);
-        mEtComplaintsSuggestion = (EditText) findViewById(R.id.editTextSuggestion);
-        mSpinCategories = (Spinner) findViewById(R.id.spinnerSelect);
+        RadioGroup mRgSuggestionType = findViewById(R.id.radioGroup);
+        mRbSuggestion = findViewById(R.id.radioButtonSuggestion);
+        mEtComplaintsSuggestion =  findViewById(R.id.editTextSuggestion);
+        mSpinCategories = findViewById(R.id.spinnerSelect);
         mRbSuggestion.setChecked(true);
         arrSuggestions = suggestionData();
         arrSuggestions.add(0, "Choose One");

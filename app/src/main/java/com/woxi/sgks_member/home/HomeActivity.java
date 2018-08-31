@@ -32,7 +32,12 @@ import com.woxi.sgks_member.adapters.HomeViewPagerAdapter;
 import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.interfaces.FragmentInterface;
 import com.woxi.sgks_member.local_storage.DataSyncService;
+import com.woxi.sgks_member.miscellaneous.AccountsActivity;
+import com.woxi.sgks_member.miscellaneous.AddMeToSgksActivity;
+import com.woxi.sgks_member.miscellaneous.ContactUsActivity;
+import com.woxi.sgks_member.miscellaneous.MiscellaneousViewActivity;
 import com.woxi.sgks_member.miscellaneous.SettingsActivity;
+import com.woxi.sgks_member.miscellaneous.SuggestionActivity;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 
 import java.util.ArrayList;

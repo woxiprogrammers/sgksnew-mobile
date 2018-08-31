@@ -20,11 +20,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.woxi.interfaces.AppConstants;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
-import com.woxi.utils.AppCommonMethods;
-import com.woxi.utils.AppURLs;
+import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +33,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_SGKS_AREA_LIST;
+import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
 
 /**
  * <b>public class AddMeToSgksActivity extends AppCompatActivity implements AppConstants</b>
@@ -95,10 +99,10 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 
     private void initializeViews() {
         mContext = AddMeToSgksActivity.this;
-        metName = (EditText) findViewById(R.id.etName);
-        metContact = (EditText) findViewById(R.id.etContact);
+        metName =  findViewById(R.id.etName);
+        metContact = findViewById(R.id.etContact);
         metName.requestFocus();
-        spArea = (Spinner) findViewById(R.id.spArea);
+        spArea =  findViewById(R.id.spArea);
 
     }
 
