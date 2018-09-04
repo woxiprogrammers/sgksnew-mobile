@@ -251,7 +251,6 @@ public class AppParser implements AppConstants {
                         memberDetailsItem.setMemMaritalStatus(jsonMemberObject.optString("marital_status"));
                     }
                     if (jsonMemberObject.has("address") && jsonMemberObject.optString("address") != null && !jsonMemberObject.optString("address").equalsIgnoreCase("null")) {
-                        Log.i("@@", "here");
                         MemberAddressItem memAddressItem = new MemberAddressItem();
                         JSONObject jsonAddressObject = jsonMemberObject.optJSONObject("address");
                         if (jsonAddressObject.has("address_line") && jsonAddressObject.optString("address_line") != null && !jsonAddressObject.optString("address_line").equalsIgnoreCase("null")) {
@@ -776,7 +775,7 @@ public class AppParser implements AppConstants {
                 }
                 classifiedResponseItem.setArrClassifiedList(arrClassifiedDetails);
             }
-            return classifiedResponseItem;
+            return arrClassifiedDetails;
         }
         return false;
     }

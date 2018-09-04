@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.home.ClassifiedHomeFragment;
+import com.woxi.sgks_member.home.ClassifiedHomeNewFragment;
 import com.woxi.sgks_member.models.ClassifiedDetailsItem;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class ClassifiedListAdapter extends RecyclerView.Adapter<ClassifiedListAd
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemViewMain = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_classified_listing, parent, false);
-        itemViewMain.setOnClickListener(ClassifiedHomeFragment.onRvItemClickListener);
+        itemViewMain.setOnClickListener(ClassifiedHomeNewFragment.onRvItemClickListener);
         return new ClassifiedListAdapter.ItemHolder(itemViewMain);
     }
 

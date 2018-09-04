@@ -36,7 +36,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
 
     public MemberListAdapter(ArrayList<MemberDetailsItem> mArrMemDetails) {
         this.mArrMemDetails = mArrMemDetails;
-        Log.i("@@1", String.valueOf(mArrMemDetails.size()));
     }
 
     @Override
@@ -48,7 +47,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
 
     @Override
     public void onBindViewHolder(final MemDetailsHolder holder, int position) {
-        Log.i("@@","OnBindViewHolder");
         final ImageView memberImage = holder.memberImage;
         final Context mContext = holder.mContext;
         TextView memberName = holder.memberName;
@@ -139,7 +137,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
 
     @Override
     public int getItemCount() {
-        Log.i("@@2", String.valueOf(mArrMemDetails.size()));
         return mArrMemDetails.size();
     }
 

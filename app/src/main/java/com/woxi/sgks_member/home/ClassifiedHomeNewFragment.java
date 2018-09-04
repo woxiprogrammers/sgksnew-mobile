@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,17 +91,20 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
         };
     }
     private void requestToGetClassifiedList(){
-        String url="http://www.mocky.io/v2/5b866cad3400005e068b5590";
+        String url="http://www.mocky.io/v2/5b8e4f6d32000074007b3859";
         final JsonObjectRequest req = new JsonObjectRequest(url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
                             Object resp= AppParser.parseClassifiedResponse(response.toString());
+                            Log.i("@@Resp",resp.toString());
                             if(resp instanceof Boolean){
                                 Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                                Log.i("@@if","fail");
                             }else if(resp instanceof ArrayList){
                                 mArrClassifiedDetails= (ArrayList<ClassifiedDetailsItem>) resp;
+                                Log.i("@@else", String.valueOf(mArrClassifiedDetails.size()));
                                 setUpRecyclerView();
 //                                setUpRecyclerView(messageDetailsItems);
                             }

@@ -259,7 +259,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mNotifyMgr.notify(AppConstants.SYNC_NOTIFICATION_ID, mBuilder.build());
     }
     public static void stopLocalStorageSyncService(Context applicationContext) {
-        Log.i("@@Stop","Stop");
         AppController.getInstance().cancelPendingRequests(applicationContext.getString(R.string.tag_local_storage_sync));
         Intent intentSyncService = new Intent(applicationContext, DataSyncService.class);
         applicationContext.stopService(intentSyncService);
