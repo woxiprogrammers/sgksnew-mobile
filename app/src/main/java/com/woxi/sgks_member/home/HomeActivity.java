@@ -160,7 +160,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mViewPager.setAdapter(viewPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
         //To start Committee Home
-//        mViewPager.setCurrentItem(2);
+        mViewPager.setCurrentItem(2);
         mViewPager.setOffscreenPageLimit(5);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

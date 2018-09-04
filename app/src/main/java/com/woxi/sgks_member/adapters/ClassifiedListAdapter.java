@@ -42,12 +42,10 @@ public class ClassifiedListAdapter extends RecyclerView.Adapter<ClassifiedListAd
         Context mContext = holder.mContext;
         ImageView ivClassifiedListImg = holder.ivClassifiedListImg;
         TextView tvTitle = holder.tvTitle;
-//        TextView tvDescription = holder.tvDescription;
-
+//      TextView tvDescription = holder.tvDescription;
         if (mArrClassifiedDetails.get(position).getClassifiedTitle() != null) {
             tvTitle.setText(mArrClassifiedDetails.get(position).getClassifiedTitle());
         }
-
         //Loading image from url.
         String strUrl = mArrClassifiedDetails.get(position).getArrClassifiedImages().get(0);
         Glide.with(mContext)
@@ -58,7 +56,6 @@ public class ClassifiedListAdapter extends RecyclerView.Adapter<ClassifiedListAd
                 .placeholder(R.drawable.ic_place_holder)
                 .error(R.drawable.ic_broken_image)
                 .into(ivClassifiedListImg);
-
         /*if (mArrClassifiedDetails.get(position).getClassifiedDescription() != null) {
             tvDescription.setText(mArrClassifiedDetails.get(position).getClassifiedDescription());
         }*/
