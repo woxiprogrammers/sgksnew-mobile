@@ -96,10 +96,10 @@ public class ClassifiedHomeFragment extends Fragment implements AppConstants, Fr
         onRvItemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*ClassifiedDetailsItem classifiedDetailsItem = mArrClassifiedDetails.get(mRvClassifiedList.getChildAdapterPosition(v));
+                ClassifiedDetailsItem classifiedDetailsItem = mArrClassifiedDetails.get(mRvClassifiedList.getChildAdapterPosition(v));
                 Intent intentDetails = new Intent(mContext, EventAndClassifiedDetailActivity.class);
                 intentDetails.putExtra("currentClassifiedDetail", classifiedDetailsItem);
-                startActivity(intentDetails);*/
+                startActivity(intentDetails);
             }
         };
         //Following method call is for listening to scroll events
@@ -143,6 +143,7 @@ public class ClassifiedHomeFragment extends Fragment implements AppConstants, Fr
     }
 
     private void requestClassifiedListAPI(boolean isProgressDialog, JSONObject params, String strMemberLoadUrl, final boolean isFirstTime) {
+        String url="http://www.mocky.io/v2/5b8e4f6d32000074007b3859";
         isClassifiedApiInProgress = true;
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         if (isProgressDialog) {

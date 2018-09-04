@@ -56,8 +56,8 @@ public class CommMemListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = mLayoutInflater.inflate(R.layout.item_member_child, parent, false);
         }
-        TextView tv_email = (TextView) convertView.findViewById(R.id.tvMemberEmail);
-        TextView tv_address = (TextView) convertView.findViewById(R.id.tvMemberAddress);
+        TextView tv_email =  convertView.findViewById(R.id.tvMemberEmail);
+        TextView tv_address = convertView.findViewById(R.id.tvMemberAddress);
         if (commMemSecondItem.getCommitteeMemEmail() != null) {
             tv_email.setText(commMemSecondItem.getCommitteeMemEmail());
         }
@@ -98,12 +98,12 @@ public class CommMemListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = mLayoutInflater.inflate(R.layout.item_member_group, parent, false);
         }
-        TextView tv_name = (TextView) convertView.findViewById(R.id.tvCommMemberName);
-        TextView tv_designation = (TextView) convertView.findViewById(R.id.tvMemberDesignation);
+        TextView tv_name =  convertView.findViewById(R.id.tvCommMemberName);
+        TextView tv_designation =  convertView.findViewById(R.id.tvMemberDesignation);
         tv_name.setText(commMemberDetailItem.getCommitteeMemName());
         tv_designation.setText(commMemberDetailItem.getCommitteeMemDesignation());
 
-        ImageView tvCommMemCall = (ImageView) convertView.findViewById(R.id.ivCommMemCall);
+        ImageView tvCommMemCall =  convertView.findViewById(R.id.ivCommMemCall);
         if (arrCommMemberDetails.get(groupPosition).getCommitteeMemContact() != null && !arrCommMemberDetails.get(groupPosition).getCommitteeMemContact().equalsIgnoreCase("")) {
             tvCommMemCall.setVisibility(View.VISIBLE);
             tvCommMemCall.setOnClickListener(new View.OnClickListener() {

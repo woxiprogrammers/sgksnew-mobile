@@ -250,9 +250,8 @@ public class AppParser implements AppConstants {
                     if (jsonMemberObject.has("marital_status") && jsonMemberObject.optString("marital_status") != null && !jsonMemberObject.optString("marital_status").equalsIgnoreCase("null")) {
                         memberDetailsItem.setMemMaritalStatus(jsonMemberObject.optString("marital_status"));
                     }
-
                     if (jsonMemberObject.has("address") && jsonMemberObject.optString("address") != null && !jsonMemberObject.optString("address").equalsIgnoreCase("null")) {
-                        Log.i("@@","here");
+                        Log.i("@@", "here");
                         MemberAddressItem memAddressItem = new MemberAddressItem();
                         JSONObject jsonAddressObject = jsonMemberObject.optJSONObject("address");
                         if (jsonAddressObject.has("address_line") && jsonAddressObject.optString("address_line") != null && !jsonAddressObject.optString("address_line").equalsIgnoreCase("null")) {
@@ -632,6 +631,26 @@ public class AppParser implements AppConstants {
     public static Object parseAccountDetailsResponse(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
         if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            ArrayList<AccountDetailsItem> arrAccountDetails = new ArrayList<>();
+            if (jsonDataArray != null) {
+                AccountDetailsItem accountDetailsItem;
+                arrAccountDetails = new ArrayList<>();
+                for (int indexDetails = 0; indexDetails < jsonDataArray.length(); indexDetails++) {
+                    accountDetailsItem = new AccountDetailsItem();
+                    JSONObject jsonDetailsObject = jsonDataArray.optJSONObject(indexDetails);
+                    if (jsonDetailsObject.has("account_image_url") && jsonDetailsObject.optString("account_image_url") != null && !jsonDetailsObject.optString("account_image_url").equalsIgnoreCase("null")) {
+                        accountDetailsItem.setStrAccountImageUrl(jsonDetailsObject.optString("account_image_url"));
+                    }
+                    if (jsonDetailsObject.has("name") && jsonDetailsObject.optString("name") != null && !jsonDetailsObject.optString("name").equalsIgnoreCase("null")) {
+                        accountDetailsItem.setStrAccountName(jsonDetailsObject.optString("name"));
+                    }
+                    arrAccountDetails.add(accountDetailsItem);
+                }
+            }
+            return arrAccountDetails;
+        }
+        /*if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
             ArrayList<AccountYearItem> arrAccountYear = new ArrayList<>();
             AccountYearItem accountYearItem;
             JSONArray jsonDataArray = jsonObject.optJSONArray("data");
@@ -665,7 +684,7 @@ public class AppParser implements AppConstants {
                 arrAccountYear.add(accountYearItem);
             }
             return arrAccountYear;
-        }
+        }*/
         return null;
     }
 

@@ -95,11 +95,11 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
         onEventClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View selectedView) {
-               /* Intent intent = new Intent(mContext, EventAndClassifiedDetailActivity.class);
+                Intent intent = new Intent(mContext, EventAndClassifiedDetailActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("eventDetails", mArrEventData.get(mRvEventList.getChildAdapterPosition(selectedView)));
                 intent.putExtras(bundle);
-                startActivity(intent);*/
+                startActivity(intent);
             }
         };
 
@@ -121,13 +121,15 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        requestEventDetailsApi();
     }
 
     @Override
     public void fragmentBecameVisible() {
         if (!isApiRequested) {
             AppController.getInstance().cancelPendingRequests("apiEventYearListTAG");
-            requestEventYearListApi();
+//            requestEventYearListApi();
         }
     }
 
@@ -146,8 +148,8 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
                         new AppCommonMethods().LOG(0, TAG, response.toString());
                         String strEventYears = "";
                         if (response.has("event_year") && response.optString("event_year") != null && !response.optString("event_year").equalsIgnoreCase("") && !response.optString("event_year").equalsIgnoreCase("null")) {
-                            ((TextView) mParentView.findViewById(R.id.tvNotAvailable)).setVisibility(View.GONE);
-                            ((LinearLayout) mParentView.findViewById(R.id.llSelectYear)).setVisibility(View.VISIBLE);
+                            (mParentView.findViewById(R.id.tvNotAvailable)).setVisibility(View.GONE);
+                            ( mParentView.findViewById(R.id.llSelectYear)).setVisibility(View.VISIBLE);
 
                             strEventYears = response.optString("event_year");
                             strEventYears = strEventYears.replace("[", "");
@@ -159,9 +161,9 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
                             arrayYearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             mSpinAccountYear.setAdapter(arrayYearAdapter);
                         } else {
-                            ((TextView) mParentView.findViewById(R.id.tvNotAvailable)).setVisibility(View.VISIBLE);
+                            ( mParentView.findViewById(R.id.tvNotAvailable)).setVisibility(View.VISIBLE);
                             ((TextView) mParentView.findViewById(R.id.tvNotAvailable)).setText("No Event To Show");
-                            ((LinearLayout) mParentView.findViewById(R.id.llSelectYear)).setVisibility(View.GONE);
+                            ( mParentView.findViewById(R.id.llSelectYear)).setVisibility(View.GONE);
                         }
                         pDialog.dismiss();
                         isApiRequested = true;
@@ -173,9 +175,9 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
 
                 NetworkResponse response = error.networkResponse;
                 if (response != null) {
-                    ((TextView) mParentView.findViewById(R.id.tvNotAvailable)).setVisibility(View.VISIBLE);
+                    ( mParentView.findViewById(R.id.tvNotAvailable)).setVisibility(View.VISIBLE);
                     ((TextView) mParentView.findViewById(R.id.tvNotAvailable)).setText("No Event To Show");
-                    ((LinearLayout) mParentView.findViewById(R.id.llSelectYear)).setVisibility(View.GONE);
+                    ( mParentView.findViewById(R.id.llSelectYear)).setVisibility(View.GONE);
                     new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));
                     try {
                         if (response.statusCode == STATUS_SOMETHING_WENT_WRONG) {
@@ -203,15 +205,16 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
     }
 
     private void requestEventDetailsApi() {
+        String url="http://www.mocky.io/v2/5b8e48f532000053007b3829";
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
 
-        selectedYear = mSpinAccountYear.getSelectedItem().toString();
+//        selectedYear = mSpinAccountYear.getSelectedItem().toString();
         String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
         ///sgksmain/events/lists?city=PUNE&year=2017
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_EVENT_DETAILS_LIST + currentCity + "&year=" + selectedYear, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, /*AppURLs.API_EVENT_DETAILS_LIST + currentCity + "&year=" + selectedYear*/url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -233,7 +236,6 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             @Override
             public void onErrorResponse(VolleyError error) {
                 pDialog.dismiss();
-
                 NetworkResponse response = error.networkResponse;
                 if (response != null) {
                     new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));

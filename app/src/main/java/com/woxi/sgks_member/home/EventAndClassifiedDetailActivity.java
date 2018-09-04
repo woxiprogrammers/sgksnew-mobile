@@ -45,7 +45,6 @@ public class EventAndClassifiedDetailActivity extends AppCompatActivity {
     private boolean isFromEventHome;
     private boolean isFromClassifiedHome;
     private BroadcastReceiver onDownloadComplete;
-
     private String TAG = "EventAndClassifiedDetail";
 
     @Override
@@ -56,7 +55,6 @@ public class EventAndClassifiedDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         mContext = EventAndClassifiedDetailActivity.this;
-
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             if (bundle.containsKey("eventDetails")) {
@@ -77,7 +75,6 @@ public class EventAndClassifiedDetailActivity extends AppCompatActivity {
                 functionForClassifiedDetails(mClassifiedDetailsItem);
             }
         }
-
         //Function for event image click listener
         onGridImageClickListener = new View.OnClickListener() {
             @Override
@@ -102,17 +99,15 @@ public class EventAndClassifiedDetailActivity extends AppCompatActivity {
         if (strTitle != null) {
             ((TextView) findViewById(R.id.tvEventAndClassifiedName)).setText(strTitle);
         }
-
         arrEventImageUrls = mClassifiedDetailsItem.getArrClassifiedImages();
         //Set-up RecyclerView
-        mRvEventGallery = (RecyclerView) findViewById(R.id.rvEventAndClassifiedGallery);
+        mRvEventGallery = findViewById(R.id.rvEventAndClassifiedGallery);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 2);
         mRvEventGallery.setLayoutManager(layoutManager);
         AccountAndEventDetailsAdapter eventAndAccountDetailsAdapter = new AccountAndEventDetailsAdapter(true, arrEventImageUrls);
         mRvEventGallery.setAdapter(eventAndAccountDetailsAdapter);
-
         String strEventDescription = mClassifiedDetailsItem.getClassifiedDescription();
-        TextView tvEventDescription = (TextView) findViewById(R.id.tvEventAndClassifiedDescription);
+        TextView tvEventDescription = findViewById(R.id.tvEventAndClassifiedDescription);
         if (strEventDescription != null && !strEventDescription.equalsIgnoreCase("")) {
             tvEventDescription.setVisibility(View.VISIBLE);
             tvEventDescription.setText(strEventDescription);
@@ -127,17 +122,15 @@ public class EventAndClassifiedDetailActivity extends AppCompatActivity {
             if (strTitle != null) {
                 ((TextView) findViewById(R.id.tvEventAndClassifiedName)).setText(strTitle);
             }
-
             arrEventImageUrls = eventDataItem.getArrEventImageURLs();
             //Set-up RecyclerView
-            mRvEventGallery = (RecyclerView) findViewById(R.id.rvEventAndClassifiedGallery);
+            mRvEventGallery = findViewById(R.id.rvEventAndClassifiedGallery);
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 2);
             mRvEventGallery.setLayoutManager(layoutManager);
             AccountAndEventDetailsAdapter eventAndAccountDetailsAdapter = new AccountAndEventDetailsAdapter(true, arrEventImageUrls);
             mRvEventGallery.setAdapter(eventAndAccountDetailsAdapter);
-
             String strEventDescription = eventDataItem.getEventDescription();
-            TextView tvEventDescription = (TextView) findViewById(R.id.tvEventAndClassifiedDescription);
+            TextView tvEventDescription = findViewById(R.id.tvEventAndClassifiedDescription);
             if (strEventDescription != null && !strEventDescription.equalsIgnoreCase("")) {
                 tvEventDescription.setVisibility(View.VISIBLE);
                 tvEventDescription.setText(strEventDescription);

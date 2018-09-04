@@ -102,7 +102,7 @@ public class AccountsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (arrAccountYear.size() > 0) {
-                    setCurrentYearAccount();
+                    setCurrentYearAccount(mArrAccountDetails);
                 }
             }
 
@@ -113,6 +113,7 @@ public class AccountsActivity extends AppCompatActivity {
     }
 
     private void requestAccountsAPI() {
+        String url="http://www.mocky.io/v2/5b8e31de330000d227c15b79";
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
@@ -120,7 +121,7 @@ public class AccountsActivity extends AppCompatActivity {
 
         String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_ACCOUNT_DEATILS + currentCity, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, /*AppURLs.API_ACCOUNT_DEATILS + currentCity*/url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -128,9 +129,11 @@ public class AccountsActivity extends AppCompatActivity {
                         try {
                             Object resp = AppParser.parseAccountDetailsResponse(response.toString());
                             if (resp instanceof ArrayList) {
-                                if (((ArrayList) resp).size() != 0) {
-                                    ((TextView) findViewById(R.id.tvNotAvailable)).setVisibility(View.GONE);
-                                    ((LinearLayout) findViewById(R.id.llSelectYear)).setVisibility(View.VISIBLE);
+                                mArrAccountDetails= (ArrayList<AccountDetailsItem>) resp;
+                                setCurrentYearAccount(mArrAccountDetails);
+                                /*if (((ArrayList) resp).size() != 0) {
+                                    ( findViewById(R.id.tvNotAvailable)).setVisibility(View.GONE);
+                                    ( findViewById(R.id.llSelectYear)).setVisibility(View.VISIBLE);
                                     arrAccountYear = (ArrayList<AccountYearItem>) resp;
                                     if (arrAccountYear.size() > 0) {
                                         arrayYearStringsList = new ArrayList<>();
@@ -144,7 +147,7 @@ public class AccountsActivity extends AppCompatActivity {
 
                                         setCurrentYearAccount();
                                     }
-                                }
+                                }*/
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -187,11 +190,11 @@ public class AccountsActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "apiAccountsDetails");
     }
 
-    private void setCurrentYearAccount() {
-        String strSelectedYear = mSpinAccountYear.getSelectedItem().toString();
+    private void setCurrentYearAccount(ArrayList<AccountDetailsItem> accountDetailsItems) {
+        /*String strSelectedYear = mSpinAccountYear.getSelectedItem().toString();
         AccountYearItem accountYearItem = arrAccountYear.get(arrayYearStringsList.indexOf(strSelectedYear));
-        mArrAccountDetails = accountYearItem.getArrAccountDetails();
-        accountAndEventDetailsAdapter = new AccountAndEventDetailsAdapter(mArrAccountDetails);
+        mArrAccountDetails = accountYearItem.getArrAccountDetails();*/
+        accountAndEventDetailsAdapter = new AccountAndEventDetailsAdapter(accountDetailsItems);
         mRvAccountImages.setAdapter(accountAndEventDetailsAdapter);
         accountAndEventDetailsAdapter.notifyDataSetChanged();
     }

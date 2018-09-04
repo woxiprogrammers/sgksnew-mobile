@@ -77,8 +77,8 @@ public class ClassifiedListAdapter extends RecyclerView.Adapter<ClassifiedListAd
         ItemHolder(View itemView) {
             super(itemView);
             this.mContext = itemView.getContext();
-            this.ivClassifiedListImg = (ImageView) itemView.findViewById(R.id.ivNewsListImg);
-            this.tvTitle = (TextView) itemView.findViewById(R.id.tvNewsListTitle);
+            this.ivClassifiedListImg =  itemView.findViewById(R.id.ivNewsListImg);
+            this.tvTitle =  itemView.findViewById(R.id.tvNewsListTitle);
 //            this.tvDescription = (TextView) itemView.findViewById(R.id.tvNewsListDescription);
         }
     }

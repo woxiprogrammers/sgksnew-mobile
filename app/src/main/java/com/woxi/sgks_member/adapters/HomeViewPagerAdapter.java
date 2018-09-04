@@ -27,7 +27,7 @@ import com.woxi.sgks_member.home.MessageHomeNewFragment;
 public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
     private Context mContext;
     private int[] imageResId = {
-//            R.drawable.ic_events,
+            R.drawable.ic_events,
             R.drawable.ic_committee,
             R.drawable.ic_members,
             R.drawable.ic_messages
@@ -48,12 +48,12 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return MemberHomeNewFragment.newInstance();
+                return EventHomeFragment.newInstance();
             case 1:
                 return CommitteeHomeFragment.newInstance();
-            /*case 2:
-                return MemberHomeFragment.newInstance();*/
             case 2:
+                return MemberHomeNewFragment.newInstance();
+            case 3:
                 return MessageHomeNewFragment.newInstance();
             /*case 4:
                 return ClassifiedHomeFragment.newInstance();*/

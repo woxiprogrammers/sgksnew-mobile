@@ -107,9 +107,9 @@ public class AccountAndEventDetailsAdapter extends RecyclerView.Adapter<AccountA
         DetailsHolder(View itemView) {
             super(itemView);
             this.mContext = itemView.getContext();
-            this.accountImage = (ImageView) itemView.findViewById(R.id.ivAccountImage);
-            this.mTvImageName = (TextView) itemView.findViewById(R.id.tvAccountTitle);
-            this.mRlImageName = (RelativeLayout) itemView.findViewById(R.id.rlImageName);
+            this.accountImage =  itemView.findViewById(R.id.ivAccountImage);
+            this.mTvImageName = itemView.findViewById(R.id.tvAccountTitle);
+            this.mRlImageName = itemView.findViewById(R.id.rlImageName);
         }
     }
 }

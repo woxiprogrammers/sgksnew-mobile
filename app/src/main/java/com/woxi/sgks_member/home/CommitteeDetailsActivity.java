@@ -95,7 +95,7 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
      * Created by - Rohit
      */
     private void initializeViews() {
-        mElvCommMembers = (ExpandableListView) findViewById(R.id.elvCommitteeMembers);
+        mElvCommMembers =findViewById(R.id.elvCommitteeMembers);
         mElvCommMembers.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {

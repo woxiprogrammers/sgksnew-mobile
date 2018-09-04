@@ -102,7 +102,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
         if (memberDetailsItem.getMemEmail() != null && !memberDetailsItem.getMemEmail().equalsIgnoreCase("null")) {
             ((TextView) findViewById(R.id.tvMemEmail)).setText(memberDetailsItem.getMemEmail());
         } else {
-            ((TextView) findViewById(R.id.tvMemEmail)).setVisibility(View.GONE);
+            ( findViewById(R.id.tvMemEmail)).setVisibility(View.GONE);
         }
         if (memberDetailsItem.getMemBloodGroup() != null && !memberDetailsItem.getMemBloodGroup().equalsIgnoreCase("null")) {
             ((TextView) findViewById(R.id.tvMemBloodGroup)).setText(memberDetailsItem.getMemBloodGroup());

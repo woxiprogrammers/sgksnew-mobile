@@ -72,7 +72,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
      */
     private void initializeViews() {
         mContext = getActivity();
-        mRvCommitteeHome = (RecyclerView) mParentView.findViewById(R.id.rvCommitteeList);
+        mRvCommitteeHome =  mParentView.findViewById(R.id.rvCommitteeList);
 
         //Call API only if this page is home/landing page.
         /*if (new AppCommonMethods(mContext).isNetworkAvailable()) {

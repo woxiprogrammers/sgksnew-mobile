@@ -30,10 +30,10 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mContext = SettingsActivity.this;
 
-        Switch mSwitchDatabaseSync = (Switch) findViewById(R.id.toggleDatabaseSync);
-        Switch mSwitchOfflineSupport = (Switch) findViewById(R.id.toggleOfflineSupport);
-        mTvDatabaseSyncInfo = (TextView) findViewById(R.id.tvDatabaseSyncInfo);
-        mTvOfflineSupportInfo = (TextView) findViewById(R.id.tvOfflineSupportInfo);
+        Switch mSwitchDatabaseSync =  findViewById(R.id.toggleDatabaseSync);
+        Switch mSwitchOfflineSupport =  findViewById(R.id.toggleOfflineSupport);
+        mTvDatabaseSyncInfo = findViewById(R.id.tvDatabaseSyncInfo);
+        mTvOfflineSupportInfo =  findViewById(R.id.tvOfflineSupportInfo);
 
         boolean isLocalStorageSyncEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LOCAL_STORAGE_SYNC_ENABLED, mContext);
         if (isLocalStorageSyncEnabled) {

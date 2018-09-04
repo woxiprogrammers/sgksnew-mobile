@@ -115,10 +115,10 @@ public class ImageZoomDialogFragment extends DialogFragment {
 
         Toast.makeText(getActivity().getBaseContext(), "Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
 
-        ImageView mIvAccountImage = (ImageView) mParentView.findViewById(R.id.ivAccountImage);
-        ImageView mIvDialogClose = (ImageView) mParentView.findViewById(R.id.ivDialogClose);
-        TextView mTvAccountName = (TextView) mParentView.findViewById(R.id.tvImageName);
-        FloatingActionButton floatingImageDownloadButton = (FloatingActionButton) mParentView.findViewById(R.id.floatingImageDownloadButton);
+        ImageView mIvAccountImage = mParentView.findViewById(R.id.ivAccountImage);
+        ImageView mIvDialogClose =  mParentView.findViewById(R.id.ivDialogClose);
+        TextView mTvAccountName = mParentView.findViewById(R.id.tvImageName);
+        FloatingActionButton floatingImageDownloadButton = mParentView.findViewById(R.id.floatingImageDownloadButton);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mIvDialogClose.setElevation(4);
