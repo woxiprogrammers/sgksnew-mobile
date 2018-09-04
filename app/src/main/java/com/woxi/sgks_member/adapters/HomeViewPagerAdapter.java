@@ -12,6 +12,7 @@ import android.text.style.ImageSpan;
 
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.home.ClassifiedHomeFragment;
+import com.woxi.sgks_member.home.ClassifiedHomeNewFragment;
 import com.woxi.sgks_member.home.CommitteeHomeFragment;
 import com.woxi.sgks_member.home.EventHomeFragment;
 import com.woxi.sgks_member.home.MemberHomeFragment;
@@ -30,8 +31,8 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
             R.drawable.ic_events,
             R.drawable.ic_committee,
             R.drawable.ic_members,
-            R.drawable.ic_messages
-//            R.drawable.ic_classified,
+            R.drawable.ic_messages,
+            R.drawable.ic_classified,
     };
 
     public HomeViewPagerAdapter(FragmentManager fragmentManager, Context mContext) {
@@ -55,8 +56,8 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
                 return MemberHomeNewFragment.newInstance();
             case 3:
                 return MessageHomeNewFragment.newInstance();
-            /*case 4:
-                return ClassifiedHomeFragment.newInstance();*/
+            case 4:
+                return ClassifiedHomeNewFragment.newInstance();
             default:
                 return null;
         }
