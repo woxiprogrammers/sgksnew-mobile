@@ -46,5 +46,6 @@
         <activity android:name=".miscellaneous.AccountsActivity"/>
         <activity android:name=".miscellaneous.ContactUsActivity"/>
         <activity android:name=".miscellaneous.MiscellaneousViewActivity"/>
+        <activity android:name=".home.MessageDetailsActivity"/>
     </application>
 </manifest>
