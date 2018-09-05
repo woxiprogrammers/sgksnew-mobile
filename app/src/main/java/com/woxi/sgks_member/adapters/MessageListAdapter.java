@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.home.MessageHomeFragment;
+import com.woxi.sgks_member.home.MessageHomeNewFragment;
 import com.woxi.sgks_member.models.MessageDetailsItem;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     @Override
     public MessageListAdapter.NewsDetailsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemViewMain = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message_listing, parent, false);
-        itemViewMain.setOnClickListener(MessageHomeFragment.onRvItemClickListener);
+        itemViewMain.setOnClickListener(MessageHomeNewFragment.onRvItemClickListener);
         return new MessageListAdapter.NewsDetailsHolder(itemViewMain);
     }
 

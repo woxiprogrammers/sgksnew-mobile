@@ -1,6 +1,7 @@
 package com.woxi.sgks_member.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +43,8 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     private LinearLayoutManager linearLayoutManager;
     private RecyclerView.Adapter mRvAdapter;
     private DatabaseQueryHandler databaseQueryHandler;
+    public static View.OnClickListener onRvItemClickListener;
+    private ArrayList<MessageDetailsItem> mArrMessageDetails;
     public MessageHomeNewFragment() {
         // Required empty public constructor
     }
@@ -75,6 +78,15 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         mRvMessageList.setHasFixedSize(true);
         mRvAdapter = new MessageListAdapter(messageDetailsItems);
         mRvMessageList.setAdapter(mRvAdapter);
+        onRvItemClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MessageDetailsItem messageDetailsItem = mArrMessageDetails.get(mRvMessageList.getChildAdapterPosition(v));
+                Intent intentDetails = new Intent(mContext, MessageDetailsActivity.class);
+                intentDetails.putExtra("currentNewsDetail", messageDetailsItem);
+                startActivity(intentDetails);
+            }
+        };
     }
 
     private void requestMessageList()
@@ -89,9 +101,9 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                             if(resp instanceof Boolean){
                                 Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
                             }else if(resp instanceof ArrayList){
-                                ArrayList<MessageDetailsItem> messageDetailsItems= (ArrayList<MessageDetailsItem>) resp;
-                                setUpRecyclerView(messageDetailsItems);
-                                databaseQueryHandler.insertOrUpdateAllMessages(messageDetailsItems,false);
+                                mArrMessageDetails= (ArrayList<MessageDetailsItem>) resp;
+                                setUpRecyclerView(mArrMessageDetails);
+                                databaseQueryHandler.insertOrUpdateAllMessages(mArrMessageDetails,false);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -107,7 +119,6 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         AppController.getInstance().addToRequestQueue(req, "messageList");
 
     }
-
     @Override
     public void fragmentBecameVisible() {
     }

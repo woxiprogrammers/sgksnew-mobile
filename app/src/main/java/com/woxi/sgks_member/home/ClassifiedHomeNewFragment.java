@@ -98,13 +98,10 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                     public void onResponse(JSONObject response) {
                         try {
                             Object resp= AppParser.parseClassifiedResponse(response.toString());
-                            Log.i("@@Resp",resp.toString());
                             if(resp instanceof Boolean){
                                 Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
-                                Log.i("@@if","fail");
                             }else if(resp instanceof ArrayList){
                                 mArrClassifiedDetails= (ArrayList<ClassifiedDetailsItem>) resp;
-                                Log.i("@@else", String.valueOf(mArrClassifiedDetails.size()));
                                 setUpRecyclerView();
 //                                setUpRecyclerView(messageDetailsItems);
                             }
