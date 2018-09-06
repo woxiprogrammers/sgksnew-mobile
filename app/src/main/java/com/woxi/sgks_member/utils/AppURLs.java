@@ -10,12 +10,37 @@ public class AppURLs {
 //    private static String SGKS_URL = "http://sgksapi.woxi.co.in";
 
     //Production Environment
-    private static String SGKS_URL = "http://api.sgks.co.in";
+    private static String SGKS_URL = "http://sgksapi.woxisoftware.com/api/";
 
-    private static String VERSION = "/v1";
+    private static String VERSION = "v1/";
     private static String BASE_URL = SGKS_URL + VERSION;
     public static final String API_COMMITTEE_ID = "&id=";
     public static final String API_CITY = "?city=";
+
+    public static final String API_MEMBERS_LISTING=SGKS_URL + VERSION + "sgks-member/listing";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //sgksmain/committee/lists?city=PUNE
     public static final String API_COMMITTEE_LIST = BASE_URL + "/sgksmain/committee/lists?city=";

@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -31,7 +32,9 @@ import com.woxi.sgks_member.models.MemberDetailsItem;
 import com.woxi.sgks_member.models.MessageDetailsItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppParser;
+import com.woxi.sgks_member.utils.AppURLs;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,6 +60,8 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private boolean isApiInProgress = false;
     private DatabaseQueryHandler databaseQueryHandler;
     private String strNoResults = "";
+    private int oldPageNumber;
+    private int pageNumber;
 
     public MemberHomeNewFragment() {
         // Required empty public constructor
@@ -136,7 +141,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 }
             }
         } else {
-            requestToGetMembersData();
+            requestToGetMembersData(pageNumber);
         }
     }
 
@@ -145,13 +150,19 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mParentView.findViewById(R.id.etSearchMember).clearFocus();
     }
 
-    private void requestToGetMembersData() {
-        String url = "http://www.mocky.io/v2/5b87dba02e0000f81a05fb7d";
-        final JsonObjectRequest req = new JsonObjectRequest(url, null,
+    private void requestToGetMembersData(int pageId) {
+        JSONObject params=new JSONObject();
+        try {
+            params.put("page_id",pageId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_MEMBERS_LISTING, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+
                             Object resp = AppParser.parseNewMemberList(response.toString());
                             mArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
                             if (resp instanceof Boolean) {
@@ -174,6 +185,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.e("Error: ", error.getMessage());
+                error.printStackTrace();
             }
         });
         AppController.getInstance().addToRequestQueue(req, "messageList");
