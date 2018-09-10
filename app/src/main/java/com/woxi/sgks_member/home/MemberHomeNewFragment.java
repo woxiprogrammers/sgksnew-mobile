@@ -26,6 +26,7 @@ import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.adapters.MemberListAdapter;
 import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.interfaces.EndlessRvScrollListener;
 import com.woxi.sgks_member.interfaces.FragmentInterface;
 import com.woxi.sgks_member.local_storage.DatabaseQueryHandler;
 import com.woxi.sgks_member.models.MemberDetailsItem;
@@ -61,7 +62,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private DatabaseQueryHandler databaseQueryHandler;
     private String strNoResults = "";
     private int oldPageNumber;
-    private int pageNumber;
+    private int pageNumber = 0;
 
     public MemberHomeNewFragment() {
         // Required empty public constructor
@@ -109,9 +110,10 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             public void afterTextChanged(Editable s) {
             }
         });
+        recyclerViewScrollListener();
         functionToGetMembersList();
 //        requestToGetMembersData();
-        onMemberClickListener=new View.OnClickListener() {
+        onMemberClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(view));
@@ -121,6 +123,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             }
         };
     }
+
 
     private void functionToGetMembersList() {
         boolean isOfflineSupportEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_OFFLINE_SUPPORT_ENABLED, mContext);
@@ -150,19 +153,22 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mParentView.findViewById(R.id.etSearchMember).clearFocus();
     }
 
-    private void requestToGetMembersData(int pageId) {
-        JSONObject params=new JSONObject();
+    private void requestToGetMembersData(final int pageId) {
+        JSONObject params = new JSONObject();
         try {
-            params.put("page_id",pageId);
+            params.put("page_id", pageId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_MEMBERS_LISTING, params,
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppURLs.API_MEMBERS_LISTING, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-
+                            if (!response.getString("page_id").equalsIgnoreCase("")) {
+                                pageNumber = Integer.parseInt(response.getString("page_id"));
+                                Log.i("@@", String.valueOf(pageNumber));
+                            }
                             Object resp = AppParser.parseNewMemberList(response.toString());
                             mArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
                             if (resp instanceof Boolean) {
@@ -172,7 +178,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                     mRvMemberList.setHasFixedSize(true);
                                     mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                     mRvMemberList.setAdapter(mRvAdapter);
-                                    databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
+//                                    databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
                                 } else {
                                     Toast.makeText(mContext, "No Record Found", Toast.LENGTH_SHORT).show();
                                 }
@@ -189,5 +195,22 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             }
         });
         AppController.getInstance().addToRequestQueue(req, "messageList");
+    }
+
+    private void recyclerViewScrollListener() {
+        mRvMemberList.addOnScrollListener(new EndlessRvScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                requestLazyLoadMembersApi();
+            }
+        });
+    }
+
+    private void requestLazyLoadMembersApi() {
+        if (!isApiInProgress) {
+            //Cancelling Pending Request
+            AppController.getInstance().cancelPendingRequests("memberSearchList");
+            requestToGetMembersData(pageNumber);
+        }
     }
 }

@@ -45,8 +45,8 @@ public class AppParser implements AppConstants {
                     if (jsonListObject.has("name") && jsonListObject.getString("name") != null) {
                         mainCommDetailsItem.setCommitteeName(jsonListObject.getString("name"));
                     }
-                    if (jsonListObject.has("_id") && jsonListObject.getString("_id") != null) {
-                        mainCommDetailsItem.setCommitteeID(jsonListObject.getString("_id"));
+                    if (jsonListObject.has("id") && jsonListObject.getString("id") != null) {
+                        mainCommDetailsItem.setCommitteeID(jsonListObject.getString("id"));
                     }
                     if (jsonListObject.has("description") && jsonListObject.getString("description") != null) {
                         mainCommDetailsItem.setCommitteeDescription(jsonListObject.getString("description"));
@@ -741,8 +741,8 @@ public class AppParser implements AppConstants {
                 for (int arrIndexData = 0; arrIndexData < jsonDataArray.length(); arrIndexData++) {
                     ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
                     JSONObject jsonNewsObject = jsonDataArray.optJSONObject(arrIndexData);
-                    if (jsonNewsObject.has("_id") && jsonNewsObject.optString("_id") != null && !jsonNewsObject.optString("_id").equalsIgnoreCase("null")) {
-                        classifiedDetailsItem.setClassifiedID(jsonNewsObject.optString("_id"));
+                    if (jsonNewsObject.has("id") && jsonNewsObject.optString("id") != null && !jsonNewsObject.optString("_id").equalsIgnoreCase("null")) {
+                        classifiedDetailsItem.setClassifiedID(jsonNewsObject.optString("id"));
                     }
                     if (jsonNewsObject.has("title") && jsonNewsObject.optString("title") != null && !jsonNewsObject.optString("title").equalsIgnoreCase("null")) {
                         classifiedDetailsItem.setClassifiedTitle(jsonNewsObject.optString("title"));

@@ -84,16 +84,14 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
     }
 
     private void requestCommitteeListAPI() {
-        String url="http://www.mocky.io/v2/5b88e95630000047033381bc";
 
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
 
-        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, /*AppURLs.API_COMMITTEE_LAZY_LOADING_LIST + currentCity*/url, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_COMMITTEE_LISTING , null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -102,7 +100,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
                             Object resp = AppParser.parseCommitteeListResponse(response.toString());
                             if (resp instanceof ArrayList) {
                                 if (((ArrayList) resp).size() != 0) {
-                                    arrMainCommList = (ArrayList<CommitteeDetailsItem>) resp;
+                                    ArrayList<CommitteeDetailsItem> arrMainCommList = (ArrayList<CommitteeDetailsItem>) resp;
                                     if (!arrMainCommList.isEmpty()) {
                                         setCommitteeAdapter(arrMainCommList, false);
                                     }
@@ -162,6 +160,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
                 intentDetails.putExtra("committeeID", committeeListItem.getCommitteeID());
                 intentDetails.putExtra("committeeName", committeeListItem.getCommitteeName());
                 intentDetails.putExtra("isLocalData", isLocalData);
+                intentDetails.putExtra("getPosition",mRvCommitteeHome.getChildAdapterPosition(selectedView));
                 intentDetails.putExtra("committeeItem", committeeListItem);
                 startActivity(intentDetails);
             }

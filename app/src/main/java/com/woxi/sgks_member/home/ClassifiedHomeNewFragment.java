@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -25,6 +26,7 @@ import com.woxi.sgks_member.interfaces.FragmentInterface;
 import com.woxi.sgks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgks_member.models.MessageDetailsItem;
 import com.woxi.sgks_member.utils.AppParser;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,8 +93,8 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
         };
     }
     private void requestToGetClassifiedList(){
-        String url="http://www.mocky.io/v2/5b8e4f6d32000074007b3859";
-        final JsonObjectRequest req = new JsonObjectRequest(url, null,
+        //ToDO PageID
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_CLASSIFIED_LISTING, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

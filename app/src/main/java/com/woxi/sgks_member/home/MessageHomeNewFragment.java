@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -26,6 +27,7 @@ import com.woxi.sgks_member.local_storage.DatabaseQueryHandler;
 import com.woxi.sgks_member.models.MessageDetailsItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppParser;
+import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,8 +93,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
 
     private void requestMessageList()
     {
-        String url="http://www.mocky.io/v2/5b866cad3400005e068b5590";
-        final JsonObjectRequest req = new JsonObjectRequest(url, null,
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_MESSAGE_LISTING, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

@@ -205,16 +205,22 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
     }
 
     private void requestEventDetailsApi() {
-        String url="http://www.mocky.io/v2/5b8e48f532000053007b3829";
+
+
+        //ToDo Lazy Loading
+        JSONObject params=new JSONObject();
+        try {
+            params.put("page_id",0);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
 
-//        selectedYear = mSpinAccountYear.getSelectedItem().toString();
-        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
-        ///sgksmain/events/lists?city=PUNE&year=2017
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, /*AppURLs.API_EVENT_DETAILS_LIST + currentCity + "&year=" + selectedYear*/url, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_EVENT_LISTING, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

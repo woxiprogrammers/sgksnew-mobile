@@ -207,6 +207,7 @@ public class MemberHomeFragment extends Fragment implements AppConstants, Fragme
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
 //                requestLazyLoadMembersApi();
+
             }
         });
     }

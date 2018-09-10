@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -47,6 +48,7 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
     private ExpandableListView mElvCommMembers;
     private int intLastPosition = -1;
     private String TAG = "CommitteeDetailsActivity";
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,8 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
         //Getting extras/string from previous with the key "committeeDetail".
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
+            position=bundle.getInt("getPosition");
+            Log.i("@@", String.valueOf(position));
             if (bundle.containsKey("committeeID")) {
                 String strCommId = bundle.getString("committeeID");
                 /*String strCommName = bundle.getString("committeeName");
@@ -109,14 +113,14 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
     }
 
     private void requestCommitteeDetailsAPI(String strCommId) {
-        String url="http://www.mocky.io/v2/5b88e95630000047033381bc";
+
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
         String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, /*AppURLs.API_COMMITTEE_DETAILS + currentCity + AppURLs.API_COMMITTEE_ID + strCommId*/url, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,AppURLs.API_COMMITTEE_LISTING, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -127,7 +131,7 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
                                 if (((ArrayList) resp).size() != 0) {
                                     ArrayList<CommitteeDetailsItem> arrMainCommList = (ArrayList<CommitteeDetailsItem>) resp;
                                     if (!arrMainCommList.isEmpty()) {
-                                        CommitteeDetailsItem committeeListItem = arrMainCommList.get(0);
+                                        CommitteeDetailsItem committeeListItem = arrMainCommList.get(position);
                                         //Load details
                                         if (committeeListItem != null) {
                                             loadCommitteeDetails(committeeListItem);

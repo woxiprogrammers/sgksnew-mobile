@@ -113,15 +113,13 @@ public class AccountsActivity extends AppCompatActivity {
     }
 
     private void requestAccountsAPI() {
-        String url="http://www.mocky.io/v2/5b8e31de330000d227c15b79";
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
 
-        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, /*AppURLs.API_ACCOUNT_DEATILS + currentCity*/url, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_ACCOUNT_LISTING,  null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

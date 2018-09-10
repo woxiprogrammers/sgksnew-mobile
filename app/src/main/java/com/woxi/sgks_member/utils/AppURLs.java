@@ -18,6 +18,11 @@ public class AppURLs {
     public static final String API_CITY = "?city=";
 
     public static final String API_MEMBERS_LISTING=SGKS_URL + VERSION + "sgks-member/listing";
+    public static final String API_EVENT_LISTING=SGKS_URL + VERSION + "sgks-event/listing";
+    public static final String API_COMMITTEE_LISTING=SGKS_URL + VERSION + "sgks-committee/listing";
+    public static final String API_MESSAGE_LISTING=SGKS_URL + VERSION + "sgks-message/listing";
+    public static final String API_CLASSIFIED_LISTING=SGKS_URL + VERSION + "sgks-classified/listing";
+    public static final String API_ACCOUNT_LISTING=SGKS_URL + VERSION + "sgks-account/listing";
 
 
 
