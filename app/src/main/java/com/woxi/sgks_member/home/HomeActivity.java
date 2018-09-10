@@ -102,7 +102,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intentAccount);
                 break;
             case R.id.nav_contact_us:
-                Intent intentCon = new Intent(mContext, ContactUsActivity.class);
+                Intent intentCon = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentCon.putExtra("activityType", getString(R.string.contactUs));
                 startActivity(intentCon);
                 break;

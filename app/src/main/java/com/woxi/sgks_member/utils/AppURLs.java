@@ -17,12 +17,13 @@ public class AppURLs {
     public static final String API_COMMITTEE_ID = "&id=";
     public static final String API_CITY = "?city=";
 
-    public static final String API_MEMBERS_LISTING=SGKS_URL + VERSION + "sgks-member/listing";
-    public static final String API_EVENT_LISTING=SGKS_URL + VERSION + "sgks-event/listing";
-    public static final String API_COMMITTEE_LISTING=SGKS_URL + VERSION + "sgks-committee/listing";
-    public static final String API_MESSAGE_LISTING=SGKS_URL + VERSION + "sgks-message/listing";
-    public static final String API_CLASSIFIED_LISTING=SGKS_URL + VERSION + "sgks-classified/listing";
-    public static final String API_ACCOUNT_LISTING=SGKS_URL + VERSION + "sgks-account/listing";
+    public static final String API_MEMBERS_LISTING=BASE_URL + "sgks-member/listing";
+    public static final String API_EVENT_LISTING=BASE_URL + "sgks-event/listing";
+    public static final String API_COMMITTEE_LISTING=BASE_URL + "sgks-committee/listing";
+    public static final String API_MESSAGE_LISTING=BASE_URL + "sgks-message/listing";
+    public static final String API_CLASSIFIED_LISTING=BASE_URL + "sgks-classified/listing";
+    public static final String API_ACCOUNT_LISTING=BASE_URL + "sgks-account/listing";
+    public static final String API_MISCELLANEOUS_WEBVIEW = BASE_URL + "sgks-public/";
 
 
 
@@ -54,7 +55,6 @@ public class AppURLs {
     public static final String API_COMMITTEE_LAZY_LOADING_LIST = BASE_URL + "/sgksmain/committee/lists_short?city=";
 
     ///sgksmain/miscellaneous/sgkshealthplus?city=PUNE
-    public static final String API_MISCELLANEOUS_WEBVIEW = BASE_URL + "/sgksmain/miscellaneous/";
 
     ///sgksmain/membersearch/master
     //http://temp.sgks.co.in/v1/sgksmain/membersearch/master_lazy?page=1    //For version <= v1.9

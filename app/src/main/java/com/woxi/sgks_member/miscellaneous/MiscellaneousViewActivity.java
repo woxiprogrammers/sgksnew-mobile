@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.webkit.WebView;
 
@@ -13,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.interfaces.AppConstants;
@@ -44,7 +46,6 @@ public class MiscellaneousViewActivity extends AppCompatActivity implements AppC
         setContentView(R.layout.activity_web_view);
         mContext = MiscellaneousViewActivity.this;
         mWebView = findViewById(R.id.webView);
-
         Bundle bundleExtras = getIntent().getExtras();
         if (bundleExtras != null) {
             if (bundleExtras.containsKey("activityType")) {
@@ -52,19 +53,23 @@ public class MiscellaneousViewActivity extends AppCompatActivity implements AppC
                 if (bundleExtraActivityName != null) {
                     getSupportActionBar().setTitle(bundleExtraActivityName);
 
-                    //sgkshealthplus  //privacypolicy  //sgkshelp  //sgksqa
+                    //sgkshealthplus//privacypolicy  //sgkshelp  //sgksqa // Contact Us
                     if (bundleExtraActivityName.equalsIgnoreCase(getString(R.string.help))) {
-                        paramsWebViewURL = "sgkshelp";
+                        paramsWebViewURL = "help";
                     }
                     if (bundleExtraActivityName.equalsIgnoreCase(getString(R.string.healthPlus))) {
-                        paramsWebViewURL = "sgkshealthplus";
+                        paramsWebViewURL = "health-plus";
                     }
                     if (bundleExtraActivityName.equalsIgnoreCase(getString(R.string.privacyPolicy))) {
-                        paramsWebViewURL = "privacypolicy";
+                        paramsWebViewURL = "privacy-policy";
                     }
                     if (bundleExtraActivityName.equalsIgnoreCase(getString(R.string.q_and_a))) {
-                        paramsWebViewURL = "sgksqa";
+                        paramsWebViewURL = "q-a";
                     }
+                    if (bundleExtraActivityName.equalsIgnoreCase(getString(R.string.contactUs))) {
+                        paramsWebViewURL = "contact-us";
+                    }
+
                 }
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
@@ -83,46 +88,24 @@ public class MiscellaneousViewActivity extends AppCompatActivity implements AppC
         pDialog.setCancelable(false);
         pDialog.show();
 
-        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
 
-        ///sgksmain/miscellaneous/sgkshealthplus?city=PUNE
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_MISCELLANEOUS_WEBVIEW + paramsWebViewURL + AppURLs.API_CITY + currentCity, null,
-                new Response.Listener<JSONObject>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, AppURLs.API_MISCELLANEOUS_WEBVIEW + paramsWebViewURL,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        new AppCommonMethods().LOG(0, TAG, response.toString());
-
-                        try {
-                            if (response.has("data") && response.getString("data") != null) {
-                                strWebViewContent = response.getString("data");
-                            }
-                            mWebView.loadData(strWebViewContent, "text/html", "UTF-8");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        mWebView.loadData(response, "text/html", "UTF-8");
                         pDialog.dismiss();
+
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 pDialog.dismiss();
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null) {
-                    new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));
-                    try {
-                        if (response.statusCode == STATUS_SOMETHING_WENT_WRONG) {
-                            new AppCommonMethods(mContext).showAlert("" + (new JSONObject(new String(response.data))).getString("message"));
-                        } else {
-                            new AppCommonMethods(mContext).showAlert("" + (getString(R.string.optional_api_error)));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
-        }
-        ) {
+        })
+        {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
@@ -130,7 +113,7 @@ public class MiscellaneousViewActivity extends AppCompatActivity implements AppC
                 return headers;
             }
         };
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "miscellaneousView");
+        AppController.getInstance().addToRequestQueue(stringRequest, "miscellaneousView");
     }
 
     @Override
