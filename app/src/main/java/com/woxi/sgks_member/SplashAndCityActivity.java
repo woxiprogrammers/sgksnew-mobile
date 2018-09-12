@@ -13,7 +13,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.home.HomeActivity;
 import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.models.MasterDataItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppParser;
 import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONException;
@@ -86,7 +88,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
                     @Override
                     public void onResponse(JSONObject response) {
                         new AppCommonMethods().LOG(0, TAG, response.toString());
-                        /*try {
+                        try {
                             Object resp = AppParser.parseMasterListResponse(response.toString());
                             if (resp instanceof MasterDataItem) {
                                 new AppCommonMethods().LOG(0, TAG, resp.toString());
@@ -116,7 +118,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                        }*/
+                        }
                         isMasterApiInProgress = false;
                         Intent intentHome = new Intent(mContext, HomeActivity.class);
                         intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

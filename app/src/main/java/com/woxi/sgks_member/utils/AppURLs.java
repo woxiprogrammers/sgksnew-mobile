@@ -24,6 +24,7 @@ public class AppURLs {
     public static final String API_CLASSIFIED_LISTING=BASE_URL + "sgks-classified/listing";
     public static final String API_ACCOUNT_LISTING=BASE_URL + "sgks-account/listing";
     public static final String API_MISCELLANEOUS_WEBVIEW = BASE_URL + "sgks-public/";
+    public static final String API_MASTER_LIST=BASE_URL + "sgks-public/master-list";
 
 
 
