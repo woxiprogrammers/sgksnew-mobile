@@ -16,6 +16,8 @@ import com.woxi.sgks_member.models.MemberDetailsItem;
 import com.woxi.sgks_member.models.MemberSearchDataItem;
 import com.woxi.sgks_member.models.MessageAndClassifiedResponseItem;
 import com.woxi.sgks_member.models.MessageDetailsItem;
+import com.woxi.sgks_member.models.SGKSAreaItem;
+import com.woxi.sgks_member.models.SGKSCategory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -383,36 +385,106 @@ public class AppParser implements AppConstants {
     public static Object parseMasterListResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
         MasterDataItem masterDataItem = new MasterDataItem();
-        if (jsonResponseObject.has("sgks_area") && jsonResponseObject.optString("sgks_area") != null) {
-            String strSgksArea = jsonResponseObject.optString("sgks_area");
-            masterDataItem.setStrSgksArea(strSgksArea);
-        }
-        if (jsonResponseObject.has("suggestionbox_category") && jsonResponseObject.optString("suggestionbox_category") != null) {
-            String strSuggestionCategory = jsonResponseObject.optString("suggestionbox_category");
-            masterDataItem.setStrSuggestionCategory(strSuggestionCategory);
-        }
-        if (jsonResponseObject.has("sgks_total_member") && jsonResponseObject.optString("sgks_total_member") != null && !jsonResponseObject.optString("sgks_total_member").equalsIgnoreCase("null")) {
-            int intTotalMemberCount = Integer.parseInt(jsonResponseObject.optString("sgks_total_member"));
-            masterDataItem.setIntTotalMemberCount(intTotalMemberCount);
-        }
-        if (jsonResponseObject.has("sgks_messages") && jsonResponseObject.optString("sgks_messages") != null) {
-            String strMessage = jsonResponseObject.optString("sgks_messages");
-            masterDataItem.setStrMessageIds(strMessage);
-        }
-        if (jsonResponseObject.has("sgks_buzz") && jsonResponseObject.optJSONObject("sgks_buzz") != null) {
-            JSONObject jsonBuzzObject = jsonResponseObject.optJSONObject("sgks_buzz");
-            String strBuzzId = jsonBuzzObject.optString("_id");
-            masterDataItem.setStrSgksBuzz_Id(strBuzzId);
-            //
-            String strBuzzUrl = jsonBuzzObject.optString("msg_img");
-            masterDataItem.setStrSgksBuzz_ImgUrl(strBuzzUrl);
-        }
-        if (jsonResponseObject.has("sgks_classified") && jsonResponseObject.optString("sgks_classified") != null) {
-            String strClassifiedIDs = jsonResponseObject.optString("sgks_classified");
-            masterDataItem.setStrClassifiedIds(strClassifiedIDs);
-        }
-        //Return final masterDataItem object
+//        if (jsonData.has("data")) {
+//            JSONObject jsonResponseObject = jsonData.getJSONObject("data");
+            if (jsonResponseObject.has("sgks_area") && jsonResponseObject.optString("sgks_area") != null) {
+                String strSgksArea = jsonResponseObject.optString("sgks_area");
+                masterDataItem.setStrSgksArea(strSgksArea);
+            }
+            if (jsonResponseObject.has("suggestionbox_category") && jsonResponseObject.optString("suggestionbox_category") != null) {
+                String strSuggestionCategory = jsonResponseObject.optString("suggestionbox_category");
+                masterDataItem.setStrSuggestionCategory(strSuggestionCategory);
+            }
+            if (jsonResponseObject.has("sgks_total_member") && jsonResponseObject.optString("sgks_total_member") != null && !jsonResponseObject.optString("sgks_total_member").equalsIgnoreCase("null")) {
+                int intTotalMemberCount = Integer.parseInt(jsonResponseObject.optString("sgks_total_member"));
+                masterDataItem.setIntTotalMemberCount(intTotalMemberCount);
+            }
+            /*if (jsonResponseObject.has("sgks_messages") && jsonResponseObject.optString("sgks_messages") != null) {
+                String strMessage = jsonResponseObject.optString("sgks_messages");
+                masterDataItem.setStrMessageIds(strMessage);
+            }*/
+            if (jsonResponseObject.has("sgks_buzz") && jsonResponseObject.optJSONObject("sgks_buzz") != null) {
+                JSONObject jsonBuzzObject = jsonResponseObject.optJSONObject("sgks_buzz");
+                String strBuzzId = jsonBuzzObject.optString("_id");
+                masterDataItem.setStrSgksBuzz_Id(strBuzzId);
+                //
+                String strBuzzUrl = jsonBuzzObject.optString("msg_img");
+                masterDataItem.setStrSgksBuzz_ImgUrl(strBuzzUrl);
+            }
+            if (jsonResponseObject.has("sgks_classified") && jsonResponseObject.optString("sgks_classified") != null) {
+                String strClassifiedIDs = jsonResponseObject.optString("sgks_classified");
+                masterDataItem.setStrClassifiedIds(strClassifiedIDs);
+            }
+            //Return final masterDataItem object
+//        }
         return masterDataItem;
+    }
+
+    public static Object parseNewMasterList(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            MasterDataItem masterDataItem = new MasterDataItem();
+            ArrayList<SGKSAreaItem> sgksAreaItemArrayList = new ArrayList<>();
+            ArrayList<SGKSCategory> sgksCategoryArrayList = new ArrayList<>();
+
+            if (jsonObject.has("data")) {
+                JSONObject jsonObjectResponse = jsonObject.getJSONObject("data");
+                if (jsonObjectResponse != null) {
+                    JSONArray jsonAreaArray = jsonObjectResponse.getJSONArray("sgks_area");
+                    if (jsonAreaArray.length() > 0) {
+                        for (int i = 0; i < jsonAreaArray.length(); i++) {
+                            SGKSAreaItem sgksAreaItem = new SGKSAreaItem();
+                            JSONObject jsonObject1 = jsonAreaArray.getJSONObject(i);
+                            if (jsonObject1.has("id")) {
+                                sgksAreaItem.setId(jsonObject1.getInt("id"));
+                            }
+                            if (jsonObject1.has("area_name")) {
+                                sgksAreaItem.setAreaName(jsonObject1.getString("area_name"));
+                            }
+                            sgksAreaItemArrayList.add(sgksAreaItem);
+                        }
+                        masterDataItem.setSgksAreaItems(sgksAreaItemArrayList);
+                    }
+                    JSONArray jsonCategoryArray = jsonObjectResponse.getJSONArray("suggestionbox_category");
+                    if (jsonCategoryArray.length() > 0) {
+                        for (int i = 0; i < jsonCategoryArray.length(); i++) {
+                            JSONObject jsonObjectSuggestionCategory = jsonCategoryArray.getJSONObject(i);
+                            SGKSCategory sgksCategory = new SGKSCategory();
+                            if (jsonObjectSuggestionCategory.has("id")) {
+                                sgksCategory.setId(jsonObjectSuggestionCategory.getInt("id"));
+                            }
+                            if (jsonObjectSuggestionCategory.has("name")) {
+                                sgksCategory.setStrCategoryName(jsonObjectSuggestionCategory.getString("name"));
+                            }
+                            sgksCategoryArrayList.add(sgksCategory);
+                        }
+                        masterDataItem.setSgksCategoryArrayList(sgksCategoryArrayList);
+                    }
+                    if (jsonObjectResponse.has("sgks_messages") && jsonObjectResponse.optString("sgks_messages") != null) {
+                        int strMessage = jsonObjectResponse.optInt("sgks_messages");
+                        masterDataItem.setStrMessageIds(strMessage);
+                    }
+                    if (jsonObjectResponse.has("sgks_buzz") && jsonObjectResponse.optJSONObject("sgks_buzz") != null) {
+                        JSONObject jsonBuzzObject = jsonObjectResponse.optJSONObject("sgks_buzz");
+                        /*String strBuzzId = jsonBuzzObject.optString("id");
+                        masterDataItem.setStrSgksBuzz_Id(strBuzzId);*/
+                        //
+                        String strBuzzUrl = jsonBuzzObject.optString("msg_img");
+                        Log.i("@@1",strBuzzUrl);
+                        masterDataItem.setStrSgksBuzz_ImgUrl(strBuzzUrl);
+                    }
+
+                    /*JSONArray jsonMessagesArray=jsonObjectResponse.getJSONArray("sgks_messages");
+                    for (int i=0; i<jsonMessagesArray.length();i++){
+                        masterDataItem.setIntegers((ArrayList<Integer>) jsonMessagesArray.get(i));
+                    }*/
+                }
+            }
+            return masterDataItem;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static Object parseLocalDataSyncResponse(String response) throws JSONException {

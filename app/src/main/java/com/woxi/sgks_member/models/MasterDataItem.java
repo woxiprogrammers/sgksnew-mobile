@@ -1,6 +1,7 @@
 package com.woxi.sgks_member.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * This class is used as a Model class
@@ -12,9 +13,36 @@ public class MasterDataItem implements Serializable {
     private String strSgksBuzz_ImgUrl;
     private String strSgksArea;
     private String strSuggestionCategory;
-    private String strMessageIds;
+    private int strMessageIds;
     private String strClassifiedIds;
     private int intTotalMemberCount;
+    private ArrayList<SGKSAreaItem> sgksAreaItems;
+    private ArrayList<SGKSCategory> sgksCategoryArrayList;
+    private ArrayList<Integer> integers;
+
+    public ArrayList<Integer> getIntegers() {
+        return integers;
+    }
+
+    public void setIntegers(ArrayList<Integer> integers) {
+        this.integers = integers;
+    }
+
+    public ArrayList<SGKSCategory> getSgksCategoryArrayList() {
+        return sgksCategoryArrayList;
+    }
+
+    public void setSgksCategoryArrayList(ArrayList<SGKSCategory> sgksCategoryArrayList) {
+        this.sgksCategoryArrayList = sgksCategoryArrayList;
+    }
+
+    public ArrayList<SGKSAreaItem> getSgksAreaItems() {
+        return sgksAreaItems;
+    }
+
+    public void setSgksAreaItems(ArrayList<SGKSAreaItem> sgksAreaItems) {
+        this.sgksAreaItems = sgksAreaItems;
+    }
 
     public MasterDataItem() {
     }
@@ -51,11 +79,11 @@ public class MasterDataItem implements Serializable {
         this.strSuggestionCategory = strSuggestionCategory;
     }
 
-    public String getStrMessageIds() {
+    public int getStrMessageIds() {
         return strMessageIds;
     }
 
-    public void setStrMessageIds(String strMessageIds) {
+    public void setStrMessageIds(int strMessageIds) {
         this.strMessageIds = strMessageIds;
     }
 

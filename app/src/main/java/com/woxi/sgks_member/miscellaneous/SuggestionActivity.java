@@ -24,6 +24,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
+import com.woxi.sgks_member.SplashAndCityActivity;
+import com.woxi.sgks_member.models.SGKSCategory;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppURLs;
 
@@ -105,9 +107,9 @@ public class SuggestionActivity extends AppCompatActivity {
         mEtComplaintsSuggestion =  findViewById(R.id.editTextSuggestion);
         mSpinCategories = findViewById(R.id.spinnerSelect);
         mRbSuggestion.setChecked(true);
-        arrSuggestions = suggestionData();
+//        arrSuggestions = suggestionData();
+        arrayAdapterSuggestion = getStringArrayAdapter(SplashAndCityActivity.sgksCategory);
         arrSuggestions.add(0, "Choose One");
-        arrayAdapterSuggestion = getStringArrayAdapter(arrSuggestions);
         mSpinCategories.setAdapter(arrayAdapterSuggestion);
         mRgSuggestionType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -145,11 +147,11 @@ public class SuggestionActivity extends AppCompatActivity {
             params.put("is_suggestion", strSuggestionType);
             params.put("suggestion_cat", strSuggestionCategory.trim());
             params.put("suggestion_message", strSuggestionMessage);
-            params.put("sgks_city", currentCity);
+//            params.put("sgks_city", currentCity);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_SUGGESTION, params,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_SGKS_SUGGESTIONS, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -202,8 +204,15 @@ public class SuggestionActivity extends AppCompatActivity {
         mRbSuggestion.setChecked(true);
     }
 
-    private ArrayAdapter<String> getStringArrayAdapter(ArrayList<String> arrayList) {
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayList) {
+    private ArrayAdapter<String> getStringArrayAdapter(ArrayList<SGKSCategory> sgksCategories) {
+//        ArrayList<String> stringArrayList=new ArrayList<>();a
+        arrSuggestions=new ArrayList<>();
+        for(SGKSCategory sgksCategory:sgksCategories){
+            String s=sgksCategory.getStrCategoryName();
+            arrSuggestions.add(s);
+
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrSuggestions) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;

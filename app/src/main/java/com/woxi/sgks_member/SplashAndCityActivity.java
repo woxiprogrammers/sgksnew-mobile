@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -14,6 +15,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.home.HomeActivity;
 import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.models.MasterDataItem;
+import com.woxi.sgks_member.models.SGKSAreaItem;
+import com.woxi.sgks_member.models.SGKSCategory;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppParser;
 import com.woxi.sgks_member.utils.AppURLs;
@@ -28,11 +31,14 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
     private Context mContext;
     private String TAG = "SplashAndCityActivity";
     private boolean isMasterApiInProgress;
+    public static ArrayList<SGKSAreaItem> sgksAreaItems;
+    public static ArrayList<SGKSCategory> sgksCategory;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContext=SplashAndCityActivity.this;
+        mContext = SplashAndCityActivity.this;
         getNextScreen();
     }
 
@@ -44,6 +50,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
                 Intent intentHome = new Intent(mContext, HomeActivity.class);
                 startActivity(intentHome);
                 finish();
+                requestMasterList();
 //                boolean notFirstRun = AppCommonMethods.getBooleanPref(APP_FIRST_RUN, mContext);
                 /*if (!notFirstRun) {
                     getCitySelectionScreen();
@@ -78,17 +85,42 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
         }, SPLASH_SCREEN_TIME);
     }
 
+    String stringArrayList;
     private void requestMasterList() {
         isMasterApiInProgress = true;
-        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
+        String url="http://www.mocky.io/v2/5ba0dec53500004f005bbad3";
 
+        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                AppURLs.API_MASTERS_LIST + currentCity, null,
+               AppURLs.API_MASTER_LIST, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         new AppCommonMethods().LOG(0, TAG, response.toString());
                         try {
+                            Object resp = AppParser.parseNewMasterList(response.toString());
+                            if (resp instanceof MasterDataItem) {
+                                MasterDataItem masterDataItem= (MasterDataItem) resp;
+                                sgksAreaItems=masterDataItem.getSgksAreaItems();
+                                sgksCategory=masterDataItem.getSgksCategoryArrayList();
+                                /*MasterDataItem masterDataItem = (MasterDataItem) resp;
+
+
+                                for (int i = 0; i < masterDataItem.getSgksAreaItems().size(); i++) {
+                                    stringArrayList=masterDataItem.getSgksAreaItems().get(i).getAreaName();
+                                }
+                                Log.i("@@string",stringArrayList);
+                                AppCommonMethods.putStringPref(AppConstants.PREFS_SGKS_AREA_LIST, stringArrayList, mContext);
+                                Toast.makeText(mContext, "Success", Toast.LENGTH_LONG).show();*/
+
+                            } else {
+                                Toast.makeText(mContext, "Fail", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        /*try {
                             Object resp = AppParser.parseMasterListResponse(response.toString());
                             if (resp instanceof MasterDataItem) {
                                 new AppCommonMethods().LOG(0, TAG, resp.toString());
@@ -123,10 +155,9 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
                         Intent intentHome = new Intent(mContext, HomeActivity.class);
                         intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intentHome);
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);*/
                     }
                 }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 isMasterApiInProgress = false;

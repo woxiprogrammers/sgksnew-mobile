@@ -22,7 +22,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
+import com.woxi.sgks_member.SplashAndCityActivity;
 import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.models.SGKSAreaItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppURLs;
 
@@ -62,7 +64,13 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         initializeViews();
 
         //Setting 1st choice as hint
-        ArrayList<String> arrSgksArea = getSgksAreaList();
+        ArrayList<String> arrSgksArea=new ArrayList<>();
+        for(SGKSAreaItem sgksAreaItem: SplashAndCityActivity.sgksAreaItems){
+            String s=sgksAreaItem.getAreaName();
+            arrSgksArea.add(s);
+
+        }
+//        ArrayList<String> arrSgksArea = getSgksAreaList();
         arrSgksArea.add(0, "Choose One");
 
         ArrayAdapter<String> arrayAdapter = getStringArrayAdapter(arrSgksArea);
@@ -78,12 +86,12 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     metName.setError("Please Enter your Name");
                     metName.requestFocus();
                     return;
-                } else if (spArea.getSelectedItemId() == 0) {
-                    Toast.makeText(mContext, "Please Select SGKS Area", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (strContactNumber.isEmpty()) {
+                }  else if (strContactNumber.isEmpty()) {
                     metContact.setError("Please Enter your Contact Number");
                     metContact.requestFocus();
+                    return;
+                }else if (spArea.getSelectedItemId() == 0) {
+                    Toast.makeText(mContext, "Please Select SGKS Area", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     if (new AppCommonMethods(mContext).isNetworkAvailable()) {
@@ -153,7 +161,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_ADD_ME_TO_SGKS, params,
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.POST, AppURLs.API_ADDME_TO_SGKS, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

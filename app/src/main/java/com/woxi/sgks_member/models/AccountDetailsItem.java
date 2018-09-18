@@ -8,20 +8,17 @@ import java.io.Serializable;
  * Created by Rohit.
  */
 public class AccountDetailsItem implements Serializable {
-    private String strAccountImageUrl, strAccountName;
 
+    private String strAccountImageUrl, strAccountName;
     public String getStrAccountImageUrl() {
         return strAccountImageUrl;
     }
-
     public void setStrAccountImageUrl(String strAccountImageUrl) {
         this.strAccountImageUrl = strAccountImageUrl;
     }
-
     public String getStrAccountName() {
         return strAccountName;
     }
-
     public void setStrAccountName(String strAccountName) {
         this.strAccountName = strAccountName;
     }
