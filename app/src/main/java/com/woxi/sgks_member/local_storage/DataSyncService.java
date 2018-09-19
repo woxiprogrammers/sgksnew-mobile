@@ -83,7 +83,6 @@ public class DataSyncService extends Service {
             e.printStackTrace();
         }
         //Request Data Sync Api
-
         requestLocalDataSyncAPI();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -100,6 +99,7 @@ public class DataSyncService extends Service {
      * private void requestLocalDataSyncAPI()
      * This Function is used to request Sync Api.
      * Created by Rohit.
+     * Modified by Sharvari
      */
     private void requestLocalDataSyncAPI() {
         JSONObject params = getParamsToPass();

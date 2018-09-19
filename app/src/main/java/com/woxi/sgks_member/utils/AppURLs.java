@@ -14,8 +14,6 @@ public class AppURLs {
 
     private static String VERSION = "v1/";
     private static String BASE_URL = SGKS_URL + VERSION;
-    public static final String API_COMMITTEE_ID = "&id=";
-    public static final String API_CITY = "?city=";
 
     public static final String API_MEMBERS_LISTING=BASE_URL + "sgks-member/listing";
     public static final String API_EVENT_LISTING=BASE_URL + "sgks-event/listing";
@@ -57,12 +55,8 @@ public class AppURLs {
 
     public static final String API_MEMBER_LAZY_LOADING_SEARCH = BASE_URL + "/sgksmain/membersearch/master_lazy_localstorage?page=1";
     public static final String API_MESSAGE_LAZY_LOADING_LIST = BASE_URL + "/sgksmain/messages/messages_lazy?page=1";
-
-    ///sgksmain/localstorage/offline
+    //sgksmain/localstorage/offline
     public static final String API_LOCAL_DATA_SYNC = BASE_URL + "/sgksmain/localstorage/offline";
-
-
     public static final String API_EVENT_YEAR_LIST = BASE_URL + "/masters/sgks_event_master?city=";
-
     public static final String API_Classified_LAZY_LOADING_LIST = BASE_URL + "/sgksmain/classified/classified_list?page=1";
 }

@@ -119,7 +119,6 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                         /*try {
                             Object resp = AppParser.parseMasterListResponse(response.toString());
                             if (resp instanceof MasterDataItem) {
