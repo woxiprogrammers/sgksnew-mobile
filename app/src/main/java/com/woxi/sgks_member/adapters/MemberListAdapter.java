@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.woxi.sgks_member.R;
-import com.woxi.sgks_member.home.MemberHomeFragment;
 import com.woxi.sgks_member.home.MemberHomeNewFragment;
 import com.woxi.sgks_member.models.MemberDetailsItem;
 

@@ -11,13 +11,10 @@ import android.text.SpannableString;
 import android.text.style.ImageSpan;
 
 import com.woxi.sgks_member.R;
-import com.woxi.sgks_member.home.ClassifiedHomeFragment;
 import com.woxi.sgks_member.home.ClassifiedHomeNewFragment;
 import com.woxi.sgks_member.home.CommitteeHomeFragment;
 import com.woxi.sgks_member.home.EventHomeFragment;
-import com.woxi.sgks_member.home.MemberHomeFragment;
 import com.woxi.sgks_member.home.MemberHomeNewFragment;
-import com.woxi.sgks_member.home.MessageHomeFragment;
 import com.woxi.sgks_member.home.MessageHomeNewFragment;
 
 /**

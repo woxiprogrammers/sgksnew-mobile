@@ -26,13 +26,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.xml.transform.sax.SAXResult;
+
 /**
  * <b>public class AppParser implements AppConstants</b>
  * <p>This class is used to parse JSON responses</p>
  * created by - Rohit
  */
 public class AppParser implements AppConstants {
-    /*{"data":[{"_id":"57e4c80272bdde4d5f37e164","name":"managing"},{"_id":"57ee08a472bdde3a2c635942","name":"annadan"}],"message":"success"}*/
     public static Object parseCommitteeListResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
         //
@@ -66,16 +67,6 @@ public class AppParser implements AppConstants {
         return arrMainCommList;
     }
 
-    /*{"pagination":{"total":3,"current_page":1,"last_page":1,"next_page_url":null,"prev_page_url":null},
-    "data":[{"surname":"Vaghela","native_place":"Sampar","sgks_city":"PUNE","member_id":"1-1","first_name":"Gokal","middle_name":"Rajabhai",
-    "gender":"Male","email":null,"mobile":"9371277787","birth_date":"1942-05-20","blood_group":"B+","hobbies":["Family Time","Reading","others"],
-    "marital_status":"married","marriage_date":"1964-05-20","education":{"degree":"7th std","specialization":"Gujarati"},"area":"Somwar Peth",
-    "system_area":"somwar peth","city":"Pune","state":"MH","country":null,"family_head":true,"relations":{"children":["1-3"],"partner":"1-2"},
-    "isapprove_member":null,"created_at":null,"updated_at":null,"image_url":"http://api.sgks.co.in/uploads/userdata/family/no_image.png",
-    "income":"between 10 to 25 lakh","memLatitude":null,"memLongitude":null,"mosal_village":"Jiragardh","occupation":"Business","organ_donate":"Yes",
-    "organs":["eye part sclera","eye part cornea","skin","liver","heart","lungs","kidneys"],"panth":"rampanthi","status":"Alive",
-    "political_support":"BJP","address":{"address_line":"210, Somwar Peth, Shree Apartment","area":"Somwar Peth","city":"Pune","country":"IN",
-    "id":"1","landmark":"near nageshwar temple","pincode":"411011","state":"MH"}}],"message":"success","stats":null}*/
     public static Object parseMemberSearchResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
         MemberSearchDataItem memberSearchDataItem = new MemberSearchDataItem();
@@ -286,12 +277,6 @@ public class AppParser implements AppConstants {
         return false;
     }
 
-    //News Listing and Details Response
-    /*{"pagination":{"current_page":1,"next_page_url":"http://sgksapi.woxi.co.in/v1/sgksmain/membersearch/master_lazy?page=2",
-    "prev_page_url":null},"data":[{"_id":"58240e6c72bdde7d610c62e1","title":"Happy BD PQR!","msg_desc":"Happy BD PQR.",
-    "msg_img":"http://sgksapi.woxi.co.in/uploads/messages/4e2e3bd0c0e54a24d0d5.jpg","msg_type":"birthday","sgks_city":"PUNE"},
-    {"_id":"58240e5e72bdde33cd7baa12","title":"Happy BD ABC!","msg_desc":"Happy BD ABC.","msg_img":"http://sgksapi.woxi.co.in/uploads/messages/02d95faf4a3573dfbc32.jpg",
-    "msg_type":"birthday","sgks_city":"PUNE"}],"message":"success"}*/
     public static Object parseMessageResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
         MessageAndClassifiedResponseItem messageAndClassifiedResponseItem = new MessageAndClassifiedResponseItem();
@@ -378,48 +363,6 @@ public class AppParser implements AppConstants {
         return false;
     }
 
-    /*{"sgks_area":["karvenagar","somwar peth"],"suggestionbox_category":["Social","Cultural"],
-    "sgks_messages":["58240e0772bdde7c884627b1","58240e5272bdde35e014e751"],
-    "sgks_buzz":{"_id":"5825b89872bdde66511ec2d1","msg_img":"http://sgksapi.woxi.co.in/uploads/userdata/family/no_image.png"},
-    "sgks_classified":null,"message":"success"}*/
-    public static Object parseMasterListResponse(String response) throws JSONException {
-        JSONObject jsonResponseObject = new JSONObject(response);
-        MasterDataItem masterDataItem = new MasterDataItem();
-//        if (jsonData.has("data")) {
-//            JSONObject jsonResponseObject = jsonData.getJSONObject("data");
-            if (jsonResponseObject.has("sgks_area") && jsonResponseObject.optString("sgks_area") != null) {
-                String strSgksArea = jsonResponseObject.optString("sgks_area");
-                masterDataItem.setStrSgksArea(strSgksArea);
-            }
-            if (jsonResponseObject.has("suggestionbox_category") && jsonResponseObject.optString("suggestionbox_category") != null) {
-                String strSuggestionCategory = jsonResponseObject.optString("suggestionbox_category");
-                masterDataItem.setStrSuggestionCategory(strSuggestionCategory);
-            }
-            if (jsonResponseObject.has("sgks_total_member") && jsonResponseObject.optString("sgks_total_member") != null && !jsonResponseObject.optString("sgks_total_member").equalsIgnoreCase("null")) {
-                int intTotalMemberCount = Integer.parseInt(jsonResponseObject.optString("sgks_total_member"));
-                masterDataItem.setIntTotalMemberCount(intTotalMemberCount);
-            }
-            /*if (jsonResponseObject.has("sgks_messages") && jsonResponseObject.optString("sgks_messages") != null) {
-                String strMessage = jsonResponseObject.optString("sgks_messages");
-                masterDataItem.setStrMessageIds(strMessage);
-            }*/
-            if (jsonResponseObject.has("sgks_buzz") && jsonResponseObject.optJSONObject("sgks_buzz") != null) {
-                JSONObject jsonBuzzObject = jsonResponseObject.optJSONObject("sgks_buzz");
-                String strBuzzId = jsonBuzzObject.optString("_id");
-                masterDataItem.setStrSgksBuzz_Id(strBuzzId);
-                //
-                String strBuzzUrl = jsonBuzzObject.optString("msg_img");
-                masterDataItem.setStrSgksBuzz_ImgUrl(strBuzzUrl);
-            }
-            if (jsonResponseObject.has("sgks_classified") && jsonResponseObject.optString("sgks_classified") != null) {
-                String strClassifiedIDs = jsonResponseObject.optString("sgks_classified");
-                masterDataItem.setStrClassifiedIds(strClassifiedIDs);
-            }
-            //Return final masterDataItem object
-//        }
-        return masterDataItem;
-    }
-
     public static Object parseNewMasterList(String response) {
         try {
             JSONObject jsonObject = new JSONObject(response);
@@ -488,36 +431,9 @@ public class AppParser implements AppConstants {
     }
 
     public static Object parseLocalDataSyncResponse(String response) throws JSONException {
-        JSONObject jsonResponseObject = new JSONObject(response);
+        JSONObject jsonResponseObjecResp = new JSONObject(response);
         LocalDataSyncItem localDataSyncItem = new LocalDataSyncItem();
-        if (jsonResponseObject.has("families") && jsonResponseObject.optString("families") != null) {
-            ArrayList<FamilyDetailsItem> arrFamilyDetailsItems = new ArrayList<>();
-            JSONArray jsonFamilyArray = jsonResponseObject.optJSONArray("families");
-            if (jsonFamilyArray != null) {
-                FamilyDetailsItem familyDetailsItem;
-                for (int arrIndex = 0; arrIndex < jsonFamilyArray.length(); arrIndex++) {
-                    familyDetailsItem = new FamilyDetailsItem();
-                    JSONObject jsonObject = jsonFamilyArray.optJSONObject(arrIndex);
-                    if (jsonObject.has("family_id") && jsonObject.getString("family_id") != null) {
-                        familyDetailsItem.setFamily_id(jsonObject.getString("family_id"));
-                    }
-                    if (jsonObject.has("sgks_family_id") && jsonObject.getString("sgks_family_id") != null) {
-                        familyDetailsItem.setSgks_family_id(jsonObject.getString("sgks_family_id"));
-                    }
-                    if (jsonObject.has("surname") && jsonObject.getString("surname") != null) {
-                        familyDetailsItem.setSurname(jsonObject.getString("surname"));
-                    }
-                    if (jsonObject.has("native_place") && jsonObject.getString("native_place") != null) {
-                        familyDetailsItem.setNative_place(jsonObject.getString("native_place"));
-                    }
-                    if (jsonObject.has("sgks_city") && jsonObject.getString("sgks_city") != null) {
-                        familyDetailsItem.setSgks_city(jsonObject.getString("sgks_city"));
-                    }
-                    arrFamilyDetailsItems.add(familyDetailsItem);
-                }
-            }
-            localDataSyncItem.setArrFamilyDetailsItems(arrFamilyDetailsItems);
-        }
+        JSONObject jsonResponseObject=jsonResponseObjecResp.getJSONObject("data");
         if (jsonResponseObject.has("members") && jsonResponseObject.optString("members") != null) {
             ArrayList<MemberDetailsItem> arrMemberDetailsItems = new ArrayList<>();
             JSONArray jsonMemberArray = jsonResponseObject.optJSONArray("members");
@@ -527,7 +443,8 @@ public class AppParser implements AppConstants {
                     memberDetailsItem = new MemberDetailsItem();
                     JSONObject jsonObject = jsonMemberArray.optJSONObject(arrIndex);
                     if (jsonObject.has("member_id") && jsonObject.getString("member_id") != null) {
-                        memberDetailsItem.setMemID(jsonObject.getString("member_id"));
+                        memberDetailsItem.setMemID(String.valueOf(jsonObject.getInt("member_id")));
+
                     }
                     if (jsonObject.has("sgks_member_id") && jsonObject.getString("sgks_member_id") != null) {
                         memberDetailsItem.setMemSgksMemberId(jsonObject.getString("sgks_member_id"));
@@ -556,14 +473,8 @@ public class AppParser implements AppConstants {
                     if (jsonObject.has("email") && jsonObject.getString("email") != null && !jsonObject.getString("email").equalsIgnoreCase("null")) {
                         memberDetailsItem.setMemEmail(jsonObject.getString("email"));
                     }
-                    if (jsonObject.has("blood_group") && jsonObject.getString("blood_group") != null) {
-                        memberDetailsItem.setMemBloodGroup(jsonObject.getString("blood_group"));
-                    }
                     if (jsonObject.has("marital_status") && jsonObject.getString("marital_status") != null) {
                         memberDetailsItem.setMemMaritalStatus(jsonObject.getString("marital_status"));
-                    }
-                    if (jsonObject.has("sgks_area") && jsonObject.getString("sgks_area") != null) {
-                        memberDetailsItem.setMemSgksArea(jsonObject.getString("sgks_area"));
                     }
                     if (jsonObject.has("sgks_city") && jsonObject.getString("sgks_city") != null) {
                         memberDetailsItem.setMemSgksMainCity(jsonObject.getString("sgks_city"));
@@ -577,56 +488,10 @@ public class AppParser implements AppConstants {
                     if (jsonObject.has("image_url") && jsonObject.getString("image_url") != null) {
                         memberDetailsItem.setMemberImageURL(jsonObject.getString("image_url"));
                     }
-                    if (jsonObject.has("address_id") && jsonObject.getString("address_id") != null) {
-                        memberDetailsItem.setAddress_id(jsonObject.getString("address_id"));
-                    }
-                    if (jsonObject.has("isapprove_member") && jsonObject.getString("isapprove_member") != null) {
-                        memberDetailsItem.setMemIsActive(jsonObject.getString("isapprove_member"));
-                    }
                     arrMemberDetailsItems.add(memberDetailsItem);
                 }
             }
             localDataSyncItem.setArrMemberDetailsItems(arrMemberDetailsItems);
-        }
-        if (jsonResponseObject.has("address") && jsonResponseObject.optString("address") != null) {
-            ArrayList<MemberAddressItem> arrMemberAddressItems = new ArrayList<>();
-            JSONArray jsonAddressArray = jsonResponseObject.optJSONArray("address");
-            if (jsonAddressArray != null) {
-                MemberAddressItem memberAddressItem;
-                for (int arrIndex = 0; arrIndex < jsonAddressArray.length(); arrIndex++) {
-                    memberAddressItem = new MemberAddressItem();
-                    JSONObject jsonObject = jsonAddressArray.optJSONObject(arrIndex);
-                    if (jsonObject.has("address_line") && jsonObject.getString("address_line") != null) {
-                        memberAddressItem.setAddAddressLine(jsonObject.getString("address_line"));
-                    }
-                    if (jsonObject.has("area") && jsonObject.getString("area") != null) {
-                        memberAddressItem.setAddArea(jsonObject.getString("area"));
-                    }
-                    if (jsonObject.has("landmark") && jsonObject.getString("landmark") != null) {
-                        memberAddressItem.setAddLandMark(jsonObject.getString("landmark"));
-                    }
-                    if (jsonObject.has("city") && jsonObject.getString("city") != null) {
-                        memberAddressItem.setAddCity(jsonObject.getString("city"));
-                    }
-                    if (jsonObject.has("pincode") && jsonObject.getString("pincode") != null) {
-                        memberAddressItem.setAddPincode(jsonObject.getString("pincode"));
-                    }
-                    if (jsonObject.has("state") && jsonObject.getString("state") != null) {
-                        memberAddressItem.setAddState(jsonObject.getString("state"));
-                    }
-                    if (jsonObject.has("country") && jsonObject.getString("country") != null) {
-                        memberAddressItem.setAddCountry(jsonObject.getString("country"));
-                    }
-                    if (jsonObject.has("address_id") && jsonObject.getString("address_id") != null) {
-                        memberAddressItem.setAddAddressId(jsonObject.getString("address_id"));
-                    }
-                    if (jsonObject.has("family_id") && jsonObject.getString("family_id") != null) {
-                        memberAddressItem.setAddFamilyId(jsonObject.getString("family_id"));
-                    }
-                    arrMemberAddressItems.add(memberAddressItem);
-                }
-            }
-            localDataSyncItem.setArrMemberAddressItems(arrMemberAddressItems);
         }
         if (jsonResponseObject.has("committees") && jsonResponseObject.optString("committees") != null) {
             ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems = new ArrayList<>();
@@ -651,9 +516,6 @@ public class AppParser implements AppConstants {
                     if (jsonObject.has("comm_mem_details") && jsonObject.getString("comm_mem_details") != null) {
                         committeeDetailsItem.setCommAllMembers(jsonObject.getString("comm_mem_details"));
                     }
-                    if (jsonObject.has("is_active") && jsonObject.getString("is_active") != null) {
-                        committeeDetailsItem.setCommIsActive(jsonObject.getString("is_active"));
-                    }
                     arrCommitteeDetailsItems.add(committeeDetailsItem);
                 }
             }
@@ -667,8 +529,8 @@ public class AppParser implements AppConstants {
                 for (int arrIndex = 0; arrIndex < jsonMessageArray.length(); arrIndex++) {
                     messageDetailsItem = new MessageDetailsItem();
                     JSONObject jsonObject = jsonMessageArray.optJSONObject(arrIndex);
-                    if (jsonObject.has("message_id") && jsonObject.getString("message_id") != null) {
-                        messageDetailsItem.setMessageID(jsonObject.getString("message_id"));
+                    if (jsonObject.has("id") && jsonObject.getString("id") != null) {
+                        messageDetailsItem.setMessageID(jsonObject.getString("id"));
                     }
                     if (jsonObject.has("title") && jsonObject.getString("title") != null) {
                         messageDetailsItem.setMessageTitle(jsonObject.getString("title"));
@@ -687,9 +549,6 @@ public class AppParser implements AppConstants {
                     }
                     if (jsonObject.has("sgks_city") && jsonObject.getString("sgks_city") != null) {
                         messageDetailsItem.setMessageCity(jsonObject.getString("sgks_city"));
-                    }
-                    if (jsonObject.has("is_active") && jsonObject.getString("is_active") != null) {
-                        messageDetailsItem.setMessageIsActive(jsonObject.getString("is_active"));
                     }
                     arrMessageDetailsItems.add(messageDetailsItem);
                 }
@@ -759,8 +618,6 @@ public class AppParser implements AppConstants {
         return null;
     }
 
-    /*{"data":[{"_id":"58d36b6b3e84e4041f201979","event_name":"hello world","desc":"hi hello","event_date":"29th feb 2016 to 30th feb 2017",
-    "year":"2017","event_images":["http:\/\/api.sgks.co.in\/uploads\/events\/c256c6333dcb32253025.jpg"]}],"message":"success"}*/
     public static Object parseEventDetailsResponse(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
         if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {

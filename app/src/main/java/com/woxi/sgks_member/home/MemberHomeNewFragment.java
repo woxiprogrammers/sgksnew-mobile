@@ -53,7 +53,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private EditText mEtMemberSearch;
     private RelativeLayout mPbLazyLoad;
     private String TAG = "MemberHomeFragment";
-    private ArrayList<MemberDetailsItem> mArrMemDetails;
+    public static ArrayList<MemberDetailsItem> mArrMemDetails;
     //    private boolean isApiRequested = false;
     private String strSearchTerm = "", strNextPageUrl = "";
     private int arrSize = 0;
@@ -124,27 +124,25 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         };
     }
 
-
     private void functionToGetMembersList() {
         boolean isOfflineSupportEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_OFFLINE_SUPPORT_ENABLED, mContext);
-        if (!new AppCommonMethods(mContext).isNetworkAvailable()) {
-            if (isOfflineSupportEnabled) {
-                String strCurrentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
-                mArrMemDetails = databaseQueryHandler.queryMembers(strSearchTerm, "PUNE");
-                //If there are no results from local database go online else show local results.
-                if (mArrMemDetails == null || mArrMemDetails.size() == 0) {
-                    mRvAdapter = new MemberListAdapter(new ArrayList<MemberDetailsItem>());
-                    mRvMemberList.setAdapter(mRvAdapter);
-                    mRvMemberList.getAdapter().notifyDataSetChanged();
+        if (isOfflineSupportEnabled) {
+            String strCurrentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
+            mArrMemDetails = databaseQueryHandler.queryMembers(strSearchTerm);
+            //If there are no results from local database go online else show local results.
+            if (mArrMemDetails == null || mArrMemDetails.size() == 0) {
+                mRvAdapter = new MemberListAdapter(new ArrayList<MemberDetailsItem>());
+                mRvMemberList.setAdapter(mRvAdapter);
+                mRvMemberList.getAdapter().notifyDataSetChanged();
+                requestToGetMembersData(pageNumber, true);
 //                searchMemberOnline();
-                } else {
-                    new AppCommonMethods().LOG(0, TAG + " Local Search", mArrMemDetails.toString());
-                    mRvAdapter = new MemberListAdapter(mArrMemDetails);
-                    mRvMemberList.setAdapter(mRvAdapter);
-                }
+            } else {
+                new AppCommonMethods().LOG(0, TAG + " Local Search", mArrMemDetails.toString());
+                mRvAdapter = new MemberListAdapter(mArrMemDetails);
+                mRvMemberList.setAdapter(mRvAdapter);
             }
         } else {
-            requestToGetMembersData(pageNumber);
+            requestToGetMembersData(pageNumber, true);
         }
     }
 
@@ -153,7 +151,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mParentView.findViewById(R.id.etSearchMember).clearFocus();
     }
 
-    private void requestToGetMembersData(final int pageId) {
+    private void requestToGetMembersData(final int pageId, boolean isFirstTime) {
         JSONObject params = new JSONObject();
         try {
             params.put("page_id", pageId);
@@ -167,7 +165,6 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                         try {
                             if (!response.getString("page_id").equalsIgnoreCase("")) {
                                 pageNumber = Integer.parseInt(response.getString("page_id"));
-                                Log.i("@@", String.valueOf(pageNumber));
                             }
                             Object resp = AppParser.parseNewMemberList(response.toString());
                             mArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
@@ -178,7 +175,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                     mRvMemberList.setHasFixedSize(true);
                                     mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                     mRvMemberList.setAdapter(mRvAdapter);
-//                                    databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
+                                    databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
                                 } else {
                                     Toast.makeText(mContext, "No Record Found", Toast.LENGTH_SHORT).show();
                                 }
@@ -210,7 +207,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         if (!isApiInProgress) {
             //Cancelling Pending Request
             AppController.getInstance().cancelPendingRequests("memberSearchList");
-            requestToGetMembersData(pageNumber);
+            requestToGetMembersData(pageNumber, false);
         }
     }
 }

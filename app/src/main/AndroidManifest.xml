@@ -27,8 +27,7 @@
             android:name=".home.HomeActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden">
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name="com.woxi.sgks_member.miscellaneous.SettingsActivity"
@@ -47,5 +46,8 @@
         <activity android:name=".miscellaneous.ContactUsActivity"/>
         <activity android:name=".miscellaneous.MiscellaneousViewActivity"/>
         <activity android:name=".home.MessageDetailsActivity"/>
+
+        <service android:name=".local_storage.DataSyncService"/>
+
     </application>
 </manifest>

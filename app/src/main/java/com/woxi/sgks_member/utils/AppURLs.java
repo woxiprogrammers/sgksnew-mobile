@@ -25,6 +25,7 @@ public class AppURLs {
     public static final String API_MASTER_LIST=BASE_URL + "sgks-public/master-list";
     public static final String API_ADDME_TO_SGKS=BASE_URL + "sgks-public/addmetosgks";
     public static final String API_SGKS_SUGGESTIONS=BASE_URL+"sgks-public/sgks-suggestion";
+    public static final String API_SKS_OFFLINE=BASE_URL + "sgks-offline/local-storage-offline";
 
 
 

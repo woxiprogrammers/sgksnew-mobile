@@ -168,9 +168,6 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 if (memberDetailsItem.getMemberImageURL() != null) {
                     memberStatement.bindString(18, memberDetailsItem.getMemberImageURL());
                 }
-                if (memberDetailsItem.getMemIsActive() != null) {
-                    memberStatement.bindString(19, memberDetailsItem.getMemIsActive());
-                }
                 memberStatement.execute();
             }
             mSqLiteDatabase.setTransactionSuccessful();
@@ -370,10 +367,10 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    public ArrayList<MemberDetailsItem> queryMembers(String searchString, String strCurrentCity) {
+    public ArrayList<MemberDetailsItem> queryMembers(String searchString) {
         ArrayList<MemberDetailsItem> arrMemDetails = new ArrayList<>();
         String whereClause = COLUMN_MEMBER_SGKS_CITY + " =?";
-        String[] whereArgs = new String[]{strCurrentCity};
+//        String[] whereArgs = new String[]{strCurrentCity};
         if (!searchString.equalsIgnoreCase("")) {
 //            if (searchString.contains("-")) {
             if (searchString.matches("^[0-9]*-[0-9]*$")) {
@@ -382,14 +379,14 @@ public class DatabaseQueryHandler implements DatabaseConstants {
 //                whereClause = COLUMN_MEMBER_ID_PRIMARY + "=?";
 //                whereArgs = new String[]{searchString};
                 whereClause = COLUMN_MEMBER_SGKS_CITY + " =? AND " + COLUMN_MEMBER_SGKS_MEMBER_ID + " LIKE ?";
-                whereArgs = new String[]{strCurrentCity, searchString + "%"};
+//                whereArgs = new String[]{strCurrentCity, searchString + "%"};
             } else if (searchString.matches("^[0-9]*$")) {
                 //TODO Search in mobile no column
                 Log.d(TAG, "search by: Mobile");
-//                whereClause = COLUMN_MEMBER_MOBILE + "=?";
-//                whereArgs = new String[]{searchString};
+//              whereClause = COLUMN_MEMBER_MOBILE + "=?";
+//              whereArgs = new String[]{searchString};
                 whereClause = COLUMN_MEMBER_SGKS_CITY + " =? AND " + COLUMN_MEMBER_MOBILE + " LIKE ?";
-                whereArgs = new String[]{strCurrentCity, searchString + "%"};
+//              whereArgs = new String[]{strCurrentCity, searchString + "%"};
             } else if (searchString.contains(" ")) {
                 //TODO Search in name & surname column and vice-versa
                 String[] splitStrings = searchString.split("\\s+");
@@ -398,10 +395,10 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     Log.d(TAG, "search by: Name Surname");
                     firstString = splitStrings[0].trim();
                     secondString = splitStrings[1].trim();
-//                    whereClause = "(" + COLUMN_MEMBER_FIRST_NAME + "=? AND " + COLUMN_MEMBER_LAST_NAME + "=?) OR (" + COLUMN_MEMBER_FIRST_NAME + "=? AND " + COLUMN_MEMBER_LAST_NAME + "=? )";
-//                    whereArgs = new String[]{firstString, secondString, secondString, firstString};
+//                  whereClause = "(" + COLUMN_MEMBER_FIRST_NAME + "=? AND " + COLUMN_MEMBER_LAST_NAME + "=?) OR (" + COLUMN_MEMBER_FIRST_NAME + "=? AND " + COLUMN_MEMBER_LAST_NAME + "=? )";
+//                  whereArgs = new String[]{firstString, secondString, secondString, firstString};
                     whereClause = COLUMN_MEMBER_SGKS_CITY + " =? AND (" + "(" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? AND " + COLUMN_MEMBER_LAST_NAME + " LIKE ?) OR (" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? AND " + COLUMN_MEMBER_LAST_NAME + " LIKE ? ))";
-                    whereArgs = new String[]{strCurrentCity, firstString + "%", secondString + "%", secondString + "%", firstString + "%"};
+//                    whereArgs = new String[]{strCurrentCity, firstString + "%", secondString + "%", secondString + "%", firstString + "%"};
                 } else if (splitStrings.length == 3) {
                     Log.d(TAG, "search by: FullName");
                     firstString = splitStrings[0].trim();
@@ -410,7 +407,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
 //                    whereClause = "(" + COLUMN_MEMBER_FIRST_NAME + "=? AND " + COLUMN_MEMBER_MIDDLE_NAME + "=? AND " + COLUMN_MEMBER_LAST_NAME + "=?) OR (" + COLUMN_MEMBER_FIRST_NAME + "=? AND " + COLUMN_MEMBER_MIDDLE_NAME + "=? AND " + COLUMN_MEMBER_LAST_NAME + "=?)";
 //                    whereArgs = new String[]{firstString, secondString, thirdString, thirdString, secondString, firstString};
                     whereClause = COLUMN_MEMBER_SGKS_CITY + " =? AND (" + "(" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? AND " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE ? AND " + COLUMN_MEMBER_LAST_NAME + " LIKE ?) OR (" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? AND " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE ? AND " + COLUMN_MEMBER_LAST_NAME + " LIKE ?))";
-                    whereArgs = new String[]{strCurrentCity, firstString + "%", secondString + "%", thirdString + "%", thirdString + "%", secondString + "%", firstString + "%"};
+//                    whereArgs = new String[]{strCurrentCity, firstString + "%", secondString + "%", thirdString + "%", thirdString + "%", secondString + "%", firstString + "%"};
                 }
             } else if (searchString.matches("^[A-Za-z]*$")) {
                 //TODO Search in name OR surname column
@@ -420,14 +417,13 @@ public class DatabaseQueryHandler implements DatabaseConstants {
 //                whereClause = "(" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? OR " + COLUMN_MEMBER_LAST_NAME + " LIKE ?) AND (" + COLUMN_MEMBER_LAST_NAME + " LIKE ? OR " + COLUMN_MEMBER_FIRST_NAME + " LIKE ? )";
 //                whereArgs = new String[]{searchString + "%", searchString + "%", searchString + "%", searchString + "%"};
                 whereClause = COLUMN_MEMBER_SGKS_CITY + " =? AND (" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? OR " + COLUMN_MEMBER_LAST_NAME + " LIKE ? )";
-                whereArgs = new String[]{strCurrentCity, searchString + "%", searchString + "%"};
+//                whereArgs = new String[]{strCurrentCity, searchString + "%", searchString + "%"};
             }
         }
         //Cursor cursor = sqLiteDatabase.query(tableName, tableColumns, whereClause, whereArgs, groupBy, having, orderBy);
-        Cursor cursorMember = mSqLiteDatabase.query(TABLE_MEMBER_DETAILS, null, whereClause, whereArgs, null, null, null);
+        Cursor cursorMember = mSqLiteDatabase.query(TABLE_MEMBER_DETAILS, null, null, null, null, null, null);
         if (cursorMember.moveToFirst()) {
             do {
-                String isMemberActive = cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IS_ACTIVE));
 //                if (isMemberActive.equalsIgnoreCase("true")) {
                     MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
                     memberDetailsItem.setMemID(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY)));
