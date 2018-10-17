@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/v8"
+    android:layout_marginLeft="@dimen/v4"
+    android:layout_marginRight="@dimen/v4"
+    android:layout_marginTop="1dp"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/ivAccountImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:maxHeight="200dp"
+        android:scaleType="centerInside" />
+
+    <RelativeLayout
+        android:id="@+id/rlImageName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#CC000000"
+        android:padding="@dimen/v4">
+
+        <TextView
+            android:id="@+id/tvAccountTitle"
+            style="@style/customTextView_12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textColor="@color/colorWhite" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_add_me_sgks"
+            android:icon="@drawable/ic_user_add"
+            android:title="@string/add_me_sgks" />
+        <item
+            android:id="@+id/nav_suggestion"
+            android:icon="@drawable/ic_feedback"
+            android:title="@string/suggestion_box" />
+        <item
+            android:id="@+id/nav_accounts"
+            android:icon="@drawable/ic_accounts"
+            android:title="@string/accounts" />
+        <item
+            android:id="@+id/nav_health_plus"
+            android:icon="@drawable/ic_health_plus"
+            android:title="@string/healthPlus" />
+        <item
+            android:id="@+id/nav_qa"
+            android:icon="@drawable/ic_question"
+            android:title="@string/q_and_a" />
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_info"
+            android:title="@string/help" />
+        <item
+            android:id="@+id/nav_privacy_policy"
+            android:icon="@drawable/ic_privacy"
+            android:title="@string/privacyPolicy" />
+        <item
+            android:id="@+id/nav_contact_us"
+            android:icon="@drawable/ic_phone"
+            android:title="@string/contactUs" />
+    </group>
+
+    <group>
+        <item
+            android:id="@+id/app_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/settings" />
+    </group>
+</menu>

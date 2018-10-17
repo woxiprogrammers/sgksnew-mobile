@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/colorAppBackground"
+    android:padding="@dimen/v4">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            style="@style/customTextView_12"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:gravity="center_vertical"
+            android:text="SGKS Area : " />
+
+        <TextView
+            android:id="@+id/tvMemberAddress"
+            style="@style/customTextView_12"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            style="@style/customTextView_12"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:gravity="center_vertical"
+            android:text="Email Id : " />
+
+        <TextView
+            android:id="@+id/tvMemberEmail"
+            style="@style/customTextView_12"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5" />
+    </LinearLayout>
+
+</LinearLayout>
