@@ -17,4 +17,5 @@
     <color name="colorGolden">#FFA500</color>
     <color name="colorGreen">#5FC65B</color>
     <color name="colorAppBackground">#E2E2E2</color>
+    <color name="colorAddFab">#2ecc71</color>
 </resources>
