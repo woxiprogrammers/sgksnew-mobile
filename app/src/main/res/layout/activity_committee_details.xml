@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:orientation="vertical"
+    tools:mContext=".SGKS_CommitteeDetails">
+
+    <TextView
+        android:id="@+id/tvCommitteeName"
+        style="@style/customTextView_16_Normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/v16"
+        android:background="@color/colorAppBackground"
+        android:paddingBottom="@dimen/v4"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="@dimen/v4" />
+
+    <TextView
+        android:id="@+id/tvCommitteeDescription"
+        style="@style/customTextView_12"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/v16"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin" />
+
+    <TextView
+        style="@style/customTextView_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/v16"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:gravity="center_horizontal"
+        android:text="Committee Members" />
+
+    <ExpandableListView
+        android:id="@+id/elvCommitteeMembers"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:childDivider="@color/colorWhite"
+        android:divider="@color/colorWhite"
+        android:dividerHeight="@dimen/v8"
+        android:groupIndicator="@null"
+        android:scrollbars="none" />
+</LinearLayout>

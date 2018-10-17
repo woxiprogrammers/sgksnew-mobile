@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/v8"
+    android:layout_marginTop="1dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="@dimen/v8">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/v4"
+            android:paddingEnd="@dimen/v4"
+            android:paddingStart="@dimen/v8"
+            android:paddingTop="@dimen/v4">
+
+            <TextView
+                android:id="@+id/tvNewsListTitle"
+                style="@style/customTextView_16"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2" />
+
+            <!--<TextView
+                android:id="@+id/tvNewsListDescription"
+                style="@style/customTextView_12"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/v4"
+                android:layout_marginTop="@dimen/v4"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorTextHintDark"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/tvNewsCreatedAt"
+                style="@style/customTextView_12"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorTextHintDark"
+                android:textStyle="italic" />-->
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivNewsListImg"
+            android:layout_width="@dimen/common_news_image_height_width"
+            android:layout_height="@dimen/common_news_image_height_width"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/news_title_image"
+            android:scaleType="centerCrop" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+    android:layout_marginLeft="@dimen/activity_vertical_margin"
+    android:layout_marginRight="@dimen/activity_vertical_margin"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:scrollbars="none"
+    tools:mContext="com.woxi.sgks_member.MemberDetailsActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ivMemDetImage"
+            android:layout_width="@dimen/member_profile_width_height"
+            android:layout_height="@dimen/member_profile_width_height"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/v8"
+            android:contentDescription="Member Image" />
+
+        <LinearLayout
+            android:id="@+id/llMainInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivMemDetImage"
+            android:layout_margin="@dimen/v4"
+            android:orientation="vertical"
+            android:padding="@dimen/v4">
+
+            <TextView
+                android:id="@+id/tvMemName"
+                style="@style/customTextView_16"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/v8"
+                android:fontFamily="sans-serif-smallcaps"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/text_24" />
+
+            <TextView
+                android:id="@+id/tvMemContact"
+                style="@style/customTextView_16_Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:drawablePadding="@dimen/v4"
+                android:drawableStart="@drawable/ic_mobile"
+                android:gravity="center_horizontal" />
+
+            <TextView
+                android:id="@+id/tvMemEmail"
+                style="@style/customTextView_16_Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/v4"
+                android:drawablePadding="@dimen/v8"
+                android:drawableStart="@drawable/ic_email"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llAddress"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/llMainInfo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/v4"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_address" />
+
+            <TextView
+                android:id="@+id/tvMemAddress"
+                style="@style/customTextView_16_Normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-smallcaps"
+                android:gravity="center_horizontal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llOne"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/llAddress"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/v4"
+                android:layout_weight="1"
+                android:background="@drawable/background_gray"
+                android:backgroundTint="#EA4335"
+                android:orientation="vertical"
+                android:padding="@dimen/v8">
+
+                <TextView
+                    style="@style/customTextView_12"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/v4"
+                    android:gravity="center_horizontal"
+                    android:text="Blood Group"
+                    android:textColor="@color/colorWhite"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvMemBloodGroup"
+                    style="@style/customTextView_16_Normal"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/v4"
+                android:layout_weight="1"
+                android:background="@drawable/background_gray"
+                android:backgroundTint="#FBBC05"
+                android:orientation="vertical"
+                android:padding="@dimen/v8">
+
+                <TextView
+                    style="@style/customTextView_12"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/v4"
+                    android:gravity="center_horizontal"
+                    android:text="Marital Status"
+                    android:textColor="@color/colorWhite"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvMemMaritalStatus"
+                    style="@style/customTextView_16_Normal"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/llOne"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/v4"
+                android:layout_weight="1"
+                android:background="@drawable/background_gray"
+                android:backgroundTint="#34A853"
+                android:orientation="vertical"
+                android:padding="@dimen/v8">
+
+                <TextView
+                    style="@style/customTextView_12"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/v4"
+                    android:gravity="center_horizontal"
+                    android:text="Family Id"
+                    android:textColor="@color/colorWhite"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvMemFamilyId"
+                    style="@style/customTextView_16_Normal"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/v4"
+                android:layout_weight="1"
+                android:background="@drawable/background_gray"
+                android:backgroundTint="#4285F4"
+                android:orientation="vertical"
+                android:padding="@dimen/v8">
+
+                <TextView
+                    style="@style/customTextView_12"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/v4"
+                    android:gravity="center_horizontal"
+                    android:text="Member Id"
+                    android:textColor="@color/colorWhite"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvMemMemberId"
+                    style="@style/customTextView_16_Normal"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/memFloatingLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="@dimen/v8"
+            android:layout_marginTop="@dimen/v8"
+            android:background="#E65F5F"
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_loc_red"
+            app:backgroundTint="@color/colorRed"
+            app:elevation="0dp"
+            app:fabSize="mini"
+            app:rippleColor="@color/colorBlueLight" />
+    </RelativeLayout>
+</ScrollView>

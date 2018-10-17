@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvEventAndClassifiedName"
+        style="@style/customTextView_16_Normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/v16"
+        android:background="@color/colorAppBackground"
+        android:paddingBottom="@dimen/v4"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="@dimen/v4" />
+
+    <TextView
+        android:id="@+id/tvEventAndClassifiedDescription"
+        style="@style/customTextView_12"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/v16"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvEventAndClassifiedGallery"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_weight="1" />
+</LinearLayout>
