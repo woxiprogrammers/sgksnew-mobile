@@ -18,6 +18,34 @@
         android:fillViewport="true"
         tools:mContext="com.woxi.miscellaneous.AddMeToSgksActivity">
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivProfileImage"
+                android:layout_width="@dimen/member_profile_width_height"
+                android:layout_height="@dimen/member_profile_width_height"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/v8"
+                android:contentDescription="Member Image"
+                android:background="@drawable/edit_text_border"/>
+
+            <ImageView
+                android:id="@+id/ivAddImage"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_add_image_black"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+
         <EditText
             android:id="@+id/etFirstName"
             style="@style/customEditText_16"

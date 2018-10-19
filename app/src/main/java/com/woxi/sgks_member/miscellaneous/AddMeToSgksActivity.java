@@ -1,9 +1,14 @@
 package com.woxi.sgks_member.miscellaneous;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -12,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -74,6 +80,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private TextView tvDob;
     private DatePickerDialog datePickerDialog;
     Calendar calendar;
+    private ImageView ivProfilePicture;
+    private  ImageView ivAddImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +93,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         requestBloodGroup();
         requestCity();
         initializeViews();
+
 
         //Setting 1st choice as hint
 //        ArrayList<String> arrSgksArea=new ArrayList<>();
@@ -118,7 +127,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         tvDob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
+                calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -170,6 +179,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         });
     }
 
+
     private void initializeViews() {
         mContext = AddMeToSgksActivity.this;
         metFirstName =  findViewById(R.id.etFirstName);
@@ -183,7 +193,11 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         rbMale = findViewById(R.id.rbMale);
         rbFemale = findViewById(R.id.rbFemale);
         tvDob = findViewById(R.id.tvDob);
+        ivProfilePicture = findViewById(R.id.ivProfileImage);
+        ivAddImage = findViewById(R.id.ivAddImage);
         metFirstName.requestFocus();
+
+
     }
 
     public void clearDataAddMeSGKS() {
