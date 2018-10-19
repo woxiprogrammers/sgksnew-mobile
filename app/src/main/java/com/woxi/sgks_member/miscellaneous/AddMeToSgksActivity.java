@@ -1,5 +1,6 @@
 package com.woxi.sgks_member.miscellaneous;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -9,7 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +36,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,11 +51,29 @@ import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT
  */
 public class AddMeToSgksActivity extends AppCompatActivity implements AppConstants {
     private Context mContext;
-    private EditText metName, metContact;
-    private Spinner spArea;
+    private EditText metFirstName;
+    private EditText metLastName;
+    private EditText metMiddleName;
+    private EditText metContact;
+    private EditText metEmail;
+    private EditText metAddress;
+    private Spinner spBloodGroup;
+    private Spinner spCity;
     private String TAG = "AddMeToSgksActivity";
-    private String strName, strContactNumber;
-
+    private String strFirstName;
+    private String strLastName;
+    private String strMiddleName;
+    private String strContact;
+    private String strEmail;
+    private String strAddress;
+    private String strDateOfBirth;
+    ArrayList<String> arrBloodGroup = new ArrayList<>();
+    ArrayList<String> arrCity = new ArrayList<>();
+    RadioButton rbMale;
+    RadioButton rbFemale;
+    private TextView tvDob;
+    private DatePickerDialog datePickerDialog;
+    Calendar calendar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,42 +82,85 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             getSupportActionBar().setTitle(R.string.add_me_sgks);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
+        requestBloodGroup();
+        requestCity();
         initializeViews();
 
         //Setting 1st choice as hint
-        ArrayList<String> arrSgksArea=new ArrayList<>();
-        for(SGKSAreaItem sgksAreaItem: SplashAndCityActivity.sgksAreaItems){
-            String s=sgksAreaItem.getAreaName();
-            arrSgksArea.add(s);
+//        ArrayList<String> arrSgksArea=new ArrayList<>();
+//        for(SGKSAreaItem sgksAreaItem: SplashAndCityActivity.sgksAreaItems){
+//            String s=sgksAreaItem.getAreaName();
+//            arrSgksArea.add(s);
+//
+//        }
+////        ArrayList<String> arrSgksArea = getSgksAreaList();
+//        arrSgksArea.add(0, "Choose One");
+//
+//        ArrayAdapter<String> arrayAdapter = getStringArrayAdapter(arrSgksArea);
+//        spArea.setAdapter(arrayAdapter);
 
-        }
-//        ArrayList<String> arrSgksArea = getSgksAreaList();
-        arrSgksArea.add(0, "Choose One");
+        //adding Choose one to the 1st index position
+        arrBloodGroup.add(0,"Choose One");
+        arrBloodGroup.add(1,"A+");
+        arrBloodGroup.add(2,"b+");
 
-        ArrayAdapter<String> arrayAdapter = getStringArrayAdapter(arrSgksArea);
-        spArea.setAdapter(arrayAdapter);
+        arrCity.add(0,"Choose One");
+        arrCity.add(1,"Pune");
+        arrCity.add(2,"Mumbai");
 
+        ArrayAdapter<String> arrBloodGroupAdapter = getStringArrayAdapter(arrBloodGroup);
+        spBloodGroup.setAdapter(arrBloodGroupAdapter);
+
+        ArrayAdapter<String> arrCityAdaptor = getStringArrayAdapter(arrCity);
+        spCity.setAdapter(arrCityAdaptor);
+
+        //Open Date Picker
+        tvDob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddMeToSgksActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int mYear, int mMonth, int mDay) {
+                        tvDob.setText(mDay + "/" + mMonth + "/" + mYear);
+                        strDateOfBirth = mDay + "/" + mMonth + "/" + mYear;
+                    }
+                }, year, month, day);
+                datePickerDialog.show();
+            }
+        });
         findViewById(R.id.addSgksMember).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                strName = metName.getText().toString().trim();
-                strContactNumber = metContact.getText().toString().trim();
+                strFirstName = metFirstName.getText().toString().trim();
+                strLastName = metLastName.getText().toString().trim();
+                strMiddleName = metMiddleName.getText().toString().trim();
+                strEmail = metEmail.getText().toString().trim();
+                strContact = metContact.getText().toString().trim();
+                strAddress = metAddress.getText().toString().trim();
 
-                if (strName.isEmpty()) {
-                    metName.setError("Please Enter your Name");
-                    metName.requestFocus();
+                if (strFirstName.isEmpty()) {
+                    metFirstName.setError("Please Enter your First Name");
+                    metFirstName.requestFocus();
                     return;
-                }  else if (strContactNumber.isEmpty()) {
-                    metContact.setError("Please Enter your Contact Number");
-                    metContact.requestFocus();
+                }  else if (strLastName.isEmpty()) {
+                    metLastName.setError("Please Enter your Last Name");
+                    metLastName.requestFocus();
                     return;
-                }else if (spArea.getSelectedItemId() == 0) {
-                    Toast.makeText(mContext, "Please Select SGKS Area", Toast.LENGTH_SHORT).show();
+                }  else if (strMiddleName.isEmpty()) {
+                    metMiddleName.setError("Please Enter your Middle Name");
+                    metMiddleName.requestFocus();
+                    return;
+                } else if(spCity.getSelectedItemId() == 0){
+                    Toast.makeText(mContext, "Please Select City", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-                        requestAddToSgksContentAPI();
+                        //requestAddToSgksContentAPI();
                     } else {
                         new AppCommonMethods(mContext).showAlert(mContext
                                 .getString(R.string.noInternet));
@@ -107,17 +172,22 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 
     private void initializeViews() {
         mContext = AddMeToSgksActivity.this;
-        metName =  findViewById(R.id.etName);
+        metFirstName =  findViewById(R.id.etFirstName);
+        metMiddleName = findViewById(R.id.etMiddleName);
+        metLastName = findViewById(R.id.etLastName);
         metContact = findViewById(R.id.etContact);
-        metName.requestFocus();
-        spArea =  findViewById(R.id.spArea);
-
+        metEmail = findViewById(R.id.etEmail);
+        metAddress = findViewById(R.id.etAddress);
+        spCity = findViewById(R.id.spCity);
+        spBloodGroup = findViewById(R.id.spBloodGroup);
+        rbMale = findViewById(R.id.rbMale);
+        rbFemale = findViewById(R.id.rbFemale);
+        tvDob = findViewById(R.id.tvDob);
+        metFirstName.requestFocus();
     }
 
     public void clearDataAddMeSGKS() {
-        metName.setText("");
-        metContact.setText("");
-        spArea.setSelection(0);
+
     }
 
     @Override
@@ -140,73 +210,81 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         return arrSgksArea;
     }
 
-    private void requestAddToSgksContentAPI() {
-        final ProgressDialog pDialog = new ProgressDialog(mContext);
-        pDialog.setMessage("Loading, Please wait...");
-        pDialog.setCancelable(false);
-        pDialog.show();
+    private void requestBloodGroup () {
 
-        strName = metName.getText().toString().trim();
-        strContactNumber = metContact.getText().toString().trim();
-        String strAreaAddSGKS = spArea.getSelectedItem().toString();
-        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
-
-        JSONObject params = new JSONObject();
-        try {
-            params.put("fullname", strName);
-            params.put("area", strAreaAddSGKS.trim());
-            params.put("cont_number", strContactNumber);
-            params.put("sgks_city", currentCity);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest jsonObjectRequest =
-                new JsonObjectRequest(Request.Method.POST, AppURLs.API_ADDME_TO_SGKS, params,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        new AppCommonMethods().LOG(0, TAG, response.toString());
-//On Response
-                        if (response.has("message")) {
-                            try {
-                                Toast.makeText(mContext, "" + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                clearDataAddMeSGKS();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        pDialog.dismiss();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                pDialog.dismiss();
-                NetworkResponse response = error.networkResponse;
-                if (response != null) {
-                    new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));
-                    try {
-                        if (response.statusCode == STATUS_SOMETHING_WENT_WRONG) {
-                            new AppCommonMethods(mContext).showAlert("" + (new JSONObject(new String(response.data))).getString("message"));
-                        } else {
-                            new AppCommonMethods(mContext).showAlert("" + (getString(R.string.optional_api_error)));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Accept", "application/json; charset=UTF-8");
-                return headers;
-            }
-        };
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "addMeToSGKS");
     }
+
+    private void requestCity () {
+
+    }
+
+//    private void requestAddToSgksContentAPI() {
+//        final ProgressDialog pDialog = new ProgressDialog(mContext);
+//        pDialog.setMessage("Loading, Please wait...");
+//        pDialog.setCancelable(false);
+//        pDialog.show();
+//
+//        /*strName = metName.getText().toString().trim();
+//        strContactNumber = metContact.getText().toString().trim();
+//        String strAreaAddSGKS = spArea.getSelectedItem().toString();
+//        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
+//
+//        JSONObject params = new JSONObject();
+//        try {
+//            params.put("fullname", strName);
+//            params.put("area", strAreaAddSGKS.trim());
+//            params.put("cont_number", strContactNumber);
+//            params.put("sgks_city", currentCity);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }*/
+//
+//        JsonObjectRequest jsonObjectRequest =
+//                new JsonObjectRequest(Request.Method.POST, AppURLs.API_ADDME_TO_SGKS, params,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        new AppCommonMethods().LOG(0, TAG, response.toString());
+////On Response
+//                        if (response.has("message")) {
+//                            try {
+//                                Toast.makeText(mContext, "" + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                clearDataAddMeSGKS();
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                        pDialog.dismiss();
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                pDialog.dismiss();
+//                NetworkResponse response = error.networkResponse;
+//                if (response != null) {
+//                    new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));
+//                    try {
+//                        if (response.statusCode == STATUS_SOMETHING_WENT_WRONG) {
+//                            new AppCommonMethods(mContext).showAlert("" + (new JSONObject(new String(response.data))).getString("message"));
+//                        } else {
+//                            new AppCommonMethods(mContext).showAlert("" + (getString(R.string.optional_api_error)));
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }
+//        ) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Accept", "application/json; charset=UTF-8");
+//                return headers;
+//            }
+//        };
+//        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "addMeToSGKS");
+//    }
 
     private ArrayAdapter<String> getStringArrayAdapter(ArrayList<String> arrayList) {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayList) {
@@ -232,3 +310,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         return arrayAdapter;
     }
 }
+
+
+
