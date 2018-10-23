@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.NotificationCompat;
@@ -46,7 +47,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Context mContext;
     private static final String APP_DATABASE_CREATED = "notDatabaseCreated";
     private ViewPager mViewPager;
-        private HomeViewPagerAdapter viewPagerAdapter;
+    private HomeViewPagerAdapter viewPagerAdapter;
     private AlertDialog alertDialog;
     private TextView mTvMemberCount;
     private LinearLayout mLL_MemberCount;
@@ -60,6 +61,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private int intClassifiedTabIndex = 4;
     private boolean isClassifiedCountApplied = false;
     private Toolbar toolbar;
+    private FloatingActionButton mFabAddNewMember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,11 +159,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void initializeViews() {
         mViewPager =  findViewById(R.id.homeViewPager);
         TabLayout mTabLayout =  findViewById(R.id.tavLayout);
+        mFabAddNewMember = findViewById(R.id.fabAddNewMember);
         viewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), mContext);
         mViewPager.setAdapter(viewPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
         //To start Committee Home
         mViewPager.setCurrentItem(2);
+        mFabAddNewMember.setVisibility(View.VISIBLE);
+        mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
+                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+                startActivity(intentAdd);
+            }
+        });
+
         mViewPager.setOffscreenPageLimit(5);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -172,6 +185,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onPageSelected(int position) {
                 FragmentInterface fragment = (FragmentInterface) viewPagerAdapter.instantiateItem(mViewPager, position);
+                Log.i("@@@", "onPageSelected: "+position);
                 if (fragment != null) {
                     fragment.fragmentBecameVisible();
                 }
@@ -192,6 +206,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         e.printStackTrace();
                     }
                     AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
+                }
+                if (position == 2){
+                    mFabAddNewMember.setVisibility(View.VISIBLE);
+                } else {
+                    mFabAddNewMember.setVisibility(View.GONE);
                 }
             }
 

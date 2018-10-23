@@ -67,6 +67,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private EditText metContact;
     private EditText metEmail;
     private EditText metAddress;
+    private TextView tvDob;
     private Spinner spBloodGroup;
     private Spinner spCity;
     private String TAG = "AddMeToSgksActivity";
@@ -77,17 +78,17 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private String strEmail;
     private String strAddress;
     private String strDateOfBirth;
-    ArrayList<String> arrBloodGroup = new ArrayList<>();
-    ArrayList<String> arrCity = new ArrayList<>();
-    RadioButton rbMale;
-    RadioButton rbFemale;
-    private TextView tvDob;
+    private ArrayList<String> arrBloodGroup = new ArrayList<>();
+    private ArrayList<String> arrCity = new ArrayList<>();
+    private RadioButton rbMale;
+    private RadioButton rbFemale;
     private DatePickerDialog datePickerDialog;
-    Calendar calendar;
+    private Calendar calendar;
     private ImageView ivProfilePicture;
-    private  ImageView ivAddImage;
+    private ImageView ivAddImage;
     private ImageUtilityHelper imageUtilityHelper;
     private Bitmap bitmapProfile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -239,6 +240,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 
     }
 
+    private void sendImageToServerRequest() {}
+
 //    private void requestAddToSgksContentAPI() {
 //        final ProgressDialog pDialog = new ProgressDialog(mContext);
 //        pDialog.setMessage("Loading, Please wait...");
@@ -350,11 +353,11 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 //                    For new camera functionality
                     imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
                     if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-/*//                        bitmapProfile = imageUtilityHelper.bitmapProfile;
-//                        mIvMyImage.setImageBitmap(bitmapProfile);
+                      bitmapProfile = imageUtilityHelper.bitmapProfile;
+                        ivProfilePicture.setImageBitmap(bitmapProfile);
                         //Uploading (bitmapProfileImage) to server using API.
                         // If successful then set image to (mIvMyImage).
-                        sendImageToServerRequest();*/
+                        sendImageToServerRequest();
                     } else return;
                 default:
                     break;
