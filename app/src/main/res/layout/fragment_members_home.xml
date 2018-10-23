@@ -80,15 +80,6 @@
         android:background="@color/colorAppBackground"
         android:scrollbars="none"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabAddNewMember"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen_40dp"
-        android:layout_marginRight="@dimen/dimen_16dp"
-        android:backgroundTint="@color/colorAddFab"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/ic_add_green" />
+
 
 </RelativeLayout>

@@ -89,15 +89,15 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mRvMemberList = mParentView.findViewById(R.id.rvMemberList);
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
         mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
-        mFabAddNewMember = mParentView.findViewById(R.id.fabAddNewMember);
-        mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
-                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
-                startActivity(intentAdd);
-            }
-        });
+//        mFabAddNewMember = mParentView.findViewById(R.id.fabAddNewMember);
+//        mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
+//                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+//                startActivity(intentAdd);
+//            }
+//        });
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
