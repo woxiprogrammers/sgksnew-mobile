@@ -1,6 +1,7 @@
 package com.woxi.sgks_member.miscellaneous;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -37,6 +38,7 @@ import com.woxi.sgks_member.models.SGKSAreaItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppURLs;
 import com.woxi.sgks_member.utils.ImageUtilityHelper;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -198,7 +200,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         ivProfilePicture = findViewById(R.id.ivProfileImage);
         ivAddImage = findViewById(R.id.ivAddImage);
         metFirstName.requestFocus();
-
+        imageUtilityHelper = new ImageUtilityHelper(mContext);
         ivAddImage.setOnClickListener(AddMeToSgksActivity.this);
 
 
@@ -333,6 +335,33 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         //Step 5. Call image chooser function to get app list.
         Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
         startActivityForResult(imageChooserIntent, IMAGE_CHOOSER_CODE);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case AppConstants.USER_LOGIN_ACTIVITY_RESULT_CODE:
+                    //setProfileData();
+                    break;
+                case CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE:
+                case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                case AddMeToSgksActivity.IMAGE_CHOOSER_CODE:
+//                    For new camera functionality
+                    imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
+                    if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+/*//                        bitmapProfile = imageUtilityHelper.bitmapProfile;
+//                        mIvMyImage.setImageBitmap(bitmapProfile);
+                        //Uploading (bitmapProfileImage) to server using API.
+                        // If successful then set image to (mIvMyImage).
+                        sendImageToServerRequest();*/
+                    } else return;
+                default:
+                    break;
+            }
+        } else {
+            onBackPressed();
+        }
     }
 
     @Override

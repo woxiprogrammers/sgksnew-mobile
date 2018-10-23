@@ -30,4 +30,5 @@ public interface AppConstants {
     String PREFS_LOCAL_CLASSIFIED_ID = "localClassifiedIDs";
     int IMAGE_CHOOSER_CODE = 205;
     int WRITE_PERMISSION_CODE = 200;
+    int USER_LOGIN_ACTIVITY_RESULT_CODE = 1212;
 }
