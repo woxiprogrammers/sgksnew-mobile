@@ -36,6 +36,7 @@ import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.models.SGKSAreaItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppURLs;
+import com.woxi.sgks_member.utils.ImageUtilityHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,7 +56,7 @@ import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT
  * <p>This class is used for Add Me To Sgks page</p>
  * Created by Rohit.
  */
-public class AddMeToSgksActivity extends AppCompatActivity implements AppConstants {
+public class AddMeToSgksActivity extends AppCompatActivity implements AppConstants, View.OnClickListener {
     private Context mContext;
     private EditText metFirstName;
     private EditText metLastName;
@@ -82,6 +83,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     Calendar calendar;
     private ImageView ivProfilePicture;
     private  ImageView ivAddImage;
+    private ImageUtilityHelper imageUtilityHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -197,8 +199,11 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         ivAddImage = findViewById(R.id.ivAddImage);
         metFirstName.requestFocus();
 
+        ivAddImage.setOnClickListener(AddMeToSgksActivity.this);
+
 
     }
+
 
     public void clearDataAddMeSGKS() {
 
@@ -322,6 +327,25 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         };
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return arrayAdapter;
+    }
+
+    private void getImageChooser() {
+        //Step 5. Call image chooser function to get app list.
+        Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
+        startActivityForResult(imageChooserIntent, IMAGE_CHOOSER_CODE);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ivAddImage:
+                if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_PERMISSION_CODE);
+                } else {
+                    getImageChooser();
+                }
+                break;
+        }
     }
 }
 

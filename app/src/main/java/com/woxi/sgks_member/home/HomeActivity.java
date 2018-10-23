@@ -136,6 +136,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -232,6 +233,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
+
     private boolean isSyncServiceRunning(Class<?> serviceClass) {
         ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo runningServiceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
@@ -241,6 +243,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         return false;
     }
+
     private void syncLocalStorageSyncService(Context applicationContext) {
         Intent intentSyncService = new Intent(applicationContext, DataSyncService.class);
         applicationContext.startService(intentSyncService);
@@ -258,6 +261,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NotificationManager mNotifyMgr = (NotificationManager) applicationContext.getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(AppConstants.SYNC_NOTIFICATION_ID, mBuilder.build());
     }
+
     public static void stopLocalStorageSyncService(Context applicationContext) {
         AppController.getInstance().cancelPendingRequests(applicationContext.getString(R.string.tag_local_storage_sync));
         Intent intentSyncService = new Intent(applicationContext, DataSyncService.class);
@@ -265,7 +269,4 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NotificationManager mNotifyMgr = (NotificationManager) applicationContext.getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.cancel(AppConstants.SYNC_NOTIFICATION_ID);
     }
-
-
-
 }
