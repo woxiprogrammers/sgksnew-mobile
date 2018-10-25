@@ -135,18 +135,40 @@
                 android:paddingStart="@dimen/v8"
                 android:text="@string/select_gender"
                 android:textColor="@color/colorBlack" />
-
-            <android.support.v7.widget.AppCompatRadioButton
+            <RadioGroup
+                android:id="@+id/rgGender"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:layout_gravity="center">
+                <RadioButton
+                    android:id="@+id/rbMale"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/male"
+                    android:layout_weight="1"
+                    />
+                <RadioButton
+                    android:id="@+id/rbFemale"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/female"
+                    android:layout_weight="1"/>
+            </RadioGroup>
+            <!--<android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/rbMale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/male"/>
+                android:text="@string/male"
+                android:layout_weight="0.2"/>
 
             <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/rbFemale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/female"/>
+                android:text="@string/female"
+                android:layout_weight="0.1"/>-->
         </LinearLayout>
 
         <LinearLayout

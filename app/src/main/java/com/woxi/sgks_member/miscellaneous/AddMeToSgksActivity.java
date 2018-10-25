@@ -21,6 +21,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,14 +81,14 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private String strDateOfBirth;
     private ArrayList<String> arrBloodGroup = new ArrayList<>();
     private ArrayList<String> arrCity = new ArrayList<>();
-    private RadioButton rbMale;
-    private RadioButton rbFemale;
+    private RadioButton rbGender;
     private DatePickerDialog datePickerDialog;
     private Calendar calendar;
     private ImageView ivProfilePicture;
     private ImageView ivAddImage;
     private ImageUtilityHelper imageUtilityHelper;
     private Bitmap bitmapProfile;
+    private RadioGroup rgGender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,17 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         requestBloodGroup();
         requestCity();
         initializeViews();
+
+        rgGender.clearCheck();
+        rgGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                rbGender = findViewById(checkedId);
+                if(null != rbGender && checkedId != -1){
+                    Toast.makeText(AddMeToSgksActivity.this, rbGender.getText(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
         //Setting 1st choice as hint
@@ -186,7 +198,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         });
     }
 
-
     private void initializeViews() {
         mContext = AddMeToSgksActivity.this;
         metFirstName =  findViewById(R.id.etFirstName);
@@ -197,16 +208,14 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metAddress = findViewById(R.id.etAddress);
         spCity = findViewById(R.id.spCity);
         spBloodGroup = findViewById(R.id.spBloodGroup);
-        rbMale = findViewById(R.id.rbMale);
-        rbFemale = findViewById(R.id.rbFemale);
         tvDob = findViewById(R.id.tvDob);
         ivProfilePicture = findViewById(R.id.ivProfileImage);
         ivAddImage = findViewById(R.id.ivAddImage);
+        rgGender = findViewById(R.id.rgGender);
         metFirstName.requestFocus();
         imageUtilityHelper = new ImageUtilityHelper(mContext);
         ivAddImage.setOnClickListener(AddMeToSgksActivity.this);
     }
-
 
     public void clearDataAddMeSGKS() {
 
