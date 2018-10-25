@@ -16,14 +16,14 @@
         android:layout_height="wrap_content"
         android:background="@color/colorWhite"
         android:baselineAligned="false"
-        android:elevation="4dp"
+        android:elevation="@dimen/v4"
         android:orientation="horizontal"
         tools:targetApi="lollipop">
 
         <ImageView
             android:id="@+id/ivMemberHome"
-            android:layout_width="48dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/dimen_40dp"
+            android:layout_height="@dimen/dimen_40dp"
             android:contentDescription="home"
             android:gravity="center"
             android:paddingBottom="@dimen/v4"
@@ -48,8 +48,8 @@
 
         <ImageView
             android:id="@+id/ivSearchMember"
-            android:layout_width="48dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/dimen_48dp"
+            android:layout_height="@dimen/dimen_40dp"
             android:layout_gravity="center"
             android:padding="@dimen/v4"
             android:src="@drawable/ic_search"/>
@@ -64,7 +64,7 @@
 
         <ProgressBar
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/dimen_40dp"
             android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 
@@ -79,4 +79,7 @@
         android:layout_marginTop="@dimen/v8"
         android:background="@color/colorAppBackground"
         android:scrollbars="none"/>
+
+
+
 </RelativeLayout>

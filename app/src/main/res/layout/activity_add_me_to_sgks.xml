@@ -1,66 +1,242 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorWhite"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:mContext="com.woxi.miscellaneous.AddMeToSgksActivity">
-
-    <EditText
-        android:id="@+id/etName"
-        style="@style/customEditText_16"
-        android:layout_marginBottom="@dimen/v8"
-        android:hint="Enter Full Name"
-        android:inputType="textPersonName"
-        android:paddingLeft="@dimen/v4"
-        android:textColor="@color/colorBlack" />
-
-    <EditText
-        android:id="@+id/etContact"
-        style="@style/customEditText_16"
-        android:layout_marginBottom="@dimen/v8"
-        android:hint="Contact Number"
-        android:inputType="phone"
-        android:paddingLeft="@dimen/v8"
-        android:textColor="@color/colorBlack" />
-
+    android:layout_height="match_parent" >
     <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/v40"
-        android:layout_marginBottom="@dimen/v8"
-        android:orientation="horizontal">
-
-        <TextView
-            style="@style/customTextView_16_Normal"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:paddingStart="@dimen/v8"
-            android:text="Select Area : "
-            android:textColor="@color/colorBlack" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorWhite"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:animateLayoutChanges="true"
+        android:scrollbars="none"
+        android:fillViewport="true"
+        tools:mContext="com.woxi.miscellaneous.AddMeToSgksActivity">
 
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/edit_text_border">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-            <Spinner
-                android:id="@+id/spArea"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+            <ImageView
+                android:id="@+id/ivProfileImage"
+                android:layout_width="@dimen/member_profile_width_height"
+                android:layout_height="@dimen/member_profile_width_height"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/v8"
+                android:contentDescription="Member Image"
+                android:background="@drawable/edit_text_border"/>
+
+            <ImageView
+                android:id="@+id/ivAddImage"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_add_image_black"
+                android:layout_centerHorizontal="true" />
         </RelativeLayout>
-    </LinearLayout>
 
-    <TextView
-        android:id="@+id/addSgksMember"
-        style="@style/customButton_16"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/v16"
-        android:text="Add Me" />
-</LinearLayout>
+
+        <EditText
+            android:id="@+id/etFirstName"
+            style="@style/customEditText_16"
+            android:layout_marginBottom="@dimen/v8"
+            android:hint="@string/enter_first_name"
+            android:inputType="textPersonName"
+            android:paddingLeft="@dimen/v4"
+            android:textColor="@color/colorBlack" />
+
+        <EditText
+            android:id="@+id/etMiddleName"
+            style="@style/customEditText_16"
+            android:layout_marginBottom="@dimen/v8"
+            android:hint="@string/enter_middle_name"
+            android:inputType="textPersonName"
+            android:paddingLeft="@dimen/v4"
+            android:textColor="@color/colorBlack" />
+
+        <EditText
+            android:id="@+id/etLastName"
+            style="@style/customEditText_16"
+            android:layout_marginBottom="@dimen/v8"
+            android:hint="@string/enter_last_name"
+            android:inputType="textPersonName"
+            android:paddingLeft="@dimen/v8"
+            android:textColor="@color/colorBlack" />
+
+        <EditText
+            android:id="@+id/etContact"
+            style="@style/customEditText_16"
+            android:layout_marginBottom="@dimen/v8"
+            android:hint="@string/enter_contactNumber"
+            android:inputType="phone"
+            android:paddingLeft="@dimen/v8"
+            android:textColor="@color/colorBlack" />
+
+        <EditText
+            android:id="@+id/etEmail"
+            style="@style/customEditText_16"
+            android:layout_marginBottom="@dimen/v8"
+            android:hint="@string/enter_email"
+            android:inputType="textEmailAddress"
+            android:paddingLeft="@dimen/v8"
+            android:textColor="@color/colorBlack" />
+
+        <LinearLayout
+            android:id="@+id/llSelectDate"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/v40"
+            android:layout_marginBottom="@dimen/v8"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tvSelectDob"
+                style="@style/customTextView_16_Normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="@dimen/v8"
+                android:text="@string/select_dateOfBirth"
+                android:textColor="@color/colorBlack" />
+            <TextView
+                android:id="@+id/tvDob"
+                style="@style/customTextView_16_Normal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:hint="dd-mm-yyyy"
+                android:textColor="@color/colorBlack"
+                android:background="@drawable/edit_text_border"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/llSelectGender"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/v40"
+            android:layout_marginBottom="@dimen/v8"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvSelectGender"
+                style="@style/customTextView_16_Normal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingStart="@dimen/v8"
+                android:text="@string/select_gender"
+                android:textColor="@color/colorBlack" />
+            <RadioGroup
+                android:id="@+id/rgGender"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:layout_gravity="center">
+                <RadioButton
+                    android:id="@+id/rbMale"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/male"
+                    android:layout_weight="1"
+                    />
+                <RadioButton
+                    android:id="@+id/rbFemale"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/female"
+                    android:layout_weight="1"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llSelectBloodGroup"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/v40"
+            android:layout_marginBottom="@dimen/v8"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/customTextView_16_Normal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingStart="@dimen/v8"
+                android:text="@string/select_bloodGroup"
+                android:textColor="@color/colorBlack" />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/edit_text_border">
+
+                <Spinner
+                    android:id="@+id/spBloodGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llSelectCity"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/v40"
+            android:layout_marginBottom="@dimen/v8"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/customTextView_16_Normal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingStart="@dimen/v8"
+                android:text="@string/select_city"
+                android:textColor="@color/colorBlack" />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/edit_text_border">
+
+                <Spinner
+                    android:id="@+id/spCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvEnterAddress"
+            style="@style/customTextView_16_Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/v8"
+            android:text="@string/enter_address"
+            android:textColor="@color/colorBlack" />
+
+        <EditText
+            android:id="@+id/etAddress"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_150dp"
+            android:background="@drawable/edit_text_border"
+            android:inputType="textMultiLine" />
+
+
+        <TextView
+            android:id="@+id/addSgksMember"
+            style="@style/customButton_16"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/v16"
+            android:text="Add Me" />
+    </LinearLayout>
+</ScrollView>

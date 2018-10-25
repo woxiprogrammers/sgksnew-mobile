@@ -28,4 +28,7 @@ public interface AppConstants {
     String IS_DATABASE_VERSION_CHANGED = "isDataBaseVersionChanged";
     String PREFS_LATEST_CLASSIFIED_ID = "classifiedIds";
     String PREFS_LOCAL_CLASSIFIED_ID = "localClassifiedIDs";
+    int IMAGE_CHOOSER_CODE = 205;
+    int WRITE_PERMISSION_CODE = 200;
+    int USER_LOGIN_ACTIVITY_RESULT_CODE = 1212;
 }

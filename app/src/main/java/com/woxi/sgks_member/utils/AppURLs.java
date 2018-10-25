@@ -27,6 +27,8 @@ public class AppURLs {
     public static final String API_SGKS_SUGGESTIONS=BASE_URL+"sgks-public/sgks-suggestion";
     public static final String API_SKS_OFFLINE=BASE_URL + "sgks-offline/local-storage-offline";
 
+    public static final String API_BLOOD_GROUP = "http://www.mocky.io/v2/5bc6d1263200005b000b0420";
+
 
 
 

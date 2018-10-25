@@ -3,6 +3,7 @@ package com.woxi.sgks_member.home;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +30,7 @@ import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.interfaces.EndlessRvScrollListener;
 import com.woxi.sgks_member.interfaces.FragmentInterface;
 import com.woxi.sgks_member.local_storage.DatabaseQueryHandler;
+import com.woxi.sgks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgks_member.models.MemberDetailsItem;
 import com.woxi.sgks_member.models.MessageDetailsItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
@@ -63,6 +65,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private String strNoResults = "";
     private int oldPageNumber;
     private int pageNumber = 0;
+    private FloatingActionButton mFabAddNewMember;
 
     public MemberHomeNewFragment() {
         // Required empty public constructor
@@ -86,6 +89,15 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mRvMemberList = mParentView.findViewById(R.id.rvMemberList);
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
         mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
+//        mFabAddNewMember = mParentView.findViewById(R.id.fabAddNewMember);
+//        mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
+//                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+//                startActivity(intentAdd);
+//            }
+//        });
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);

@@ -83,4 +83,17 @@
 
     <include layout="@layout/content_home" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabAddNewMember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_40dp"
+        android:layout_marginRight="@dimen/dimen_16dp"
+        android:backgroundTint="@color/colorAddFab"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/ic_add_green"
+        android:visibility="gone"/>
+
 </android.support.design.widget.CoordinatorLayout>
