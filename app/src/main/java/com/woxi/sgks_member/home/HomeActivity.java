@@ -35,7 +35,6 @@ import com.woxi.sgks_member.interfaces.FragmentInterface;
 import com.woxi.sgks_member.local_storage.DataSyncService;
 import com.woxi.sgks_member.miscellaneous.AccountsActivity;
 import com.woxi.sgks_member.miscellaneous.AddMeToSgksActivity;
-import com.woxi.sgks_member.miscellaneous.ContactUsActivity;
 import com.woxi.sgks_member.miscellaneous.MiscellaneousViewActivity;
 import com.woxi.sgks_member.miscellaneous.SettingsActivity;
 import com.woxi.sgks_member.miscellaneous.SuggestionActivity;
@@ -89,8 +88,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_add_me_sgks:
-                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
-                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+                Intent intentAdd = new Intent(mContext, Verification.class);
                 startActivity(intentAdd);
                 break;
             case R.id.nav_suggestion:
@@ -169,8 +167,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
-                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+                Intent intentAdd = new Intent(mContext, Verification.class);
+//                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
             }
         });

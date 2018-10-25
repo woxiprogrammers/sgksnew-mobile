@@ -74,4 +74,6 @@
     <string name="select_city">Select City</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
+    <string name="enter_otp">Enter OTP</string>
+    <string name="verification">Verification</string>
 </resources>
