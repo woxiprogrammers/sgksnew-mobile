@@ -70,6 +70,7 @@
     <string name="select_gender">Select Gender</string>
     <string name="select_dateOfBirth">Select Date of Birth</string>
     <string name="select_bloodGroup">Select Blood Group</string>
+    <string name="bloodGroup">Blood Group</string>
     <string name="enter_address">Enter Address</string>
     <string name="select_city">Select City</string>
     <string name="male">Male</string>

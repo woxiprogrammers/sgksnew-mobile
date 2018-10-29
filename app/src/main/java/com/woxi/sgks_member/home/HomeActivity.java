@@ -89,6 +89,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         switch (id) {
             case R.id.nav_add_me_sgks:
                 Intent intentAdd = new Intent(mContext, Verification.class);
+                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
                 break;
             case R.id.nav_suggestion:
@@ -168,7 +169,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 Intent intentAdd = new Intent(mContext, Verification.class);
-//                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
             }
         });

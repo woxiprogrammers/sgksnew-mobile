@@ -148,6 +148,16 @@ public class MemberDetailsActivity extends AppCompatActivity {
             mFloatingLocation.setVisibility(View.GONE);
         }
 
+        FloatingActionButton mFloatingEdit = findViewById(R.id.memFloatingEdit);
+        mFloatingEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent verificationIntent = new Intent(MemberDetailsActivity.this,Verification.class);
+                verificationIntent.putExtra("activityType","MemberDetailsActivity");
+                startActivity(verificationIntent);
+            }
+        });
+
         //Loading member image from url.
         final ImageView mIvMemImage = ((ImageView) findViewById(R.id.ivMemDetImage));
         String strUrl = memberDetailsItem.getMemberImageURL();
