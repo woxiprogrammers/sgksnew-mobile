@@ -217,6 +217,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     mFabAddNewMember.setVisibility(View.VISIBLE);
                 } else {
                     mFabAddNewMember.setVisibility(View.GONE);
+                    mViewPager.setCurrentItem(2);
+                    //Other tabs not in use for 1st app release
+                    //remove other tabs are ready
+                    if(position == 0){
+                        new AppCommonMethods(mContext).showAlert("Events Comming Soon.....");
+                    }
+                    if(position == 1){
+                        new AppCommonMethods(mContext).showAlert("Committies Comming Soon.....");
+                    }
+                    if(position == 3){
+                        new AppCommonMethods(mContext).showAlert("Messages Comming Soon.....");
+                    }
+                    if(position == 4){
+                        new AppCommonMethods(mContext).showAlert("Classiffieds Comming Soon.....");
+                    }
+
                 }
             }
 
