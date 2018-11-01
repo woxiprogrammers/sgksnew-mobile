@@ -24,10 +24,13 @@ public class AppURLs {
     public static final String API_SKS_OFFLINE=BASE_URL + "sgks-offline/local-storage-offline";
 
     //New API
+    public static final String API_SEND_OTP = BASE_URL + "sgks-miss/get-otp";
+    public static final String API_VALIDATE_OTP = BASE_URL + "sgks-miss/verify-otp";
     public static final String API_UPLOAD_IMAGE = BASE_URL + "sgks-miss/image-upload";
     public static final String API_GET_CITY = BASE_URL + "sgks-miss/get-city";
     public static final String API_GET_BLOOD_GROUP = BASE_URL + "sgks-miss/get-bloodgroups";
     public static final String API_ADD_MEMBER = BASE_URL + "sgks-member/add-member";
+
 
 
 

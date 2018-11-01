@@ -251,73 +251,73 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 
     private void sendImageToServerRequest() {}
 
-//    private void requestAddToSgksContentAPI() {
-//        final ProgressDialog pDialog = new ProgressDialog(mContext);
-//        pDialog.setMessage("Loading, Please wait...");
-//        pDialog.setCancelable(false);
-//        pDialog.show();
-//
-//        /*strName = metName.getText().toString().trim();
-//        strContactNumber = metContact.getText().toString().trim();
-//        String strAreaAddSGKS = spArea.getSelectedItem().toString();
-//        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
-//
-//        JSONObject params = new JSONObject();
-//        try {
-//            params.put("fullname", strName);
-//            params.put("area", strAreaAddSGKS.trim());
-//            params.put("cont_number", strContactNumber);
-//            params.put("sgks_city", currentCity);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }*/
-//
-//        JsonObjectRequest jsonObjectRequest =
-//                new JsonObjectRequest(Request.Method.POST, AppURLs.API_ADDME_TO_SGKS, params,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        new AppCommonMethods().LOG(0, TAG, response.toString());
-////On Response
-//                        if (response.has("message")) {
-//                            try {
-//                                Toast.makeText(mContext, "" + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                clearDataAddMeSGKS();
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                        pDialog.dismiss();
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                pDialog.dismiss();
-//                NetworkResponse response = error.networkResponse;
-//                if (response != null) {
-//                    new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));
-//                    try {
-//                        if (response.statusCode == STATUS_SOMETHING_WENT_WRONG) {
-//                            new AppCommonMethods(mContext).showAlert("" + (new JSONObject(new String(response.data))).getString("message"));
-//                        } else {
-//                            new AppCommonMethods(mContext).showAlert("" + (getString(R.string.optional_api_error)));
-//                        }
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }
-//        ) {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Accept", "application/json; charset=UTF-8");
-//                return headers;
-//            }
-//        };
-//        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "addMeToSGKS");
-//    }
+    private void requestAddToSgksContentAPI() {
+        final ProgressDialog pDialog = new ProgressDialog(mContext);
+        pDialog.setMessage("Loading, Please wait...");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        /*strName = metName.getText().toString().trim();
+        strContactNumber = metContact.getText().toString().trim();
+        String strAreaAddSGKS = spArea.getSelectedItem().toString();
+        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
+*/
+       /* JSONObject params = new JSONObject();
+        try {
+            params.put("fullname", strName);
+            params.put("area", strAreaAddSGKS.trim());
+            params.put("cont_number", strContactNumber);
+            params.put("sgks_city", currentCity);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.POST, AppURLs.API_ADDME_TO_SGKS, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        new AppCommonMethods().LOG(0, TAG, response.toString());
+//On Response
+                        if (response.has("message")) {
+                            try {
+                                Toast.makeText(mContext, "" + response.getString("message"), Toast.LENGTH_SHORT).show();
+                                clearDataAddMeSGKS();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        pDialog.dismiss();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                pDialog.dismiss();
+                NetworkResponse response = error.networkResponse;
+                if (response != null) {
+                    new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));
+                    try {
+                        if (response.statusCode == STATUS_SOMETHING_WENT_WRONG) {
+                            new AppCommonMethods(mContext).showAlert("" + (new JSONObject(new String(response.data))).getString("message"));
+                        } else {
+                            new AppCommonMethods(mContext).showAlert("" + (getString(R.string.optional_api_error)));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Accept", "application/json; charset=UTF-8");
+                return headers;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "addMeToSGKS");*/
+    }
 
     private ArrayAdapter<String> getStringArrayAdapter(ArrayList<String> arrayList) {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayList) {
