@@ -188,7 +188,7 @@ public class Verification extends AppCompatActivity {
                         Toast.makeText(mContext, "Something Went Wrong", Toast.LENGTH_SHORT).show();
                     }
                 });
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "sendOTP");
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "send_OTP");
 
     }
 }

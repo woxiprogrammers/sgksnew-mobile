@@ -5,6 +5,8 @@ import android.util.Log;
 import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.models.AccountDetailsItem;
 import com.woxi.sgks_member.models.AccountYearItem;
+import com.woxi.sgks_member.models.BloodGroupItems;
+import com.woxi.sgks_member.models.CityItems;
 import com.woxi.sgks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgks_member.models.CommitteeDetailsItem;
 import com.woxi.sgks_member.models.EventDataItem;
@@ -65,6 +67,51 @@ public class AppParser implements AppConstants {
             }
         }
         return arrMainCommList;
+    }
+
+    public static Object parseBloodGroupResponse(String response) throws JSONException {
+        JSONObject jsonResponseObject = new JSONObject(response);
+        ArrayList<BloodGroupItems> arrBloodGroup = new ArrayList<>();
+        if(jsonResponseObject.has("data") && jsonResponseObject.getString("data") != null){
+            JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
+            if(jsonDataArray != null){
+                for(int arrIndexCount = 0 ; arrIndexCount < jsonDataArray.length() ; arrIndexCount++){
+                    BloodGroupItems bloodGroupItems = new BloodGroupItems();
+                    JSONObject jsonListObject = jsonDataArray.optJSONObject(arrIndexCount);
+                    if(jsonListObject.has("blood_id") && jsonListObject.getInt("blood_id") != 0){
+                        bloodGroupItems.setBlood_group_id(jsonListObject.getInt("blood_id"));
+                    }
+                    if(jsonListObject.has("blood_group") && jsonListObject.getString("blood_group") != null){
+                        bloodGroupItems.setBlood_group(jsonListObject.getString("blood_group"));
+                    }
+                    arrBloodGroup.add(bloodGroupItems);
+                }
+            }
+        }
+        return arrBloodGroup;
+    }
+
+    public static Object parseCityResponse(String response) throws JSONException {
+        JSONObject jsonResponseObject = new JSONObject(response);
+        ArrayList<CityItems> arrCityItems = new ArrayList<>();
+        if(jsonResponseObject.has("data") && jsonResponseObject.getString("data") != null){
+            JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
+            if(jsonDataArray != null){
+                for(int arrIndexCount = 0 ; arrIndexCount < jsonDataArray.length() ; arrIndexCount++){
+                    CityItems cityItem = new CityItems();
+                    JSONObject jsonListObject = jsonDataArray.optJSONObject(arrIndexCount);
+                    if(jsonListObject.has("city_id") && jsonListObject.getInt("city_id") != 0){
+                        cityItem.setCity_id(jsonListObject.getInt("city_id"));
+                    }
+                    if(jsonListObject.has("city") && jsonListObject.getString("city") != null){
+                        cityItem.setCity(jsonListObject.getString("city"));
+                    }
+                    arrCityItems.add(cityItem);
+                }
+            }
+        }
+        Log.i("@@@", "parseCityResponse: "+arrCityItems);
+        return arrCityItems;
     }
 
     public static Object parseMemberSearchResponse(String response) throws JSONException {

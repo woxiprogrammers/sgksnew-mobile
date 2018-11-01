@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +37,10 @@ import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.SplashAndCityActivity;
 import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.models.BloodGroupItems;
 import com.woxi.sgks_member.models.SGKSAreaItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppParser;
 import com.woxi.sgks_member.utils.AppURLs;
 import com.woxi.sgks_member.utils.ImageUtilityHelper;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -49,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
@@ -89,7 +93,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private ImageUtilityHelper imageUtilityHelper;
     private Bitmap bitmapProfile;
     private RadioGroup rgGender;
-
+    private ArrayAdapter<String> arrBloodGroupAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,19 +132,24 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 //        spArea.setAdapter(arrayAdapter);
 
         //adding Choose one to the 1st index position
-        arrBloodGroup.add(0,"Choose One");
-        arrBloodGroup.add(1,"A+");
-        arrBloodGroup.add(2,"b+");
 
-        arrCity.add(0,"Choose One");
-        arrCity.add(1,"Pune");
-        arrCity.add(2,"Mumbai");
+        /*arrBloodGroup.add(1,"A+");
+        arrBloodGroup.add(2,"A-");
+        arrBloodGroup.add(3,"B+");
+        arrBloodGroup.add(4,"B-");
+        arrBloodGroup.add(5,"O+");
+        arrBloodGroup.add(6,"O-");
+        arrBloodGroup.add(1,"AB+");
+        arrBloodGroup.add(2,"AB-");*/
 
-        ArrayAdapter<String> arrBloodGroupAdapter = getStringArrayAdapter(arrBloodGroup);
-        spBloodGroup.setAdapter(arrBloodGroupAdapter);
+//        arrCity.add(0,"Choose One");
 
-        ArrayAdapter<String> arrCityAdaptor = getStringArrayAdapter(arrCity);
-        spCity.setAdapter(arrCityAdaptor);
+
+        /*ArrayAdapter<String> arrBloodGroupAdapter = getStringArrayAdapter(arrBloodGroup);
+        spBloodGroup.setAdapter(arrBloodGroupAdapter);*/
+
+//        ArrayAdapter<String> arrCityAdaptor = getStringArrayAdapter(arrCity);
+//        spCity.setAdapter(arrCityAdaptor);
 
         //Open Date Picker
         tvDob.setOnClickListener(new View.OnClickListener() {
@@ -218,7 +227,12 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     }
 
     public void clearDataAddMeSGKS() {
-
+        metFirstName.setText("");
+        metMiddleName.setText("");
+        metLastName.setText("");
+        metContact.setText("");
+        metEmail.setText("");
+        tvDob.setHint("dd-mm-yyyy");
     }
 
     @Override
@@ -242,14 +256,90 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     }
 
     private void requestBloodGroup () {
-
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_BLOOD_GROUP, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                new AppCommonMethods(mContext).LOG(0,"blood_group",response.toString());
+                                if(response.has("data")) {
+                                    try {
+                                        Object resp = AppParser.parseBloodGroupResponse(response.toString());
+                                        arrBloodGroup = (ArrayList<String>) resp;
+                                        arrBloodGroup.add(0,"Choose One");
+                                        ArrayAdapter<String> arrBloodGroupAdapter = getStringArrayAdapter(arrBloodGroup);
+                                        spBloodGroup.setAdapter(arrBloodGroupAdapter);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        new AppCommonMethods(mContext).LOG(0,"error_blood_group",error.toString());
+                        Toast.makeText(mContext,"Failed",Toast.LENGTH_LONG).show();
+                    }
+                });
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "get_blood_group");
     }
 
     private void requestCity () {
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_CITY, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                new AppCommonMethods(mContext).LOG(0,"get_city",response.toString());
+                                if(response.has("data")){
+                                    try {
+                                        Object resp = AppParser.parseCityResponse(response.toString());
+                                        arrCity = (ArrayList<String>) resp;
+                                        arrCity.add(0,"Choose One");
+                                        ArrayAdapter<String> arrCityAdapter = getStringArrayAdapter(arrCity);
+                                        spCity.setAdapter(arrCityAdapter);
+                                    }  catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
 
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                new AppCommonMethods(mContext).LOG(0,"error_city",error.toString());
+                                Toast.makeText(mContext,"Failed",Toast.LENGTH_LONG).show();
+                            }
+                        });
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "get_city");
     }
 
-    private void sendImageToServerRequest() {}
+    private void sendImageToServerRequest() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("image_for","profile_img");
+            params.put("image",bitmapProfile);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_UPLOAD_IMAGE, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        new AppCommonMethods(mContext).LOG(0,"image_uploaded",response.toString());
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        new AppCommonMethods(mContext).LOG(0,"error_image_uploaded",error.toString());
+                    }
+                });
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "upload_image");
+
+    }
 
     private void requestAddToSgksContentAPI() {
         final ProgressDialog pDialog = new ProgressDialog(mContext);
@@ -362,11 +452,12 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 //                    For new camera functionality
                     imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
                     if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-                      bitmapProfile = imageUtilityHelper.bitmapProfile;
-                        ivProfilePicture.setImageBitmap(bitmapProfile);
+                        bitmapProfile = imageUtilityHelper.bitmapProfile;
+
                         //Uploading (bitmapProfileImage) to server using API.
                         // If successful then set image to (mIvMyImage).
                         sendImageToServerRequest();
+                        ivProfilePicture.setImageBitmap(bitmapProfile);
                     } else return;
                 default:
                     break;
