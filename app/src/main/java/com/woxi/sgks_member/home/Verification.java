@@ -66,7 +66,7 @@ public class Verification extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence mobileNumber, int start, int before, int count) {
-                if(mobileNumber.length() ==10){
+                if(mobileNumber.length() == 10){
                     tvErrorMessage.setVisibility(View.GONE);
                     strMobileNumber = mobileNumber.toString();
                     if(new AppCommonMethods(mContext).isNetworkAvailable()){
@@ -96,9 +96,13 @@ public class Verification extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence otp, int start, int before, int count) {
                 if(otp.length() == 6){
-                    tvErrorMessage.setVisibility(View.GONE);
                     strOtp = otp.toString();
-                    sendOtpToServer();
+                    tvErrorMessage.setVisibility(View.GONE);
+                    if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                        sendOtpToServer();
+                    } else {
+                        new AppCommonMethods(mContext).showAlert("You are Offline");
+                    }
                 } else {
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText("Please enter a valid 6 digit OTP");
@@ -117,14 +121,38 @@ public class Verification extends AppCompatActivity {
     }
 
     private void verifyOtp() {
-        if(true){
-            Intent addMemberIntent = new Intent(Verification.this, AddMeToSgksActivity.class);
-            addMemberIntent.putExtra("activityType", getString(R.string.add_me_sgks));
-            startActivity(addMemberIntent);
-        } else {
-            Toast.makeText(Verification.this,"Wrong OTP",Toast.LENGTH_SHORT).show();
+        pbVerify.setVisibility(View.VISIBLE);
+        JSONObject params = new JSONObject();
+        try {
+            params.put("mobile_number", strMobileNumber);
+            params.put("otp",strOtp);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.POST, AppURLs.API_VALIDATE_OTP, params,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                pbVerify.setVisibility(View.GONE);
+                                new AppCommonMethods(mContext).LOG(0,"OTP_VERIFIED",response.toString());
+                                if(response.has("message")){
+                                        Intent addMemberIntent = new Intent(Verification.this, AddMeToSgksActivity.class);
+                                        addMemberIntent.putExtra("activityType", getString(R.string.add_me_sgks));
+                                        startActivity(addMemberIntent);
+                                }
+                            }
+                        }, new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        pbVerify.setVisibility(View.GONE);
+                        new AppCommonMethods(mContext).LOG(0,"OTP_NOT_VERIFIED",error.toString());
+                        Toast.makeText(mContext,"Wrong OTP",Toast.LENGTH_LONG);
+                        etOtp.setText("");
 
+                    }
+                });
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "verify_OTP");
     }
 
     private void sendMobileNumberToServer() {
