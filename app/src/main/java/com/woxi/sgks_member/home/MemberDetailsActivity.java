@@ -57,7 +57,6 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private void initializeViews() {
         mContext = MemberDetailsActivity.this;
         strMobileNUmber = memberDetailsItem.getMemMobile();
-        Log.i("@@@", "initializeViews: "+strMobileNUmber);
         String strFName = "", strMName = "", strSurname = "";
         if (memberDetailsItem.getMemFirstName() != null) {
             strFName = memberDetailsItem.getMemFirstName();
