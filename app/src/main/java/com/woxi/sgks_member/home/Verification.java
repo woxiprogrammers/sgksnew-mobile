@@ -138,6 +138,7 @@ public class Verification extends AppCompatActivity {
                                 new AppCommonMethods(mContext).LOG(0,"OTP_VERIFIED",response.toString());
                                 if(response.has("message")){
                                         Intent addMemberIntent = new Intent(Verification.this, AddMeToSgksActivity.class);
+                                        addMemberIntent.putExtra("mobile_number",strMobileNumber);
                                         addMemberIntent.putExtra("activityType", getString(R.string.add_me_sgks));
                                         startActivity(addMemberIntent);
                                 }

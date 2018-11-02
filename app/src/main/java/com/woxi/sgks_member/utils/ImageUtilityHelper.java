@@ -34,7 +34,7 @@ import static android.app.Activity.RESULT_OK;
 public class ImageUtilityHelper {
     public Bitmap bitmapProfile = null;
     private Context mContext;
-    private File localImageFile;
+    public File localImageFile;
     private boolean isDeleteLocalImage;
     Intent chooserIntent;
 
@@ -162,7 +162,7 @@ public class ImageUtilityHelper {
     public void deleteLocalImage() {
         try {
             if (isDeleteLocalImage && localImageFile != null) {
-                localImageFile.delete();
+                //localImageFile.delete();
                 isDeleteLocalImage = false;
             } else {
                 isDeleteLocalImage = false;

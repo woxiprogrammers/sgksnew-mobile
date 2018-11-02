@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -36,8 +37,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.SplashAndCityActivity;
+import com.woxi.sgks_member.home.HomeActivity;
 import com.woxi.sgks_member.interfaces.AppConstants;
 import com.woxi.sgks_member.models.BloodGroupItems;
+import com.woxi.sgks_member.models.CityItems;
 import com.woxi.sgks_member.models.SGKSAreaItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppParser;
@@ -45,9 +48,11 @@ import com.woxi.sgks_member.utils.AppURLs;
 import com.woxi.sgks_member.utils.ImageUtilityHelper;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -80,13 +85,16 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private String strLastName;
     private String strMiddleName;
     private String strContact;
+    private String strGender;
+    private int intBloodGroupId;
+    private int intCityId;
     private String strEmail;
     private String strAddress;
     private String strDateOfBirth;
-    private ArrayList<String> arrBloodGroup = new ArrayList<>();
-    private ArrayList<String> arrCity = new ArrayList<>();
+    private String strImageName;
+    private ArrayList<BloodGroupItems> arrBloodGroup = new ArrayList<>();
+    private ArrayList<CityItems> arrCity = new ArrayList<>();
     private RadioButton rbGender;
-    private DatePickerDialog datePickerDialog;
     private Calendar calendar;
     private ImageView ivProfilePicture;
     private ImageView ivAddImage;
@@ -94,10 +102,15 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private Bitmap bitmapProfile;
     private RadioGroup rgGender;
     private ArrayAdapter<String> arrBloodGroupAdapter;
+    private Intent intent;
+    private ArrayList<String> arrCityNames;
+    private File fileProfileImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_me_to_sgks);
+        intent = getIntent();
+        strContact = intent.getStringExtra("mobile_number");
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.add_me_sgks);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -112,46 +125,36 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 rbGender = findViewById(checkedId);
                 if(null != rbGender && checkedId != -1){
-                    Toast.makeText(AddMeToSgksActivity.this, rbGender.getText(), Toast.LENGTH_SHORT).show();
+                    strGender = rbGender.getText().toString();
                 }
             }
         });
 
+        spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                intCityId = parent.getSelectedItemPosition();
+                Log.i("@@@", "onItemSelected: "+intCityId+1);
+                intCityId=+1;
+            }
 
-        //Setting 1st choice as hint
-//        ArrayList<String> arrSgksArea=new ArrayList<>();
-//        for(SGKSAreaItem sgksAreaItem: SplashAndCityActivity.sgksAreaItems){
-//            String s=sgksAreaItem.getAreaName();
-//            arrSgksArea.add(s);
-//
-//        }
-////        ArrayList<String> arrSgksArea = getSgksAreaList();
-//        arrSgksArea.add(0, "Choose One");
-//
-//        ArrayAdapter<String> arrayAdapter = getStringArrayAdapter(arrSgksArea);
-//        spArea.setAdapter(arrayAdapter);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-        //adding Choose one to the 1st index position
+            }
+        });
+        spBloodGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                intBloodGroupId = parent.getSelectedItemPosition();
+                intBloodGroupId=+1;
+            }
 
-        /*arrBloodGroup.add(1,"A+");
-        arrBloodGroup.add(2,"A-");
-        arrBloodGroup.add(3,"B+");
-        arrBloodGroup.add(4,"B-");
-        arrBloodGroup.add(5,"O+");
-        arrBloodGroup.add(6,"O-");
-        arrBloodGroup.add(1,"AB+");
-        arrBloodGroup.add(2,"AB-");*/
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-//        arrCity.add(0,"Choose One");
-
-
-        /*ArrayAdapter<String> arrBloodGroupAdapter = getStringArrayAdapter(arrBloodGroup);
-        spBloodGroup.setAdapter(arrBloodGroupAdapter);*/
-
-//        ArrayAdapter<String> arrCityAdaptor = getStringArrayAdapter(arrCity);
-//        spCity.setAdapter(arrCityAdaptor);
-
-        //Open Date Picker
+            }
+        });
         tvDob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -163,8 +166,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 DatePickerDialog datePickerDialog = new DatePickerDialog(AddMeToSgksActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int mYear, int mMonth, int mDay) {
-                        tvDob.setText(mDay + "/" + mMonth + "/" + mYear);
-                        strDateOfBirth = mDay + "/" + mMonth + "/" + mYear;
+                        tvDob.setText(mDay + "-" + mMonth + "-" + mYear);
+                        strDateOfBirth = mDay + "-" + mMonth + "-" + mYear;
                     }
                 }, year, month, day);
                 datePickerDialog.show();
@@ -177,30 +180,36 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 strLastName = metLastName.getText().toString().trim();
                 strMiddleName = metMiddleName.getText().toString().trim();
                 strEmail = metEmail.getText().toString().trim();
-                strContact = metContact.getText().toString().trim();
                 strAddress = metAddress.getText().toString().trim();
 
                 if (strFirstName.isEmpty()) {
                     metFirstName.setError("Please Enter your First Name");
                     metFirstName.requestFocus();
                     return;
-                }  else if (strLastName.isEmpty()) {
-                    metLastName.setError("Please Enter your Last Name");
-                    metLastName.requestFocus();
-                    return;
-                }  else if (strMiddleName.isEmpty()) {
+                }
+                if (strMiddleName.isEmpty()) {
                     metMiddleName.setError("Please Enter your Middle Name");
                     metMiddleName.requestFocus();
                     return;
-                } else if(spCity.getSelectedItemId() == 0){
+                }
+                if (strLastName.isEmpty()) {
+                    metLastName.setError("Please Enter your Last Name");
+                    metLastName.requestFocus();
+                    return;
+                }
+                if(strContact.isEmpty()) {
+                    Toast.makeText(mContext, "Please Enter Mobile NUmber", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+               /* if(spCity.getSelectedItemId() == 0){
                     Toast.makeText(mContext, "Please Select City", Toast.LENGTH_SHORT).show();
                     return;
-                } else {
+                }*/
+                 else{
                     if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-                        //requestAddToSgksContentAPI();
+                        requestAddMember();
                     } else {
-                        new AppCommonMethods(mContext).showAlert(mContext
-                                .getString(R.string.noInternet));
+                        new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.noInternet));
                     }
                 }
             }
@@ -213,6 +222,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metMiddleName = findViewById(R.id.etMiddleName);
         metLastName = findViewById(R.id.etLastName);
         metContact = findViewById(R.id.etContact);
+        metContact.setText(strContact);
+        metContact.setEnabled(false);
         metEmail = findViewById(R.id.etEmail);
         metAddress = findViewById(R.id.etAddress);
         spCity = findViewById(R.id.spCity);
@@ -224,15 +235,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metFirstName.requestFocus();
         imageUtilityHelper = new ImageUtilityHelper(mContext);
         ivAddImage.setOnClickListener(AddMeToSgksActivity.this);
-    }
-
-    public void clearDataAddMeSGKS() {
-        metFirstName.setText("");
-        metMiddleName.setText("");
-        metLastName.setText("");
-        metContact.setText("");
-        metEmail.setText("");
-        tvDob.setHint("dd-mm-yyyy");
     }
 
     @Override
@@ -265,9 +267,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                                 if(response.has("data")) {
                                     try {
                                         Object resp = AppParser.parseBloodGroupResponse(response.toString());
-                                        arrBloodGroup = (ArrayList<String>) resp;
-                                        arrBloodGroup.add(0,"Choose One");
-                                        ArrayAdapter<String> arrBloodGroupAdapter = getStringArrayAdapter(arrBloodGroup);
+                                        arrBloodGroup = (ArrayList<BloodGroupItems>) resp;
+                                        ArrayAdapter<BloodGroupItems> arrBloodGroupAdapter = getStringArrayAdapter(arrBloodGroup);
                                         spBloodGroup.setAdapter(arrBloodGroupAdapter);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -294,9 +295,9 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                                 if(response.has("data")){
                                     try {
                                         Object resp = AppParser.parseCityResponse(response.toString());
-                                        arrCity = (ArrayList<String>) resp;
-                                        arrCity.add(0,"Choose One");
-                                        ArrayAdapter<String> arrCityAdapter = getStringArrayAdapter(arrCity);
+                                        arrCity = (ArrayList<CityItems>) resp;
+//                                        arrCity.add(0,"Choose One");
+                                        ArrayAdapter<CityItems> arrCityAdapter = getCityArrayAdapter(arrCity);
                                         spCity.setAdapter(arrCityAdapter);
                                     }  catch (Exception e){
                                         e.printStackTrace();
@@ -319,7 +320,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         JSONObject params = new JSONObject();
         try {
             params.put("image_for","profile_img");
-            params.put("image",bitmapProfile);
+            params.put("image",fileProfileImage);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -327,90 +328,103 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        new AppCommonMethods(mContext).LOG(0,"image_uploaded",response.toString());
-
+                        try {
+                            new AppCommonMethods(mContext).LOG(0, "image_uploaded", response.toString());
+                            if (!response.getString("filename").isEmpty()){
+                                strImageName = response.getString("filename").toString();
+                            } else{
+                                Toast.makeText(mContext,"Image Not Uploaded",Toast.LENGTH_SHORT);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(mContext,"Image Not Uploaded",Toast.LENGTH_SHORT);
                         new AppCommonMethods(mContext).LOG(0,"error_image_uploaded",error.toString());
+
                     }
                 });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "upload_image");
 
     }
 
-    private void requestAddToSgksContentAPI() {
+    private void requestAddMember() {
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
-
-        /*strName = metName.getText().toString().trim();
-        strContactNumber = metContact.getText().toString().trim();
-        String strAreaAddSGKS = spArea.getSelectedItem().toString();
-        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
-*/
-       /* JSONObject params = new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("fullname", strName);
-            params.put("area", strAreaAddSGKS.trim());
-            params.put("cont_number", strContactNumber);
-            params.put("sgks_city", currentCity);
+            params.put("first_name",strFirstName);
+            params.put("middle_name",strMiddleName);
+            params.put("last_name",strLastName);
+            params.put("gender",strGender);
+            params.put("address",strAddress);
+            params.put("date_of_birth",strDateOfBirth);
+            params.put("blood_group_id",intBloodGroupId);
+            params.put("city_id",intCityId);
+            params.put("mobile",strContact);
+            params.put("email",strEmail);
+            params.put("profile_pic",strImageName);
+            Log.i("@@@", "requestAddMember: "+params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        JsonObjectRequest jsonObjectRequest =
-                new JsonObjectRequest(Request.Method.POST, AppURLs.API_ADDME_TO_SGKS, params,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_ADD_MEMBER, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        new AppCommonMethods().LOG(0, TAG, response.toString());
-//On Response
-                        if (response.has("message")) {
-                            try {
-                                Toast.makeText(mContext, "" + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                clearDataAddMeSGKS();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                        try {
+                            pDialog.hide();
+                            new AppCommonMethods(mContext).LOG(0,"member_added",response.toString());
+                            new AppCommonMethods(mContext).showAlert(response.getString("message"));
+                            goToHomeScreen();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        pDialog.dismiss();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                pDialog.dismiss();
-                NetworkResponse response = error.networkResponse;
-                if (response != null) {
-                    new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));
-                    try {
-                        if (response.statusCode == STATUS_SOMETHING_WENT_WRONG) {
-                            new AppCommonMethods(mContext).showAlert("" + (new JSONObject(new String(response.data))).getString("message"));
-                        } else {
-                            new AppCommonMethods(mContext).showAlert("" + (getString(R.string.optional_api_error)));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        pDialog.hide();
+                        new AppCommonMethods(mContext).LOG(0,"error_member_added",error.toString());
+                        Toast.makeText(mContext,"Failed. Please Try Again",Toast.LENGTH_LONG);
                     }
-                }
-            }
-        }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Accept", "application/json; charset=UTF-8");
-                return headers;
-            }
-        };
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "addMeToSGKS");*/
+                });
+
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "add_new_member");
     }
 
-    private ArrayAdapter<String> getStringArrayAdapter(ArrayList<String> arrayList) {
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayList) {
+    private ArrayAdapter<BloodGroupItems> getStringArrayAdapter(ArrayList<BloodGroupItems> arrayList) {
+        ArrayAdapter<BloodGroupItems> arrayAdapter = new ArrayAdapter<BloodGroupItems>(mContext, android.R.layout.simple_spinner_item, arrayList) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextHint, null));
+                } else {
+                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextMain, null));
+                }
+                return view;
+            }
+        };
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
+    }
+    private ArrayAdapter<CityItems> getCityArrayAdapter(ArrayList<CityItems> arrayList) {
+        ArrayAdapter<CityItems> arrayAdapter = new ArrayAdapter<CityItems>(mContext, android.R.layout.simple_spinner_item, arrayList) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
@@ -453,6 +467,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
                     if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
                         bitmapProfile = imageUtilityHelper.bitmapProfile;
+                        fileProfileImage = imageUtilityHelper.localImageFile;
+
 
                         //Uploading (bitmapProfileImage) to server using API.
                         // If successful then set image to (mIvMyImage).
@@ -465,6 +481,11 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         } else {
             onBackPressed();
         }
+    }
+
+    private void goToHomeScreen(){
+        Intent goToHomeIntent = new Intent(AddMeToSgksActivity.this, HomeActivity.class);
+        startActivity(goToHomeIntent);
     }
 
     @Override

@@ -28,7 +28,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="@dimen/v8"
                 android:contentDescription="Member Image"
-                android:background="@drawable/edit_text_border"/>
+               android:src="@drawable/ic_profile"/>
 
             <ImageView
                 android:id="@+id/ivAddImage"
@@ -112,7 +112,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textAlignment="center"
-                android:hint="dd-mm-yyyy"
+                android:hint="DD-MM-YYYY"
                 android:textColor="@color/colorBlack"
                 android:background="@drawable/edit_text_border"/>
         </LinearLayout>
