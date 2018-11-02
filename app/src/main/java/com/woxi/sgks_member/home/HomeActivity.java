@@ -93,39 +93,46 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intentAdd);
                 break;
             case R.id.nav_suggestion:
-                Intent intentSug = new Intent(mContext, SuggestionActivity.class);
+                /*Intent intentSug = new Intent(mContext, SuggestionActivity.class);
                 intentSug.putExtra("activityType", getString(R.string.suggestion_box));
-                startActivity(intentSug);
+                startActivity(intentSug);*/
+                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_accounts:
-                Intent intentAccount = new Intent(mContext, AccountsActivity.class);
+                /*Intent intentAccount = new Intent(mContext, AccountsActivity.class);
                 intentAccount.putExtra("activityType", getString(R.string.accounts));
-                startActivity(intentAccount);
+                startActivity(intentAccount);*/
+                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_contact_us:
-                Intent intentCon = new Intent(mContext, MiscellaneousViewActivity.class);
+                /*Intent intentCon = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentCon.putExtra("activityType", getString(R.string.contactUs));
-                startActivity(intentCon);
+                startActivity(intentCon);*/
+                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_health_plus:
-                Intent intentIntro = new Intent(mContext, MiscellaneousViewActivity.class);
+                /*Intent intentIntro = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentIntro.putExtra("activityType", getString(R.string.healthPlus));
-                startActivity(intentIntro);
+                startActivity(intentIntro);*/
+                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_help:
-                Intent intentHelp = new Intent(mContext, MiscellaneousViewActivity.class);
+                /*Intent intentHelp = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentHelp.putExtra("activityType", getString(R.string.help));
-                startActivity(intentHelp);
+                startActivity(intentHelp);*/
+                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_privacy_policy:
-                Intent intentPP = new Intent(mContext, MiscellaneousViewActivity.class);
+                /*Intent intentPP = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentPP.putExtra("activityType", getString(R.string.privacyPolicy));
-                startActivity(intentPP);
+                startActivity(intentPP);*/
+                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_qa:
-                Intent intentQA = new Intent(mContext, MiscellaneousViewActivity.class);
+                /*Intent intentQA = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentQA.putExtra("activityType", getString(R.string.q_and_a));
-                startActivity(intentQA);
+                startActivity(intentQA);*/
+                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.app_settings:
                 Intent intentSettings = new Intent(mContext, SettingsActivity.class);
@@ -210,6 +217,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     mFabAddNewMember.setVisibility(View.VISIBLE);
                 } else {
                     mFabAddNewMember.setVisibility(View.GONE);
+                    mViewPager.setCurrentItem(2);
+                    //Other tabs not in use for 1st app release
+                    //remove other tabs are ready
+                    if(position == 0){
+                        new AppCommonMethods(mContext).showAlert("Events Comming Soon.....");
+                    }
+                    if(position == 1){
+                        new AppCommonMethods(mContext).showAlert("Committies Comming Soon.....");
+                    }
+                    if(position == 3){
+                        new AppCommonMethods(mContext).showAlert("Messages Comming Soon.....");
+                    }
+                    if(position == 4){
+                        new AppCommonMethods(mContext).showAlert("Classiffieds Comming Soon.....");
+                    }
+
                 }
             }
 
