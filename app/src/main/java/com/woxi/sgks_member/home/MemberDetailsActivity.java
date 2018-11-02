@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +29,7 @@ import com.woxi.sgks_member.models.MemberDetailsItem;
 public class MemberDetailsActivity extends AppCompatActivity {
     private Context mContext;
     private MemberDetailsItem memberDetailsItem;
+    private String strMobileNUmber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
      */
     private void initializeViews() {
         mContext = MemberDetailsActivity.this;
-
+        strMobileNUmber = memberDetailsItem.getMemMobile();
+        Log.i("@@@", "initializeViews: "+strMobileNUmber);
         String strFName = "", strMName = "", strSurname = "";
         if (memberDetailsItem.getMemFirstName() != null) {
             strFName = memberDetailsItem.getMemFirstName();
