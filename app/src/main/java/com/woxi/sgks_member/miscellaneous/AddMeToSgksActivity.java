@@ -11,12 +11,10 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -28,22 +26,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
-import com.woxi.sgks_member.SplashAndCityActivity;
 import com.woxi.sgks_member.home.HomeActivity;
 import com.woxi.sgks_member.interfaces.AppConstants;
-import com.woxi.sgks_member.models.BloodGroupItems;
-import com.woxi.sgks_member.models.CityItems;
-import com.woxi.sgks_member.models.SGKSAreaItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
-import com.woxi.sgks_member.utils.AppParser;
 import com.woxi.sgks_member.utils.AppURLs;
 import com.woxi.sgks_member.utils.ImageUtilityHelper;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -54,15 +45,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
-import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_SGKS_AREA_LIST;
-import static com.woxi.sgks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
 
 /**
  * <b>public class AddMeToSgksActivity extends AppCompatActivity implements AppConstants</b>
@@ -92,8 +75,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private String strAddress;
     private String strDateOfBirth;
     private String strImageName;
-    private ArrayList<BloodGroupItems> arrBloodGroup = new ArrayList<>();
-    private ArrayList<CityItems> arrCity = new ArrayList<>();
     private RadioButton rbGender;
     private Calendar calendar;
     private ImageView ivProfilePicture;
@@ -102,9 +83,13 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private Bitmap bitmapProfile;
     private RadioGroup rgGender;
     private ArrayAdapter<String> arrBloodGroupAdapter;
+    private ArrayAdapter<String> arrCityAdapter;
     private Intent intent;
-    private ArrayList<String> arrCityNames;
     private File fileProfileImage;
+    private JSONArray jsonArrayCity;
+    private ArrayList<String> cityNameArrayList;
+    private JSONArray jsonArrayBloodGroup;
+    private ArrayList<String> bloodGroupArrayList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,8 +119,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 intCityId = parent.getSelectedItemPosition();
-                Log.i("@@@", "onItemSelected: "+intCityId+1);
-                intCityId=+1;
+                Log.i("@@@", "onItemSelected: "+intCityId);
             }
 
             @Override
@@ -147,7 +131,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 intBloodGroupId = parent.getSelectedItemPosition();
-                intBloodGroupId=+1;
+                Log.i("@@@", "onItemSelected: "+intBloodGroupId);
             }
 
             @Override
@@ -201,11 +185,11 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     Toast.makeText(mContext, "Please Enter Mobile NUmber", Toast.LENGTH_SHORT).show();
                     return;
                 }
-               /* if(spCity.getSelectedItemId() == 0){
+                if(spCity.getSelectedItemId() == 0){
                     Toast.makeText(mContext, "Please Select City", Toast.LENGTH_SHORT).show();
                     return;
-                }*/
-                 else{
+                }
+                else{
                     if (new AppCommonMethods(mContext).isNetworkAvailable()) {
                         requestAddMember();
                     } else {
@@ -247,72 +231,61 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         return super.onOptionsItemSelected(item);
     }
 
-    public ArrayList<String> getSgksAreaList() {
-        ArrayList<String> arrSgksArea = new ArrayList<>();
-        String strSuggestionCategory = AppCommonMethods.getStringPref(PREFS_SGKS_AREA_LIST, mContext);
-        strSuggestionCategory = strSuggestionCategory.replace("[", "");
-        strSuggestionCategory = strSuggestionCategory.replace("]", "");
-        strSuggestionCategory = strSuggestionCategory.replace("\"", "");
-        arrSgksArea = new ArrayList<>(Arrays.asList(strSuggestionCategory.split(",")));
-        return arrSgksArea;
-    }
-
     private void requestBloodGroup () {
-        JsonObjectRequest jsonObjectRequest =
-                new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_BLOOD_GROUP, null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                new AppCommonMethods(mContext).LOG(0,"blood_group",response.toString());
-                                if(response.has("data")) {
-                                    try {
-                                        Object resp = AppParser.parseBloodGroupResponse(response.toString());
-                                        arrBloodGroup = (ArrayList<BloodGroupItems>) resp;
-                                        ArrayAdapter<BloodGroupItems> arrBloodGroupAdapter = getStringArrayAdapter(arrBloodGroup);
-                                        spBloodGroup.setAdapter(arrBloodGroupAdapter);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        new AppCommonMethods(mContext).LOG(0,"error_blood_group",error.toString());
-                        Toast.makeText(mContext,"Failed",Toast.LENGTH_LONG).show();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_BLOOD_GROUP, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.i("@@", "Success");
+                    jsonArrayBloodGroup = response.getJSONArray("data");
+                    bloodGroupArrayList = new ArrayList<>();
+                    bloodGroupArrayList.add(0,"Choose One");
+                    for (int i = 0; i < jsonArrayBloodGroup.length(); i++) {
+                        JSONObject jsonObject = jsonArrayBloodGroup.getJSONObject(i);
+                        bloodGroupArrayList.add(jsonObject.getString("blood_group"));
                     }
-                });
+                    arrBloodGroupAdapter = new ArrayAdapter<String>(AddMeToSgksActivity.this, android.R.layout.simple_spinner_item, bloodGroupArrayList);
+                    spBloodGroup.setAdapter(arrBloodGroupAdapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("@@", "Error");
+            }
+        }
+        );
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "get_blood_group");
     }
 
     private void requestCity () {
-        JsonObjectRequest jsonObjectRequest =
-                new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_CITY, null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                new AppCommonMethods(mContext).LOG(0,"get_city",response.toString());
-                                if(response.has("data")){
-                                    try {
-                                        Object resp = AppParser.parseCityResponse(response.toString());
-                                        arrCity = (ArrayList<CityItems>) resp;
-//                                        arrCity.add(0,"Choose One");
-                                        ArrayAdapter<CityItems> arrCityAdapter = getCityArrayAdapter(arrCity);
-                                        spCity.setAdapter(arrCityAdapter);
-                                    }  catch (Exception e){
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                new AppCommonMethods(mContext).LOG(0,"error_city",error.toString());
-                                Toast.makeText(mContext,"Failed",Toast.LENGTH_LONG).show();
-                            }
-                        });
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_CITY, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.i("@@", "Success");
+                    jsonArrayCity = response.getJSONArray("data");
+                    cityNameArrayList = new ArrayList<>();
+                    cityNameArrayList.add(0,"Choose One");
+                    for (int i = 0; i < jsonArrayCity.length(); i++) {
+                        JSONObject jsonObject = jsonArrayCity.getJSONObject(i);
+                        cityNameArrayList.add(jsonObject.getString("city_name"));
+                    }
+                    arrCityAdapter = new ArrayAdapter<String>(AddMeToSgksActivity.this, android.R.layout.simple_spinner_item, cityNameArrayList);
+                    spCity.setAdapter(arrCityAdapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("@@", "Error");
+            }
+        }
+        );
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "get_city");
     }
 
@@ -398,53 +371,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 });
 
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "add_new_member");
-    }
-
-    private ArrayAdapter<BloodGroupItems> getStringArrayAdapter(ArrayList<BloodGroupItems> arrayList) {
-        ArrayAdapter<BloodGroupItems> arrayAdapter = new ArrayAdapter<BloodGroupItems>(mContext, android.R.layout.simple_spinner_item, arrayList) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0) {
-                    // Set the hint text color gray
-                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextHint, null));
-                } else {
-                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextMain, null));
-                }
-                return view;
-            }
-        };
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return arrayAdapter;
-    }
-    private ArrayAdapter<CityItems> getCityArrayAdapter(ArrayList<CityItems> arrayList) {
-        ArrayAdapter<CityItems> arrayAdapter = new ArrayAdapter<CityItems>(mContext, android.R.layout.simple_spinner_item, arrayList) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0) {
-                    // Set the hint text color gray
-                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextHint, null));
-                } else {
-                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextMain, null));
-                }
-                return view;
-            }
-        };
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return arrayAdapter;
     }
 
     private void getImageChooser() {
