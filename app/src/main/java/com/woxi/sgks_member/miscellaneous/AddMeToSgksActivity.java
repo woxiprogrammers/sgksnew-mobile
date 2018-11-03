@@ -119,7 +119,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 intCityId = parent.getSelectedItemPosition();
-                Log.i("@@@", "onItemSelected: "+intCityId);
             }
 
             @Override
@@ -131,7 +130,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 intBloodGroupId = parent.getSelectedItemPosition();
-                Log.i("@@@", "onItemSelected: "+intBloodGroupId);
             }
 
             @Override
@@ -236,7 +234,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.i("@@", "Success");
+                    new AppCommonMethods(mContext).LOG(0,"get_blood_group",response.toString());
                     jsonArrayBloodGroup = response.getJSONArray("data");
                     bloodGroupArrayList = new ArrayList<>();
                     bloodGroupArrayList.add(0,"Choose One");
@@ -253,10 +251,9 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("@@", "Error");
+                new AppCommonMethods(mContext).LOG(0,"error_blood_group",error.toString());
             }
-        }
-        );
+        });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "get_blood_group");
     }
 
@@ -265,7 +262,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.i("@@", "Success");
+                    new AppCommonMethods(mContext).LOG(0,"get_city",response.toString());
                     jsonArrayCity = response.getJSONArray("data");
                     cityNameArrayList = new ArrayList<>();
                     cityNameArrayList.add(0,"Choose One");
@@ -282,7 +279,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("@@", "Error");
+                new AppCommonMethods(mContext).LOG(0,"error_city",error.toString());
             }
         }
         );
