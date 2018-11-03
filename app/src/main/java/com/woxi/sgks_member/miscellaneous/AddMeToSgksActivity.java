@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -43,7 +45,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -69,12 +75,12 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private String strMiddleName;
     private String strContact;
     private String strGender;
-    private int intBloodGroupId;
-    private int intCityId;
     private String strEmail;
     private String strAddress;
     private String strDateOfBirth;
     private String strImageName;
+    private int intBloodGroupId;
+    private int intCityId;
     private RadioButton rbGender;
     private Calendar calendar;
     private ImageView ivProfilePicture;
@@ -85,11 +91,12 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private ArrayAdapter<String> arrBloodGroupAdapter;
     private ArrayAdapter<String> arrCityAdapter;
     private Intent intent;
-    private File fileProfileImage;
     private JSONArray jsonArrayCity;
-    private ArrayList<String> cityNameArrayList;
     private JSONArray jsonArrayBloodGroup;
+    private ArrayList<String> cityNameArrayList;
     private ArrayList<String> bloodGroupArrayList;
+    private File file;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +116,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 rbGender = findViewById(checkedId);
-                if(null != rbGender && checkedId != -1){
+                if (null != rbGender && checkedId != -1) {
                     strGender = rbGender.getText().toString();
                 }
             }
@@ -179,15 +186,14 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     metLastName.requestFocus();
                     return;
                 }
-                if(strContact.isEmpty()) {
+                if (strContact.isEmpty()) {
                     Toast.makeText(mContext, "Please Enter Mobile NUmber", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(spCity.getSelectedItemId() == 0){
+                if (spCity.getSelectedItemId() == 0) {
                     Toast.makeText(mContext, "Please Select City", Toast.LENGTH_SHORT).show();
                     return;
-                }
-                else{
+                } else {
                     if (new AppCommonMethods(mContext).isNetworkAvailable()) {
                         requestAddMember();
                     } else {
@@ -200,7 +206,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 
     private void initializeViews() {
         mContext = AddMeToSgksActivity.this;
-        metFirstName =  findViewById(R.id.etFirstName);
+        metFirstName = findViewById(R.id.etFirstName);
         metMiddleName = findViewById(R.id.etMiddleName);
         metLastName = findViewById(R.id.etLastName);
         metContact = findViewById(R.id.etContact);
@@ -229,15 +235,15 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         return super.onOptionsItemSelected(item);
     }
 
-    private void requestBloodGroup () {
+    private void requestBloodGroup() {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_BLOOD_GROUP, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    new AppCommonMethods(mContext).LOG(0,"get_blood_group",response.toString());
+                    new AppCommonMethods(mContext).LOG(0, "get_blood_group", response.toString());
                     jsonArrayBloodGroup = response.getJSONArray("data");
                     bloodGroupArrayList = new ArrayList<>();
-                    bloodGroupArrayList.add(0,"Choose One");
+                    bloodGroupArrayList.add(0, "Choose One");
                     for (int i = 0; i < jsonArrayBloodGroup.length(); i++) {
                         JSONObject jsonObject = jsonArrayBloodGroup.getJSONObject(i);
                         bloodGroupArrayList.add(jsonObject.getString("blood_group"));
@@ -251,21 +257,21 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                new AppCommonMethods(mContext).LOG(0,"error_blood_group",error.toString());
+                new AppCommonMethods(mContext).LOG(0, "error_blood_group", error.toString());
             }
         });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "get_blood_group");
     }
 
-    private void requestCity () {
+    private void requestCity() {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_CITY, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    new AppCommonMethods(mContext).LOG(0,"get_city",response.toString());
+                    new AppCommonMethods(mContext).LOG(0, "get_city", response.toString());
                     jsonArrayCity = response.getJSONArray("data");
                     cityNameArrayList = new ArrayList<>();
-                    cityNameArrayList.add(0,"Choose One");
+                    cityNameArrayList.add(0, "Choose One");
                     for (int i = 0; i < jsonArrayCity.length(); i++) {
                         JSONObject jsonObject = jsonArrayCity.getJSONObject(i);
                         cityNameArrayList.add(jsonObject.getString("city_name"));
@@ -279,7 +285,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                new AppCommonMethods(mContext).LOG(0,"error_city",error.toString());
+                new AppCommonMethods(mContext).LOG(0, "error_city", error.toString());
             }
         }
         );
@@ -289,8 +295,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private void sendImageToServerRequest() {
         JSONObject params = new JSONObject();
         try {
-            params.put("image_for","profile_img");
-            params.put("image",fileProfileImage);
+            params.put("image_for", "profile_img");
+            params.put("image", file);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -300,12 +306,13 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     public void onResponse(JSONObject response) {
                         try {
                             new AppCommonMethods(mContext).LOG(0, "image_uploaded", response.toString());
-                            if (!response.getString("filename").isEmpty()){
+                            if (!response.getString("filename").isEmpty()) {
                                 strImageName = response.getString("filename").toString();
-                            } else{
-                                Toast.makeText(mContext,"Image Not Uploaded",Toast.LENGTH_SHORT);
+                                ivProfilePicture.setImageBitmap(bitmapProfile);
+                            } else {
+                                Toast.makeText(mContext, "Image Not Uploaded", Toast.LENGTH_SHORT);
                             }
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -313,8 +320,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(mContext,"Image Not Uploaded",Toast.LENGTH_SHORT);
-                        new AppCommonMethods(mContext).LOG(0,"error_image_uploaded",error.toString());
+                        Toast.makeText(mContext, "Image Not Uploaded", Toast.LENGTH_SHORT);
+                        new AppCommonMethods(mContext).LOG(0, "error_image_uploaded", error.toString());
 
                     }
                 });
@@ -329,18 +336,18 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         pDialog.show();
         JSONObject params = new JSONObject();
         try {
-            params.put("first_name",strFirstName);
-            params.put("middle_name",strMiddleName);
-            params.put("last_name",strLastName);
-            params.put("gender",strGender);
-            params.put("address",strAddress);
-            params.put("date_of_birth",strDateOfBirth);
-            params.put("blood_group_id",intBloodGroupId);
-            params.put("city_id",intCityId);
-            params.put("mobile",strContact);
-            params.put("email",strEmail);
-            params.put("profile_pic",strImageName);
-            Log.i("@@@", "requestAddMember: "+params.toString());
+            params.put("first_name", strFirstName);
+            params.put("middle_name", strMiddleName);
+            params.put("last_name", strLastName);
+            params.put("gender", strGender);
+            params.put("address", strAddress);
+            params.put("date_of_birth", strDateOfBirth);
+            params.put("blood_group_id", intBloodGroupId);
+            params.put("city_id", intCityId);
+            params.put("mobile", strContact);
+            params.put("email", strEmail);
+            params.put("profile_pic", strImageName);
+            Log.i("@@@", "requestAddMember: " + params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -350,7 +357,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     public void onResponse(JSONObject response) {
                         try {
                             pDialog.hide();
-                            new AppCommonMethods(mContext).LOG(0,"member_added",response.toString());
+                            new AppCommonMethods(mContext).LOG(0, "member_added", response.toString());
                             new AppCommonMethods(mContext).showAlert(response.getString("message"));
                             goToHomeScreen();
                         } catch (JSONException e) {
@@ -362,8 +369,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         pDialog.hide();
-                        new AppCommonMethods(mContext).LOG(0,"error_member_added",error.toString());
-                        Toast.makeText(mContext,"Failed. Please Try Again",Toast.LENGTH_LONG);
+                        new AppCommonMethods(mContext).LOG(0, "error_member_added", error.toString());
+                        Toast.makeText(mContext, "Failed. Please Try Again", Toast.LENGTH_LONG);
                     }
                 });
 
@@ -389,14 +396,13 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 //                    For new camera functionality
                     imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
                     if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                        String fileName = "ImageFile.jpg";
                         bitmapProfile = imageUtilityHelper.bitmapProfile;
-                        fileProfileImage = imageUtilityHelper.localImageFile;
-
-
+                        file = new File(getImageUri(mContext, bitmapProfile).getPath());
                         //Uploading (bitmapProfileImage) to server using API.
                         // If successful then set image to (mIvMyImage).
                         sendImageToServerRequest();
-                        ivProfilePicture.setImageBitmap(bitmapProfile);
+
                     } else return;
                 default:
                     break;
@@ -406,14 +412,21 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         }
     }
 
-    private void goToHomeScreen(){
+    private Uri getImageUri(Context context, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    private void goToHomeScreen() {
         Intent goToHomeIntent = new Intent(AddMeToSgksActivity.this, HomeActivity.class);
         startActivity(goToHomeIntent);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.ivAddImage:
                 if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_PERMISSION_CODE);
