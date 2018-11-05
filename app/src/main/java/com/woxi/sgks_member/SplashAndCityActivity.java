@@ -50,7 +50,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
                 Intent intentHome = new Intent(mContext, HomeActivity.class);
                 startActivity(intentHome);
                 finish();
-                requestMasterList();
+               // requestMasterList();
 //                boolean notFirstRun = AppCommonMethods.getBooleanPref(APP_FIRST_RUN, mContext);
                 /*if (!notFirstRun) {
                     getCitySelectionScreen();
