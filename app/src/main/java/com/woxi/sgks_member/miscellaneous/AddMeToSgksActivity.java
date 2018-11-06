@@ -82,6 +82,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private String strAddress;
     private String strDateOfBirth;
     private String strImageName;
+    private String strActivityType;
     private int intBloodGroupId;
     private int intCityId;
     private RadioButton rbGender;
@@ -98,9 +99,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private JSONArray jsonArrayBloodGroup;
     private ArrayList<String> cityNameArrayList;
     private ArrayList<String> bloodGroupArrayList;
-    private File file;
     private MemberDetailsItem memberDetailsItem;
-    private String strActivityType;
     private Boolean isFromEdit = false;
     private RadioButton rbMale;
     private RadioButton rbFemale;
@@ -109,28 +108,36 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_me_to_sgks);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(R.string.add_me_sgks);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+
         bundle = getIntent().getExtras();
         if(bundle != null){
             if(bundle.containsKey("memberItems")){
                 memberDetailsItem = (MemberDetailsItem) bundle.getSerializable("memberItems");
             }
-//            if (bundle.containsKey("activityType")) {
-//                strActivityType = bundle.getString("EditProfile");
-//                if(strActivityType.equalsIgnoreCase("EditProfile")){
-//                    isFromEdit = true;
-//                }
-//            }
+            if (bundle.containsKey("activityType")) {
+                strActivityType = bundle.getString("activityType");
+                if(strActivityType.equalsIgnoreCase("EditProfile")){
+                    isFromEdit = true;
+                }
+            }
             if(bundle.containsKey("contactNumber")){
                 strContact = bundle.getString("contactNumber");
             }
         }
+        if (getSupportActionBar() != null) {
+            if(isFromEdit){
+                getSupportActionBar().setTitle("Edit Profile");
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            } else {
+                getSupportActionBar().setTitle(R.string.add_me_sgks);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+
+        }
+        initializeViews();
         requestBloodGroup();
         requestCity();
-        initializeViews();
+
         rgGender.clearCheck();
         rgGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -249,6 +256,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             metMiddleName.setText(memberDetailsItem.getStrMiddleName());
             metLastName.setText(memberDetailsItem.getStrLastName());
             metEmail.setText(memberDetailsItem.getStrEmail());
+            metContact.setText(memberDetailsItem.getStrMobileNumber());
+            metContact.setEnabled(false);
             tvDob.setText(memberDetailsItem.getStrDateOfBirth());
             ivProfilePicture.setBackground(Drawable.createFromPath(memberDetailsItem.getStrMemberImageUrl()));
             if(memberDetailsItem.getStrGender().equalsIgnoreCase("Male")){
@@ -261,12 +270,22 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("A-")){
                 spBloodGroup.setSelection(2);
             } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("B")){
-                spBloodGroup.setSelection(3);
-            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("O-")){
                 spBloodGroup.setSelection(4);
-            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("O")){
+            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("B-")){
+                spBloodGroup.setSelection(4);
+            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("O-")){
                 spBloodGroup.setSelection(5);
+            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("O")){
+                spBloodGroup.setSelection(6);
+            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("AB-")){
+                spBloodGroup.setSelection(7);
+            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("AB")){
+                spBloodGroup.setSelection(8);
             }
+            if(memberDetailsItem.getStrCity().equalsIgnoreCase("Pune")){
+                spCity.setSelection(1);
+            }
+            metAddress.setText(memberDetailsItem.getStrAddress());
         } else {
             metContact.setText(strContact);
             metContact.setEnabled(false);
@@ -448,7 +467,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
                         String fileName = "ImageFile.jpg";
                         bitmapProfile = imageUtilityHelper.bitmapProfile;
-                        file = new File(getImageUri(mContext, bitmapProfile).getPath());
                         //Uploading (bitmapProfileImage) to server using API.
                         // If successful then set image to (mIvMyImage).
                         sendImageToServerRequest();
@@ -460,13 +478,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         } else {
             onBackPressed();
         }
-    }
-
-    private Uri getImageUri(Context context, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
     }
 
     private void goToHomeScreen() {

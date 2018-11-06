@@ -87,7 +87,8 @@ public class Verification extends AppCompatActivity {
             public void onTextChanged(CharSequence mobileNumber, int start, int before, int count) {
                 if(mobileNumber.length() == 10){
                     tvErrorMessage.setVisibility(View.GONE);
-                    strMobileNumber = mobileNumber.toString();
+//                    strMobileNumber = mobileNumber.toString();
+                    strMobileNumber="7709307123";
                     if(new AppCommonMethods(mContext).isNetworkAvailable()){
                         sendMobileNumberToServer();
 
