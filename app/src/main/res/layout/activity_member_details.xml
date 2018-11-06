@@ -139,12 +139,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/v4"
                     android:gravity="center_horizontal"
-                    android:text="Marital Status"
+                    android:text="City"
                     android:textColor="@color/colorWhite"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvMemMaritalStatus"
+                    android:id="@+id/tvMemCity"
                     style="@style/customTextView_16_Normal"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-smallcaps"

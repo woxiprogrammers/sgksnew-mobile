@@ -34,6 +34,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
     String strMiddleName;
     String strLastName;
     String strAddress;
+    TextView tvAddress;
+    TextView tvEmail;
+    TextView tvMemCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
     private void initializeViews() {
         mContext = MemberDetailsActivity.this;
+        tvAddress = findViewById(R.id.tvMemAddress);
+        tvEmail = findViewById(R.id.tvMemEmail);
+        tvMemCity = findViewById(R.id.tvMemCity);
         strMobileNUmber = memberDetailsItem.getStrMobileNumber();
         
         if (memberDetailsItem.getStrFirstName() != null) {
@@ -69,14 +75,14 @@ public class MemberDetailsActivity extends AppCompatActivity {
         final String strFullName = strFirstName + " " + strMiddleName + " " + strLastName;
         ((TextView) findViewById(R.id.tvMemName)).setText(strFullName);
 
-
-        
         if (memberDetailsItem.getStrAddress() != null) {
             if (memberDetailsItem.getStrAddress() != null) {
                 strAddress = memberDetailsItem.getStrAddress();
+                tvAddress.setText(strAddress);
             }
-            
-        } else ((TextView) findViewById(R.id.tvMemAddress)).setText("-");
+        } else {
+            tvAddress.setText("-");
+        }
 
 
         if (memberDetailsItem.getStrMobileNumber() != null && !memberDetailsItem.getStrMobileNumber().equalsIgnoreCase("null")) {
@@ -85,14 +91,19 @@ public class MemberDetailsActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.tvMemContact)).setText("-");
         }
         if (memberDetailsItem.getStrEmail() != null && !memberDetailsItem.getStrEmail().equalsIgnoreCase("null")) {
-            ((TextView) findViewById(R.id.tvMemEmail)).setText(memberDetailsItem.getStrEmail());
+            tvEmail.setText(memberDetailsItem.getStrEmail());
         } else {
-            ( findViewById(R.id.tvMemEmail)).setVisibility(View.GONE);
+            tvEmail.setVisibility(View.GONE);
         }
         if (memberDetailsItem.getStrBloodGroup() != null && !memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("null")) {
             ((TextView) findViewById(R.id.tvMemBloodGroup)).setText(memberDetailsItem.getStrBloodGroup());
         } else {
             ((TextView) findViewById(R.id.tvMemBloodGroup)).setText("Do Not Know");
+        }
+        if(memberDetailsItem.getStrCity() != null && !memberDetailsItem.getStrCity().equalsIgnoreCase("null")){
+            tvMemCity.setText(memberDetailsItem.getStrCity());
+        } else {
+            tvMemCity.setText("-");
         }
         /*if (memberDetailsItem.getStrId() != null && !memberDetailsItem.getStrId().equalsIgnoreCase("null")) {
             ((TextView) findViewById(R.id.tvMemMemberId)).setText("SGKS-" + memberDetailsItem.getMemSgksMainCity() + "-" + memberDetailsItem.getMemID());
