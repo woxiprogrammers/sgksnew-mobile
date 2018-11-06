@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,29 +55,27 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
 
         final TextView memberCallNo = holder.memberCallNo;
         String strFName = "", strMName = "", strSurname = "";
-        if (mArrMemDetails.get(position).getMemFirstName() != null) {
-            strFName = mArrMemDetails.get(position).getMemFirstName();
+        if (mArrMemDetails.get(position).getStrFirstName() != null) {
+            strFName = mArrMemDetails.get(position).getStrFirstName();
         }
-        if (mArrMemDetails.get(position).getMemFirstName() != null) {
-            strMName = mArrMemDetails.get(position).getMemMidName();
+        if (mArrMemDetails.get(position).getStrFirstName() != null) {
+            strMName = mArrMemDetails.get(position).getStrMiddleName();
         }
-        if (mArrMemDetails.get(position).getMemFirstName() != null) {
-            strSurname = mArrMemDetails.get(position).getMemSurname();
+        if (mArrMemDetails.get(position).getStrFirstName() != null) {
+            strSurname = mArrMemDetails.get(position).getStrLastName();
         }
         final String strFullName = strFName + " " + strMName + " " + strSurname;
         memberName.setText(strFullName);
+        memberID.setText("Address: "+mArrMemDetails.get(position).getStrAddress());
 
-        if (mArrMemDetails.get(position).getMemSgksArea() != null) {
-            memberAddress.setText(mArrMemDetails.get(position).getMemSgksArea() + ", " + mArrMemDetails.get(position).getMemSgksMainCity());
-        }
 
-        if (mArrMemDetails.get(position).getMemSgksMainCity() != null) {
+        /*if (mArrMemDetails.get(position).getMemSgksMainCity() != null) {
             memberID.setText("SGKS ID : " + "SGKS-" + mArrMemDetails.get(position).getMemSgksMainCity() + "-" + mArrMemDetails.get(position).getMemID());
         }
-
-        if (mArrMemDetails.get(position).getMemLatitude() != null && !mArrMemDetails.get(position).getMemLatitude().equalsIgnoreCase("null")) {
-            final String strLatitude = mArrMemDetails.get(position).getMemLatitude();
-            final String strLongitude = mArrMemDetails.get(position).getMemLongitude();
+*/
+        if (mArrMemDetails.get(position).getStrLatitude() != null && !mArrMemDetails.get(position).getStrLatitude().equalsIgnoreCase("null")) {
+            final String strLatitude = mArrMemDetails.get(position).getStrLatitude();
+            final String strLongitude = mArrMemDetails.get(position).getStrLongitude();
             memberLocation.setVisibility(View.VISIBLE);
             memberLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -95,12 +94,12 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
         } else {
             memberLocation.setVisibility(View.GONE);
         }
-        if (mArrMemDetails.get(position).getMemMobile() != null && !mArrMemDetails.get(position).getMemMobile().equalsIgnoreCase("null")) {
+        if (mArrMemDetails.get(position).getStrMobileNumber() != null && !mArrMemDetails.get(position).getStrMobileNumber().equalsIgnoreCase("null")) {
             memberCallNo.setVisibility(View.VISIBLE);
             memberCallNo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String strMobNo = "tel:" + mArrMemDetails.get(holder.getAdapterPosition()).getMemMobile();
+                    String strMobNo = "tel:" + mArrMemDetails.get(holder.getAdapterPosition()).getStrMobileNumber();
                     Intent intentCall = new Intent(Intent.ACTION_DIAL);
                     intentCall.setData(Uri.parse(strMobNo));
                     v.getContext().startActivity(intentCall);
@@ -111,7 +110,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
         }
         //Loading member image from url.
         memberImage.setImageDrawable(null);
-        String strUrl = mArrMemDetails.get(position).getMemberImageURL();
+        String strUrl = mArrMemDetails.get(position).getStrMemberImageUrl();
         if (strUrl != null && !strUrl.equalsIgnoreCase("")) {
             Glide.with(mContext)
                     .load(strUrl)

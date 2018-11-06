@@ -30,6 +30,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private Context mContext;
     private MemberDetailsItem memberDetailsItem;
     private String strMobileNUmber;
+    String strFirstName;
+    String strMiddleName;
+    String strLastName;
+    String strAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,88 +53,57 @@ public class MemberDetailsActivity extends AppCompatActivity {
         initializeViews();
     }
 
-    /**
-     * <b>private void initializeViews()</b>
-     * <p>This function is used to initialize required views.</p>
-     * Created by - Rohit
-     */
     private void initializeViews() {
         mContext = MemberDetailsActivity.this;
-        strMobileNUmber = memberDetailsItem.getMemMobile();
-        String strFName = "", strMName = "", strSurname = "";
-        if (memberDetailsItem.getMemFirstName() != null) {
-            strFName = memberDetailsItem.getMemFirstName();
+        strMobileNUmber = memberDetailsItem.getStrMobileNumber();
+        
+        if (memberDetailsItem.getStrFirstName() != null) {
+            strFirstName = memberDetailsItem.getStrFirstName();
         }
-        if (memberDetailsItem.getMemFirstName() != null) {
-            strMName = memberDetailsItem.getMemMidName();
+        if (memberDetailsItem.getStrFirstName() != null) {
+            strMiddleName = memberDetailsItem.getStrMiddleName();
         }
-        if (memberDetailsItem.getMemFirstName() != null) {
-            strSurname = memberDetailsItem.getMemSurname();
+        if (memberDetailsItem.getStrFirstName() != null) {
+            strLastName = memberDetailsItem.getStrLastName();
         }
-        final String strFullName = strFName + " " + strMName + " " + strSurname;
+        final String strFullName = strFirstName + " " + strMiddleName + " " + strLastName;
         ((TextView) findViewById(R.id.tvMemName)).setText(strFullName);
 
 
-        String strAddLine = "", strArea = "", strCity = "", strPincode = "", strState = "", strCountry = "";
-        if (memberDetailsItem.getMemAddress() != null) {
-            if (memberDetailsItem.getMemAddress().getAddAddressLine() != null) {
-                strAddLine = memberDetailsItem.getMemAddress().getAddAddressLine();
+        
+        if (memberDetailsItem.getStrAddress() != null) {
+            if (memberDetailsItem.getStrAddress() != null) {
+                strAddress = memberDetailsItem.getStrAddress();
             }
-            if (memberDetailsItem.getMemAddress().getAddAddressLine() != null) {
-                strArea = memberDetailsItem.getMemAddress().getAddArea();
-            }
-            if (memberDetailsItem.getMemAddress().getAddAddressLine() != null) {
-                strCity = memberDetailsItem.getMemAddress().getAddCity();
-            }
-            if (memberDetailsItem.getMemAddress().getAddAddressLine() != null) {
-                strPincode = memberDetailsItem.getMemAddress().getAddPincode();
-            }
-            if (memberDetailsItem.getMemAddress().getAddAddressLine() != null) {
-                strState = memberDetailsItem.getMemAddress().getAddState();
-            }
-            if (memberDetailsItem.getMemAddress().getAddAddressLine() != null) {
-                strCountry = memberDetailsItem.getMemAddress().getAddCountry();
-            }
-            String strFullAddress = strAddLine + ", " + strArea + ", " + strCity + "-" + strPincode + ", " + strState + ", " + strCountry + ".";
-            ((TextView) findViewById(R.id.tvMemAddress)).setText(strFullAddress);
+            
         } else ((TextView) findViewById(R.id.tvMemAddress)).setText("-");
 
 
-        if (memberDetailsItem.getMemMobile() != null && !memberDetailsItem.getMemMobile().equalsIgnoreCase("null")) {
-            ((TextView) findViewById(R.id.tvMemContact)).setText(memberDetailsItem.getMemMobile());
+        if (memberDetailsItem.getStrMobileNumber() != null && !memberDetailsItem.getStrMobileNumber().equalsIgnoreCase("null")) {
+            ((TextView) findViewById(R.id.tvMemContact)).setText(memberDetailsItem.getStrMobileNumber());
         } else {
             ((TextView) findViewById(R.id.tvMemContact)).setText("-");
         }
-        if (memberDetailsItem.getMemEmail() != null && !memberDetailsItem.getMemEmail().equalsIgnoreCase("null")) {
-            ((TextView) findViewById(R.id.tvMemEmail)).setText(memberDetailsItem.getMemEmail());
+        if (memberDetailsItem.getStrEmail() != null && !memberDetailsItem.getStrEmail().equalsIgnoreCase("null")) {
+            ((TextView) findViewById(R.id.tvMemEmail)).setText(memberDetailsItem.getStrEmail());
         } else {
             ( findViewById(R.id.tvMemEmail)).setVisibility(View.GONE);
         }
-        if (memberDetailsItem.getMemBloodGroup() != null && !memberDetailsItem.getMemBloodGroup().equalsIgnoreCase("null")) {
-            ((TextView) findViewById(R.id.tvMemBloodGroup)).setText(memberDetailsItem.getMemBloodGroup());
+        if (memberDetailsItem.getStrBloodGroup() != null && !memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("null")) {
+            ((TextView) findViewById(R.id.tvMemBloodGroup)).setText(memberDetailsItem.getStrBloodGroup());
         } else {
             ((TextView) findViewById(R.id.tvMemBloodGroup)).setText("Do Not Know");
         }
-        if (memberDetailsItem.getMemMaritalStatus() != null && !memberDetailsItem.getMemMaritalStatus().equalsIgnoreCase("null")) {
-            ((TextView) findViewById(R.id.tvMemMaritalStatus)).setText(memberDetailsItem.getMemMaritalStatus());
-        } else {
-            ((TextView) findViewById(R.id.tvMemMaritalStatus)).setText("-");
-        }
-        if (memberDetailsItem.getMemID() != null && !memberDetailsItem.getMemID().equalsIgnoreCase("null")) {
+        /*if (memberDetailsItem.getStrId() != null && !memberDetailsItem.getStrId().equalsIgnoreCase("null")) {
             ((TextView) findViewById(R.id.tvMemMemberId)).setText("SGKS-" + memberDetailsItem.getMemSgksMainCity() + "-" + memberDetailsItem.getMemID());
         } else {
             ((TextView) findViewById(R.id.tvMemMemberId)).setText("-");
-        }
-        if (memberDetailsItem.getMemSgksFamilyId() != null && !memberDetailsItem.getMemSgksFamilyId().equalsIgnoreCase("null")) {
-            ((TextView) findViewById(R.id.tvMemFamilyId)).setText("SGKS-" + memberDetailsItem.getMemSgksMainCity() + "-" + memberDetailsItem.getMemSgksFamilyId());
-        } else {
-            ((TextView) findViewById(R.id.tvMemFamilyId)).setText("-");
-        }
+        }*/
 
         FloatingActionButton mFloatingLocation =  findViewById(R.id.memFloatingLocation);
-        if (memberDetailsItem.getMemLatitude() != null && !memberDetailsItem.getMemLatitude().equalsIgnoreCase("null")) {
-            final String strLatitude = memberDetailsItem.getMemLatitude();
-            final String strLongitude = memberDetailsItem.getMemLongitude();
+        if (memberDetailsItem.getStrLatitude() != null && !memberDetailsItem.getStrLatitude().equalsIgnoreCase("null")) {
+            final String strLatitude = memberDetailsItem.getStrLatitude();
+            final String strLongitude = memberDetailsItem.getStrLongitude();
             mFloatingLocation.setVisibility(View.VISIBLE);
             mFloatingLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -162,7 +135,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         //Loading member image from url.
         final ImageView mIvMemImage = ((ImageView) findViewById(R.id.ivMemDetImage));
-        String strUrl = memberDetailsItem.getMemberImageURL();
+        String strUrl = memberDetailsItem.getStrMemberImageUrl();
         mIvMemImage.setImageDrawable(null);
         if (strUrl != null && !strUrl.equalsIgnoreCase("")) {
             Glide.with(mContext)

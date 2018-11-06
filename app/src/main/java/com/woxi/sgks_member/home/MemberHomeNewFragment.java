@@ -65,7 +65,6 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private String strNoResults = "";
     private int oldPageNumber;
     private int pageNumber = 0;
-    private FloatingActionButton mFabAddNewMember;
 
     public MemberHomeNewFragment() {
         // Required empty public constructor
@@ -89,15 +88,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mRvMemberList = mParentView.findViewById(R.id.rvMemberList);
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
         mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
-//        mFabAddNewMember = mParentView.findViewById(R.id.fabAddNewMember);
-//        mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
-//                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
-//                startActivity(intentAdd);
-//            }
-//        });
+        strSearchTerm = mEtMemberSearch.getText().toString();
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
@@ -124,7 +115,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         });
         recyclerViewScrollListener();
         functionToGetMembersList();
-//        requestToGetMembersData();
+//        requestToGetMembersData(0,false);
         onMemberClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,7 +157,9 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private void requestToGetMembersData(final int pageId, boolean isFirstTime) {
         JSONObject params = new JSONObject();
         try {
-            params.put("page_id", pageId);
+            params.put("page_id", 1);
+            params.put("sgks_city",1);
+            params.put("language_id",1);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -175,10 +168,12 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            new AppCommonMethods(mContext).LOG(0,"member_listing_success",response.toString());
                             if (!response.getString("page_id").equalsIgnoreCase("")) {
                                 pageNumber = Integer.parseInt(response.getString("page_id"));
+                                Log.i("@@@", "onResponse: "+pageNumber);
                             }
-                            Object resp = AppParser.parseNewMemberList(response.toString());
+                            Object resp = AppParser.parseMemberList(response.toString());
                             mArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
                             if (resp instanceof Boolean) {
                                 Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
@@ -188,10 +183,12 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                     mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                     mRvMemberList.setAdapter(mRvAdapter);
                                     databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
+
                                 } else {
                                     Toast.makeText(mContext, "No Record Found", Toast.LENGTH_SHORT).show();
                                 }
                             }
+                            setUpMemberListAdapter();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -199,13 +196,18 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                new AppCommonMethods(mContext).LOG(0,"error_member_listing",error.toString());
                 VolleyLog.e("Error: ", error.getMessage());
                 error.printStackTrace();
             }
         });
         AppController.getInstance().addToRequestQueue(req, "messageList");
     }
-
+    private void setUpMemberListAdapter () {
+        mRvMemberList.setHasFixedSize(true);
+        mRvAdapter = new MemberListAdapter(mArrMemDetails);
+        mRvMemberList.setAdapter(mRvAdapter);
+    }
     private void recyclerViewScrollListener() {
         mRvMemberList.addOnScrollListener(new EndlessRvScrollListener(linearLayoutManager) {
             @Override

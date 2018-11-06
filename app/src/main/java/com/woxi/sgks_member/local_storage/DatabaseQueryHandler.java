@@ -114,59 +114,53 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             for (int arrMemberIndex = 0; arrMemberIndex < arrMemDetails.size(); arrMemberIndex++) {
                 memberDetailsItem = arrMemDetails.get(arrMemberIndex);
                 memberStatement.clearBindings();
-                if (memberDetailsItem.getMemID() != null) {
-                    memberStatement.bindString(1, memberDetailsItem.getMemID());
+                if (memberDetailsItem.getStrId() != null) {
+                    memberStatement.bindString(1, memberDetailsItem.getStrId());
                 }
-                if (memberDetailsItem.getMemFamilyId() != null) {
-                    memberStatement.bindString(2, memberDetailsItem.getMemFamilyId());
+                if (memberDetailsItem.getStrFirstName() != null) {
+                    memberStatement.bindString(2, memberDetailsItem.getStrFirstName());
                 }
-                if (memberDetailsItem.getMemSgksMemberId() != null) {
-                    memberStatement.bindString(3, memberDetailsItem.getMemSgksMemberId());
+                if (memberDetailsItem.getStrMiddleName() != null) {
+                    memberStatement.bindString(3, memberDetailsItem.getStrMiddleName());
                 }
-                if (memberDetailsItem.getMemSgksFamilyId() != null) {
-                    memberStatement.bindString(4, memberDetailsItem.getMemSgksFamilyId());
+                if (memberDetailsItem.getStrLastName() != null) {
+                    memberStatement.bindString(4, memberDetailsItem.getStrLastName());
                 }
-                if (memberDetailsItem.getMemFirstName() != null) {
-                    memberStatement.bindString(5, memberDetailsItem.getMemFirstName());
+                if (memberDetailsItem.getStrAddress() != null) {
+                    memberStatement.bindString(5, memberDetailsItem.getStrAddress());
                 }
-                if (memberDetailsItem.getMemMidName() != null) {
-                    memberStatement.bindString(6, memberDetailsItem.getMemMidName());
+                if (memberDetailsItem.getStrCity() != null) {
+                    memberStatement.bindString(6, memberDetailsItem.getStrCity());
                 }
-                if (memberDetailsItem.getMemSurname() != null) {
-                    memberStatement.bindString(7, memberDetailsItem.getMemSurname());
+                if (memberDetailsItem.getStrGender() != null) {
+                    memberStatement.bindString(7, memberDetailsItem.getStrGender());
                 }
-                if (memberDetailsItem.getMemGender() != null) {
-                    memberStatement.bindString(8, memberDetailsItem.getMemGender());
+                if (memberDetailsItem.getStrMobileNumber() != null) {
+                    memberStatement.bindString(8, memberDetailsItem.getStrMobileNumber());
                 }
-                if (memberDetailsItem.getMemMobile() != null) {
-                    memberStatement.bindString(9, memberDetailsItem.getMemMobile());
+                if (memberDetailsItem.getStrDateOfBirth() != null) {
+                    memberStatement.bindString(9, memberDetailsItem.getStrDateOfBirth());
                 }
-                if (memberDetailsItem.getMemEmail() != null) {
-                    memberStatement.bindString(10, memberDetailsItem.getMemEmail());
+                if (memberDetailsItem.getStrEmail() != null) {
+                    memberStatement.bindString(10, memberDetailsItem.getStrEmail());
                 }
-                if (memberDetailsItem.getMemBloodGroup() != null) {
-                    memberStatement.bindString(11, memberDetailsItem.getMemBloodGroup());
+                if (memberDetailsItem.getStrBloodGroup() != null) {
+                    memberStatement.bindString(11, memberDetailsItem.getStrBloodGroup());
                 }
-                if (memberDetailsItem.getMemMaritalStatus() != null) {
-                    memberStatement.bindString(12, memberDetailsItem.getMemMaritalStatus());
+                if (memberDetailsItem.getStrLatitude() != null) {
+                    memberStatement.bindString(12, memberDetailsItem.getStrLatitude());
                 }
-                if (memberDetailsItem.getMemSgksArea() != null) {
-                    memberStatement.bindString(13, memberDetailsItem.getMemSgksArea());
+                if (memberDetailsItem.getStrLongitude() != null) {
+                    memberStatement.bindString(13, memberDetailsItem.getStrLongitude());
                 }
-                if (memberDetailsItem.getMemLatitude() != null) {
-                    memberStatement.bindString(14, memberDetailsItem.getMemLatitude());
+                if (memberDetailsItem.getStrMemberImageUrl() != null) {
+                    memberStatement.bindString(14, memberDetailsItem.getStrMemberImageUrl());
                 }
-                if (memberDetailsItem.getMemLongitude() != null) {
-                    memberStatement.bindString(15, memberDetailsItem.getMemLongitude());
+                if (memberDetailsItem.getStrCreatedAt() != null) {
+                    memberStatement.bindString(15, memberDetailsItem.getStrCreatedAt());
                 }
-                if (memberDetailsItem.getMemSgksMainCity() != null) {
-                    memberStatement.bindString(16, memberDetailsItem.getMemSgksMainCity());
-                }
-                if (memberDetailsItem.getAddress_id() != null) {
-                    memberStatement.bindString(17, memberDetailsItem.getAddress_id());
-                }
-                if (memberDetailsItem.getMemberImageURL() != null) {
-                    memberStatement.bindString(18, memberDetailsItem.getMemberImageURL());
+                if (memberDetailsItem.getStrUpdatedAt() != null) {
+                    memberStatement.bindString(16, memberDetailsItem.getStrUpdatedAt());
                 }
                 memberStatement.execute();
             }
@@ -371,7 +365,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         ArrayList<MemberDetailsItem> arrMemDetails = new ArrayList<>();
         String whereClause = COLUMN_MEMBER_SGKS_CITY + " =?";
 //        String[] whereArgs = new String[]{strCurrentCity};
-        if (!searchString.equalsIgnoreCase("")) {
+        if (searchString.equalsIgnoreCase("")) {
 //            if (searchString.contains("-")) {
             if (searchString.matches("^[0-9]*-[0-9]*$")) {
                 //TODO Search in member id column
@@ -426,32 +420,32 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             do {
 //                if (isMemberActive.equalsIgnoreCase("true")) {
                     MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
-                    memberDetailsItem.setMemID(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY)));
-                    memberDetailsItem.setMemFamilyId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FAMILY_ID_FOREIGN_KEY)));
-                    memberDetailsItem.setMemSgksMemberId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_MEMBER_ID)));
-                    memberDetailsItem.setMemSgksFamilyId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_FAMILY_ID)));
-                    memberDetailsItem.setMemFirstName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
-                    memberDetailsItem.setMemMidName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
-                    memberDetailsItem.setMemSurname(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
-                    memberDetailsItem.setMemGender(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_GENDER)));
-                    memberDetailsItem.setMemMobile(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MOBILE)));
-                    memberDetailsItem.setMemEmail(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_EMAIL)));
-                    memberDetailsItem.setMemBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP)));
-                    memberDetailsItem.setMemMaritalStatus(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MARITAL_STATUS)));
-                    memberDetailsItem.setMemSgksArea(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_AREA)));
-                    memberDetailsItem.setMemSgksMainCity(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY)));
-                    memberDetailsItem.setMemLatitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LATITUDE)));
-                    memberDetailsItem.setMemLongitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LONGITUDE)));
-                    memberDetailsItem.setMemberImageURL(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IMAGE_URL)));
-                    memberDetailsItem.setAddress_id(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS_ID)));
-                    memberDetailsItem.setMemIsActive(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IS_ACTIVE)));
+                    memberDetailsItem.setStrId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY)));
+//                    memberDetailsItem.setMemFamilyId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FAMILY_ID_FOREIGN_KEY)));
+                    memberDetailsItem.setStrMemberId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_MEMBER_ID)));
+//                    memberDetailsItem.setMemSgksFamilyId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_FAMILY_ID)));
+                    memberDetailsItem.setStrFirstName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
+                    memberDetailsItem.setStrMiddleName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
+                    memberDetailsItem.setStrLastName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
+                    memberDetailsItem.setStrGender(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_GENDER)));
+                    memberDetailsItem.setStrMobileNumber(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MOBILE)));
+                    memberDetailsItem.setStrEmail(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_EMAIL)));
+                    memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP)));
+//                    memberDetailsItem.setMemMaritalStatus(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MARITAL_STATUS)));
+//                    memberDetailsItem.setMemSgksArea(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_AREA)));
+                    memberDetailsItem.setStrCity(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY)));
+                    memberDetailsItem.setStrLatitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LATITUDE)));
+                    memberDetailsItem.setStrLongitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LONGITUDE)));
+                    memberDetailsItem.setStrMemberImageUrl(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IMAGE_URL)));
+                    memberDetailsItem.setStrAddress(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS_ID)));
+//                    memberDetailsItem.setMemIsActive(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IS_ACTIVE)));
 //////////////////
                     String strFamilyId = cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FAMILY_ID_FOREIGN_KEY));
                     String strMemberAddressId = cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS_ID));
                     /*MemberAddressItem memberAddressItem = queryAddress(strFamilyId, strMemberAddressId);
                     memberDetailsItem.setMemAddress(memberAddressItem);*/
 /////////////////
-                    arrMemDetails.add(memberDetailsItem);
+//                    arrMemDetails.add(memberDetailsItem);
 //                }
             } while (cursorMember.moveToNext());
         }

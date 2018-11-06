@@ -9,229 +9,158 @@ import java.util.ArrayList;
  * Created by Rohit.
  */
 public class MemberDetailsItem implements Serializable {
-    private String memID, memFamilyId, memSgksFamilyId, memSgksMemberId, address_id;
-    private String memFirstName, memMidName, memSurname, memNativePlace, memSgksMainCity, memMosalVillage, memberImageURL;
-    private String memGender, memMobile, memEmail, memBloodGroup, memMaritalStatus, memBirthDate, memMarriageDate, memOccupation;
-    private String memSgksArea, memLatitude, memLongitude, memIsActive;
-    private ArrayList<String> arrMemHobbies, arrMemEducation;
-    private MemberAddressItem memAddress;
+   private String strId;
+    private String strFirstName;
+    private String strMiddleName;
+    private String strLastName;
+    private String strCity;
+    private String strEmail;
+    private String strMemberId;
+    private String strGender;
+    private String strMobileNumber;
+    private String strDateOfBirth;
+    private String strLatitude;
+    private String strLongitude;
+    private String strMemberImageUrl;
+    private String strBloodGroup;
+    private String strAddress;
+    private String strCreatedAt;
+    private String strUpdatedAt;
 
-    public MemberDetailsItem() {
+    public String getStrCreatedAt() {
+        return strCreatedAt;
     }
 
-    public String getMemFirstName() {
-        return memFirstName;
+    public void setStrCreatedAt(String strCreatedAt) {
+        this.strCreatedAt = strCreatedAt;
     }
 
-    public void setMemFirstName(String memFirstName) {
-        this.memFirstName = memFirstName;
+    public String getStrUpdatedAt() {
+        return strUpdatedAt;
     }
 
-    public String getMemberImageURL() {
-        return memberImageURL;
+    public void setStrUpdatedAt(String strUpdatedAt) {
+        this.strUpdatedAt = strUpdatedAt;
     }
 
-    public void setMemberImageURL(String memberImageURL) {
-        this.memberImageURL = memberImageURL;
+    public String getStrId() {
+        return strId;
     }
 
-    public String getMemEmail() {
-        return memEmail;
+    public void setStrId(String strId) {
+        this.strId = strId;
     }
 
-    public void setMemEmail(String memEmail) {
-        this.memEmail = memEmail;
+    public String getStrFirstName() {
+        return strFirstName;
     }
 
-    public String getMemBirthDate() {
-        return memBirthDate;
+    public void setStrFirstName(String strFirstName) {
+        this.strFirstName = strFirstName;
     }
 
-    public void setMemBirthDate(String memBirthDate) {
-        this.memBirthDate = memBirthDate;
+    public String getStrMiddleName() {
+        return strMiddleName;
     }
 
-    public String getMemBloodGroup() {
-        return memBloodGroup;
+    public void setStrMiddleName(String strMiddleName) {
+        this.strMiddleName = strMiddleName;
     }
 
-    public void setMemBloodGroup(String memBloodGroup) {
-        this.memBloodGroup = memBloodGroup;
+    public String getStrLastName() {
+        return strLastName;
     }
 
-    public String getMemMaritalStatus() {
-        return memMaritalStatus;
+    public void setStrLastName(String strLastName) {
+        this.strLastName = strLastName;
     }
 
-    public void setMemMaritalStatus(String memMaritalStatus) {
-        this.memMaritalStatus = memMaritalStatus;
+    public String getStrCity() {
+        return strCity;
     }
 
-    public String getMemMarriageDate() {
-        return memMarriageDate;
+    public void setStrCity(String strCity) {
+        this.strCity = strCity;
     }
 
-    public void setMemMarriageDate(String memMarriageDate) {
-        this.memMarriageDate = memMarriageDate;
+    public String getStrMemberId() {
+        return strMemberId;
     }
 
-    public String getMemSurname() {
-        return memSurname;
+    public void setStrMemberId(String strMemberId) {
+        this.strMemberId = strMemberId;
     }
 
-    public void setMemSurname(String memSurname) {
-        this.memSurname = memSurname;
+    public String getStrGender() {
+        return strGender;
     }
 
-    public String getMemNativePlace() {
-        return memNativePlace;
+    public void setStrGender(String strGender) {
+        this.strGender = strGender;
     }
 
-    public void setMemNativePlace(String memNativePlace) {
-        this.memNativePlace = memNativePlace;
+    public String getStrMobileNumber() {
+        return strMobileNumber;
     }
 
-    public String getMemSgksMainCity() {
-        return memSgksMainCity;
+    public void setStrMobileNumber(String strMobileNumber) {
+        this.strMobileNumber = strMobileNumber;
     }
 
-    public void setMemSgksMainCity(String memSgksMainCity) {
-        this.memSgksMainCity = memSgksMainCity;
+    public String getStrDateOfBirth() {
+        return strDateOfBirth;
     }
 
-    public String getMemID() {
-        return memID;
+    public void setStrDateOfBirth(String strDateOfBirth) {
+        this.strDateOfBirth = strDateOfBirth;
     }
 
-    public void setMemID(String memID) {
-        this.memID = memID;
+    public String getStrLatitude() {
+        return strLatitude;
     }
 
-    public String getMemMidName() {
-        return memMidName;
+    public void setStrLatitude(String strLatitude) {
+        this.strLatitude = strLatitude;
     }
 
-    public void setMemMidName(String memMidName) {
-        this.memMidName = memMidName;
+    public String getStrLongitude() {
+        return strLongitude;
     }
 
-    public String getMemGender() {
-        return memGender;
+    public void setStrLongitude(String strLongitude) {
+        this.strLongitude = strLongitude;
     }
 
-    public void setMemGender(String memGender) {
-        this.memGender = memGender;
+    public String getStrMemberImageUrl() {
+        return strMemberImageUrl;
     }
 
-    public String getMemMobile() {
-        return memMobile;
+    public void setStrMemberImageUrl(String strMemberImageUrl) {
+        this.strMemberImageUrl = strMemberImageUrl;
     }
 
-    public void setMemMobile(String memMobile) {
-        this.memMobile = memMobile;
+    public String getStrBloodGroup() {
+        return strBloodGroup;
     }
 
-    public String getMemSgksArea() {
-        return memSgksArea;
+    public void setStrBloodGroup(String strBloodGroup) {
+        this.strBloodGroup = strBloodGroup;
     }
 
-    public void setMemSgksArea(String memSgksArea) {
-        this.memSgksArea = memSgksArea;
+    public String getStrAddress() {
+        return strAddress;
     }
 
-    public String getMemLatitude() {
-        return memLatitude;
+    public void setStrAddress(String strAddress) {
+        this.strAddress = strAddress;
     }
 
-    public void setMemLatitude(String memLatitude) {
-        this.memLatitude = memLatitude;
+    public String getStrEmail() {
+        return strEmail;
     }
 
-    public String getMemLongitude() {
-        return memLongitude;
+    public void setStrEmail(String strEmail) {
+        this.strEmail = strEmail;
     }
 
-    public void setMemLongitude(String memLongitude) {
-        this.memLongitude = memLongitude;
-    }
-
-    public String getMemMosalVillage() {
-        return memMosalVillage;
-    }
-
-    public void setMemMosalVillage(String memMosalVillage) {
-        this.memMosalVillage = memMosalVillage;
-    }
-
-    public String getMemOccupation() {
-        return memOccupation;
-    }
-
-    public void setMemOccupation(String memOccupation) {
-        this.memOccupation = memOccupation;
-    }
-
-    public MemberAddressItem getMemAddress() {
-        return memAddress;
-    }
-
-    public void setMemAddress(MemberAddressItem memAddress) {
-        this.memAddress = memAddress;
-    }
-
-    public ArrayList<String> getArrMemHobbies() {
-        return arrMemHobbies;
-    }
-
-    public void setArrMemHobbies(ArrayList<String> arrMemHobbies) {
-        this.arrMemHobbies = arrMemHobbies;
-    }
-
-    public ArrayList<String> getArrMemEducation() {
-        return arrMemEducation;
-    }
-
-    public void setArrMemEducation(ArrayList<String> arrMemEducation) {
-        this.arrMemEducation = arrMemEducation;
-    }
-
-    public String getMemFamilyId() {
-        return memFamilyId;
-    }
-
-    public void setMemFamilyId(String memFamilyId) {
-        this.memFamilyId = memFamilyId;
-    }
-
-    public String getMemSgksFamilyId() {
-        return memSgksFamilyId;
-    }
-
-    public void setMemSgksFamilyId(String memSgksFamilyId) {
-        this.memSgksFamilyId = memSgksFamilyId;
-    }
-
-    public String getMemSgksMemberId() {
-        return memSgksMemberId;
-    }
-
-    public void setMemSgksMemberId(String memSgksMemberId) {
-        this.memSgksMemberId = memSgksMemberId;
-    }
-
-    public String getAddress_id() {
-        return address_id;
-    }
-
-    public void setAddress_id(String address_id) {
-        this.address_id = address_id;
-    }
-
-    public String getMemIsActive() {
-        return memIsActive;
-    }
-
-    public void setMemIsActive(String memIsActive) {
-        this.memIsActive = memIsActive;
-    }
 }

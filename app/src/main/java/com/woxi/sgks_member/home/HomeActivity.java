@@ -88,7 +88,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_add_me_sgks:
-                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
+                Intent intentAdd = new Intent(mContext, Verification.class);
                 intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
                 break;
@@ -262,17 +262,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             AppCommonMethods.putBooleanPref(AppConstants.PREFS_IS_OFFLINE_SUPPORT_ENABLED, true, mContext);
             AppCommonMethods.putBooleanPref(APP_DATABASE_CREATED, true, mContext);
         }
-        boolean isLocalStorageSyncEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LOCAL_STORAGE_SYNC_ENABLED, mContext);
-        if (isLocalStorageSyncEnabled) {
-            if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-                //Check if DataSyncService is already running
-                if (!isSyncServiceRunning(DataSyncService.class)) {
-                    syncLocalStorageSyncService(getApplicationContext());
-                } else new AppCommonMethods(mContext).LOG(0, TAG, "Sync Service Already Running");
-            } else {
-                new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.alert_sync_failed));
-            }
-        }
+//        boolean isLocalStorageSyncEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LOCAL_STORAGE_SYNC_ENABLED, mContext);
+//        if (isLocalStorageSyncEnabled) {
+//            if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+//                //Check if DataSyncService is already running
+//                if (!isSyncServiceRunning(DataSyncService.class)) {
+//                    syncLocalStorageSyncService(getApplicationContext());
+//                } else new AppCommonMethods(mContext).LOG(0, TAG, "Sync Service Already Running");
+//            } else {
+//                new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.alert_sync_failed));
+//            }
+//        }
     }
 
     private boolean isSyncServiceRunning(Class<?> serviceClass) {
