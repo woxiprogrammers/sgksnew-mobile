@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,8 +64,8 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private boolean isApiInProgress = false;
     private DatabaseQueryHandler databaseQueryHandler;
     private String strNoResults = "";
-    private int oldPageNumber;
     private int pageNumber = 0;
+    private ProgressBar pbMemberListing;
 
     public MemberHomeNewFragment() {
         // Required empty public constructor
@@ -94,6 +95,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
         linearLayoutManager = new LinearLayoutManager(mContext);
         mRvMemberList.setLayoutManager(linearLayoutManager);
+        pbMemberListing = mParentView.findViewById(R.id.pbMemberListing);
         mEtMemberSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -103,9 +105,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (charSequence.length() > 2) {
                     String currentSearch = charSequence.toString().toLowerCase();
-                    if (strNoResults.equalsIgnoreCase("") || !strNoResults.matches("^" + currentSearch + "*")) {
-                        strNoResults = "";
-                    }
+                    searchMember(currentSearch);
                 }
             }
 
@@ -114,8 +114,8 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             }
         });
         recyclerViewScrollListener();
-        functionToGetMembersList();
-//        requestToGetMembersData(0,false);
+        //functionToGetMembersList();
+        requestToGetMembersData(0,false);
         onMemberClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,6 +125,59 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 startActivity(intentDetails);
             }
         };
+    }
+
+    private void searchMember(String currentSearch) {
+        pbMemberListing.setVisibility(View.VISIBLE);
+        JSONObject params = new JSONObject();
+        try {
+            params.put("page_id", 0);
+            params.put("sgks_city",1);
+            params.put("language_id",1);
+            params.put("search_fullname",currentSearch);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppURLs.API_MEMBERS_LISTING, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        pbMemberListing.setVisibility(View.GONE);
+                        try {
+                            new AppCommonMethods(mContext).LOG(0,"member_listing_success",response.toString());
+                            if (!response.getString("page_id").equalsIgnoreCase("")) {
+                                pageNumber = Integer.parseInt(response.getString("page_id"));
+                            }
+                            Object resp = AppParser.parseMemberList(response.toString());
+                            mArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
+                            if (resp instanceof Boolean) {
+                                Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                            } else if (resp instanceof ArrayList) {
+                                if (mArrMemDetails.size() > 0) {
+                                    mRvMemberList.setHasFixedSize(true);
+                                    mRvAdapter = new MemberListAdapter(mArrMemDetails);
+                                    mRvMemberList.setAdapter(mRvAdapter);
+                                    databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
+
+                                } else {
+                                    Toast.makeText(mContext, "No Record Found", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            setUpMemberListAdapter();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                pbMemberListing.setVisibility(View.GONE);
+                new AppCommonMethods(mContext).LOG(0,"error_member_listing",error.toString());
+                VolleyLog.e("Error: ", error.getMessage());
+                error.printStackTrace();
+            }
+        });
+        AppController.getInstance().addToRequestQueue(req, "member_search");
     }
 
     private void functionToGetMembersList() {
@@ -155,9 +208,10 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     }
 
     private void requestToGetMembersData(final int pageId, boolean isFirstTime) {
+        pbMemberListing.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
         try {
-            params.put("page_id", 1);
+            params.put("page_id", 0);
             params.put("sgks_city",1);
             params.put("language_id",1);
         } catch (JSONException e) {
@@ -167,11 +221,11 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        pbMemberListing.setVisibility(View.GONE);
                         try {
                             new AppCommonMethods(mContext).LOG(0,"member_listing_success",response.toString());
                             if (!response.getString("page_id").equalsIgnoreCase("")) {
                                 pageNumber = Integer.parseInt(response.getString("page_id"));
-                                Log.i("@@@", "onResponse: "+pageNumber);
                             }
                             Object resp = AppParser.parseMemberList(response.toString());
                             mArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
@@ -196,18 +250,21 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                pbMemberListing.setVisibility(View.GONE);
                 new AppCommonMethods(mContext).LOG(0,"error_member_listing",error.toString());
                 VolleyLog.e("Error: ", error.getMessage());
                 error.printStackTrace();
             }
         });
-        AppController.getInstance().addToRequestQueue(req, "messageList");
+        AppController.getInstance().addToRequestQueue(req, "member_listing");
     }
+
     private void setUpMemberListAdapter () {
         mRvMemberList.setHasFixedSize(true);
         mRvAdapter = new MemberListAdapter(mArrMemDetails);
         mRvMemberList.setAdapter(mRvAdapter);
     }
+
     private void recyclerViewScrollListener() {
         mRvMemberList.addOnScrollListener(new EndlessRvScrollListener(linearLayoutManager) {
             @Override

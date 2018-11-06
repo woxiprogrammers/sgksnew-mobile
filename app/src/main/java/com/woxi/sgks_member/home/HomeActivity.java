@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -24,7 +25,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.woxi.sgks_member.AppController;
@@ -61,6 +66,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private boolean isClassifiedCountApplied = false;
     private Toolbar toolbar;
     private FloatingActionButton mFabAddNewMember;
+    private Spinner spLanguage;
+    private ArrayList arrLanguage;
+    private int intLanguageId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +77,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.drawer_coordinator);
         mContext = HomeActivity.this;
         toolbar = findViewById(R.id.toolbar);
-        mTvMemberCount = toolbar.findViewById(R.id.tvMemberCount);
+//        mTvMemberCount = toolbar.findViewById(R.id.tvMemberCount);
         mLL_MemberCount = findViewById(R.id.llMemberCount);
         setSupportActionBar(toolbar);
         setupActionBar();
@@ -80,6 +89,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView =  findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         initializeViews();
+
     }
 
     @Override
@@ -88,7 +98,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_add_me_sgks:
-                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
+                Intent intentAdd = new Intent(mContext, Verification.class);
                 intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
                 break;
@@ -153,6 +163,49 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Destroyed DataSyncService");
     }
 
+    public void setLanguageSpinner(){
+        arrLanguage.add(0,R.string.english);
+        arrLanguage.add(1,R.string.gujarati);
+        ArrayAdapter<String> arrayAdapter = getStringArrayAdapter(arrLanguage);
+        spLanguage.setAdapter(arrayAdapter);
+
+        spLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                intLanguageId = parent.getSelectedItemPosition()+1;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private ArrayAdapter<String> getStringArrayAdapter(ArrayList<String> arrayList) {
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayList) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextHint, null));
+                } else {
+                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextMain, null));
+                }
+                return view;
+            }
+        };
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
+    }
+
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -166,6 +219,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mViewPager =  findViewById(R.id.homeViewPager);
         TabLayout mTabLayout =  findViewById(R.id.tavLayout);
         mFabAddNewMember = findViewById(R.id.fabAddNewMember);
+        spLanguage = findViewById(R.id.spLang);
         viewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), mContext);
         mViewPager.setAdapter(viewPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -240,21 +294,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onPageScrollStateChanged(int state) {
             }
         });
-        /*if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-            //Setting message count on Message Tab
-            setMessageCount(mTabLayout);
-            //Setting classified count on Message Tab
-            setClassifiedCount(mTabLayout);
-        }
-        String strBuzzId = AppCommonMethods.getStringPref(AppConstants.PREFS_LATEST_BUZZ_ID, mContext);
-        String strLocalBuzzId = AppCommonMethods.getStringPref(AppConstants.PREFS_LOCAL_BUZZ_IDS, mContext);
-        if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-            //Call Function TO Animate Total Member Count In AppBar
-            animateMemberCount();
-            if (!strLocalBuzzId.contains(strBuzzId)) {
-                setUpNewsBuzz();
-            }
-        } else mLL_MemberCount.setVisibility(View.GONE);*/
         boolean notDataBaseCreated = AppCommonMethods.getBooleanPref(APP_DATABASE_CREATED, mContext);
         if (!notDataBaseCreated) {
             //Local Storage Sync is enabled by-default.
@@ -310,4 +349,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NotificationManager mNotifyMgr = (NotificationManager) applicationContext.getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.cancel(AppConstants.SYNC_NOTIFICATION_ID);
     }
+
+
 }

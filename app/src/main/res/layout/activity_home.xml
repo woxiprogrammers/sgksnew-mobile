@@ -56,17 +56,18 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/v4"
                         android:gravity="center_vertical"
-                        android:text="Members : "
+                        android:text="Language: "
                         android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/text_16" />
+                        android:textSize="@dimen/text_16"
+                        android:visibility="gone"/>
 
-                    <TextView
-                        android:id="@+id/tvMemberCount"
+                    <Spinner
+                        android:id="@+id/spLang"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/text_16" />
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorWhite">
+
+                    </Spinner>
                 </LinearLayout>
 
                 <TextView

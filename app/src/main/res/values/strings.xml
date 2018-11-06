@@ -77,4 +77,7 @@
     <string name="female">Female</string>
     <string name="enter_otp">Enter OTP</string>
     <string name="verification">Verification</string>
+    <string name="change_language" translatable="true">Change Language</string>
+    <string name="english">English</string>
+    <string name="gujarati">Gujarati</string>
 </resources>
