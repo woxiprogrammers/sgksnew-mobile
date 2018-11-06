@@ -139,6 +139,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent verificationIntent = new Intent(MemberDetailsActivity.this,Verification.class);
+                verificationIntent.putExtra("memberItems",memberDetailsItem);
                 verificationIntent.putExtra("activityType","MemberDetailsActivity");
                 startActivity(verificationIntent);
             }

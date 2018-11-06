@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.miscellaneous.AddMeToSgksActivity;
+import com.woxi.sgks_member.models.MemberDetailsItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppURLs;
 
@@ -37,8 +39,11 @@ public class Verification extends AppCompatActivity {
     private EditText etMobileNumber;
     private EditText etOtp;
     private TextView tvErrorMessage;
+    private TextView tvConfirmMobileNumber;
     private ProgressBar pbVerify;
-
+    private MemberDetailsItem memberDetailsItem;
+    private String strActivityType;
+    private boolean isFromEdit = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +51,18 @@ public class Verification extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.verification);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            if(bundle.containsKey("memberItems")){
+                memberDetailsItem = (MemberDetailsItem) bundle.getSerializable("memberItems");
+            }
+            if(bundle.containsKey("activityType")){
+                strActivityType = bundle.getString("activityType");
+                if(strActivityType.equalsIgnoreCase("MemberDetailsActivity")){
+                    isFromEdit = true;
+                }
+            }
         }
         initializeViews();
     }
@@ -57,6 +74,8 @@ public class Verification extends AppCompatActivity {
         llEnterOtp.setVisibility(View.GONE);
         pbVerify = findViewById(R.id.pbVerify);
         tvErrorMessage = findViewById(R.id.tvErrorMessage);
+        tvConfirmMobileNumber = findViewById(R.id.tvConfirmMobileNumber);
+
         etMobileNumber = findViewById(R.id.etMobileNumber);
         etMobileNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -86,6 +105,13 @@ public class Verification extends AppCompatActivity {
 
             }
         });
+        if(isFromEdit){
+            String strMobile = memberDetailsItem.getStrMobileNumber();
+            etMobileNumber.setText(memberDetailsItem.getStrMobileNumber());
+            etMobileNumber.setEnabled(false);
+            tvConfirmMobileNumber.setVisibility(View.VISIBLE);
+            tvConfirmMobileNumber.setText("An OTP is sent on "+strMobile);
+        }
         etOtp = findViewById(R.id.etOtp);
         etOtp.addTextChangedListener(new TextWatcher() {
             @Override
@@ -138,7 +164,7 @@ public class Verification extends AppCompatActivity {
                                 new AppCommonMethods(mContext).LOG(0,"OTP_VERIFIED",response.toString());
                                 if(response.has("message")){
                                         Intent addMemberIntent = new Intent(Verification.this, AddMeToSgksActivity.class);
-                                        addMemberIntent.putExtra("mobile_number",strMobileNumber);
+                                        addMemberIntent.putExtra("memberItems",memberDetailsItem);
                                         addMemberIntent.putExtra("activityType", getString(R.string.add_me_sgks));
                                         startActivity(addMemberIntent);
                                 }
