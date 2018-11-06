@@ -88,7 +88,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_add_me_sgks:
-                Intent intentAdd = new Intent(mContext, Verification.class);
+                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
                 intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
                 break;

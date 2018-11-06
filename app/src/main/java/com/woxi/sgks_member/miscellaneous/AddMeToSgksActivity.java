@@ -8,12 +8,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +38,7 @@ import com.woxi.sgks_member.AppController;
 import com.woxi.sgks_member.R;
 import com.woxi.sgks_member.home.HomeActivity;
 import com.woxi.sgks_member.interfaces.AppConstants;
+import com.woxi.sgks_member.models.MemberDetailsItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppURLs;
 import com.woxi.sgks_member.utils.ImageUtilityHelper;
@@ -90,32 +93,50 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private RadioGroup rgGender;
     private ArrayAdapter<String> arrBloodGroupAdapter;
     private ArrayAdapter<String> arrCityAdapter;
-    private Intent intent;
+    private Bundle bundle;
     private JSONArray jsonArrayCity;
     private JSONArray jsonArrayBloodGroup;
     private ArrayList<String> cityNameArrayList;
     private ArrayList<String> bloodGroupArrayList;
     private File file;
+    private MemberDetailsItem memberDetailsItem;
+    private String strActivityType;
+    private Boolean isFromEdit = false;
+    private RadioButton rbMale;
+    private RadioButton rbFemale;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_me_to_sgks);
-        intent = getIntent();
-        strContact = intent.getStringExtra("mobile_number");
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.add_me_sgks);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        bundle = getIntent().getExtras();
+        if(bundle != null){
+            if(bundle.containsKey("memberItems")){
+                memberDetailsItem = (MemberDetailsItem) bundle.getSerializable("memberItems");
+            }
+//            if (bundle.containsKey("activityType")) {
+//                strActivityType = bundle.getString("EditProfile");
+//                if(strActivityType.equalsIgnoreCase("EditProfile")){
+//                    isFromEdit = true;
+//                }
+//            }
+            if(bundle.containsKey("contactNumber")){
+                strContact = bundle.getString("contactNumber");
+            }
+        }
         requestBloodGroup();
         requestCity();
         initializeViews();
-
         rgGender.clearCheck();
         rgGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 rbGender = findViewById(checkedId);
+                Log.i("@@@", "onCheckedChanged: "+checkedId);
                 if (null != rbGender && checkedId != -1) {
                     strGender = rbGender.getText().toString();
                 }
@@ -210,8 +231,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metMiddleName = findViewById(R.id.etMiddleName);
         metLastName = findViewById(R.id.etLastName);
         metContact = findViewById(R.id.etContact);
-        metContact.setText(strContact);
-        metContact.setEnabled(false);
         metEmail = findViewById(R.id.etEmail);
         metAddress = findViewById(R.id.etAddress);
         spCity = findViewById(R.id.spCity);
@@ -223,6 +242,35 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metFirstName.requestFocus();
         imageUtilityHelper = new ImageUtilityHelper(mContext);
         ivAddImage.setOnClickListener(AddMeToSgksActivity.this);
+        rbMale = findViewById(R.id.rbMale);
+        rbFemale = findViewById(R.id.rbFemale);
+        if(isFromEdit){
+            metFirstName.setText(memberDetailsItem.getStrFirstName());
+            metMiddleName.setText(memberDetailsItem.getStrMiddleName());
+            metLastName.setText(memberDetailsItem.getStrLastName());
+            metEmail.setText(memberDetailsItem.getStrEmail());
+            tvDob.setText(memberDetailsItem.getStrDateOfBirth());
+            ivProfilePicture.setBackground(Drawable.createFromPath(memberDetailsItem.getStrMemberImageUrl()));
+            if(memberDetailsItem.getStrGender().equalsIgnoreCase("Male")){
+                rbMale.setChecked(true);
+            } else if(memberDetailsItem.getStrGender().equalsIgnoreCase("Female")){
+                rbFemale.setChecked(true);
+            }
+            if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("A")){
+                spBloodGroup.setSelection(1);
+            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("A-")){
+                spBloodGroup.setSelection(2);
+            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("B")){
+                spBloodGroup.setSelection(3);
+            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("O-")){
+                spBloodGroup.setSelection(4);
+            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("O")){
+                spBloodGroup.setSelection(5);
+            }
+        } else {
+            metContact.setText(strContact);
+            metContact.setEnabled(false);
+        }
     }
 
     @Override
@@ -293,10 +341,12 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     }
 
     private void sendImageToServerRequest() {
+        String strImageBase64 = convertImageToBase64(bitmapProfile,100);
         JSONObject params = new JSONObject();
         try {
             params.put("image_for", "profile_img");
-            params.put("image", file);
+            params.put("image", strImageBase64);
+            params.put("extension","png");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -422,6 +472,17 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private void goToHomeScreen() {
         Intent goToHomeIntent = new Intent(AddMeToSgksActivity.this, HomeActivity.class);
         startActivity(goToHomeIntent);
+    }
+
+    public static String convertImageToBase64(Bitmap bitmap, int compression) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, compression, baos);
+        byte[] b = baos.toByteArray();
+
+        String result = Base64.encodeToString(b, Base64.DEFAULT);
+        //String result = new String(encoded);
+
+        return result;
     }
 
     @Override
