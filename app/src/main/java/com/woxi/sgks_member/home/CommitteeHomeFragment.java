@@ -61,7 +61,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.fragment_committee_home, container, false);
         //Calling function to initialize required views.
-        initializeViews();
+       // initializeViews();
         return mParentView;
     }
 
@@ -169,7 +169,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
 
     @Override
     public void fragmentBecameVisible() {
-        getAllCommitteesOnline();
+        //getAllCommitteesOnline();
         /*if (!isApiRequested) {
             boolean isOfflineSupportEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_OFFLINE_SUPPORT_ENABLED, mContext);
             if (isOfflineSupportEnabled) {

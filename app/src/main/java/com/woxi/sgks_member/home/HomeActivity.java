@@ -166,9 +166,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.app_settings:
-                Intent intentSettings = new Intent(mContext, SettingsActivity.class);
+                /*Intent intentSettings = new Intent(mContext, SettingsActivity.class);
                 intentSettings.putExtra("activityType", getString(R.string.settings));
-                startActivity(intentSettings);
+                startActivity(intentSettings);*/
+                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -294,7 +295,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
                 if (position == 2){
-                    mFabAddNewMember.setVisibility(View.VISIBLE);
+                    mFabAddNewMember.setVisibility(View.GONE);
                 } else {
                     mFabAddNewMember.setVisibility(View.GONE);
                     mViewPager.setCurrentItem(2);

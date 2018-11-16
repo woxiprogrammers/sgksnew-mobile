@@ -64,7 +64,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                              Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.fragment_messages_classified_home, container, false);
         //Calling function to initialize required views.
-        initializeViews();
+        //initializeViews();
         return mParentView;
     }
 

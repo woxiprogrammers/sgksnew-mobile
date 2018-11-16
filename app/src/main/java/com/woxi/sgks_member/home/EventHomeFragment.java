@@ -72,7 +72,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.events_and_account_home, container, false);
         //Initialize Views
-        initializeViews();
+        //initializeViews();
         return mParentView;
     }
 
