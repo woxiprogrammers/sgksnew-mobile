@@ -143,7 +143,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 rbGender = findViewById(checkedId);
-                Log.i("@@@", "onCheckedChanged: "+checkedId);
                 if (null != rbGender && checkedId != -1) {
                     strGender = rbGender.getText().toString();
                 }
@@ -184,7 +183,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     @Override
                     public void onDateSet(DatePicker datePicker, int mYear, int mMonth, int mDay) {
                         tvDob.setText(mDay + "-" + mMonth + "-" + mYear);
-                        strDateOfBirth = mDay + "-" + mMonth + "-" + mYear;
+                        strDateOfBirth = mYear + "-" + mMonth + "-" + mDay ;
                     }
                 }, year, month, day);
                 datePickerDialog.show();
@@ -410,7 +409,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             params.put("last_name", strLastName);
             params.put("gender", strGender);
             params.put("address", strAddress);
-            params.put("date_of_birth", strDateOfBirth);
+            params.put("date_of_birth", strDateOfBirth); // Date format is YYYY-MM-DD
             params.put("blood_group_id", intBloodGroupId);
             params.put("city_id", intCityId);
             params.put("mobile", strContact);
@@ -427,7 +426,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                         try {
                             pDialog.hide();
                             new AppCommonMethods(mContext).LOG(0, "member_added", response.toString());
-                            new AppCommonMethods(mContext).showAlert(response.getString("message"));
+                            Toast.makeText(mContext,response.get("message").toString(),Toast.LENGTH_SHORT);
                             goToHomeScreen();
                         } catch (JSONException e) {
                             e.printStackTrace();
