@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.woxi.sgks_member">
+          package="com.woxi.sgkks_member">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -40,7 +40,7 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name="com.woxi.sgks_member.miscellaneous.SettingsActivity"
+            android:name="com.woxi.sgkks_member.miscellaneous.SettingsActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".home.MemberDetailsActivity"
