@@ -214,7 +214,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     return;
                 }
                 if (strContact.isEmpty()) {
-                    Toast.makeText(mContext, "Please Enter Mobile NUmber", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (spCity.getSelectedItemId() == 0) {

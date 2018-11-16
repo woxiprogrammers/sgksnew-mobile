@@ -135,6 +135,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
         }
 
         FloatingActionButton mFloatingEdit = findViewById(R.id.memFloatingEdit);
+        mFloatingEdit.setVisibility(View.GONE);
         mFloatingEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

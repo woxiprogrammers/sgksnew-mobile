@@ -66,7 +66,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private String strNoResults = "";
     private int pageNumber = 0;
     private ProgressBar pbMemberListing;
-
+    private String searchFullName = "";
     public MemberHomeNewFragment() {
         // Required empty public constructor
     }
@@ -104,8 +104,11 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (charSequence.length() > 2) {
-                    String currentSearch = charSequence.toString().toLowerCase();
-                    searchMember(currentSearch);
+                    searchFullName = charSequence.toString().toLowerCase();
+                    requestToGetMembersData(0,false);
+                } else {
+                    searchFullName = "";
+                    requestToGetMembersData(0,false);
                 }
             }
 
@@ -127,63 +130,10 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         };
     }
 
-    private void searchMember(String currentSearch) {
-        pbMemberListing.setVisibility(View.VISIBLE);
-        JSONObject params = new JSONObject();
-        try {
-            params.put("page_id", 0);
-            params.put("sgks_city",1);
-            params.put("language_id",1);
-            params.put("search_fullname",currentSearch);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppURLs.API_MEMBERS_LISTING, params,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        pbMemberListing.setVisibility(View.GONE);
-                        try {
-                            new AppCommonMethods(mContext).LOG(0,"member_listing_success",response.toString());
-                            if (!response.getString("page_id").equalsIgnoreCase("")) {
-                                pageNumber = Integer.parseInt(response.getString("page_id"));
-                            }
-                            Object resp = AppParser.parseMemberList(response.toString());
-                            mArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
-                            if (resp instanceof Boolean) {
-                                Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
-                            } else if (resp instanceof ArrayList) {
-                                if (mArrMemDetails.size() > 0) {
-                                    mRvMemberList.setHasFixedSize(true);
-                                    mRvAdapter = new MemberListAdapter(mArrMemDetails);
-                                    mRvMemberList.setAdapter(mRvAdapter);
-                                    databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
-
-                                } else {
-                                    Toast.makeText(mContext, "No Record Found", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                            setUpMemberListAdapter();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                pbMemberListing.setVisibility(View.GONE);
-                new AppCommonMethods(mContext).LOG(0,"error_member_listing",error.toString());
-                VolleyLog.e("Error: ", error.getMessage());
-                error.printStackTrace();
-            }
-        });
-        AppController.getInstance().addToRequestQueue(req, "member_search");
-    }
-
     private void functionToGetMembersList() {
-        boolean isOfflineSupportEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_OFFLINE_SUPPORT_ENABLED, mContext);
-        if (isOfflineSupportEnabled) {
-            String strCurrentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
+//        boolean isOfflineSupportEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_OFFLINE_SUPPORT_ENABLED, mContext);
+//        if (isOfflineSupportEnabled) {
+            String test = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
             mArrMemDetails = databaseQueryHandler.queryMembers(strSearchTerm);
             //If there are no results from local database go online else show local results.
             if (mArrMemDetails == null || mArrMemDetails.size() == 0) {
@@ -197,9 +147,9 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 mRvAdapter = new MemberListAdapter(mArrMemDetails);
                 mRvMemberList.setAdapter(mRvAdapter);
             }
-        } else {
-            requestToGetMembersData(pageNumber, true);
-        }
+//        } else {
+//            requestToGetMembersData(pageNumber, true);
+//        }
     }
 
     @Override
@@ -211,9 +161,10 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         pbMemberListing.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
         try {
-            params.put("page_id", 0);
+            params.put("page_id", pageId);
             params.put("sgks_city",1);
             params.put("language_id",1);
+            params.put("search_fullname",searchFullName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -232,15 +183,12 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                             if (resp instanceof Boolean) {
                                 Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
                             } else if (resp instanceof ArrayList) {
-                                if (mArrMemDetails.size() > 0) {
+//                                if (mArrMemDetails.size() > 0) {
                                     mRvMemberList.setHasFixedSize(true);
                                     mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                     mRvMemberList.setAdapter(mRvAdapter);
                                     databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
-
-                                } else {
-                                    Toast.makeText(mContext, "No Record Found", Toast.LENGTH_SHORT).show();
-                                }
+//                                }
                             }
                             setUpMemberListAdapter();
                         } catch (JSONException e) {

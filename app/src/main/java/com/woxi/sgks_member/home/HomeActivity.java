@@ -98,9 +98,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_add_me_sgks:
-                Intent intentAdd = new Intent(mContext, Verification.class);
-                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
-                startActivity(intentAdd);
+//                Intent intentAdd = new Intent(mContext, Verification.class);
+//                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+//                startActivity(intentAdd);
+                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_suggestion:
                 /*Intent intentSug = new Intent(mContext, SuggestionActivity.class);
@@ -225,7 +226,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mTabLayout.setupWithViewPager(mViewPager);
         //To start Committee Home
         mViewPager.setCurrentItem(2);
-        mFabAddNewMember.setVisibility(View.VISIBLE);
+        mFabAddNewMember.setVisibility(View.GONE);
         mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -245,7 +246,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onPageSelected(int position) {
                 FragmentInterface fragment = (FragmentInterface) viewPagerAdapter.instantiateItem(mViewPager, position);
-                Log.i("@@@", "onPageSelected: "+position);
                 if (fragment != null) {
                     fragment.fragmentBecameVisible();
                 }
@@ -275,16 +275,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     //Other tabs not in use for 1st app release
                     //remove other tabs are ready
                     if(position == 0){
-                        new AppCommonMethods(mContext).showAlert("Events Comming Soon.....");
+                        new AppCommonMethods(mContext).showAlert("Events Coming Soon.....");
                     }
                     if(position == 1){
-                        new AppCommonMethods(mContext).showAlert("Committies Comming Soon.....");
+                        new AppCommonMethods(mContext).showAlert("Committies Coming Soon.....");
                     }
                     if(position == 3){
-                        new AppCommonMethods(mContext).showAlert("Messages Comming Soon.....");
+                        new AppCommonMethods(mContext).showAlert("Messages Coming Soon.....");
                     }
                     if(position == 4){
-                        new AppCommonMethods(mContext).showAlert("Classiffieds Comming Soon.....");
+                        new AppCommonMethods(mContext).showAlert("Classifieds Coming Soon.....");
                     }
 
                 }
