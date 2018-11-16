@@ -8,11 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -23,11 +25,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,8 +48,14 @@ import com.woxi.sgks_member.miscellaneous.MiscellaneousViewActivity;
 import com.woxi.sgks_member.miscellaneous.SettingsActivity;
 import com.woxi.sgks_member.miscellaneous.SuggestionActivity;
 import com.woxi.sgks_member.utils.AppCommonMethods;
+import com.woxi.sgks_member.utils.AppSettings;
+import com.woxi.sgks_member.utils.LocaleHelper;
 
 import java.util.ArrayList;
+
+import static com.woxi.sgks_member.interfaces.AppConstants.LANGUAGE_ENGLISH;
+import static com.woxi.sgks_member.interfaces.AppConstants.LANGUAGE_GUJURATI;
+import static com.woxi.sgks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context mContext;
@@ -69,6 +79,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Spinner spLanguage;
     private ArrayList arrLanguage;
     private int intLanguageId;
+    private ImageView ivLanguage;
 
 
     @Override
@@ -77,6 +88,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.drawer_coordinator);
         mContext = HomeActivity.this;
         toolbar = findViewById(R.id.toolbar);
+        String lang = AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext);
+        Log.d("@@@", "onCreate: " + lang);
+        Bundle extras = getIntent().getBundleExtra("bundleHome");
+        boolean isFromLanguage = false;
+        if (extras != null) {
+            if (extras.containsKey("isFromLanguage")) {
+                isFromLanguage = extras.getBoolean("isFromLanguage");
+            }
+        }
 //        mTvMemberCount = toolbar.findViewById(R.id.tvMemberCount);
         mLL_MemberCount = findViewById(R.id.llMemberCount);
         setSupportActionBar(toolbar);
@@ -224,7 +244,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         viewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), mContext);
         mViewPager.setAdapter(viewPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
-        //To start Committee Home
+        ivLanguage = findViewById(R.id.ivLanguage);
+        ivLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLangChangeDialog();
+            }
+        });
         mViewPager.setCurrentItem(2);
         mFabAddNewMember.setVisibility(View.GONE);
         mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
@@ -278,7 +304,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         new AppCommonMethods(mContext).showAlert("Events Coming Soon.....");
                     }
                     if(position == 1){
-                        new AppCommonMethods(mContext).showAlert("Committies Coming Soon.....");
+                        new AppCommonMethods(mContext).showAlert("Committees Coming Soon.....");
                     }
                     if(position == 3){
                         new AppCommonMethods(mContext).showAlert("Messages Coming Soon.....");
@@ -348,6 +374,73 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         applicationContext.stopService(intentSyncService);
         NotificationManager mNotifyMgr = (NotificationManager) applicationContext.getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.cancel(AppConstants.SYNC_NOTIFICATION_ID);
+    }
+
+    private void showLangChangeDialog(){
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mContext);
+        builder.setCancelable(true);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_language, null);
+        builder.setView(view);
+        final TextView tvValueGujurati, tvValueEnglish;
+        tvValueGujurati = (TextView) view.findViewById(R.id.tvGujuratiLanguage);
+        tvValueEnglish = (TextView) view.findViewById(R.id.tvEnglishLanguage);
+        final String lang = AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext);
+        if (lang.equals(LANGUAGE_ENGLISH)) {
+            tvValueEnglish.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlueDark));
+            tvValueGujurati.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlack));
+        } else if (lang.equals(LANGUAGE_GUJURATI)) {
+            tvValueEnglish.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlack));
+            tvValueGujurati.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlueDark));
+        }
+        final android.support.v7.app.AlertDialog dialog = builder.create();
+        dialog.show();
+        tvValueGujurati.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lang.equals(LANGUAGE_ENGLISH)) {
+                    tvValueEnglish.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlack));
+                    tvValueGujurati.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlueDark));
+                    mContext = LocaleHelper.onAttach(mContext, LANGUAGE_GUJURATI);
+                    restartActivity(mContext);
+                }
+                dialog.dismiss();
+            }
+        });
+        //TODO: Avoid this repetitive api calls
+        tvValueEnglish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lang.equals(LANGUAGE_GUJURATI)) {
+                    tvValueEnglish.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlueDark));
+                    tvValueGujurati.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlack));
+                    mContext = LocaleHelper.onAttach(mContext, LANGUAGE_ENGLISH);
+                    restartActivity(mContext);
+                }
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void restartActivity(Context context) {
+        try {
+//            String lang = AGAppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext);
+//            Context context = LocaleHelper.setLocale(this, lang);
+            Intent intentHome = getIntent();
+            Bundle bundleExtras = new Bundle();
+            bundleExtras.putBoolean("isFromLanguage", true);
+            intentHome.putExtra("bundleHome", bundleExtras);
+            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(intentHome);
+            finish();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase));
     }
 
 

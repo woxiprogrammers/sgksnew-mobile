@@ -36,6 +36,17 @@
                     android:src="@drawable/ic_city"
                     android:visibility="invisible"/>
 
+                <ImageView
+                    android:id="@+id/ivLanguage"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/v16"
+                    android:src="@drawable/ic_language"
+                    android:visibility="visible"/>
+
+
                 <LinearLayout
                     android:id="@+id/llMemberCount"
                     android:layout_width="wrap_content"

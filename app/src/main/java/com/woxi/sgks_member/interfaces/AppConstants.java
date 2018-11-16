@@ -31,4 +31,5 @@ public interface AppConstants {
     int IMAGE_CHOOSER_CODE = 205;
     int WRITE_PERMISSION_CODE = 200;
     int USER_LOGIN_ACTIVITY_RESULT_CODE = 1212;
+    String LANGUAGE_GUJURATI = "2", LANGUAGE_ENGLISH = "1", PREFS_LANGUAGE_APPLIED = "languageApplied";
 }

@@ -36,6 +36,7 @@ import com.woxi.sgks_member.models.MemberDetailsItem;
 import com.woxi.sgks_member.models.MessageDetailsItem;
 import com.woxi.sgks_member.utils.AppCommonMethods;
 import com.woxi.sgks_member.utils.AppParser;
+import com.woxi.sgks_member.utils.AppSettings;
 import com.woxi.sgks_member.utils.AppURLs;
 
 import org.json.JSONArray;
@@ -104,10 +105,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (charSequence.length() > 2) {
-                    searchFullName = charSequence.toString().toLowerCase();
-                    requestToGetMembersData(0,false);
-                } else {
-                    searchFullName = "";
+                    String currentSearch = charSequence.toString().toLowerCase();
                     requestToGetMembersData(0,false);
                 }
             }
@@ -163,7 +161,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         try {
             params.put("page_id", pageId);
             params.put("sgks_city",1);
-            params.put("language_id",1);
+            params.put("language_id",AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext));
             params.put("search_fullname",searchFullName);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -183,12 +181,15 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                             if (resp instanceof Boolean) {
                                 Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
                             } else if (resp instanceof ArrayList) {
-//                                if (mArrMemDetails.size() > 0) {
+                                if (mArrMemDetails.size() > 0) {
                                     mRvMemberList.setHasFixedSize(true);
                                     mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                     mRvMemberList.setAdapter(mRvAdapter);
                                     databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
-//                                }
+
+                                } else {
+                                    Toast.makeText(mContext, "No Record Found", Toast.LENGTH_SHORT).show();
+                                }
                             }
                             setUpMemberListAdapter();
                         } catch (JSONException e) {
