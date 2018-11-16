@@ -105,7 +105,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (charSequence.length() > 2) {
-                    String currentSearch = charSequence.toString().toLowerCase();
+                    searchFullName = charSequence.toString().toLowerCase();
                     requestToGetMembersData(0,false);
                 }
             }
@@ -114,7 +114,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             public void afterTextChanged(Editable s) {
             }
         });
-        recyclerViewScrollListener();
+        //recyclerViewScrollListener();
         //functionToGetMembersList();
         requestToGetMembersData(0,false);
         onMemberClickListener = new View.OnClickListener() {
@@ -187,8 +187,6 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                     mRvMemberList.setAdapter(mRvAdapter);
                                     databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
 
-                                } else {
-                                    Toast.makeText(mContext, "No Record Found", Toast.LENGTH_SHORT).show();
                                 }
                             }
                             setUpMemberListAdapter();
