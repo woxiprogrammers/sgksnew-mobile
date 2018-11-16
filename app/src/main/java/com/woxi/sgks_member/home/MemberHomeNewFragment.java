@@ -107,6 +107,9 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 if (charSequence.length() > 2) {
                     searchFullName = charSequence.toString().toLowerCase();
                     requestToGetMembersData(0,false);
+                } else {
+                    searchFullName = "";
+                    requestToGetMembersData(0,false);
                 }
             }
 
