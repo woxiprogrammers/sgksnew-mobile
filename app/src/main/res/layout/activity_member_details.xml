@@ -9,11 +9,11 @@
     android:layout_marginRight="@dimen/activity_vertical_margin"
     android:layout_marginTop="@dimen/activity_horizontal_margin"
     android:scrollbars="none"
-    tools:mContext="com.woxi.sgks_member.MemberDetailsActivity">
+    tools:mContext="com.woxi.sgkks_member.MemberDetailsActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/ivMemDetImage"
@@ -111,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/v4"
                     android:gravity="center_horizontal"
-                    android:text="Blood Group"
+                    android:text="@string/bloodGroup"
                     android:textColor="@color/colorWhite"
                     android:textStyle="bold" />
 
@@ -121,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-smallcaps"
                     android:gravity="center_horizontal"
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/colorWhite"/>
             </LinearLayout>
 
             <LinearLayout
@@ -139,12 +139,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/v4"
                     android:gravity="center_horizontal"
-                    android:text="Marital Status"
+                    android:text="City"
                     android:textColor="@color/colorWhite"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvMemMaritalStatus"
+                    android:id="@+id/tvMemCity"
                     style="@style/customTextView_16_Normal"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-smallcaps"
@@ -154,10 +154,12 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llTwo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/llOne"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -195,7 +197,8 @@
                 android:background="@drawable/background_gray"
                 android:backgroundTint="#4285F4"
                 android:orientation="vertical"
-                android:padding="@dimen/v8">
+                android:padding="@dimen/v8"
+                android:visibility="visible">
 
                 <TextView
                     style="@style/customTextView_12"
@@ -232,5 +235,22 @@
             app:elevation="0dp"
             app:fabSize="mini"
             app:rippleColor="@color/colorBlueLight" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/memFloatingEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/llTwo"
+            android:layout_marginEnd="@dimen/v8"
+            android:layout_marginTop="@dimen/v8"
+            android:background="@color/colorPrimaryDark"
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_edit"
+            app:backgroundTint="@color/colorPrimaryDark"
+            app:elevation="0dp"
+            app:fabSize="mini" />
     </RelativeLayout>
 </ScrollView>

@@ -39,16 +39,14 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1" />
-
             <TextView
                 android:id="@+id/tvMemberID"
                 style="@style/customTextView_12"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/v4"
                 android:layout_marginTop="@dimen/v4"
-                android:maxLines="1"
+                android:maxLines="4"
                 android:textStyle="italic" />
-
             <TextView
                 android:id="@+id/tvMemberAddress"
                 style="@style/customTextView_12"

@@ -1,13 +1,22 @@
 apply plugin: 'com.android.application'
 android {
+    signingConfigs {
+        config {
+            keyAlias 'sgkks'
+            keyPassword 'edu@12347'
+            storeFile file('/home/mayur/MobileApps/WOXI_Apps_Keys/SGKS_Member_App_Key/SGKS_Android_App_Key.jks')
+            storePassword 'edu@12347'
+        }
+    }
     compileSdkVersion 27
     buildToolsVersion "27.0.3"
     defaultConfig {
-        applicationId 'com.woxi.sgks_member'
+        applicationId 'com.woxi.sgkks_member'
         minSdkVersion 18
         targetSdkVersion 27
-        versionName '2.7'
-        versionCode 19
+        versionName '1.0'
+        versionCode 1
+        flavorDimensions "prod"
     }
     buildTypes {
         release {
@@ -22,6 +31,20 @@ android {
         javaMaxHeapSize "2g"
     }
     productFlavors {
+        dev {
+            applicationIdSuffix ".debug"
+            versionNameSuffix '-dev'
+            dimension "prod"
+            buildConfigField "String", "BASE_URL", '"http://testapi.sgks.co.in/api/"'
+//            buildConfigField "String", "BASE_URL_MEDIA", '"https://test.mconstruction.co.in"'
+            resValue "string", "app_name", "SGKKSDev"
+        }
+        prod {
+            dimension "prod"
+            buildConfigField "String", "BASE_URL", '"http://api.sgks.co.in/api/"'
+//            buildConfigField "String", "BASE_URL_MEDIA", '"https://mconstruction.co.in"'
+            resValue "string", "app_name", "SGKKS"
+        }
     }
 }
 
@@ -38,6 +61,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.google.android.gms:play-services-plus:10.2.0'
-    implementation "com.android.support:support-core-utils:27.0.2"
+    implementation 'com.android.support:support-core-utils:27.0.2'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.3.1'
+    implementation 'id.zelory:compressor:2.1.0'
 }

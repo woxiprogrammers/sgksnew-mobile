@@ -11,7 +11,22 @@
         <item name="android:spinnerItemStyle">@style/spinnerItemStyle</item>
         <item name="android:spinnerDropDownItemStyle">@style/spinnerDropDownItemStyle</item>
     </style>
+    <style name="style_text_view_base">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/dimen_16dp</item>
+        <item name="android:textColor">@color/color_text_main</item>
+    </style>
 
+
+
+
+
+    <style name="style_text_view_18" parent="style_text_view_base">
+        <item name="android:textSize">@dimen/textsize_normal_18dp</item>
+    </style>
     <style name="SplashTheme" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen_with_layers</item>
     </style>
@@ -103,5 +118,11 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:background">@color/colorBlack</item>
+    </style>
+
+    <style name="style_vertical_line">
+        <item name="android:layout_width">@dimen/dimen_1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/hint_text_light</item>
     </style>
 </resources>

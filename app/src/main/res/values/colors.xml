@@ -10,7 +10,8 @@
     <color name="colorBlueLight">#64b5f6</color>
     <color name="colorBlueMedium">#2196f3</color>
     <color name="colorBlueDark">#1d649c</color>
-
+    <color name="color_page_button_background">#F0F0F0</color>
+    <color name="color_text_main">#333333</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#505050</color>
     <color name="colorRed">#E65F5F</color>
@@ -18,4 +19,6 @@
     <color name="colorGreen">#5FC65B</color>
     <color name="colorAppBackground">#E2E2E2</color>
     <color name="colorAddFab">#2ecc71</color>
+    <color name="hint_text_light">#B4B4B4</color>
+    <color name="color_white">#FFFFFF</color>
 </resources>

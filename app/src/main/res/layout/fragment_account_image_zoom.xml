@@ -35,7 +35,7 @@
             android:maxLines="3"
             android:padding="@dimen/v8" />
 
-        <com.woxi.sgks_member.utils.TouchImageView
+        <com.woxi.sgkks_member.utils.TouchImageView
             android:id="@+id/ivAccountImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

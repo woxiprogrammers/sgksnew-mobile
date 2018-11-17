@@ -36,6 +36,17 @@
                     android:src="@drawable/ic_city"
                     android:visibility="invisible"/>
 
+                <ImageView
+                    android:id="@+id/ivLanguage"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/v16"
+                    android:src="@drawable/ic_language"
+                    android:visibility="visible"/>
+
+
                 <LinearLayout
                     android:id="@+id/llMemberCount"
                     android:layout_width="wrap_content"
@@ -48,24 +59,26 @@
                     android:paddingBottom="@dimen/v4"
                     android:paddingLeft="@dimen/v8"
                     android:paddingRight="@dimen/v8"
-                    android:paddingTop="@dimen/v4">
+                    android:paddingTop="@dimen/v4"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/v4"
                         android:gravity="center_vertical"
-                        android:text="Members : "
+                        android:text="Language: "
                         android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/text_16" />
+                        android:textSize="@dimen/text_16"
+                        android:visibility="gone"/>
 
-                    <TextView
-                        android:id="@+id/tvMemberCount"
+                    <Spinner
+                        android:id="@+id/spLang"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/text_16" />
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorWhite">
+
+                    </Spinner>
                 </LinearLayout>
 
                 <TextView
@@ -89,7 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dimen_40dp"
         android:layout_marginRight="@dimen/dimen_16dp"
-        android:backgroundTint="@color/colorAddFab"
+        app:backgroundTint="@color/colorAddFab"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|right"
