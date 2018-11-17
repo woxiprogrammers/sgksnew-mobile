@@ -31,4 +31,13 @@
     <dimen name="message_image_height">248dp</dimen>
     <dimen name="zoom_dialog_close_height_width">48dp</dimen>
     <dimen name="v104">104dp</dimen>
+    <dimen name="dimen_5dp">5dp</dimen>
+    <dimen name="dimen_48dp">48dp</dimen>
+    <dimen name="dimen_40dp">40dp</dimen>
+    <dimen name="dimen_30dp">30dp</dimen>
+    <dimen name="dimen_16dp">16dp</dimen>
+    <dimen name="dimen_150dp">150dp</dimen>
+    <dimen name="dimen_1dp">1dp</dimen>
+    <dimen name="textsize_normal_18dp">18dp</dimen>
+    <dimen name="dimen_2dp">2dp</dimen>
 </resources>
