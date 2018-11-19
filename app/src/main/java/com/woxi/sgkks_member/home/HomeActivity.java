@@ -185,25 +185,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Destroyed DataSyncService");
     }
 
-    public void setLanguageSpinner(){
-        arrLanguage.add(0,R.string.english);
-        arrLanguage.add(1,R.string.gujarati);
-        ArrayAdapter<String> arrayAdapter = getStringArrayAdapter(arrLanguage);
-        spLanguage.setAdapter(arrayAdapter);
-
-        spLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                intLanguageId = parent.getSelectedItemPosition()+1;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-    }
-
     private ArrayAdapter<String> getStringArrayAdapter(ArrayList<String> arrayList) {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayList) {
             @Override
@@ -294,18 +275,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
                     AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
-                if (position == 2){
+                if (position == 2 || position == 1){
                     mFabAddNewMember.setVisibility(View.GONE);
                 } else {
                     mFabAddNewMember.setVisibility(View.GONE);
                     mViewPager.setCurrentItem(2);
                     //Other tabs not in use for 1st app release
-                    //remove other tabs are ready
+                    //remove when other tabs are ready
                     if(position == 0){
                         new AppCommonMethods(mContext).showAlert("Events Coming Soon.....");
-                    }
-                    if(position == 1){
-                        new AppCommonMethods(mContext).showAlert("Committees Coming Soon.....");
                     }
                     if(position == 3){
                         new AppCommonMethods(mContext).showAlert("Messages Coming Soon.....");

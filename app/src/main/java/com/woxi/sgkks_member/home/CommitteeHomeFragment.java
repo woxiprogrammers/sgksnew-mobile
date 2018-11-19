@@ -26,6 +26,7 @@ import com.woxi.sgkks_member.local_storage.DatabaseQueryHandler;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
+import com.woxi.sgkks_member.utils.AppSettings;
 import com.woxi.sgkks_member.utils.AppURLs;
 
 import org.json.JSONException;
@@ -61,7 +62,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.fragment_committee_home, container, false);
         //Calling function to initialize required views.
-       // initializeViews();
+        initializeViews();
         return mParentView;
     }
 
@@ -89,9 +90,14 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
-
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_COMMITTEE_LISTING , null,
+        JSONObject params = new JSONObject();
+        try {
+            params.put("sgks_city",1);
+            params.put("language_id", AppSettings.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_COMMITTEE_LISTING , params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -170,7 +176,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
     @Override
     public void fragmentBecameVisible() {
         //getAllCommitteesOnline();
-        /*if (!isApiRequested) {
+        if (!isApiRequested) {
             boolean isOfflineSupportEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_OFFLINE_SUPPORT_ENABLED, mContext);
             if (isOfflineSupportEnabled) {
                 databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
@@ -185,7 +191,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
             } else {
                 getAllCommitteesOnline();
             }
-        }*/
+        }
     }
 
     private void getAllCommitteesOnline() {
