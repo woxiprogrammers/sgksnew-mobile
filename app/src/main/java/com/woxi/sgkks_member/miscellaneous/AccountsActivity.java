@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,8 +35,12 @@ import com.woxi.sgkks_member.utils.ImageZoomDialogFragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
@@ -57,7 +62,7 @@ public class AccountsActivity extends AppCompatActivity {
     private ArrayList<AccountDetailsItem> mArrAccountDetails;
     private ArrayList<AccountYearItem> arrAccountYear;
     private AccountAndEventDetailsAdapter accountAndEventDetailsAdapter;
-    private ArrayList<String> arrayYearStringsList;
+    private ArrayList<Integer> arrayYearIntegerList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +72,7 @@ public class AccountsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //Calling function to initialize required views.
         initializeViews();
-        requestAccountsAPI();
+        requestAccountsAPI(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
     }
 
     /**
@@ -77,8 +82,17 @@ public class AccountsActivity extends AppCompatActivity {
      */
     private void initializeViews() {
         mContext = AccountsActivity.this;
+
+        //Set-up Year spinner
         mSpinAccountYear =  findViewById(R.id.spinAccountYear);
         ((TextView) findViewById(R.id.tvYearTitle)).setText("Select Account Year");
+        for (int i = 2015; i <= 2030; i++){
+            arrayYearIntegerList.add(i-2015,i);
+        }
+        ArrayAdapter<Integer> integerArrayAdapter = new ArrayAdapter<Integer>(AccountsActivity.this, android.R.layout.simple_spinner_item, arrayYearIntegerList);
+        integerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinAccountYear.setAdapter(integerArrayAdapter);
+        mSpinAccountYear.setSelection(3);
 
         //Set-up RecyclerView
         mRvAccountImages = findViewById(R.id.rvAccountImages);
@@ -103,8 +117,8 @@ public class AccountsActivity extends AppCompatActivity {
         mSpinAccountYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (arrAccountYear.size() > 0) {
-                    setCurrentYearAccount(mArrAccountDetails);
+                if (arrayYearIntegerList.size() > 0) {
+                    requestAccountsAPI(parent.getSelectedItem().toString());
                 }
             }
 
@@ -114,7 +128,7 @@ public class AccountsActivity extends AppCompatActivity {
         });
     }
 
-    private void requestAccountsAPI() {
+    private void requestAccountsAPI(String year) {
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
@@ -123,6 +137,7 @@ public class AccountsActivity extends AppCompatActivity {
         try {
             params.put("sgks_city",1);
             params.put("language_id", AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
+            params.put("year",year);
         } catch (JSONException e) {
             e.printStackTrace();
         }

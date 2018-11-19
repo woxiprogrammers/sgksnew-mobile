@@ -77,8 +77,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private FloatingActionButton mFabAddNewMember;
     private Spinner spLanguage;
-    private ArrayList arrLanguage;
-    private int intLanguageId;
     private ImageView ivLanguage;
 
 
@@ -89,7 +87,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mContext = HomeActivity.this;
         toolbar = findViewById(R.id.toolbar);
         String lang = AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext);
-        Log.d("@@@", "onCreate: " + lang);
         Bundle extras = getIntent().getBundleExtra("bundleHome");
         boolean isFromLanguage = false;
         if (extras != null) {
