@@ -59,10 +59,17 @@ public class CommMemListAdapter extends BaseExpandableListAdapter {
         TextView tv_email =  convertView.findViewById(R.id.tvMemberEmail);
         TextView tv_address = convertView.findViewById(R.id.tvMemberAddress);
         if (commMemSecondItem.getCommitteeMemEmail() != null) {
-            tv_email.setText(commMemSecondItem.getCommitteeMemEmail());
+            if (commMemSecondItem.getCommitteeMemEmail().equalsIgnoreCase("null")) {
+                tv_email.setText("-");
+            } else {
+                tv_email.setText(commMemSecondItem.getCommitteeMemEmail());
+            }
         }
         if (commMemSecondItem.getCommitteeMemAddress() != null) {
-            tv_address.setText(commMemSecondItem.getCommitteeMemAddress());
+            if(commMemSecondItem.getCommitteeMemAddress().equalsIgnoreCase("null"))
+                tv_address.setText("-");
+            else
+                tv_address.setText(commMemSecondItem.getCommitteeMemAddress());
         }
         return convertView;
     }
