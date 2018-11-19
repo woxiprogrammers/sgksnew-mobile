@@ -27,6 +27,7 @@ import com.woxi.sgkks_member.models.AccountDetailsItem;
 import com.woxi.sgkks_member.models.AccountYearItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
+import com.woxi.sgkks_member.utils.AppSettings;
 import com.woxi.sgkks_member.utils.AppURLs;
 import com.woxi.sgkks_member.utils.ImageZoomDialogFragment;
 
@@ -38,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.STATUS_NO_RESULTS_FOUND;
 import static com.woxi.sgkks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
 
@@ -117,9 +119,15 @@ public class AccountsActivity extends AppCompatActivity {
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
+        JSONObject params = new JSONObject();
+        try {
+            params.put("sgks_city",1);
+            params.put("language_id", AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_ACCOUNT_LISTING,  null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_ACCOUNT_LISTING,  params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

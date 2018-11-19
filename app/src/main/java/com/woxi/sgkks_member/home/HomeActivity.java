@@ -130,10 +130,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_accounts:
-                /*Intent intentAccount = new Intent(mContext, AccountsActivity.class);
+                Intent intentAccount = new Intent(mContext, AccountsActivity.class);
                 intentAccount.putExtra("activityType", getString(R.string.accounts));
-                startActivity(intentAccount);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentAccount);
                 break;
             case R.id.nav_contact_us:
                 /*Intent intentCon = new Intent(mContext, MiscellaneousViewActivity.class);
