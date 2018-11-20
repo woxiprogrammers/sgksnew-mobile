@@ -1,9 +1,13 @@
 package com.woxi.sgkks_member;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -33,13 +37,51 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
     private boolean isMasterApiInProgress;
     public static ArrayList<SGKSAreaItem> sgksAreaItems;
     public static ArrayList<SGKSCategory> sgksCategory;
-
+    private AlertDialog.Builder builder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = SplashAndCityActivity.this;
-        getNextScreen();
+        if (new AppCommonMethods(mContext).isNetworkAvailable()){
+            getNextScreen();
+        } else {
+            showOfflineAlertDialog();
+       }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (new AppCommonMethods(mContext).isNetworkAvailable()){
+            Toast.makeText(mContext,"You are online",Toast.LENGTH_SHORT).show();
+            getNextScreen();
+        } else {
+            showOfflineAlertDialog();
+        }
+    }
+
+    private void showOfflineAlertDialog(){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(mContext, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(mContext);
+        }
+        builder.setTitle("You are Offline")
+                .setMessage("Please turn on the Internet")
+                .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent=new Intent(Settings.ACTION_WIFI_SETTINGS);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert);
     }
 
     private void getNextScreen() {
@@ -50,7 +92,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
                 Intent intentHome = new Intent(mContext, HomeActivity.class);
                 startActivity(intentHome);
                 finish();
-               // requestMasterList();
+                // requestMasterList();
 //                boolean notFirstRun = AppCommonMethods.getBooleanPref(APP_FIRST_RUN, mContext);
                 /*if (!notFirstRun) {
                     getCitySelectionScreen();
@@ -92,7 +134,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
 
         String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-               AppURLs.API_MASTER_LIST, null,
+                AppURLs.API_MASTER_LIST, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

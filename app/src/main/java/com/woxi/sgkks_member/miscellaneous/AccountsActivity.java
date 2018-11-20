@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -72,7 +73,12 @@ public class AccountsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //Calling function to initialize required views.
         initializeViews();
-        requestAccountsAPI(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+        if(new AppCommonMethods(mContext).isNetworkAvailable()){
+            requestAccountsAPI(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+        } else {
+            new AppCommonMethods(mContext).showAlert("You are offline");
+        }
+
     }
 
     /**
@@ -118,7 +124,11 @@ public class AccountsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (arrayYearIntegerList.size() > 0) {
-                    requestAccountsAPI(parent.getSelectedItem().toString());
+                    if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                        requestAccountsAPI(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+                    } else {
+                        new AppCommonMethods(mContext).showAlert("You are offline");
+                    }
                 }
             }
 
@@ -151,7 +161,12 @@ public class AccountsActivity extends AppCompatActivity {
                             Object resp = AppParser.parseAccountDetailsResponse(response.toString());
                             if (resp instanceof ArrayList) {
                                 mArrAccountDetails= (ArrayList<AccountDetailsItem>) resp;
-                                setCurrentYearAccount(mArrAccountDetails);
+                                if (mArrAccountDetails.size() != 0){
+                                    setCurrentYearAccount(mArrAccountDetails);
+                                } else if (mArrAccountDetails.size() == 0){
+                                    setCurrentYearAccount(mArrAccountDetails);
+                                    Toast.makeText(mContext,"No records Found",Toast.LENGTH_SHORT).show();
+                                }
                                 /*if (((ArrayList) resp).size() != 0) {
                                     ( findViewById(R.id.tvNotAvailable)).setVisibility(View.GONE);
                                     ( findViewById(R.id.llSelectYear)).setVisibility(View.VISIBLE);

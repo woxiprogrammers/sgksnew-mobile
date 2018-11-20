@@ -1,5 +1,6 @@
 package com.woxi.sgkks_member.home;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -104,12 +105,20 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                if (charSequence.length() > 2) {
+                if (charSequence.length() > 3) {
                     searchFullName = charSequence.toString().toLowerCase();
-                    requestToGetMembersData(0,false);
-                } else {
+                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                        requestToGetMembersData(0,false);
+                    } else {
+                        new AppCommonMethods(mContext).showAlert("You are offline");
+                    }
+                } else if (charSequence.length()==0){
                     searchFullName = "";
-                    requestToGetMembersData(0,false);
+                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                        requestToGetMembersData(0,false);
+                    } else {
+                        new AppCommonMethods(mContext).showAlert("You are offline");
+                    }
                 }
             }
 
@@ -119,7 +128,11 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         });
         //recyclerViewScrollListener();
         //functionToGetMembersList();
-        requestToGetMembersData(0,false);
+        if (new AppCommonMethods(mContext).isNetworkAvailable()){
+            requestToGetMembersData(0,false);
+        } else {
+            new AppCommonMethods(mContext).showAlert("You are offline");
+        }
         onMemberClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,7 +154,11 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 mRvAdapter = new MemberListAdapter(new ArrayList<MemberDetailsItem>());
                 mRvMemberList.setAdapter(mRvAdapter);
                 mRvMemberList.getAdapter().notifyDataSetChanged();
-                requestToGetMembersData(pageNumber, true);
+                if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                    requestToGetMembersData(0,false);
+                } else {
+                    new AppCommonMethods(mContext).showAlert("You are offline");
+                }
 //                searchMemberOnline();
             } else {
                 new AppCommonMethods().LOG(0, TAG + " Local Search", mArrMemDetails.toString());
@@ -159,6 +176,10 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     }
 
     private void requestToGetMembersData(final int pageId, boolean isFirstTime) {
+        final ProgressDialog pDialog = new ProgressDialog(mContext);
+        pDialog.setMessage("Loading, Please wait...");
+        pDialog.setCancelable(false);
+        pDialog.show();
         pbMemberListing.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
         try {
@@ -196,6 +217,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        pDialog.dismiss();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -228,7 +250,11 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         if (!isApiInProgress) {
             //Cancelling Pending Request
             AppController.getInstance().cancelPendingRequests("memberSearchList");
-            requestToGetMembersData(pageNumber, false);
+            if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                requestToGetMembersData(0,false);
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are offline");
+            }
         }
     }
 }

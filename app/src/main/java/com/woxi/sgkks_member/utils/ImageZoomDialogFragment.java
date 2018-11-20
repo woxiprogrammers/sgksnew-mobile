@@ -127,7 +127,7 @@ public class ImageZoomDialogFragment extends DialogFragment {
         }
         getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        Toast.makeText(getActivity().getBaseContext(), "Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity().getBaseContext(), "Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
 
         ImageView mIvAccountImage = mParentView.findViewById(R.id.ivAccountImage);
         vpAccount = mParentView.findViewById(R.id.vpAccountImage);
@@ -190,7 +190,6 @@ public class ImageZoomDialogFragment extends DialogFragment {
             vpAccount.setAdapter(pagerAdapter);
             pagerAdapter.registerDataSetObserver(indicator.getDataSetObserver());
             indicator.setViewPager(vpAccount);
-
         }
 
         floatingImageDownloadButton.setOnClickListener(new View.OnClickListener() {
