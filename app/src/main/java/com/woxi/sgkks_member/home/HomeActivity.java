@@ -77,8 +77,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private FloatingActionButton mFabAddNewMember;
     private Spinner spLanguage;
-    private ArrayList arrLanguage;
-    private int intLanguageId;
     private ImageView ivLanguage;
 
 
@@ -89,7 +87,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mContext = HomeActivity.this;
         toolbar = findViewById(R.id.toolbar);
         String lang = AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext);
-        Log.d("@@@", "onCreate: " + lang);
         Bundle extras = getIntent().getBundleExtra("bundleHome");
         boolean isFromLanguage = false;
         if (extras != null) {
@@ -130,10 +127,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_accounts:
-                /*Intent intentAccount = new Intent(mContext, AccountsActivity.class);
+                Intent intentAccount = new Intent(mContext, AccountsActivity.class);
                 intentAccount.putExtra("activityType", getString(R.string.accounts));
-                startActivity(intentAccount);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentAccount);
                 break;
             case R.id.nav_contact_us:
                 /*Intent intentCon = new Intent(mContext, MiscellaneousViewActivity.class);

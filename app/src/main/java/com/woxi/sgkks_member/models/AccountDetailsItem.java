@@ -1,6 +1,7 @@
 package com.woxi.sgkks_member.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * <b>public class AccountDetailsItem implements Serializable</b>
@@ -9,17 +10,32 @@ import java.io.Serializable;
  */
 public class AccountDetailsItem implements Serializable {
 
-    private String strAccountImageUrl, strAccountName;
-    public String getStrAccountImageUrl() {
-        return strAccountImageUrl;
-    }
-    public void setStrAccountImageUrl(String strAccountImageUrl) {
-        this.strAccountImageUrl = strAccountImageUrl;
-    }
+    private String strAccountName, strAccountDescription;
+
+    private ArrayList<AccountImages> imagesList;
+
     public String getStrAccountName() {
         return strAccountName;
     }
+
     public void setStrAccountName(String strAccountName) {
         this.strAccountName = strAccountName;
     }
+
+    public ArrayList<AccountImages> getImagesList() {
+        return imagesList;
+    }
+
+    public void setImagesList(ArrayList<AccountImages> imagesList) {
+        this.imagesList = imagesList;
+    }
+
+    public String getStrAccountDescription() {
+        return strAccountDescription;
+    }
+
+    public void setStrAccountDescription(String strAccountDescription) {
+        this.strAccountDescription = strAccountDescription;
+    }
+
 }

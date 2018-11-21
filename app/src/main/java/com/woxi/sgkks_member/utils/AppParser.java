@@ -16,6 +16,7 @@ import com.woxi.sgkks_member.models.MessageAndClassifiedResponseItem;
 import com.woxi.sgkks_member.models.MessageDetailsItem;
 import com.woxi.sgkks_member.models.SGKSAreaItem;
 import com.woxi.sgkks_member.models.SGKSCategory;
+import com.woxi.sgkks_member.models.AccountImages;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -523,11 +524,24 @@ public class AppParser implements AppConstants {
                 for (int indexDetails = 0; indexDetails < jsonDataArray.length(); indexDetails++) {
                     accountDetailsItem = new AccountDetailsItem();
                     JSONObject jsonDetailsObject = jsonDataArray.optJSONObject(indexDetails);
-                    if (jsonDetailsObject.has("account_image_url") && jsonDetailsObject.optString("account_image_url") != null && !jsonDetailsObject.optString("account_image_url").equalsIgnoreCase("null")) {
-                        accountDetailsItem.setStrAccountImageUrl(jsonDetailsObject.optString("account_image_url"));
+                    if (jsonDetailsObject.has("accounts_images") && jsonDetailsObject.optString("accounts_images") != null && !jsonDetailsObject.optString("accounts_images").equalsIgnoreCase("null")) {
+                        JSONArray imagesArray = jsonDetailsObject.getJSONArray("accounts_images");
+                        ArrayList<AccountImages> imageList = new ArrayList<>();
+                        if (imagesArray.length() > 0) {
+                            for (int imageIndex = 0; imageIndex < imagesArray.length(); imageIndex++) {
+                                String temp = imagesArray.getString(imageIndex);
+                                AccountImages img = new AccountImages();
+                                img.setImagePath(temp);
+                                imageList.add(img);
+                            }
+                        }
+                        accountDetailsItem.setImagesList(imageList);
                     }
                     if (jsonDetailsObject.has("name") && jsonDetailsObject.optString("name") != null && !jsonDetailsObject.optString("name").equalsIgnoreCase("null")) {
                         accountDetailsItem.setStrAccountName(jsonDetailsObject.optString("name"));
+                    }
+                    if (jsonDetailsObject.has("description") && jsonDetailsObject.optString("description") != null && !jsonDetailsObject.optString("description").equalsIgnoreCase("null")) {
+                        accountDetailsItem.setStrAccountDescription(jsonDetailsObject.optString("description"));
                     }
                     arrAccountDetails.add(accountDetailsItem);
                 }

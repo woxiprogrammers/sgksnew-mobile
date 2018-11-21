@@ -15,6 +15,7 @@ import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.home.EventAndClassifiedDetailActivity;
 import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
+import com.woxi.sgkks_member.models.AccountImages;
 
 import java.util.ArrayList;
 
@@ -70,11 +71,13 @@ public class AccountAndEventDetailsAdapter extends RecyclerView.Adapter<AccountA
             holder.mRlImageName.setVisibility(View.GONE);
         } else {
             holder.mRlImageName.setVisibility(View.VISIBLE);
-            if (mArrAccountDetails.get(position).getStrAccountImageUrl() != null) {
-                strImageUrl = mArrAccountDetails.get(position).getStrAccountImageUrl();
-            }
             if (mArrAccountDetails.get(position).getStrAccountName() != null) {
                 holder.mTvImageName.setText(mArrAccountDetails.get(position).getStrAccountName());
+            }
+            if(mArrAccountDetails.get(position).getImagesList() != null){
+                ArrayList<AccountImages> arrImageList= new ArrayList<>();
+                arrImageList = mArrAccountDetails.get(position).getImagesList();
+                strImageUrl = arrImageList.get(0).getImagePath();
             }
         }
 

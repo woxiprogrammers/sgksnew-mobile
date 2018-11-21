@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -27,17 +29,23 @@ import com.woxi.sgkks_member.models.AccountDetailsItem;
 import com.woxi.sgkks_member.models.AccountYearItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
+import com.woxi.sgkks_member.utils.AppSettings;
 import com.woxi.sgkks_member.utils.AppURLs;
 import com.woxi.sgkks_member.utils.ImageZoomDialogFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.STATUS_NO_RESULTS_FOUND;
 import static com.woxi.sgkks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
 
@@ -55,7 +63,7 @@ public class AccountsActivity extends AppCompatActivity {
     private ArrayList<AccountDetailsItem> mArrAccountDetails;
     private ArrayList<AccountYearItem> arrAccountYear;
     private AccountAndEventDetailsAdapter accountAndEventDetailsAdapter;
-    private ArrayList<String> arrayYearStringsList;
+    private ArrayList<Integer> arrayYearIntegerList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +73,12 @@ public class AccountsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //Calling function to initialize required views.
         initializeViews();
-        requestAccountsAPI();
+        if(new AppCommonMethods(mContext).isNetworkAvailable()){
+            requestAccountsAPI(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+        } else {
+            new AppCommonMethods(mContext).showAlert("You are offline");
+        }
+
     }
 
     /**
@@ -75,8 +88,17 @@ public class AccountsActivity extends AppCompatActivity {
      */
     private void initializeViews() {
         mContext = AccountsActivity.this;
+
+        //Set-up Year spinner
         mSpinAccountYear =  findViewById(R.id.spinAccountYear);
         ((TextView) findViewById(R.id.tvYearTitle)).setText("Select Account Year");
+        for (int i = 2015; i <= 2030; i++){
+            arrayYearIntegerList.add(i-2015,i);
+        }
+        ArrayAdapter<Integer> integerArrayAdapter = new ArrayAdapter<Integer>(AccountsActivity.this, android.R.layout.simple_spinner_item, arrayYearIntegerList);
+        integerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinAccountYear.setAdapter(integerArrayAdapter);
+        mSpinAccountYear.setSelection(3);
 
         //Set-up RecyclerView
         mRvAccountImages = findViewById(R.id.rvAccountImages);
@@ -101,8 +123,12 @@ public class AccountsActivity extends AppCompatActivity {
         mSpinAccountYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (arrAccountYear.size() > 0) {
-                    setCurrentYearAccount(mArrAccountDetails);
+                if (arrayYearIntegerList.size() > 0) {
+                    if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                        requestAccountsAPI(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+                    } else {
+                        new AppCommonMethods(mContext).showAlert("You are offline");
+                    }
                 }
             }
 
@@ -112,14 +138,21 @@ public class AccountsActivity extends AppCompatActivity {
         });
     }
 
-    private void requestAccountsAPI() {
+    private void requestAccountsAPI(String year) {
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
+        JSONObject params = new JSONObject();
+        try {
+            params.put("sgks_city",1);
+            params.put("language_id", AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
+            params.put("year",year);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_ACCOUNT_LISTING,  null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_ACCOUNT_LISTING,  params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -128,7 +161,12 @@ public class AccountsActivity extends AppCompatActivity {
                             Object resp = AppParser.parseAccountDetailsResponse(response.toString());
                             if (resp instanceof ArrayList) {
                                 mArrAccountDetails= (ArrayList<AccountDetailsItem>) resp;
-                                setCurrentYearAccount(mArrAccountDetails);
+                                if (mArrAccountDetails.size() != 0){
+                                    setCurrentYearAccount(mArrAccountDetails);
+                                } else if (mArrAccountDetails.size() == 0){
+                                    setCurrentYearAccount(mArrAccountDetails);
+                                    Toast.makeText(mContext,"No records Found",Toast.LENGTH_SHORT).show();
+                                }
                                 /*if (((ArrayList) resp).size() != 0) {
                                     ( findViewById(R.id.tvNotAvailable)).setVisibility(View.GONE);
                                     ( findViewById(R.id.llSelectYear)).setVisibility(View.VISIBLE);
