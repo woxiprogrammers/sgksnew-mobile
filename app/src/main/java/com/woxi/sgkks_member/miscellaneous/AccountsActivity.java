@@ -125,7 +125,7 @@ public class AccountsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (arrayYearIntegerList.size() > 0) {
                     if(new AppCommonMethods(mContext).isNetworkAvailable()){
-                        requestAccountsAPI(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+                        requestAccountsAPI(String.valueOf(parent.getSelectedItem()));
                     } else {
                         new AppCommonMethods(mContext).showAlert("You are offline");
                     }

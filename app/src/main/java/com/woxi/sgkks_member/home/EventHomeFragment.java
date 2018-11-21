@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -26,9 +27,11 @@ import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.adapters.EventsListAdapter;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
+import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
 import com.woxi.sgkks_member.models.EventDataItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
+import com.woxi.sgkks_member.utils.AppSettings;
 import com.woxi.sgkks_member.utils.AppURLs;
 
 import org.json.JSONException;
@@ -36,10 +39,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.STATUS_NO_RESULTS_FOUND;
 import static com.woxi.sgkks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
 
@@ -60,6 +65,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
     private String selectedYear = "";
     private ArrayList<String> mArrEventYears;
     private Spinner mSpinAccountYear;
+    private ArrayList<Integer> arrayYearIntegerList = new ArrayList<>();
 
     public EventHomeFragment() {
     }
@@ -72,7 +78,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.events_and_account_home, container, false);
         //Initialize Views
-        //initializeViews();
+        initializeViews();
         return mParentView;
     }
 
@@ -86,6 +92,13 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
         mRvEventList =  mParentView.findViewById(R.id.rvAccountImages);
         mSpinAccountYear = mParentView.findViewById(R.id.spinAccountYear);
         ((TextView) mParentView.findViewById(R.id.tvYearTitle)).setText("Select Event Year");
+        for (int i = 2015; i <= 2030; i++){
+            arrayYearIntegerList.add(i-2015,i);
+        }
+        ArrayAdapter<Integer> integerArrayAdapter = new ArrayAdapter<Integer>(mContext, android.R.layout.simple_spinner_item, arrayYearIntegerList);
+        integerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinAccountYear.setAdapter(integerArrayAdapter);
+        mSpinAccountYear.setSelection(3);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mRvEventList.setLayoutManager(linearLayoutManager);
         mArrEventData = new ArrayList<>();
@@ -109,7 +122,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedYear = mSpinAccountYear.getSelectedItem().toString();
                 if (!selectedYear.equalsIgnoreCase("null")) {
-                    requestEventDetailsApi();
+                    requestEventDetailsApi(String.valueOf(parent.getSelectedItem()));
                 } else {
                     ArrayAdapter<String> arrayYearAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, new ArrayList<String>());
                     arrayYearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -122,96 +135,26 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             }
         });
 
-        requestEventDetailsApi();
+        requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
     }
 
     @Override
     public void fragmentBecameVisible() {
         if (!isApiRequested) {
-            AppController.getInstance().cancelPendingRequests("apiEventYearListTAG");
-//            requestEventYearListApi();
+
         }
     }
 
-    private void requestEventYearListApi() {
-        final ProgressDialog pDialog = new ProgressDialog(mContext);
-        pDialog.setMessage("Loading, Please wait...");
-        pDialog.setCancelable(false);
-        pDialog.show();
-
-        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
-        ///sgksmain/events/lists?city=PUNE&year=2017
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_EVENT_YEAR_LIST + currentCity, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        new AppCommonMethods().LOG(0, TAG, response.toString());
-                        String strEventYears = "";
-                        if (response.has("event_year") && response.optString("event_year") != null && !response.optString("event_year").equalsIgnoreCase("") && !response.optString("event_year").equalsIgnoreCase("null")) {
-                            (mParentView.findViewById(R.id.tvNotAvailable)).setVisibility(View.GONE);
-                            ( mParentView.findViewById(R.id.llSelectYear)).setVisibility(View.VISIBLE);
-
-                            strEventYears = response.optString("event_year");
-                            strEventYears = strEventYears.replace("[", "");
-                            strEventYears = strEventYears.replace("]", "");
-                            strEventYears = strEventYears.replace("\"", "");
-                            mArrEventYears = new ArrayList<>(Arrays.asList(strEventYears.split(",")));
-
-                            ArrayAdapter<String> arrayYearAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, mArrEventYears);
-                            arrayYearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            mSpinAccountYear.setAdapter(arrayYearAdapter);
-                        } else {
-                            ( mParentView.findViewById(R.id.tvNotAvailable)).setVisibility(View.VISIBLE);
-                            ((TextView) mParentView.findViewById(R.id.tvNotAvailable)).setText("No Event To Show");
-                            ( mParentView.findViewById(R.id.llSelectYear)).setVisibility(View.GONE);
-                        }
-                        pDialog.dismiss();
-                        isApiRequested = true;
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                pDialog.dismiss();
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null) {
-                    ( mParentView.findViewById(R.id.tvNotAvailable)).setVisibility(View.VISIBLE);
-                    ((TextView) mParentView.findViewById(R.id.tvNotAvailable)).setText("No Event To Show");
-                    ( mParentView.findViewById(R.id.llSelectYear)).setVisibility(View.GONE);
-                    new AppCommonMethods().LOG(0, TAG, "response code " + error.networkResponse.statusCode + " message= " + new String(error.networkResponse.data));
-                    try {
-                        if (response.statusCode == STATUS_SOMETHING_WENT_WRONG) {
-                            new AppCommonMethods(mContext).showAlert("" + (new JSONObject(new String(response.data))).getString("message"));
-                        } else if (response.statusCode == STATUS_NO_RESULTS_FOUND) {
-                            new AppCommonMethods(mContext).showAlert("" + (new JSONObject(new String(response.data))).getString("message"));
-                        } else {
-                            new AppCommonMethods(mContext).showAlert((getString(R.string.optional_api_error)));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Accept", "application/json; charset=UTF-8");
-                return headers;
-            }
-        };
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "apiEventYearListTAG");
-    }
-
-    private void requestEventDetailsApi() {
 
 
+    private void requestEventDetailsApi(String year) {
         //ToDo Lazy Loading
         JSONObject params=new JSONObject();
         try {
             params.put("page_id",0);
-
+            params.put("sgks_city",1);
+            params.put("language_id",AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
+            params.put("year",year);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -229,8 +172,14 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
                             Object resp = AppParser.parseEventDetailsResponse(response.toString());
                             if (resp instanceof ArrayList) {
                                 mArrEventData = (ArrayList<EventDataItem>) resp;
-                                mEventListAdapter = new EventsListAdapter(mArrEventData);
-                                mRvEventList.setAdapter(mEventListAdapter);
+                                if(mArrEventData.size() != 0){
+                                    mEventListAdapter = new EventsListAdapter(mArrEventData);
+                                    mRvEventList.setAdapter(mEventListAdapter);
+                                } else {
+                                    Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT).show();
+                                    mEventListAdapter = new EventsListAdapter(mArrEventData);
+                                    mRvEventList.setAdapter(mEventListAdapter);
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
