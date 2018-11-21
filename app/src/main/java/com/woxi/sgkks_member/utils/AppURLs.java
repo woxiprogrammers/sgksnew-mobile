@@ -30,6 +30,8 @@ public class AppURLs {
     public static final String API_GET_CITY = BASE_URL + "sgks-miss/get-city";
     public static final String API_GET_BLOOD_GROUP = BASE_URL + "sgks-miss/get-bloodgroups";
     public static final String API_ADD_MEMBER = BASE_URL + "sgks-member/add-member";
+    public static final String API_MIN_VERSION = BASE_URL + "sgks-public/sgks-version";
+    public static final String PLAYSTORE_APP_URL ="https://play.google.com/store/apps/details?id=com.woxi.sgkks_member";
 
 
 

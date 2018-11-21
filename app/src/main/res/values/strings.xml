@@ -17,7 +17,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="news_title_image">news title image</string>
     <string name="news_type_birthday">birthday</string>
-    <string name="news_type_nidhan">nidhan</string>
+    <string name="news_type_nidhan">dukhad-nidhan</string>
     <string name="news_type_achievement">achievement</string>
     <string name="news_type_tag">news type tag</string>
     <string name="news_type_general">general</string>
@@ -80,4 +80,5 @@
     <string name="change_language" translatable="true">Change Language</string>
     <string name="english">English</string>
     <string name="gujarati">Gujarati</string>
+    <string name="update_app_dialog">You are using an older version of SGKKS app which is not being supported anymore. Please update.</string>
 </resources>

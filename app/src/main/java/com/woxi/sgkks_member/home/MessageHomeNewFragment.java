@@ -1,5 +1,6 @@
 package com.woxi.sgkks_member.home;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -59,7 +60,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                              Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.fragment_messages_classified_home, container, false);
         //Calling function to initialize required views.
-        //initializeViews();
+        initializeViews();
         return mParentView;
     }
 
@@ -91,8 +92,11 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         };
     }
 
-    private void requestMessageList()
-    {
+    private void requestMessageList() {
+        final ProgressDialog pDialog = new ProgressDialog(mContext);
+        pDialog.setMessage("Loading, Please wait...");
+        pDialog.setCancelable(false);
+        pDialog.show();
         final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_MESSAGE_LISTING, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -104,11 +108,12 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                             }else if(resp instanceof ArrayList){
                                 mArrMessageDetails= (ArrayList<MessageDetailsItem>) resp;
                                 setUpRecyclerView(mArrMessageDetails);
-                                databaseQueryHandler.insertOrUpdateAllMessages(mArrMessageDetails,false);
+                               // databaseQueryHandler.insertOrUpdateAllMessages(mArrMessageDetails,false);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        pDialog.dismiss();
                     }
                 }, new Response.ErrorListener() {
             @Override
