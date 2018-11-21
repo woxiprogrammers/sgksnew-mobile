@@ -12,6 +12,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.home.EventAndClassifiedDetailActivity;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
+import com.woxi.sgkks_member.models.AccountImages;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import me.relex.circleindicator.CircleIndicator;
 
 /**
  * <b>public class ImageZoomDialogFragment extends DialogFragment</b>
@@ -39,6 +47,11 @@ public class ImageZoomDialogFragment extends DialogFragment {
     public static String strFinalImageUrl = "";
     private boolean isForClassifiedGallery;
     private Context mContext;
+    private ArrayList<AccountImages> accountImages = new ArrayList<>();
+    private List<View> mViewList;
+    private PagerAdapter pagerAdapter;
+    private CircleIndicator indicator;
+    ViewPager vpAccount;
 
     public static ImageZoomDialogFragment newInstance(AccountDetailsItem accountDetailsItem1) {
         Bundle args = new Bundle();
@@ -69,6 +82,7 @@ public class ImageZoomDialogFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Dialog_FullScreen);
+        initializePagerAdapter();
     }
 
     @Override
@@ -113,11 +127,14 @@ public class ImageZoomDialogFragment extends DialogFragment {
         }
         getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        Toast.makeText(getActivity().getBaseContext(), "Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity().getBaseContext(), "Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
 
         ImageView mIvAccountImage = mParentView.findViewById(R.id.ivAccountImage);
-        ImageView mIvDialogClose =  mParentView.findViewById(R.id.ivDialogClose);
+        vpAccount = mParentView.findViewById(R.id.vpAccountImage);
+        indicator = mParentView.findViewById(R.id.indicator);
+        ImageView mIvDialogClose = mParentView.findViewById(R.id.ivDialogClose);
         TextView mTvAccountName = mParentView.findViewById(R.id.tvImageName);
+        TextView mTcAccountDescription = mParentView.findViewById(R.id.tvDescription);
         FloatingActionButton floatingImageDownloadButton = mParentView.findViewById(R.id.floatingImageDownloadButton);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -134,15 +151,45 @@ public class ImageZoomDialogFragment extends DialogFragment {
             floatingImageDownloadButton.setVisibility(View.VISIBLE);
             mTvAccountName.setVisibility(View.GONE);
             strFinalImageUrl = strEventImageUrl;
+            //Loading image from url.
+            Glide.with(mContext)
+                    .load(strFinalImageUrl)
+                    .crossFade()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .placeholder(R.drawable.ic_place_holder)
+                    .error(R.drawable.ic_broken_image)
+                    .into(mIvAccountImage);
         } else if (isForClassifiedGallery) {
             floatingImageDownloadButton.setVisibility(View.GONE);
             mTvAccountName.setVisibility(View.GONE);
             strFinalImageUrl = strEventImageUrl;
         } else {
+            mViewList = new ArrayList<>();
             floatingImageDownloadButton.setVisibility(View.GONE);
             mTvAccountName.setVisibility(View.VISIBLE);
             mTvAccountName.setText(accountDetailsItem.getStrAccountName());
-            strFinalImageUrl = accountDetailsItem.getStrAccountImageUrl();
+            mTcAccountDescription.setText(accountDetailsItem.getStrAccountDescription());
+            strFinalImageUrl = accountDetailsItem.getImagesList().get(0).getImagePath();
+
+            int accountDetailItemSize = accountDetailsItem.getImagesList().size();
+            for (int i = 0; i < accountDetailItemSize; i++) {
+                ImageView view = new ImageView(mContext);
+                view.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                view.setAdjustViewBounds(true);
+                Glide.with(mContext)
+                        .load(accountDetailsItem.getImagesList().get(i).getImagePath())
+                        .crossFade()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .placeholder(R.drawable.ic_place_holder)
+                        .error(R.drawable.ic_broken_image)
+                        .into(view);
+                mViewList.add(view);
+            }
+            vpAccount.setAdapter(pagerAdapter);
+            pagerAdapter.registerDataSetObserver(indicator.getDataSetObserver());
+            indicator.setViewPager(vpAccount);
         }
 
         floatingImageDownloadButton.setOnClickListener(new View.OnClickListener() {
@@ -158,16 +205,37 @@ public class ImageZoomDialogFragment extends DialogFragment {
                 }
             }
         });
-
-        //Loading image from url.
-        Glide.with(mContext)
-                .load(strFinalImageUrl)
-                .crossFade()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .placeholder(R.drawable.ic_place_holder)
-                .error(R.drawable.ic_broken_image)
-                .into(mIvAccountImage);
         return mParentView;
     }
+    private void initializePagerAdapter() {
+        pagerAdapter = new PagerAdapter() {
+            @Override
+            public boolean isViewFromObject(View arg0, Object arg1) {
+                return arg0 == arg1;
+            }
+
+            @Override
+            public int getCount() {
+                return mViewList.size();
+            }
+
+            @Override
+            public void destroyItem(ViewGroup container, int position, Object object) {
+                container.removeView(mViewList.get(position));
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return "title";
+            }
+
+            @Override
+            public Object instantiateItem(ViewGroup container, int position) {
+                container.addView(mViewList.get(position));
+                return mViewList.get(position);
+            }
+        };
+    }
+
 }
+

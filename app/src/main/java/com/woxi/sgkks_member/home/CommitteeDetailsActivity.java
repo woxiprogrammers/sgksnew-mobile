@@ -24,6 +24,7 @@ import com.woxi.sgkks_member.models.CommMemberDetailsItem;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
+import com.woxi.sgkks_member.utils.AppSettings;
 import com.woxi.sgkks_member.utils.AppURLs;
 
 import org.json.JSONArray;
@@ -119,8 +120,14 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
         pDialog.setCancelable(false);
         pDialog.show();
         String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,AppURLs.API_COMMITTEE_LISTING, null,
+        JSONObject params = new JSONObject();
+        try {
+            params.put("sgks_city",1);
+            params.put("language_id", AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,AppURLs.API_COMMITTEE_LISTING, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
