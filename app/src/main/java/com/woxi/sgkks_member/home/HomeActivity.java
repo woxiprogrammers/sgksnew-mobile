@@ -132,22 +132,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intentAccount);
                 break;
             case R.id.nav_contact_us:
-                /*Intent intentCon = new Intent(mContext, MiscellaneousViewActivity.class);
+                Intent intentCon = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentCon.putExtra("activityType", getString(R.string.contactUs));
-                startActivity(intentCon);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentCon);
                 break;
             case R.id.nav_health_plus:
-                /*Intent intentIntro = new Intent(mContext, MiscellaneousViewActivity.class);
+                Intent intentIntro = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentIntro.putExtra("activityType", getString(R.string.healthPlus));
-                startActivity(intentIntro);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentIntro);
                 break;
             case R.id.nav_help:
-                /*Intent intentHelp = new Intent(mContext, MiscellaneousViewActivity.class);
+                Intent intentHelp = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentHelp.putExtra("activityType", getString(R.string.help));
-                startActivity(intentHelp);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentHelp);
                 break;
             case R.id.nav_privacy_policy:
                 /*Intent intentPP = new Intent(mContext, MiscellaneousViewActivity.class);
