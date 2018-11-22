@@ -104,7 +104,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                             }else if(resp instanceof ArrayList){
                                 mArrMessageDetails= (ArrayList<MessageDetailsItem>) resp;
                                 setUpRecyclerView(mArrMessageDetails);
-                                databaseQueryHandler.insertOrUpdateAllMessages(mArrMessageDetails,false);
+ //                               databaseQueryHandler.insertOrUpdateAllMessages(mArrMessageDetails,false);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

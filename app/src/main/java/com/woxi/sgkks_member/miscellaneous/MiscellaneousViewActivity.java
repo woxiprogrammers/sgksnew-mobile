@@ -88,7 +88,7 @@ public class MiscellaneousViewActivity extends AppCompatActivity implements AppC
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, AppURLs.API_MISCELLANEOUS_WEBVIEW + paramsWebViewURL,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, AppURLs.API_MISCELLANEOUS_WEBVIEW + paramsWebViewURL+"/1/"+AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -109,8 +109,6 @@ public class MiscellaneousViewActivity extends AppCompatActivity implements AppC
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Accept", "application/json; charset=UTF-8");
-                headers.put("city_id","1");
-                headers.put("language_id",AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
                 return headers;
             }
         };
