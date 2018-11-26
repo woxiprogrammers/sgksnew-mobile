@@ -14,6 +14,8 @@ public class EventDataItem implements Serializable {
     private String eventName, eventYear;
     private String eventDescription;
     private String eventDate;
+    private String city;
+    private String venue;
     private ArrayList<String> arrEventImageURLs;
 
     public String getEventName() {
@@ -54,5 +56,21 @@ public class EventDataItem implements Serializable {
 
     public void setEventYear(String eventYear) {
         this.eventYear = eventYear;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
     }
 }

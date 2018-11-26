@@ -40,6 +40,9 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         if (mArrEventData.get(position).getEventDate() != null) {
             holder.mTvEventsDate.setText(mArrEventData.get(position).getEventDate());
         }
+        if(mArrEventData.get(position).getCity() != null){
+            holder.mTvEventsCity.setText("City: "+mArrEventData.get(position).getCity());
+        }
     }
 
     @Override
@@ -48,12 +51,13 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     }
 
     class EventItemHolder extends RecyclerView.ViewHolder {
-        TextView mTvEventsName, mTvEventsDate;
+        TextView mTvEventsName, mTvEventsDate, mTvEventsCity;
 
         EventItemHolder(View itemView) {
             super(itemView);
             mTvEventsName =  itemView.findViewById(R.id.tvEventsName);
             mTvEventsDate =  itemView.findViewById(R.id.tvEventsDate);
+            mTvEventsCity =  itemView.findViewById(R.id.tvEventsCity);
         }
     }
 }

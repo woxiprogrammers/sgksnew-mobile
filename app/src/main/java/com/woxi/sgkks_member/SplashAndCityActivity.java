@@ -1,30 +1,38 @@
 package com.woxi.sgkks_member;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.home.HomeActivity;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.MasterDataItem;
+import com.woxi.sgkks_member.models.MessageDetailsItem;
 import com.woxi.sgkks_member.models.SGKSAreaItem;
 import com.woxi.sgkks_member.models.SGKSCategory;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
 import com.woxi.sgkks_member.utils.AppURLs;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,24 +46,40 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
     public static ArrayList<SGKSAreaItem> sgksAreaItems;
     public static ArrayList<SGKSCategory> sgksCategory;
     private AlertDialog.Builder builder;
+    private String strServerVersion, strCurrentVersionName;
+    PackageInfo pInfo = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = SplashAndCityActivity.this;
+        try {
+            pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            strCurrentVersionName = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
         if (new AppCommonMethods(mContext).isNetworkAvailable()){
-            getNextScreen();
+            requestToGetMinVersion();
         } else {
             showOfflineAlertDialog();
-       }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         if (new AppCommonMethods(mContext).isNetworkAvailable()){
-            Toast.makeText(mContext,"You are online",Toast.LENGTH_SHORT).show();
-            getNextScreen();
+//            Toast.makeText(mContext,"You are online",Toast.LENGTH_SHORT).show();
+            if (strServerVersion != null && strCurrentVersionName != null) {
+                if (Float.parseFloat(strCurrentVersionName) < Float.parseFloat(strServerVersion)) {
+                    openUpdateDialog();
+                } else {
+                    getNextScreen();
+                }
+            }
         } else {
             showOfflineAlertDialog();
         }
@@ -207,5 +231,64 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
         });
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonObjReq, "getMasterList");
+    }
+
+    private void requestToGetMinVersion() {
+        final ProgressDialog pDialog = new ProgressDialog(mContext);
+        pDialog.setMessage("Loading, Please wait...");
+        pDialog.setCancelable(false);
+        pDialog.show();
+        if (strCurrentVersionName != null) {
+            String[] strSplitCurrentVersion = strCurrentVersionName.split("-");
+            strCurrentVersionName = strSplitCurrentVersion[0];
+        }
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,AppURLs.API_MIN_VERSION, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            new AppCommonMethods(mContext).LOG(0,"minimum_app_version",response.toString());
+                            JSONObject jsonObject = response.getJSONObject("data");
+                            strServerVersion = jsonObject.getString("minimum_app_version");
+                            if (strServerVersion != null) {
+                                if (Float.parseFloat(strCurrentVersionName) < Float.parseFloat(strServerVersion)) {
+                                    openUpdateDialog();
+                                } else {
+                                    getNextScreen();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        pDialog.dismiss();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.e("Error: ", error.getMessage());
+            }
+        });
+        AppController.getInstance().addToRequestQueue(req, "messageList");
+    }
+
+    private void openUpdateDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(SplashAndCityActivity.this/*, R.style.MyDialogTheme*/);
+        builder.setMessage(getString(R.string.update_app_dialog))
+                .setCancelable(false)
+                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        openPlayStoreLink();
+                    }
+                });
+        android.app.AlertDialog alert = builder.create();
+        alert.setTitle("Update App");
+        alert.show();
+    }
+    private void openPlayStoreLink() {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.woxi.sgkks_member")));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AppURLs.PLAYSTORE_APP_URL)));
+        }
     }
 }

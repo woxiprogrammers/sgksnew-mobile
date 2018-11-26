@@ -136,7 +136,6 @@ public class ImageZoomDialogFragment extends DialogFragment {
         TextView mTvAccountName = mParentView.findViewById(R.id.tvImageName);
         TextView mTcAccountDescription = mParentView.findViewById(R.id.tvDescription);
         FloatingActionButton floatingImageDownloadButton = mParentView.findViewById(R.id.floatingImageDownloadButton);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mIvDialogClose.setElevation(4);
         }
@@ -148,8 +147,10 @@ public class ImageZoomDialogFragment extends DialogFragment {
         });
 
         if (isFromEventList) {
+            Toast.makeText(getActivity().getBaseContext(), "Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
             floatingImageDownloadButton.setVisibility(View.VISIBLE);
             mTvAccountName.setVisibility(View.GONE);
+            mIvAccountImage.setVisibility(View.VISIBLE);
             strFinalImageUrl = strEventImageUrl;
             //Loading image from url.
             Glide.with(mContext)
@@ -171,7 +172,6 @@ public class ImageZoomDialogFragment extends DialogFragment {
             mTvAccountName.setText(accountDetailsItem.getStrAccountName());
             mTcAccountDescription.setText(accountDetailsItem.getStrAccountDescription());
             strFinalImageUrl = accountDetailsItem.getImagesList().get(0).getImagePath();
-
             int accountDetailItemSize = accountDetailsItem.getImagesList().size();
             for (int i = 0; i < accountDetailItemSize; i++) {
                 ImageView view = new ImageView(mContext);
