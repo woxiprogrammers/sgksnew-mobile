@@ -162,13 +162,25 @@ public class ImageZoomDialogFragment extends DialogFragment {
                     .error(R.drawable.ic_broken_image)
                     .into(mIvAccountImage);
         } else if (isForClassifiedGallery) {
+            Toast.makeText(getActivity().getBaseContext(), "Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
+            mIvAccountImage.setVisibility(View.VISIBLE);
             floatingImageDownloadButton.setVisibility(View.GONE);
             mTvAccountName.setVisibility(View.GONE);
             strFinalImageUrl = strEventImageUrl;
+            Glide.with(mContext)
+                    .load(strFinalImageUrl)
+                    .crossFade()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .placeholder(R.drawable.ic_place_holder)
+                    .error(R.drawable.ic_broken_image)
+                    .into(mIvAccountImage);
         } else {
+            Toast.makeText(getActivity().getBaseContext(), "Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
             mViewList = new ArrayList<>();
             floatingImageDownloadButton.setVisibility(View.GONE);
             mTvAccountName.setVisibility(View.VISIBLE);
+            mIvAccountImage.setVisibility(View.VISIBLE);
             mTvAccountName.setText(accountDetailsItem.getStrAccountName());
             mTcAccountDescription.setText(accountDetailsItem.getStrAccountDescription());
             strFinalImageUrl = accountDetailsItem.getImagesList().get(0).getImagePath();
