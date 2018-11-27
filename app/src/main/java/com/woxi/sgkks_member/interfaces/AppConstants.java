@@ -32,4 +32,5 @@ public interface AppConstants {
     int WRITE_PERMISSION_CODE = 200;
     int USER_LOGIN_ACTIVITY_RESULT_CODE = 1212;
     String LANGUAGE_GUJURATI = "2", LANGUAGE_ENGLISH = "1", PREFS_LANGUAGE_APPLIED = "languageApplied";
+    String CURRENT_PAGE = "";
 }

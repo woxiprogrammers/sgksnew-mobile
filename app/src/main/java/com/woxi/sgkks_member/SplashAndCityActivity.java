@@ -52,6 +52,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AppCommonMethods.putIntPref(AppConstants.PREFS_CURRENT_CITY,1,mContext);
         mContext = SplashAndCityActivity.this;
         try {
             pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -114,6 +115,9 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
             @Override
             public void run() {
                 Intent intentHome = new Intent(mContext, HomeActivity.class);
+                Bundle bundleExtras = new Bundle();
+                bundleExtras.putBoolean("isFromSplash",true);
+                intentHome.putExtra("bundleHome", bundleExtras);
                 startActivity(intentHome);
                 finish();
                 // requestMasterList();
@@ -284,6 +288,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
         alert.setTitle("Update App");
         alert.show();
     }
+
     private void openPlayStoreLink() {
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.woxi.sgkks_member")));

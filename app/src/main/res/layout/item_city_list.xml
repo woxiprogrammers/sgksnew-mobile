@@ -23,6 +23,7 @@
             android:text="CITY"/>
 
         <TextView
+            android:id="@+id/cardTvMemberCount"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textAlignment="center"

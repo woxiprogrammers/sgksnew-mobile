@@ -32,11 +32,16 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityListHolder
     @Override
     public void onBindViewHolder(CityListHolder holder, int position) {
         TextView tvCityName = holder.tvCity;
-        String strCityName = "";
+        TextView tvCityMemberCount = holder.tvMemberCount;
+        String strCityName = "",strCityMemberCount = "";
         if(arrCityList.get(position).getStrCityName() != null ){
             strCityName = arrCityList.get(position).getStrCityName();
+            tvCityName.setText(strCityName);
         }
-        tvCityName.setText(strCityName);
+        if(arrCityList.get(position).getStrMemberCount() != null){
+            strCityMemberCount = arrCityList.get(position).getStrMemberCount();
+            tvCityMemberCount.setText("Member Count: "+strCityMemberCount);
+        }
     }
 
     @Override
@@ -46,12 +51,13 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityListHolder
 
     class CityListHolder extends RecyclerView.ViewHolder {
         Context mContext;
-        TextView  tvCity;
+        TextView  tvCity, tvMemberCount;
 
         CityListHolder(View view) {
             super(view);
             this.mContext = view.getContext();
             this.tvCity =  view.findViewById(R.id.cardTvCity);
+            this.tvMemberCount = view.findViewById(R.id.cardTvMemberCount);
 
         }
     }

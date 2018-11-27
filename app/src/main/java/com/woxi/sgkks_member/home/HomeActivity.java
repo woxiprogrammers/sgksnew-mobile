@@ -53,6 +53,7 @@ import com.woxi.sgkks_member.utils.LocaleHelper;
 
 import java.util.ArrayList;
 
+import static com.woxi.sgkks_member.interfaces.AppConstants.CURRENT_PAGE;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_ENGLISH;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_GUJURATI;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
@@ -73,11 +74,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private TextView badgeClassifiedTab;
     private ArrayList<String> arrLocalClassifiedIds, arrClassifiedIds;
     private int intClassifiedTabIndex = 4;
-    private boolean isClassifiedCountApplied = false;
+    private boolean isClassifiedCountApplied = false, isFromSplash=false;
     private Toolbar toolbar;
     private FloatingActionButton mFabAddNewMember;
     private Spinner spLanguage;
     private ImageView ivLanguage, ivCity;
+    private int currentPage;
 
 
     @Override
@@ -92,6 +94,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (extras != null) {
             if (extras.containsKey("isFromLanguage")) {
                 isFromLanguage = extras.getBoolean("isFromLanguage");
+            }
+            if(extras.containsKey("isFromSplash")){
+                isFromSplash = extras.getBoolean("isFromSplash");
             }
         }
 //        mTvMemberCount = toolbar.findViewById(R.id.tvMemberCount);
@@ -232,7 +237,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intentSelectCity);
             }
         });
-        mViewPager.setCurrentItem(2);
+        if(isFromSplash){
+            mViewPager.setCurrentItem(2);
+        } else {
+            mViewPager.setCurrentItem(Integer.valueOf(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext)));
+        }
+
         mFabAddNewMember.setVisibility(View.GONE);
         mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -351,6 +361,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void showLangChangeDialog(){
+        AppCommonMethods.putStringPref(CURRENT_PAGE,String.valueOf(mViewPager.getCurrentItem()),mContext);
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mContext);
         builder.setCancelable(true);
         View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_language, null);
@@ -398,7 +409,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void restartActivity(Context context) {
         try {
 //            String lang = AGAppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext);
-//            Context context = LocaleHelper.setLocale(this, lang);
+//            Context context = LocaleHelper.setLocale(this, lang);                 cu
+
             Intent intentHome = getIntent();
             Bundle bundleExtras = new Bundle();
             bundleExtras.putBoolean("isFromLanguage", true);

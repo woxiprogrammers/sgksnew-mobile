@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,13 +38,11 @@ import java.util.ArrayList;
 
 public class SelectCityActivity extends AppCompatActivity {
     private ProgressBar pbSearchCity;
+    private String strSearchCity="";
     public static View.OnClickListener onCityClickListener;
     private EditText etSearchCity;
     private RecyclerView rvCityList;
     private RecyclerView.Adapter rvAdapter;
-    private JSONArray jsonArrayCity;
-    private ArrayList<String> cityNameArrayList;
-    private CityIteam cityIteam = new CityIteam();
     private LinearLayoutManager linearLayoutManager;
     public static ArrayList<CityIteam> arrCityList;
     private Context mContext;
@@ -58,10 +58,34 @@ public class SelectCityActivity extends AppCompatActivity {
     }
 
     private void initializeViews(){
-
         mContext = SelectCityActivity.this;
         pbSearchCity = findViewById(R.id.pbCityListing);
         etSearchCity = findViewById(R.id.etSearchCity);
+        etSearchCity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                if (charSequence.length() > 2){
+                    strSearchCity = charSequence.toString();
+                } else {
+                    strSearchCity = "";
+                }
+                if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                    requestCityList();
+                } else {
+                    new AppCommonMethods(mContext).showAlert("You are Offline");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         rvCityList = findViewById(R.id.rvCityList);
         linearLayoutManager = new LinearLayoutManager(mContext);
         rvCityList.setLayoutManager(linearLayoutManager);
@@ -75,10 +99,7 @@ public class SelectCityActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String position = String.valueOf(rvCityList.getChildLayoutPosition(v)+1);
                 AppCommonMethods.putStringPref(AppConstants.PREFS_CURRENT_CITY,position,mContext);
-
-                Log.i("@@@", "onClick: "+AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
                 restartActivity(mContext);
-
             }
         };
     }
@@ -112,6 +133,12 @@ public class SelectCityActivity extends AppCompatActivity {
 
     private void requestCityList(){
         pbSearchCity.setVisibility(View.VISIBLE);
+        JSONObject params = new JSONObject();
+        try {
+            params.put("search_city",strSearchCity);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_CITY, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

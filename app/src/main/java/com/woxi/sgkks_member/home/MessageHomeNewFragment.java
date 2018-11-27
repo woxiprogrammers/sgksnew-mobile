@@ -71,11 +71,12 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         linearLayoutManager = new LinearLayoutManager(mContext);
         mRvMessageList.setLayoutManager(linearLayoutManager);
         if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-            requestMessageList();
+            requestMessageList(1);
         }else {
-
+            new AppCommonMethods(mContext).showAlert("You are Offline");
         }
     }
+
     private void setUpRecyclerView(ArrayList<MessageDetailsItem> messageDetailsItems){
         mRvMessageList.setHasFixedSize(true);
         mRvAdapter = new MessageListAdapter(messageDetailsItems);
@@ -91,8 +92,15 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         };
     }
 
-    private void requestMessageList()
-    {
+    private void requestMessageList(int page_id) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("page_id",page_id);
+            params.put("language_id",AppCommonMethods.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext));
+            params.put("city_id",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_MESSAGE_LISTING, null,
                 new Response.Listener<JSONObject>() {
                     @Override

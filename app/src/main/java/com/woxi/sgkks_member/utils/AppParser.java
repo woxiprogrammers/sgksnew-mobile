@@ -704,6 +704,10 @@ public class AppParser implements AppConstants {
                     int intCity_Id = jsonCityObject.optInt("city_id");
                     cityIteam.setIntCityId(intCity_Id);
                 }
+                if (jsonCityObject.has("city_member_count") && jsonCityObject.optString("city_member_count") != null) {
+                    String strMemberCount = jsonCityObject.optString("city_member_count");
+                    cityIteam.setStrMemberCount(strMemberCount);
+                }
                 mArrCityData.add(cityIteam);
             }
             return mArrCityData;
