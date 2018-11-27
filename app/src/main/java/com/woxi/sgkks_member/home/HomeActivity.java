@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private FloatingActionButton mFabAddNewMember;
     private Spinner spLanguage;
-    private ImageView ivLanguage;
+    private ImageView ivLanguage, ivCity;
 
 
     @Override
@@ -227,6 +227,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 showLangChangeDialog();
+            }
+        });
+        ivCity = findViewById(R.id.ivCitySelect);
+        ivCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentSelectCity = new Intent(mContext, SelectCityActivity.class);
+                startActivity(intentSelectCity);
             }
         });
         mViewPager.setCurrentItem(2);
