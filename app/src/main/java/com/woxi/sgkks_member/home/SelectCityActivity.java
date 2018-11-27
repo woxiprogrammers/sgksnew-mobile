@@ -36,6 +36,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.woxi.sgkks_member.interfaces.AppConstants.CURRENT_PAGE;
+
 public class SelectCityActivity extends AppCompatActivity {
     private ProgressBar pbSearchCity;
     private String strSearchCity="";
@@ -108,6 +110,7 @@ public class SelectCityActivity extends AppCompatActivity {
         try {
 //            String lang = AGAppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext);
 //            Context context = LocaleHelper.setLocale(this, lang);
+
             Intent intentHome = new Intent(mContext, HomeActivity.class);
             Bundle bundleExtras = new Bundle();
             bundleExtras.putBoolean("isFromLanguage", true);

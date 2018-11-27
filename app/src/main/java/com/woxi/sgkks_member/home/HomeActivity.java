@@ -233,6 +233,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         ivCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AppCommonMethods.putStringPref(CURRENT_PAGE,String.valueOf(mViewPager.getCurrentItem()),mContext);
                 Intent intentSelectCity = new Intent(mContext, SelectCityActivity.class);
                 startActivity(intentSelectCity);
             }
