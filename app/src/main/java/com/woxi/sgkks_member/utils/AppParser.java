@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
+import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
 import com.woxi.sgkks_member.models.EventDataItem;
@@ -681,6 +682,31 @@ public class AppParser implements AppConstants {
                 classifiedResponseItem.setArrClassifiedList(arrClassifiedDetails);
             }
             return arrClassifiedDetails;
+        }
+        return false;
+    }
+
+    public static Object parseCityResponse (String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            ArrayList<CityIteam> mArrCityData = new ArrayList<>();
+            CityIteam cityIteam;
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
+                ArrayList<String> arrEventImages;
+                cityIteam = new CityIteam();
+                JSONObject jsonCityObject = jsonDataArray.optJSONObject(indexCity);
+                if (jsonCityObject.has("city_name") && jsonCityObject.optString("city_name") != null) {
+                    String strCityName = jsonCityObject.optString("city_name");
+                    cityIteam.setStrCityName(strCityName);
+                }
+                if (jsonCityObject.has("city_id") && jsonCityObject.optString("city_id") != null) {
+                    int intCity_Id = jsonCityObject.optInt("city_id");
+                    cityIteam.setIntCityId(intCity_Id);
+                }
+                mArrCityData.add(cityIteam);
+            }
+            return mArrCityData;
         }
         return false;
     }
