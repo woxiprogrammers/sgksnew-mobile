@@ -132,34 +132,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intentAccount);
                 break;
             case R.id.nav_contact_us:
-                /*Intent intentCon = new Intent(mContext, MiscellaneousViewActivity.class);
+                Intent intentCon = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentCon.putExtra("activityType", getString(R.string.contactUs));
-                startActivity(intentCon);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentCon);
                 break;
             case R.id.nav_health_plus:
-                /*Intent intentIntro = new Intent(mContext, MiscellaneousViewActivity.class);
+                Intent intentIntro = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentIntro.putExtra("activityType", getString(R.string.healthPlus));
-                startActivity(intentIntro);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentIntro);
                 break;
             case R.id.nav_help:
-                /*Intent intentHelp = new Intent(mContext, MiscellaneousViewActivity.class);
+                Intent intentHelp = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentHelp.putExtra("activityType", getString(R.string.help));
-                startActivity(intentHelp);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentHelp);
                 break;
             case R.id.nav_privacy_policy:
-                /*Intent intentPP = new Intent(mContext, MiscellaneousViewActivity.class);
+                Intent intentPP = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentPP.putExtra("activityType", getString(R.string.privacyPolicy));
-                startActivity(intentPP);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentPP);
                 break;
             case R.id.nav_qa:
-                /*Intent intentQA = new Intent(mContext, MiscellaneousViewActivity.class);
+                Intent intentQA = new Intent(mContext, MiscellaneousViewActivity.class);
                 intentQA.putExtra("activityType", getString(R.string.q_and_a));
-                startActivity(intentQA);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentQA);
                 break;
             case R.id.app_settings:
                 /*Intent intentSettings = new Intent(mContext, SettingsActivity.class);
@@ -279,19 +274,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
                     AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
-                if (position == 2 || position == 1){
+                if (position == 2 || position == 1 || position == 0 || position == 3){
                     mFabAddNewMember.setVisibility(View.GONE);
                 } else {
                     mFabAddNewMember.setVisibility(View.GONE);
                     mViewPager.setCurrentItem(2);
                     //Other tabs not in use for 1st app release
                     //remove when other tabs are ready
-                    if(position == 0){
-                        new AppCommonMethods(mContext).showAlert("Events Coming Soon.....");
-                    }
-                    if(position == 3){
-                        new AppCommonMethods(mContext).showAlert("Messages Coming Soon.....");
-                    }
+
+
                     if(position == 4){
                         new AppCommonMethods(mContext).showAlert("Classifieds Coming Soon.....");
                     }

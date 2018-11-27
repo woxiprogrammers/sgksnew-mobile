@@ -59,7 +59,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                              Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.fragment_messages_classified_home, container, false);
         //Calling function to initialize required views.
-        //initializeViews();
+        initializeViews();
         return mParentView;
     }
 
@@ -104,7 +104,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                             }else if(resp instanceof ArrayList){
                                 mArrMessageDetails= (ArrayList<MessageDetailsItem>) resp;
                                 setUpRecyclerView(mArrMessageDetails);
-                                databaseQueryHandler.insertOrUpdateAllMessages(mArrMessageDetails,false);
+ //                               databaseQueryHandler.insertOrUpdateAllMessages(mArrMessageDetails,false);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

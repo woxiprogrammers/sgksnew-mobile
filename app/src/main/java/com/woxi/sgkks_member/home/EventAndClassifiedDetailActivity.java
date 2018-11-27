@@ -95,6 +95,8 @@ public class EventAndClassifiedDetailActivity extends AppCompatActivity {
     }
 
     private void functionForClassifiedDetails(ClassifiedDetailsItem mClassifiedDetailsItem) {
+        TextView tvEventVenue = findViewById(R.id.tvEventVenue);
+        tvEventVenue.setVisibility(View.GONE);
         String strTitle = mClassifiedDetailsItem.getClassifiedTitle();
         if (strTitle != null) {
             ((TextView) findViewById(R.id.tvEventAndClassifiedName)).setText(strTitle);
@@ -129,6 +131,7 @@ public class EventAndClassifiedDetailActivity extends AppCompatActivity {
             mRvEventGallery.setLayoutManager(layoutManager);
             AccountAndEventDetailsAdapter eventAndAccountDetailsAdapter = new AccountAndEventDetailsAdapter(true, arrEventImageUrls);
             mRvEventGallery.setAdapter(eventAndAccountDetailsAdapter);
+            //Set Description
             String strEventDescription = eventDataItem.getEventDescription();
             TextView tvEventDescription = findViewById(R.id.tvEventAndClassifiedDescription);
             if (strEventDescription != null && !strEventDescription.equalsIgnoreCase("")) {
@@ -139,6 +142,19 @@ public class EventAndClassifiedDetailActivity extends AppCompatActivity {
                 }
             } else {
                 tvEventDescription.setVisibility(View.GONE);
+            }
+            //Set Venue
+            String strEventVenue = eventDataItem.getVenue();
+            TextView tvEventVenue = findViewById(R.id.tvEventVenue);
+            tvEventVenue.setVisibility(View.VISIBLE);
+            if (strEventVenue != null && !strEventVenue.equalsIgnoreCase("")) {
+                tvEventVenue.setVisibility(View.VISIBLE);
+                tvEventVenue.setText("Venue: "+strEventVenue);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    tvEventVenue.setElevation(5);
+                }
+            } else {
+                tvEventVenue.setVisibility(View.GONE);
             }
         }
     }

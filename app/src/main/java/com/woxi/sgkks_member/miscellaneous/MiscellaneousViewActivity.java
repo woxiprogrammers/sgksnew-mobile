@@ -19,6 +19,7 @@ import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
+import com.woxi.sgkks_member.utils.AppSettings;
 import com.woxi.sgkks_member.utils.AppURLs;
 
 import org.json.JSONException;
@@ -87,9 +88,7 @@ public class MiscellaneousViewActivity extends AppCompatActivity implements AppC
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
-
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, AppURLs.API_MISCELLANEOUS_WEBVIEW + paramsWebViewURL,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, AppURLs.API_MISCELLANEOUS_WEBVIEW + paramsWebViewURL+"/1/"+AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
