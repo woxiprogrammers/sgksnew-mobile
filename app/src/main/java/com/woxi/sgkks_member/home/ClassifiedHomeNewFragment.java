@@ -64,7 +64,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                              Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.fragment_messages_classified_home, container, false);
         //Calling function to initialize required views.
-        //initializeViews();
+        initializeViews();
         return mParentView;
     }
 
@@ -79,6 +79,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
         requestToGetClassifiedList();
 
     }
+
     private void setUpRecyclerView() {
         mRvAdapter = new ClassifiedListAdapter(mArrClassifiedDetails);
         mRvClassifiedList.setAdapter(mRvAdapter);
@@ -92,6 +93,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
             }
         };
     }
+
     private void requestToGetClassifiedList(){
         //ToDO PageID
         final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_CLASSIFIED_LISTING, null,

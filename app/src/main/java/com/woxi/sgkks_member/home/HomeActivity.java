@@ -285,20 +285,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
                     AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
-                if (position == 2 || position == 1 || position == 0 || position == 3){
+                if (position == 2 || position == 1 || position == 0 || position == 3 || position == 4){
                     mFabAddNewMember.setVisibility(View.GONE);
-                } else {
+                } /*else {
                     mFabAddNewMember.setVisibility(View.GONE);
                     mViewPager.setCurrentItem(2);
                     //Other tabs not in use for 1st app release
                     //remove when other tabs are ready
 
 
-                    if(position == 4){
+                    if(){
                         new AppCommonMethods(mContext).showAlert("Classifieds Coming Soon.....");
                     }
 
-                }
+                }*/
             }
 
             @Override
