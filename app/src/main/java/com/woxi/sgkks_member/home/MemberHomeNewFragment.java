@@ -88,6 +88,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
 
     private void initializeViews() {
         mContext = getActivity();
+        pbMemberListing = mParentView.findViewById(R.id.pbMemberListing);
         mRvMemberList = mParentView.findViewById(R.id.rvMemberList);
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
         mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
@@ -95,76 +96,33 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
-        linearLayoutManager = new LinearLayoutManager(mContext);
-        mRvMemberList.setLayoutManager(linearLayoutManager);
-        pbMemberListing = mParentView.findViewById(R.id.pbMemberListing);
-        mEtMemberSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                if (charSequence.length() > 3) {
-                    searchFullName = charSequence.toString().toLowerCase();
-                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                        requestToGetMembersData(0,false);
-                    } else {
-                        new AppCommonMethods(mContext).showAlert("You are offline");
-                    }
-                } else if (charSequence.length()==0){
-                    searchFullName = "";
-                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                        requestToGetMembersData(0,false);
-                    } else {
-                        new AppCommonMethods(mContext).showAlert("You are offline");
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        //recyclerViewScrollListener();
-        //functionToGetMembersList();
-        if (new AppCommonMethods(mContext).isNetworkAvailable()){
-            requestToGetMembersData(0,false);
-        } else {
-            new AppCommonMethods(mContext).showAlert("You are offline");
-        }
-        onMemberClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(view));
-                Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
-                intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
-                startActivity(intentDetails);
-            }
-        };
+        setUpRecyclerView();
+        functionToGetMembersList();
+        recyclerViewScrollListener();
     }
 
     private void functionToGetMembersList() {
 //        boolean isOfflineSupportEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_OFFLINE_SUPPORT_ENABLED, mContext);
 //        if (isOfflineSupportEnabled) {
-            String test = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
-            mArrMemDetails = databaseQueryHandler.queryMembers(strSearchTerm);
-            //If there are no results from local database go online else show local results.
-            if (mArrMemDetails == null || mArrMemDetails.size() == 0) {
-                mRvAdapter = new MemberListAdapter(new ArrayList<MemberDetailsItem>());
-                mRvMemberList.setAdapter(mRvAdapter);
-                mRvMemberList.getAdapter().notifyDataSetChanged();
-                if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                    requestToGetMembersData(0,false);
-                } else {
-                    new AppCommonMethods(mContext).showAlert("You are offline");
-                }
-//                searchMemberOnline();
+        String test = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
+        mArrMemDetails = databaseQueryHandler.queryMembers(strSearchTerm);
+        //If there are no results from local database go online else show local results.
+        if (mArrMemDetails == null || mArrMemDetails.size() == 0) {
+            mRvAdapter = new MemberListAdapter(new ArrayList<MemberDetailsItem>());
+            mRvMemberList.setAdapter(mRvAdapter);
+            mRvMemberList.getAdapter().notifyDataSetChanged();
+            if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                requestToGetMembersData(pageNumber,true);
             } else {
-                new AppCommonMethods().LOG(0, TAG + " Local Search", mArrMemDetails.toString());
-                mRvAdapter = new MemberListAdapter(mArrMemDetails);
-                mRvMemberList.setAdapter(mRvAdapter);
+                new AppCommonMethods(mContext).showAlert("You are offline");
             }
+//                searchMemberOnline();
+        } else {
+            searchMemberOnline();
+//            new AppCommonMethods().LOG(0, TAG + " Local Search", mArrMemDetails.toString());
+//            mRvAdapter = new MemberListAdapter(mArrMemDetails);
+//            mRvMemberList.setAdapter(mRvAdapter);
+        }
 //        } else {
 //            requestToGetMembersData(pageNumber, true);
 //        }
@@ -175,16 +133,19 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mParentView.findViewById(R.id.etSearchMember).clearFocus();
     }
 
-    private void requestToGetMembersData(final int pageId, boolean isFirstTime) {
+    private void requestToGetMembersData(final int pageId, final boolean isFirstTime) {
         final ProgressDialog pDialog = new ProgressDialog(mContext);
-        pDialog.setMessage("Loading, Please wait...");
-        pDialog.setCancelable(false);
-        pDialog.show();
+        if (isFirstTime){
+            pDialog.setMessage("Loading, Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
         pbMemberListing.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
+        Log.i("@@@", "requestToGetMembersData: PAGE NUMBER============"+pageId);
         try {
             params.put("page_id", pageId);
-            params.put("sgks_city",1);
+            params.put("sgks_city",AppSettings.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
             params.put("language_id",AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext));
             params.put("search_fullname",searchFullName);
         } catch (JSONException e) {
@@ -206,14 +167,18 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                 Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
                             } else if (resp instanceof ArrayList) {
                                 if (mArrMemDetails.size() > 0) {
-                                    mRvMemberList.setHasFixedSize(true);
-                                    mRvAdapter = new MemberListAdapter(mArrMemDetails);
-                                    mRvMemberList.setAdapter(mRvAdapter);
-                                    databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
-
+//                                    mRvMemberList.setHasFixedSize(true);
+//                                    mRvAdapter = new MemberListAdapter(mArrMemDetails);
+//                                    mRvMemberList.setAdapter(mRvAdapter);
+//                                    mRvMemberList.getAdapter().notifyDataSetChanged();
+                                    //databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
+//                                    mRvMemberList.setHasFixedSize(false);
+//                                    mRvAdapter = new MemberListAdapter(mArrMemDetails);
+//                                    mRvMemberList.setAdapter(mRvAdapter);
+//                                    mRvMemberList.getAdapter().notifyDataSetChanged();
+                                    setUpMemberListAdapter(isFirstTime);
                                 }
                             }
-                            setUpMemberListAdapter();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -231,13 +196,24 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         AppController.getInstance().addToRequestQueue(req, "member_listing");
     }
 
-    private void setUpMemberListAdapter () {
-        mRvMemberList.setHasFixedSize(true);
-        mRvAdapter = new MemberListAdapter(mArrMemDetails);
-        mRvMemberList.setAdapter(mRvAdapter);
+    private void setUpMemberListAdapter (boolean isFirstTime) {
+        if(isFirstTime){
+            mRvMemberList.setHasFixedSize(false);
+            mRvAdapter = new MemberListAdapter(mArrMemDetails);
+            mRvMemberList.setAdapter(mRvAdapter);
+            mRvMemberList.getAdapter().notifyDataSetChanged();
+        } else {
+            ArrayList<MemberDetailsItem> mNextArrMemDetails = mArrMemDetails;
+            if (mNextArrMemDetails != null) {
+                mArrMemDetails.addAll(mNextArrMemDetails);
+                mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
+                mRvMemberList.getAdapter().notifyDataSetChanged();
+            }
+        }
     }
 
     private void recyclerViewScrollListener() {
+        Log.i("@@@", "recyclerViewScrollListener: "+"i was here");
         mRvMemberList.addOnScrollListener(new EndlessRvScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -251,10 +227,45 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             //Cancelling Pending Request
             AppController.getInstance().cancelPendingRequests("memberSearchList");
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                requestToGetMembersData(0,false);
+                requestToGetMembersData(pageNumber,false);
             } else {
                 new AppCommonMethods(mContext).showAlert("You are offline");
             }
+        }
+    }
+
+    private void setUpRecyclerView() {
+        mRvMemberList.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(mContext);
+        mRvMemberList.setLayoutManager(linearLayoutManager);
+
+        onMemberClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(v));
+                Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
+                intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
+                startActivity(intentDetails);
+            }
+        };
+        //Following method call is for listening to scroll events
+        //recyclerViewScrollListener();
+    }
+
+    private void searchMemberOnline() {
+        if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+            //        sgks_city => 'required'
+            //        sgks_city => 'String',
+            //        mastertext => ‘String’,
+            //        suggestion_message => ‘String’
+            //        education => array()
+            //Cancelling Pending Request
+            AppController.getInstance().cancelPendingRequests("memberSearchList");
+            requestToGetMembersData(pageNumber, true);
+            //Following method call is for listening to scroll events
+            //recyclerViewScrollListener();
+        } else {
+            new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.noInternet));
         }
     }
 }

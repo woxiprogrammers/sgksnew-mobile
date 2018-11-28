@@ -142,7 +142,7 @@ public class SelectCityActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_CITY, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_GET_CITY, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -167,6 +167,7 @@ public class SelectCityActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 new AppCommonMethods(mContext).LOG(0, "error_city", error.toString());
                 pbSearchCity.setVisibility(View.GONE);
+                new AppCommonMethods(mContext).showAlert("Something went wrong...");
             }
         });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "get_city");
