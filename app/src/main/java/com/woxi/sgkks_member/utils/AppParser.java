@@ -64,130 +64,8 @@ public class AppParser implements AppConstants {
         return arrMainCommList;
     }
 
-    /*public static Object parseMemberSearchResponse(String response) throws JSONException {
-        JSONObject jsonResponseObject = new JSONObject(response);
-        MemberSearchDataItem memberSearchDataItem = new MemberSearchDataItem();
-        if (jsonResponseObject.has("pagination") && jsonResponseObject.optJSONObject("pagination") != null) {
-            JSONObject jsonPaginationObject = jsonResponseObject.optJSONObject("pagination");
-            if (jsonPaginationObject != null) {
-                if (jsonPaginationObject.has("next_page_url") && jsonPaginationObject.optString("next_page_url") != null) {
-                    memberSearchDataItem.setStrNextPageUrl(jsonPaginationObject.optString("next_page_url"));
-                }
-            }
-        }
-        if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
-            JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
-            ArrayList<MemberDetailsItem> arrMemberList = new ArrayList<>();
-            if (jsonDataArray != null) {
-                for (int arrIndexData = 0; arrIndexData < jsonDataArray.length(); arrIndexData++) {
-                    MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
-                    JSONObject jsonMemberObject = jsonDataArray.optJSONObject(arrIndexData);
-                    if (jsonMemberObject.has("surname") && jsonMemberObject.optString("surname") != null && !jsonMemberObject.optString("surname").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemSurname(jsonMemberObject.optString("surname"));
-                    }
-                    if (jsonMemberObject.has("native_place") && jsonMemberObject.optString("native_place") != null && !jsonMemberObject.optString("native_place").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemNativePlace(jsonMemberObject.optString("native_place"));
-                    }
-                    if (jsonMemberObject.has("city") && jsonMemberObject.optString("city") != null && !jsonMemberObject.optString("city").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemSgksMainCity(jsonMemberObject.optString("city"));
-                    }
-                    if (jsonMemberObject.has("sgks_member_id") && jsonMemberObject.getString("sgks_member_id") != null) {
-                        memberDetailsItem.setMemSgksMemberId(jsonMemberObject.getString("sgks_member_id"));
-                    }
-                    if (jsonMemberObject.has("member_id") && jsonMemberObject.optString("member_id") != null && !jsonMemberObject.optString("member_id").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemID(jsonMemberObject.optString("member_id"));
-                    }
-                    if (jsonMemberObject.has("first_name") && jsonMemberObject.optString("first_name") != null && !jsonMemberObject.optString("first_name").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemFirstName(jsonMemberObject.optString("first_name"));
-                    }
-                    if (jsonMemberObject.has("middle_name") && jsonMemberObject.optString("middle_name") != null && !jsonMemberObject.optString("middle_name").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setStrMiddleName(jsonMemberObject.optString("middle_name"));
-                    }
-                    if (jsonMemberObject.has("gender") && jsonMemberObject.optString("gender") != null && !jsonMemberObject.optString("gender").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemGender(jsonMemberObject.optString("gender"));
-                    }
-                    if (jsonMemberObject.has("email") && jsonMemberObject.optString("email") != null && !jsonMemberObject.optString("email").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemEmail(jsonMemberObject.optString("email"));
-                    }
-                    if (jsonMemberObject.has("mobile") && jsonMemberObject.optString("mobile") != null && !jsonMemberObject.optString("mobile").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemMobile(jsonMemberObject.optString("mobile"));
-                    }
-                    if (jsonMemberObject.has("birth_date") && jsonMemberObject.optString("birth_date") != null && !jsonMemberObject.optString("birth_date").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemBirthDate(jsonMemberObject.optString("birth_date"));
-                    }
-                    if (jsonMemberObject.has("blood_group") && jsonMemberObject.optString("blood_group") != null && !jsonMemberObject.optString("blood_group").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemBloodGroup(jsonMemberObject.optString("blood_group"));
-                    }
-                    *//*if (jsonMemberObject.has("hobbies") && jsonMemberObject.optString("hobbies") != null && !jsonMemberObject.optString("hobbies").equalsIgnoreCase("null")) {
-                        //
-//                    memberDetailsItem.setArrMemHobbies(jsonMemberObject.optString("hobbies"));
-                    }*//*
-                    if (jsonMemberObject.has("marital_status") && jsonMemberObject.optString("marital_status") != null && !jsonMemberObject.optString("marital_status").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemMaritalStatus(jsonMemberObject.optString("marital_status"));
-                    }
-                    if (jsonMemberObject.has("marriage_date") && jsonMemberObject.optString("marriage_date") != null && !jsonMemberObject.optString("marriage_date").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemMarriageDate(jsonMemberObject.optString("marriage_date"));
-                    }
-                    *//*if (jsonMemberObject.has("education") && jsonMemberObject.optString("education") != null && !jsonMemberObject.optString("education").equalsIgnoreCase("null")) {
-                        //
-//                    memberDetailsItem.setArrMemEducation(jsonMemberObject.optString("education"));
-                    }*//*
-                    if (jsonMemberObject.has("system_area") && jsonMemberObject.optString("system_area") != null && !jsonMemberObject.optString("system_area").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemSgksArea(jsonMemberObject.optString("system_area"));
-                    }
-                    if (jsonMemberObject.has("image_url") && jsonMemberObject.optString("image_url") != null && !jsonMemberObject.optString("image_url").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemberImageURL(jsonMemberObject.optString("image_url"));
-                    }
-                    if (jsonMemberObject.has("memLatitude") && jsonMemberObject.optString("memLatitude") != null && !jsonMemberObject.optString("memLatitude").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemLatitude(jsonMemberObject.optString("memLatitude"));
-                    }
-                    if (jsonMemberObject.has("memLongitude") && jsonMemberObject.optString("memLongitude") != null && !jsonMemberObject.optString("memLongitude").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemLongitude(jsonMemberObject.optString("memLongitude"));
-                    }
-                    if (jsonMemberObject.has("mosal_village") && jsonMemberObject.optString("mosal_village") != null && !jsonMemberObject.optString("mosal_village").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemMosalVillage(jsonMemberObject.optString("mosal_village"));
-                    }
-                    if (jsonMemberObject.has("occupation") && jsonMemberObject.optString("occupation") != null && !jsonMemberObject.optString("occupation").equalsIgnoreCase("null")) {
-                        memberDetailsItem.setMemOccupation(jsonMemberObject.optString("occupation"));
-                    }
-                    if (jsonMemberObject.has("address") && jsonMemberObject.optString("address") != null && !jsonMemberObject.optString("address").equalsIgnoreCase("null")) {
-                        MemberAddressItem memAddressItem = new MemberAddressItem();
-                        JSONObject jsonAddressObject = jsonMemberObject.optJSONObject("address");
-                        if (jsonAddressObject.has("address_line") && jsonAddressObject.optString("address_line") != null && !jsonAddressObject.optString("address_line").equalsIgnoreCase("null")) {
-                            memAddressItem.setAddAddressLine(jsonAddressObject.optString("address_line"));
-                        }
-                        if (jsonAddressObject.has("area") && jsonAddressObject.optString("area") != null && !jsonAddressObject.optString("area").equalsIgnoreCase("null")) {
-                            memAddressItem.setAddArea(jsonAddressObject.optString("area"));
-                        }
-                        if (jsonAddressObject.has("city") && jsonAddressObject.optString("city") != null && !jsonAddressObject.optString("city").equalsIgnoreCase("null")) {
-                            memAddressItem.setAddCity(jsonAddressObject.optString("city"));
-                        }
-                        if (jsonAddressObject.has("state") && jsonAddressObject.optString("state") != null && !jsonAddressObject.optString("state").equalsIgnoreCase("null")) {
-                            memAddressItem.setAddState(jsonAddressObject.optString("state"));
-                        }
-                        if (jsonAddressObject.has("country") && jsonAddressObject.optString("country") != null && !jsonAddressObject.optString("country").equalsIgnoreCase("null")) {
-                            memAddressItem.setAddCountry(jsonAddressObject.optString("country"));
-                        }
-                        if (jsonAddressObject.has("landmark") && jsonAddressObject.optString("landmark") != null && !jsonAddressObject.optString("landmark").equalsIgnoreCase("null")) {
-                            memAddressItem.setAddLandMark(jsonAddressObject.optString("landmark"));
-                        }
-                        if (jsonAddressObject.has("pincode") && jsonAddressObject.optString("pincode") != null && !jsonAddressObject.optString("pincode").equalsIgnoreCase("null")) {
-                            memAddressItem.setAddPincode(jsonAddressObject.optString("pincode"));
-                        }
-                        memberDetailsItem.setMemAddress(memAddressItem);
-                    }
-                    arrMemberList.add(memberDetailsItem);
-                }
-                memberSearchDataItem.setArrMemberList(arrMemberList);
-            }
-            return memberSearchDataItem;
-        }
-        return false;
-    }*/
-
     public static Object parseMemberList(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
-        MemberSearchDataItem memberSearchDataItem = new MemberSearchDataItem();
         MemberDetailsItem globalMemberDetailsItem = new MemberDetailsItem();
         if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
             JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
@@ -716,4 +594,5 @@ public class AppParser implements AppConstants {
         }
         return false;
     }
+
 }

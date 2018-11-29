@@ -61,7 +61,6 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private String TAG = "MemberHomeFragment";
     public static ArrayList<MemberDetailsItem> mArrMemDetails;
     //    private boolean isApiRequested = false;
-    private String strSearchTerm = "", strNextPageUrl = "";
     private int arrSize = 0;
     private LinearLayoutManager linearLayoutManager;
     private boolean isApiInProgress = false;
@@ -69,7 +68,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private String strNoResults = "";
     private int pageNumber = 0;
     private ProgressBar pbMemberListing;
-    private String searchFullName = "";
+    private String strSearchFullName = "";
     public MemberHomeNewFragment() {
         // Required empty public constructor
     }
@@ -92,7 +91,6 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mRvMemberList = mParentView.findViewById(R.id.rvMemberList);
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
         mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
-        strSearchTerm = mEtMemberSearch.getText().toString();
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
@@ -105,14 +103,14 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (charSequence.length() > 3) {
-                    searchFullName = charSequence.toString().toLowerCase();
+                    strSearchFullName = charSequence.toString().toLowerCase();
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
                         requestToGetMembersData(0,true);
                     } else {
                         new AppCommonMethods(mContext).showAlert("You are offline");
                     }
                 } else if (charSequence.length()==0){
-                    searchFullName = "";
+                    strSearchFullName = "";
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
                         requestToGetMembersData(0,true);
                     } else {
@@ -171,7 +169,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             params.put("page_id", pageId);
             params.put("sgks_city",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
             params.put("language_id",AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext));
-            params.put("search_fullname",searchFullName);
+            params.put("search_fullname",strSearchFullName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -179,34 +177,31 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
                         try {
                             new AppCommonMethods(mContext).LOG(0,"member_listing_success",response.toString());
                             if (!response.getString("page_id").equalsIgnoreCase("")) {
                                 pageNumber = Integer.parseInt(response.getString("page_id"));
                             }
                             Object resp = AppParser.parseMemberList(response.toString());
-                      //      mArrMemDetails = (ArrayList<MemberDetailsItem>) resp;
                             MemberDetailsItem memberDetailsItem = (MemberDetailsItem) resp;
                             if (resp instanceof Boolean) {
                                 Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
                             } else if (resp instanceof MemberDetailsItem) {
-                                //if (mArrMemDetails.size() > 0) {
-                                    if(isFirstTime){
-                                        mArrMemDetails = memberDetailsItem.getArrMemberList();
-                                        mRvMemberList.setHasFixedSize(true);
-                                        mRvAdapter = new MemberListAdapter(mArrMemDetails);
-                                        mRvMemberList.setAdapter(mRvAdapter);
-                                        databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
-                                    } else {
-                                        ArrayList<MemberDetailsItem> arrNextMembers = memberDetailsItem.getArrMemberList();
+                                if(isFirstTime){
+                                    mArrMemDetails = memberDetailsItem.getArrMemberList();
+                                    mRvMemberList.setHasFixedSize(true);
+                                    mRvAdapter = new MemberListAdapter(mArrMemDetails);
+                                    mRvMemberList.setAdapter(mRvAdapter);
+                                    databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
+                                } else {
+                                    ArrayList<MemberDetailsItem> arrNextMembers = memberDetailsItem.getArrMemberList();
+                                    if(arrNextMembers != null){
                                         mArrMemDetails.addAll(arrNextMembers);
                                         mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
                                         mRvMemberList.getAdapter().notifyDataSetChanged();
                                     }
                                 }
-                            //}
-                            //setUpMemberListAdapter();
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -220,18 +215,12 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 isApiInProgress = false;
                 pbMemberListing.setVisibility(View.GONE);
                 new AppCommonMethods(mContext).LOG(0,"error_member_listing",error.toString());
+                new AppCommonMethods(mContext).showAlert("Something went wrong");
                 VolleyLog.e("Error: ", error.getMessage());
                 error.printStackTrace();
             }
         });
         AppController.getInstance().addToRequestQueue(req, "member_listing");
-    }
-
-    private void setUpMemberListAdapter () {
-//        mRvMemberList.setHasFixedSize(true);
-//        mRvAdapter = new MemberListAdapter(mArrMemDetails);
-//        mRvMemberList.setAdapter(mRvAdapter);
-        recyclerViewScrollListener();
     }
 
     private void recyclerViewScrollListener() {
