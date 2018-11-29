@@ -184,7 +184,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         JSONObject params = new JSONObject();
         try {
             params.put("page_id", pageId);
-            params.put("sgks_city",1);
+            params.put("sgks_city",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
             params.put("language_id",AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext));
             params.put("search_fullname",searchFullName);
         } catch (JSONException e) {

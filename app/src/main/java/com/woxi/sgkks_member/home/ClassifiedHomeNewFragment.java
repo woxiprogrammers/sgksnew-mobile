@@ -22,10 +22,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.adapters.ClassifiedListAdapter;
+import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgkks_member.models.MessageDetailsItem;
+import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
+import com.woxi.sgkks_member.utils.AppSettings;
 import com.woxi.sgkks_member.utils.AppURLs;
 
 import org.json.JSONException;
@@ -50,7 +53,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
     private ArrayList<ClassifiedDetailsItem> mArrClassifiedDetails;
     private String TAG = "ClassifiedHomeFragment";
     private String messageNextPageUrl = "";
-    private int intClassifiedArraySize = 0;
+    private int intClassifiedArraySize = 0, pageNumber = 0;
     public ClassifiedHomeNewFragment() {
         // Required empty public constructor
     }
@@ -76,7 +79,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
         mRvClassifiedList.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(mContext);
         mRvClassifiedList.setLayoutManager(linearLayoutManager);
-        requestToGetClassifiedList();
+        requestToGetClassifiedList(pageNumber);
 
     }
 
@@ -94,13 +97,22 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
         };
     }
 
-    private void requestToGetClassifiedList(){
+    private void requestToGetClassifiedList(final int page_id){
         //ToDO PageID
-        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_CLASSIFIED_LISTING, null,
+        JSONObject params = new JSONObject();
+        try {
+            params.put("page_id",page_id);
+            params.put("language_id", AppSettings.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext));
+            params.put("sgks_city", AppSettings.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_CLASSIFIED_LISTING, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            new AppCommonMethods(mContext).LOG(0,"classified_response",response.toString());
                             Object resp= AppParser.parseClassifiedResponse(response.toString());
                             if(resp instanceof Boolean){
                                 Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();

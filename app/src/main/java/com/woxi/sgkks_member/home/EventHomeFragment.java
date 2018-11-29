@@ -152,7 +152,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
         JSONObject params=new JSONObject();
         try {
             params.put("page_id",0);
-            params.put("sgks_city",1);
+            params.put("sgks_city",AppSettings.getStringPref(PREFS_CURRENT_CITY,mContext));
             params.put("language_id",AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
             params.put("year",year);
         } catch (JSONException e) {

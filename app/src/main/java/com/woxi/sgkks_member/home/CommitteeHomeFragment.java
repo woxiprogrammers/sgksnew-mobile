@@ -85,14 +85,13 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
     }
 
     private void requestCommitteeListAPI() {
-
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
         JSONObject params = new JSONObject();
         try {
-            params.put("sgks_city",1);
+            params.put("sgks_city",AppSettings.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
             params.put("language_id", AppSettings.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext));
         } catch (JSONException e) {
             e.printStackTrace();

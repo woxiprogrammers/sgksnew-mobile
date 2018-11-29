@@ -52,7 +52,6 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AppCommonMethods.putStringPref(AppConstants.PREFS_CURRENT_CITY,String.valueOf(1),SplashAndCityActivity.this);
         mContext = SplashAndCityActivity.this;
         try {
             pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
