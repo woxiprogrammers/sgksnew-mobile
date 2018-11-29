@@ -71,7 +71,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         linearLayoutManager = new LinearLayoutManager(mContext);
         mRvMessageList.setLayoutManager(linearLayoutManager);
         if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-            requestMessageList(1);
+            requestMessageList(0);
         }else {
             new AppCommonMethods(mContext).showAlert("You are Offline");
         }
@@ -93,19 +93,22 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     }
 
     private void requestMessageList(int page_id) {
+        String strLanguageId = AppCommonMethods.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext);
+        String strCityId = AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext);
         JSONObject params = new JSONObject();
         try {
             params.put("page_id",page_id);
-            params.put("language_id",AppCommonMethods.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext));
-            params.put("city_id",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
+            params.put("language_id",strLanguageId);
+            params.put("sgks_city",strCityId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_MESSAGE_LISTING, null,
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_MESSAGE_LISTING, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            new AppCommonMethods(mContext).LOG(0,"message_response",response.toString());
                             Object resp= AppParser.parseMessageNewResponse(response.toString());
                             if(resp instanceof Boolean){
                                 Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();

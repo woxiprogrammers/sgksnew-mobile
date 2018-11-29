@@ -98,7 +98,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
         setUpRecyclerView();
         functionToGetMembersList();
-        recyclerViewScrollListener();
+        //recyclerViewScrollListener();
     }
 
     private void functionToGetMembersList() {

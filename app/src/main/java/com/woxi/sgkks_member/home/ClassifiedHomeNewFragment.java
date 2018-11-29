@@ -22,9 +22,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.adapters.ClassifiedListAdapter;
+import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgkks_member.models.MessageDetailsItem;
+import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
 import com.woxi.sgkks_member.utils.AppURLs;
 
@@ -95,8 +97,18 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
     }
 
     private void requestToGetClassifiedList(){
+        String strLanguageId = AppCommonMethods.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext);
+        String strCityId = AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext);
         //ToDO PageID
-        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_CLASSIFIED_LISTING, null,
+        JSONObject params = new JSONObject();
+        try {
+            params.put("page_id",0);
+            params.put("language_id",strLanguageId);
+            params.put("sgks_city",strCityId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,AppURLs.API_CLASSIFIED_LISTING, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
