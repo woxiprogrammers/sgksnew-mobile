@@ -6,9 +6,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -110,6 +112,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         NavigationView navigationView =  findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
+        String name = preferences.getString(AppConstants.PREFS_CURRENT_CITY, "");
+        Log.i("@@@@@@", "onCreate: "+name);
         initializeViews();
 
     }
