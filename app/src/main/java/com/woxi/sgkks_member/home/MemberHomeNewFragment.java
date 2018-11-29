@@ -65,7 +65,6 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private LinearLayoutManager linearLayoutManager;
     private boolean isApiInProgress = false;
     private DatabaseQueryHandler databaseQueryHandler;
-    private String strNoResults = "";
     private int pageNumber = 0;
     private ProgressBar pbMemberListing;
     private String strSearchFullName = "";

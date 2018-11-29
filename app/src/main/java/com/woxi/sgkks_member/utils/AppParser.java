@@ -172,6 +172,7 @@ public class AppParser implements AppConstants {
 
     public static Object parseMessageNewResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
+        MessageDetailsItem globalMessageDetailsItem = new MessageDetailsItem();
         if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
             JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
             ArrayList<MessageDetailsItem> arrNewsDetails = new ArrayList<>();
@@ -202,8 +203,9 @@ public class AppParser implements AppConstants {
                     }
                     arrNewsDetails.add(messageDetailsItem);
                 }
+                globalMessageDetailsItem.setArrMessageList(arrNewsDetails);
             }
-            return arrNewsDetails;
+            return globalMessageDetailsItem;
         }
         return false;
     }
