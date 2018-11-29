@@ -2,6 +2,8 @@ package com.woxi.sgkks_member.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -101,6 +103,10 @@ public class SelectCityActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String position = String.valueOf(rvCityList.getChildLayoutPosition(v)+1);
                 AppCommonMethods.putStringPref(AppConstants.PREFS_CURRENT_CITY,position,mContext);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(AppConstants.PREFS_CURRENT_CITY,position);
+                editor.apply();
                 restartActivity(mContext);
             }
         };
@@ -142,7 +148,7 @@ public class SelectCityActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_CITY, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_GET_CITY, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
