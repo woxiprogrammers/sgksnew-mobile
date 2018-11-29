@@ -27,6 +27,16 @@ public class MemberDetailsItem implements Serializable {
     private String strCreatedAt;
     private String strUpdatedAt;
 
+    public ArrayList<MemberDetailsItem> getArrMemberList() {
+        return arrMemberList;
+    }
+
+    public void setArrMemberList(ArrayList<MemberDetailsItem> arrMemberList) {
+        this.arrMemberList = arrMemberList;
+    }
+
+    private ArrayList<MemberDetailsItem> arrMemberList;
+
     public String getStrCreatedAt() {
         return strCreatedAt;
     }

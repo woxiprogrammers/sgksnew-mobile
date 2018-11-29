@@ -188,6 +188,7 @@ public class AppParser implements AppConstants {
     public static Object parseMemberList(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
         MemberSearchDataItem memberSearchDataItem = new MemberSearchDataItem();
+        MemberDetailsItem globalMemberDetailsItem = new MemberDetailsItem();
         if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
             JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
             ArrayList<MemberDetailsItem> arrMemberList = new ArrayList<>();
@@ -236,8 +237,9 @@ public class AppParser implements AppConstants {
                     }
                     arrMemberList.add(memberDetailsItem);
                 }
+                globalMemberDetailsItem.setArrMemberList(arrMemberList);
             }
-            return arrMemberList;
+            return globalMemberDetailsItem;
         }
         return false;
     }
