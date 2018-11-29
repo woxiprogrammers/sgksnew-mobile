@@ -521,7 +521,7 @@ public class AppParser implements AppConstants {
 
     public static Object parseClassifiedResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
-        MessageAndClassifiedResponseItem classifiedResponseItem = new MessageAndClassifiedResponseItem();
+        ClassifiedDetailsItem globalClassifiedDetailsItem = new ClassifiedDetailsItem();
         if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
             JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
             ArrayList<ClassifiedDetailsItem> arrClassifiedDetails = new ArrayList<ClassifiedDetailsItem>();
@@ -561,9 +561,9 @@ public class AppParser implements AppConstants {
                     }
                     arrClassifiedDetails.add(classifiedDetailsItem);
                 }
-                classifiedResponseItem.setArrClassifiedList(arrClassifiedDetails);
+                globalClassifiedDetailsItem.setArrClassifiedList(arrClassifiedDetails);
             }
-            return arrClassifiedDetails;
+            return globalClassifiedDetailsItem;
         }
         return false;
     }

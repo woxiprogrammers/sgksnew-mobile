@@ -191,7 +191,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                     mRvMemberList.setHasFixedSize(true);
                                     mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                     mRvMemberList.setAdapter(mRvAdapter);
-                                    databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
+                                    //databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
                                 } else {
                                     ArrayList<MemberDetailsItem> arrNextMembers = memberDetailsItem.getArrMemberList();
                                     if(arrNextMembers != null){
