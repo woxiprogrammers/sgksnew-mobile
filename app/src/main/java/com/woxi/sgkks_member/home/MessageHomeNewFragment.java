@@ -112,7 +112,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         try {
             params.put("page_id",page_id);
             params.put("language_id",AppCommonMethods.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext));
-            params.put("city_id",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
+            params.put("sgks_city",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -132,6 +132,13 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                             }else if(resp instanceof MessageDetailsItem){
                                 if(isFirstTime){
                                     mArrMessageDetails = messageDetailsItem.getArrMessageList();
+                                    if(mArrMessageDetails != null){
+                                        mRvMessageList.setHasFixedSize(true);
+                                        mRvAdapter = new MessageListAdapter(mArrMessageDetails);
+                                        mRvMessageList.setAdapter(mRvAdapter);
+                                    } else {
+                                        Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT);
+                                    }
                                     mRvMessageList.setHasFixedSize(true);
                                     mRvAdapter = new MessageListAdapter(mArrMessageDetails);
                                     mRvMessageList.setAdapter(mRvAdapter);
@@ -141,6 +148,8 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                                         mArrMessageDetails.addAll(arrNextMessages);
                                         mRvMessageList.getAdapter().notifyItemRangeChanged(arrSize -1, mArrMessageDetails.size() - 1);
                                         mRvMessageList.getAdapter().notifyDataSetChanged();
+                                    } else {
+                                        Toast.makeText(mContext,"That's all",Toast.LENGTH_SHORT);
                                     }
                                 }
                             }

@@ -51,8 +51,10 @@
                 android:id="@+id/tvMemberAddress"
                 style="@style/customTextView_12"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:textStyle="italic" />
+                android:maxLines="2"
+                android:textStyle="italic"
+                android:ellipsize="end"
+                android:singleLine="false"/>
         </LinearLayout>
 
         <LinearLayout

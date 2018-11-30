@@ -6,11 +6,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.preference.PreferenceManager;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -26,12 +24,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,10 +41,8 @@ import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
 import com.woxi.sgkks_member.local_storage.DataSyncService;
 import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
-import com.woxi.sgkks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgkks_member.miscellaneous.MiscellaneousViewActivity;
 import com.woxi.sgkks_member.miscellaneous.SettingsActivity;
-import com.woxi.sgkks_member.miscellaneous.SuggestionActivity;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppSettings;
 import com.woxi.sgkks_member.utils.LocaleHelper;
@@ -59,6 +53,7 @@ import static com.woxi.sgkks_member.interfaces.AppConstants.CURRENT_PAGE;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_ENGLISH;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_GUJURATI;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context mContext;
@@ -66,7 +61,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private ViewPager mViewPager;
     private HomeViewPagerAdapter viewPagerAdapter;
     private AlertDialog alertDialog;
-    private TextView mTvMemberCount;
+    private TextView mTvMemberCount, tvLableCityName;
     private LinearLayout mLL_MemberCount;
     private String TAG = "HomeActivity";
     private ArrayList<String> arrLocalMessageIds, arrMessageIds;
@@ -79,9 +74,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private boolean isClassifiedCountApplied = false, isFromSplash=false;
     private Toolbar toolbar;
     private FloatingActionButton mFabAddNewMember;
-    private Spinner spLanguage;
     private ImageView ivLanguage, ivCity;
-    private int currentPage;
 
 
     @Override
@@ -183,30 +176,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Destroyed DataSyncService");
     }
 
-    private ArrayAdapter<String> getStringArrayAdapter(ArrayList<String> arrayList) {
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayList) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0) {
-                    // Set the hint text color gray
-                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextHint, null));
-                } else {
-                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextMain, null));
-                }
-                return view;
-            }
-        };
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return arrayAdapter;
-    }
-
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -217,10 +186,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initializeViews() {
+        tvLableCityName = findViewById(R.id.tvLableCityName);
+        tvLableCityName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        tvLableCityName.setText(AppCommonMethods.getStringPref(PREFS_CITY_NAME,mContext).toUpperCase());
         mViewPager =  findViewById(R.id.homeViewPager);
         TabLayout mTabLayout =  findViewById(R.id.tavLayout);
         mFabAddNewMember = findViewById(R.id.fabAddNewMember);
-        spLanguage = findViewById(R.id.spLang);
         viewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), mContext);
         mViewPager.setAdapter(viewPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);

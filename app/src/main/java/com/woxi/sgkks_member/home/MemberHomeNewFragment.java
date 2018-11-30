@@ -92,7 +92,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
-        databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
+        //databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
         pbMemberListing = mParentView.findViewById(R.id.pbMemberListing);
         mEtMemberSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -188,9 +188,14 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                             } else if (resp instanceof MemberDetailsItem) {
                                 if(isFirstTime){
                                     mArrMemDetails = memberDetailsItem.getArrMemberList();
-                                    mRvMemberList.setHasFixedSize(true);
-                                    mRvAdapter = new MemberListAdapter(mArrMemDetails);
-                                    mRvMemberList.setAdapter(mRvAdapter);
+                                    if (mArrMemDetails != null){
+                                        mRvMemberList.setHasFixedSize(true);
+                                        mRvAdapter = new MemberListAdapter(mArrMemDetails);
+                                        mRvMemberList.setAdapter(mRvAdapter);
+                                    } else {
+                                        Toast.makeText(mContext,"No Records Found", Toast.LENGTH_SHORT).show();
+                                    }
+
                                     //databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
                                 } else {
                                     ArrayList<MemberDetailsItem> arrNextMembers = memberDetailsItem.getArrMemberList();
@@ -198,6 +203,8 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                         mArrMemDetails.addAll(arrNextMembers);
                                         mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
                                         mRvMemberList.getAdapter().notifyDataSetChanged();
+                                    } else {
+                                        Toast.makeText(mContext,"That's all", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }

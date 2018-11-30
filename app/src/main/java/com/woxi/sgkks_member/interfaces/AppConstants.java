@@ -10,6 +10,7 @@ public interface AppConstants {
     int STATUS_NO_RESULTS_FOUND = 404, STATUS_SOMETHING_WENT_WRONG = 500;
     int SYNC_NOTIFICATION_ID = 111;
     String PREFS_CURRENT_CITY = "currentCity";
+    String PREFS_CITY_NAME = "cityName";
     String REGEX_MEMBER_SEARCH_ALLOWED = "^[A-Za-z 0-9-]*";
     String PREFS_SGKS_AREA_LIST = "sgksAreaList";
     String PREFS_SUGGESTION_CATEGORY = "suggestionCategory";

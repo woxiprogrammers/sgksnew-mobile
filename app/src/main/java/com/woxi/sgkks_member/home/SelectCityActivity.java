@@ -13,7 +13,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -26,19 +25,15 @@ import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.adapters.CityAdapter;
 import com.woxi.sgkks_member.interfaces.AppConstants;
-import com.woxi.sgkks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
 import com.woxi.sgkks_member.utils.AppURLs;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import static com.woxi.sgkks_member.interfaces.AppConstants.CURRENT_PAGE;
 
 public class SelectCityActivity extends AppCompatActivity {
     private ProgressBar pbSearchCity;
@@ -73,7 +68,7 @@ public class SelectCityActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                if (charSequence.length() > 2){
+                if (charSequence.length() >= 2){
                     strSearchCity = charSequence.toString();
                 } else {
                     strSearchCity = "";
@@ -90,26 +85,13 @@ public class SelectCityActivity extends AppCompatActivity {
 
             }
         });
-        rvCityList = findViewById(R.id.rvCityList);
-        linearLayoutManager = new LinearLayoutManager(mContext);
-        rvCityList.setLayoutManager(linearLayoutManager);
+        setUpRecyclerView();
         if(new AppCommonMethods(mContext).isNetworkAvailable()){
             requestCityList();
         } else {
             new AppCommonMethods(mContext).showAlert("You are offline");
         }
-        onCityClickListener = new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                String position = String.valueOf(rvCityList.getChildLayoutPosition(v)+1);
-                AppCommonMethods.putStringPref(AppConstants.PREFS_CURRENT_CITY,position,mContext);
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(AppConstants.PREFS_CURRENT_CITY,position);
-                editor.apply();
-                restartActivity(mContext);
-            }
-        };
+
     }
 
     private void restartActivity(Context context) {
@@ -145,6 +127,7 @@ public class SelectCityActivity extends AppCompatActivity {
         JSONObject params = new JSONObject();
         try {
             params.put("search_city",strSearchCity);
+            params.put("language_id",AppCommonMethods.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -176,5 +159,28 @@ public class SelectCityActivity extends AppCompatActivity {
             }
         });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "get_city");
+    }
+
+    private void setUpRecyclerView(){
+        rvCityList = findViewById(R.id.rvCityList);
+        linearLayoutManager = new LinearLayoutManager(mContext);
+        rvCityList.setLayoutManager(linearLayoutManager);
+        onCityClickListener = new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String position = String.valueOf(rvCityList.getChildLayoutPosition(v)+1);
+                CityIteam cityIteam = arrCityList.get(Integer.valueOf(position)-1);
+                String strCityName = cityIteam.getStrCityName();
+                Log.i("@@@", "onClick: "+cityIteam.getStrCityName());
+                AppCommonMethods.putStringPref(AppConstants.PREFS_CURRENT_CITY,position,mContext);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(AppConstants.PREFS_CURRENT_CITY,position);
+                editor.putString(AppConstants.PREFS_CITY_NAME,strCityName);
+                editor.apply();
+                restartActivity(mContext);
+            }
+        };
+
     }
 }

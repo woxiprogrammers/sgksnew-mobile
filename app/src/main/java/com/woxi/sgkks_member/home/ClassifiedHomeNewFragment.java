@@ -137,15 +137,21 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                             }else if(resp instanceof ClassifiedDetailsItem){
                                 if(isFirstTime){
                                     mArrClassifiedDetails = classifiedDetailsItem.getArrClassifiedList();
-                                    mRvClassifiedList.setHasFixedSize(true);
-                                    mRvAdapter = new ClassifiedListAdapter(mArrClassifiedDetails);
-                                    mRvClassifiedList.setAdapter(mRvAdapter);
+                                    if(mArrClassifiedDetails !=null){
+                                        mRvClassifiedList.setHasFixedSize(true);
+                                        mRvAdapter = new ClassifiedListAdapter(mArrClassifiedDetails);
+                                        mRvClassifiedList.setAdapter(mRvAdapter);
+                                    } else {
+                                        Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT);
+                                    }
                                 } else {
                                     ArrayList<ClassifiedDetailsItem> arrNextClassified = classifiedDetailsItem.getArrClassifiedList();
                                     if(arrNextClassified != null){
                                         mArrClassifiedDetails.addAll(arrNextClassified);
                                         mRvClassifiedList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrClassifiedDetails.size() - 1);
                                         mRvClassifiedList.getAdapter().notifyDataSetChanged();
+                                    } else {
+                                        Toast.makeText(mContext,"That's all",Toast.LENGTH_SHORT);
                                     }
                                 }
                             }
