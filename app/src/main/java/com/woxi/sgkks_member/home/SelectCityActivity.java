@@ -168,14 +168,12 @@ public class SelectCityActivity extends AppCompatActivity {
         onCityClickListener = new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                String position = String.valueOf(rvCityList.getChildLayoutPosition(v)+1);
-                CityIteam cityIteam = arrCityList.get(Integer.valueOf(position)-1);
+                CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));
                 String strCityName = cityIteam.getStrCityName();
-                Log.i("@@@", "onClick: "+cityIteam.getStrCityName());
-                AppCommonMethods.putStringPref(AppConstants.PREFS_CURRENT_CITY,position,mContext);
+                String strCityId = String.valueOf(cityIteam.getIntCityId());
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(AppConstants.PREFS_CURRENT_CITY,position);
+                editor.putString(AppConstants.PREFS_CURRENT_CITY,strCityId);
                 editor.putString(AppConstants.PREFS_CITY_NAME,strCityName);
                 editor.apply();
                 restartActivity(mContext);

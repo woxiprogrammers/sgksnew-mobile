@@ -145,7 +145,7 @@ public class AccountsActivity extends AppCompatActivity {
         pDialog.show();
         JSONObject params = new JSONObject();
         try {
-            params.put("sgks_city",1);
+            params.put("sgks_city",AppSettings.getStringPref(PREFS_CURRENT_CITY,mContext));
             params.put("language_id", AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
             params.put("year",year);
         } catch (JSONException e) {
