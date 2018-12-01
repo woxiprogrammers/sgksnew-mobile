@@ -63,7 +63,6 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
     private ArrayList<EventDataItem> mArrEventData;
     private boolean isApiRequested = false;
     private String selectedYear = "";
-    private ArrayList<String> mArrEventYears;
     private Spinner mSpinAccountYear;
     private ArrayList<Integer> arrayYearIntegerList = new ArrayList<>();
 

@@ -132,7 +132,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                             }else if(resp instanceof MessageDetailsItem){
                                 if(isFirstTime){
                                     mArrMessageDetails = messageDetailsItem.getArrMessageList();
-                                    if(mArrMessageDetails != null){
+                                    if(mArrMessageDetails.size() != 0){
                                         mRvMessageList.setHasFixedSize(true);
                                         mRvAdapter = new MessageListAdapter(mArrMessageDetails);
                                         mRvMessageList.setAdapter(mRvAdapter);
@@ -144,12 +144,12 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                                     mRvMessageList.setAdapter(mRvAdapter);
                                 } else {
                                     ArrayList <MessageDetailsItem> arrNextMessages = messageDetailsItem.getArrMessageList();
-                                    if(arrNextMessages != null){
+                                    if(arrNextMessages.size() != 0){
                                         mArrMessageDetails.addAll(arrNextMessages);
                                         mRvMessageList.getAdapter().notifyItemRangeChanged(arrSize -1, mArrMessageDetails.size() - 1);
                                         mRvMessageList.getAdapter().notifyDataSetChanged();
                                     } else {
-                                        Toast.makeText(mContext,"That's all",Toast.LENGTH_SHORT);
+                                        Toast.makeText(mContext,"All the Records are Listed",Toast.LENGTH_SHORT);
                                     }
                                 }
                             }

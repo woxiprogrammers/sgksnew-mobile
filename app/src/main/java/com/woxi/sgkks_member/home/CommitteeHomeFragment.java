@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -108,6 +109,9 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
                                     ArrayList<CommitteeDetailsItem> arrMainCommList = (ArrayList<CommitteeDetailsItem>) resp;
                                     if (!arrMainCommList.isEmpty()) {
                                         setCommitteeAdapter(arrMainCommList, false);
+                                    } else {
+                                        setCommitteeAdapter(arrMainCommList, false);
+                                        Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }

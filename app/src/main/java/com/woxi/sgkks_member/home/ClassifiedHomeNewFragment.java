@@ -146,7 +146,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                                     }
                                 } else {
                                     ArrayList<ClassifiedDetailsItem> arrNextClassified = classifiedDetailsItem.getArrClassifiedList();
-                                    if(arrNextClassified != null){
+                                    if(arrNextClassified.size() != 0){
                                         mArrClassifiedDetails.addAll(arrNextClassified);
                                         mRvClassifiedList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrClassifiedDetails.size() - 1);
                                         mRvClassifiedList.getAdapter().notifyDataSetChanged();
