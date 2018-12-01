@@ -4,17 +4,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -25,14 +25,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.home.HomeActivity;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.MasterDataItem;
-import com.woxi.sgkks_member.models.MessageDetailsItem;
 import com.woxi.sgkks_member.models.SGKSAreaItem;
 import com.woxi.sgkks_member.models.SGKSCategory;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
 import com.woxi.sgkks_member.utils.AppURLs;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,6 +51,15 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = SplashAndCityActivity.this;
+        String strCityId = AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext);
+        String strCityName = AppCommonMethods.getStringPref(AppConstants.PREFS_CITY_NAME,mContext);
+        if(strCityId.equalsIgnoreCase("" ) || strCityName.equalsIgnoreCase("")){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(AppConstants.PREFS_CURRENT_CITY,"1");
+            editor.putString(AppConstants.PREFS_CITY_NAME,"Pune");
+            editor.apply();
+        }
         try {
             pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
             strCurrentVersionName = pInfo.versionName;
@@ -114,6 +121,9 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
             @Override
             public void run() {
                 Intent intentHome = new Intent(mContext, HomeActivity.class);
+                Bundle bundleExtras = new Bundle();
+                bundleExtras.putBoolean("isFromSplash",true);
+                intentHome.putExtra("bundleHome", bundleExtras);
                 startActivity(intentHome);
                 finish();
                 // requestMasterList();
@@ -284,6 +294,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
         alert.setTitle("Update App");
         alert.show();
     }
+
     private void openPlayStoreLink() {
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.woxi.sgkks_member")));

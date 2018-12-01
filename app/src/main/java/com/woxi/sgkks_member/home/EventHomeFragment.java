@@ -63,7 +63,6 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
     private ArrayList<EventDataItem> mArrEventData;
     private boolean isApiRequested = false;
     private String selectedYear = "";
-    private ArrayList<String> mArrEventYears;
     private Spinner mSpinAccountYear;
     private ArrayList<Integer> arrayYearIntegerList = new ArrayList<>();
 
@@ -92,7 +91,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
         mRvEventList =  mParentView.findViewById(R.id.rvAccountImages);
         mSpinAccountYear = mParentView.findViewById(R.id.spinAccountYear);
         ((TextView) mParentView.findViewById(R.id.tvYearTitle)).setText("Select Event Year");
-        for (int i = 2015; i <= 2030; i++){
+        for (int i = 2015; i <= 2025; i++){
             arrayYearIntegerList.add(i-2015,i);
         }
         ArrayAdapter<Integer> integerArrayAdapter = new ArrayAdapter<Integer>(mContext, android.R.layout.simple_spinner_item, arrayYearIntegerList);
@@ -152,7 +151,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
         JSONObject params=new JSONObject();
         try {
             params.put("page_id",0);
-            params.put("sgks_city",1);
+            params.put("sgks_city",AppSettings.getStringPref(PREFS_CURRENT_CITY,mContext));
             params.put("language_id",AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
             params.put("year",year);
         } catch (JSONException e) {

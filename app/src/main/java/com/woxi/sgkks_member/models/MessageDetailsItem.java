@@ -1,6 +1,7 @@
 package com.woxi.sgkks_member.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * This class is used as a Model class
@@ -8,6 +9,15 @@ import java.io.Serializable;
  */
 public class MessageDetailsItem implements Serializable {
     private String messageID, messageTitle, messageDescription, messageImage, messageCreateDate, messageType, messageCity, messageIsActive;
+    private ArrayList<MessageDetailsItem> arrMessageList;
+
+    public ArrayList<MessageDetailsItem> getArrMessageList() {
+        return arrMessageList;
+    }
+
+    public void setArrMessageList(ArrayList<MessageDetailsItem> arrMessageList) {
+        this.arrMessageList = arrMessageList;
+    }
 
     public MessageDetailsItem() {
     }
