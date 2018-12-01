@@ -33,6 +33,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityListHolder
     public void onBindViewHolder(CityListHolder holder, int position) {
         TextView tvCityName = holder.tvCity;
         TextView tvCityMemberCount = holder.tvMemberCount;
+        TextView tvMemberCountInt = holder.tvMemberCountInt;
         String strCityName = "",strCityMemberCount = "";
         if(arrCityList.get(position).getStrCityName() != null ){
             strCityName = arrCityList.get(position).getStrCityName();
@@ -40,7 +41,8 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityListHolder
         }
         if(arrCityList.get(position).getStrMemberCount() != null){
             strCityMemberCount = arrCityList.get(position).getStrMemberCount();
-            tvCityMemberCount.setText("Member Count: "+strCityMemberCount);
+            tvCityMemberCount.setText("Members Count : ");
+            tvMemberCountInt.setText(strCityMemberCount);
         }
     }
 
@@ -51,13 +53,14 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityListHolder
 
     class CityListHolder extends RecyclerView.ViewHolder {
         Context mContext;
-        TextView  tvCity, tvMemberCount;
+        TextView  tvCity, tvMemberCount, tvMemberCountInt;
 
         CityListHolder(View view) {
             super(view);
             this.mContext = view.getContext();
             this.tvCity =  view.findViewById(R.id.cardTvCity);
             this.tvMemberCount = view.findViewById(R.id.cardTvMemberCount);
+            this.tvMemberCountInt = view.findViewById(R.id.cardTvMemberCountInt);
 
         }
     }

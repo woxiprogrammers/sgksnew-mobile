@@ -141,9 +141,17 @@ public class SelectCityActivity extends AppCompatActivity {
                     if(resp instanceof Boolean){
                         Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
                     } else if (resp instanceof ArrayList){
-                        rvCityList.setHasFixedSize(true);
-                        rvAdapter = new CityAdapter(arrCityList);
-                        rvCityList.setAdapter(rvAdapter);
+                        if(arrCityList.size() != 0){
+                            rvCityList.setHasFixedSize(true);
+                            rvAdapter = new CityAdapter(arrCityList);
+                            rvCityList.setAdapter(rvAdapter);
+                        } else {
+                            rvCityList.setHasFixedSize(true);
+                            rvAdapter = new CityAdapter(arrCityList);
+                            rvCityList.setAdapter(rvAdapter);
+                            Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
