@@ -91,7 +91,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
         mRvEventList =  mParentView.findViewById(R.id.rvAccountImages);
         mSpinAccountYear = mParentView.findViewById(R.id.spinAccountYear);
         ((TextView) mParentView.findViewById(R.id.tvYearTitle)).setText("Select Event Year");
-        for (int i = 2015; i <= 2030; i++){
+        for (int i = 2015; i <= 2025; i++){
             arrayYearIntegerList.add(i-2015,i);
         }
         ArrayAdapter<Integer> integerArrayAdapter = new ArrayAdapter<Integer>(mContext, android.R.layout.simple_spinner_item, arrayYearIntegerList);
