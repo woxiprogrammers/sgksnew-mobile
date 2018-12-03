@@ -37,6 +37,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.home.HomeActivity;
+import com.woxi.sgkks_member.home.SelectCityActivity;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
@@ -70,8 +71,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private EditText metEmail;
     private EditText metAddress;
     private TextView tvDob;
+    private TextView tvSelectCity;
     private Spinner spBloodGroup;
-    private Spinner spCity;
     private String TAG = "AddMeToSgksActivity";
     private String strFirstName;
     private String strLastName;
@@ -83,6 +84,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private String strDateOfBirth;
     private String strImageName;
     private String strActivityType;
+    private String strCityName = "";
+    private String strCityId;
     private int intBloodGroupId;
     private int intCityId;
     private RadioButton rbGender;
@@ -136,7 +139,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         }
         initializeViews();
         requestBloodGroup();
-        requestCity();
 
         rgGender.clearCheck();
         rgGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -149,17 +151,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             }
         });
 
-        spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                intCityId = parent.getSelectedItemPosition();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         spBloodGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -216,10 +207,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 if (strContact.isEmpty()) {
                     Toast.makeText(mContext, "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
                     return;
-                }
-                if (spCity.getSelectedItemId() == 0) {
-                    Toast.makeText(mContext, "Please Select City", Toast.LENGTH_SHORT).show();
-                    return;
                 } else {
                     if (new AppCommonMethods(mContext).isNetworkAvailable()) {
                         requestAddMember();
@@ -239,9 +226,17 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metContact = findViewById(R.id.etContact);
         metEmail = findViewById(R.id.etEmail);
         metAddress = findViewById(R.id.etAddress);
-        spCity = findViewById(R.id.spCity);
         spBloodGroup = findViewById(R.id.spBloodGroup);
         tvDob = findViewById(R.id.tvDob);
+        tvSelectCity = findViewById(R.id.tvSelectCity);
+        tvSelectCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, SelectCityActivity.class);
+                intent.putExtra("isFromCreateMember",true);
+                startActivityForResult(intent,AppConstants.CITY_SELECT_REQUEST_CODE);
+            }
+        });
         ivProfilePicture = findViewById(R.id.ivProfileImage);
         ivAddImage = findViewById(R.id.ivAddImage);
         rgGender = findViewById(R.id.rgGender);
@@ -280,9 +275,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 spBloodGroup.setSelection(7);
             } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("AB")){
                 spBloodGroup.setSelection(8);
-            }
-            if(memberDetailsItem.getStrCity().equalsIgnoreCase("Pune")){
-                spCity.setSelection(1);
             }
             metAddress.setText(memberDetailsItem.getStrAddress());
         } else {
@@ -327,35 +319,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             }
         });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "get_blood_group");
-    }
-
-    private void requestCity() {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppURLs.API_GET_CITY, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    new AppCommonMethods(mContext).LOG(0, "get_city", response.toString());
-                    jsonArrayCity = response.getJSONArray("data");
-                    cityNameArrayList = new ArrayList<>();
-                    cityNameArrayList.add(0, "Choose One");
-                    for (int i = 0; i < jsonArrayCity.length(); i++) {
-                        JSONObject jsonObject = jsonArrayCity.getJSONObject(i);
-                        cityNameArrayList.add(jsonObject.getString("city_name"));
-                    }
-                    arrCityAdapter = new ArrayAdapter<String>(AddMeToSgksActivity.this, android.R.layout.simple_spinner_item, cityNameArrayList);
-                    spCity.setAdapter(arrCityAdapter);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                new AppCommonMethods(mContext).LOG(0, "error_city", error.toString());
-            }
-        }
-        );
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "get_city");
     }
 
     private void sendImageToServerRequest() {
@@ -455,6 +418,11 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
+                case AppConstants.CITY_SELECT_REQUEST_CODE:
+                    strCityName = data.getStringExtra("cityName");
+                    strCityId = data.getStringExtra("cityId");
+                    tvSelectCity.setText(strCityName);
+                    break;
                 case AppConstants.USER_LOGIN_ACTIVITY_RESULT_CODE:
                     //setProfileData();
                     break;

@@ -24,6 +24,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,7 @@ import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
 import com.woxi.sgkks_member.local_storage.DataSyncService;
 import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
+import com.woxi.sgkks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgkks_member.miscellaneous.MiscellaneousViewActivity;
 import com.woxi.sgkks_member.miscellaneous.SettingsActivity;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
@@ -216,12 +218,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             mViewPager.setCurrentItem(Integer.valueOf(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext)));
         }
-
-        mFabAddNewMember.setVisibility(View.GONE);
         mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentAdd = new Intent(mContext, Verification.class);
+                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
                 intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
             }
@@ -258,20 +258,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
                     AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
-                if (position == 2 || position == 1 || position == 0 || position == 3 || position == 4){
+                Log.i("@@@", "onPageSelected: "+position);
+                if (position == 2){
+                    mFabAddNewMember.setVisibility(View.VISIBLE);
+                } else {
                     mFabAddNewMember.setVisibility(View.GONE);
-                } /*else {
-                    mFabAddNewMember.setVisibility(View.GONE);
-                    mViewPager.setCurrentItem(2);
-                    //Other tabs not in use for 1st app release
-                    //remove when other tabs are ready
-
-
-                    if(){
-                        new AppCommonMethods(mContext).showAlert("Classifieds Coming Soon.....");
-                    }
-
-                }*/
+                }
             }
 
             @Override

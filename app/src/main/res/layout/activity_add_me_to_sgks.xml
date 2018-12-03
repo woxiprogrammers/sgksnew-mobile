@@ -96,6 +96,7 @@
             android:layout_height="@dimen/v40"
             android:layout_marginBottom="@dimen/v8"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/tvSelectDob"
                 style="@style/customTextView_16_Normal"
@@ -105,16 +106,17 @@
                 android:paddingStart="@dimen/v8"
                 android:text="@string/select_dateOfBirth"
                 android:textColor="@color/colorBlack" />
+
             <TextView
                 android:id="@+id/tvDob"
                 style="@style/customTextView_16_Normal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textAlignment="center"
+                android:background="@drawable/edit_text_border"
                 android:hint="DD-MM-YYYY"
-                android:textColor="@color/colorBlack"
-                android:background="@drawable/edit_text_border"/>
+                android:textAlignment="center"
+                android:textColor="@color/colorBlack" />
         </LinearLayout>
 
 
@@ -208,10 +210,16 @@
                 android:layout_weight="1"
                 android:background="@drawable/edit_text_border">
 
-                <Spinner
-                    android:id="@+id/spCity"
+                <TextView
+                    android:id="@+id/tvSelectCity"
+                    style="@style/customTextView_16_Normal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:hint="Click to Select City"
+                    android:textColor="@color/colorBlack"
+                    android:background="@drawable/edit_text_border"/>
             </RelativeLayout>
         </LinearLayout>
 
@@ -227,10 +235,9 @@
         <EditText
             android:id="@+id/etAddress"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_150dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/edit_text_border"
-            android:inputType="textMultiLine" />
-
+            android:lines="5"/>
 
         <TextView
             android:id="@+id/addSgksMember"
