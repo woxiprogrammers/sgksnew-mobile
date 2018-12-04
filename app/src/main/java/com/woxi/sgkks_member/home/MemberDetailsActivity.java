@@ -18,8 +18,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.woxi.sgkks_member.R;
+import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
+import com.woxi.sgkks_member.utils.AppSettings;
 
 /**
  * <b>public class MemberDetailsActivity extends AppCompatActivity</b>
@@ -135,16 +137,21 @@ public class MemberDetailsActivity extends AppCompatActivity {
         }
 
         FloatingActionButton mFloatingEdit = findViewById(R.id.memFloatingEdit);
-        mFloatingEdit.setVisibility(View.VISIBLE);
-        mFloatingEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent verificationIntent = new Intent(MemberDetailsActivity.this,AddMeToSgksActivity.class);
-                verificationIntent.putExtra("memberItems",memberDetailsItem);
-                verificationIntent.putExtra("activityType","MemberDetailsActivity");
-                startActivity(verificationIntent);
-            }
-        });
+        if (AppSettings.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+            mFloatingEdit.setVisibility(View.VISIBLE);
+            mFloatingEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent verificationIntent = new Intent(MemberDetailsActivity.this,AddMeToSgksActivity.class);
+                    verificationIntent.putExtra("memberItems",memberDetailsItem);
+                    verificationIntent.putExtra("activityType","MemberDetailsActivity");
+                    startActivity(verificationIntent);
+                }
+            });
+        } else {
+            mFloatingEdit.setVisibility(View.GONE);
+        }
+
 
         //Loading member image from url.
         final ImageView mIvMemImage = ((ImageView) findViewById(R.id.ivMemDetImage));

@@ -177,21 +177,18 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metFirstName.setText(memberDetailsItem.getStrFirstName());
         metMiddleName.setText(memberDetailsItem.getStrMiddleName());
         metLastName.setText(memberDetailsItem.getStrLastName());
-        Log.i(TAG, "initializeViews: email: "+memberDetailsItem.getStrEmail());
         metEmail.setText(memberDetailsItem.getStrEmail());
         metContact.setText(memberDetailsItem.getStrMobileNumber());
         metContact.setEnabled(true);
         tvDob.setText(memberDetailsItem.getStrDateOfBirth());
-        Log.i(TAG, "initializeViews: dob: "+memberDetailsItem.getStrDateOfBirth());
         ivProfilePicture.setBackground(Drawable.createFromPath(memberDetailsItem.getStrMemberImageUrl()));
-        Log.i(TAG, "initializeViews: GENDER "+memberDetailsItem.getStrGender());
+        Log.i("@@@@", "setupDataToEdit: "+memberDetailsItem.getStrMemberImageUrl());
         if(memberDetailsItem.getStrGender().equalsIgnoreCase("Male")){
             rgGender.check(R.id.rbMale);
         } else if(memberDetailsItem.getStrGender().equalsIgnoreCase("Female")){
             rgGender.check(R.id.rbFemale);
         }
         String strBg = memberDetailsItem.getStrBloodGroup();
-        Log.i(TAG, "initializeViews: CITY: "+memberDetailsItem.getStrCity());
         tvSelectCity.setText(memberDetailsItem.getStrCity());
         if(strBg.toString().equalsIgnoreCase("A+")){
             spBloodGroup.setSelection(0);

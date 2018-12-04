@@ -354,6 +354,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     tvValueGujurati.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlueDark));
                     mContext = LocaleHelper.onAttach(mContext, LANGUAGE_GUJURATI);
                     restartActivity(mContext);
+
                 }
                 dialog.dismiss();
             }
@@ -371,13 +372,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 dialog.dismiss();
             }
         });
+
     }
 
     private void restartActivity(Context context) {
         try {
-//            String lang = AGAppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext);
-//            Context context = LocaleHelper.setLocale(this, lang);                 cu
-
             Intent intentHome = getIntent();
             Bundle bundleExtras = new Bundle();
             bundleExtras.putBoolean("isFromLanguage", true);
@@ -390,6 +389,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
     }
+
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
