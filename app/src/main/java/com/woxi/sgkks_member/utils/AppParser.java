@@ -114,6 +114,12 @@ public class AppParser implements AppConstants {
                     if (jsonMemberObject.has("address") && jsonMemberObject.optString("address") != null && !jsonMemberObject.optString("address").equalsIgnoreCase("null")) {
                         memberDetailsItem.setStrAddress(jsonMemberObject.optString("address"));
                     }
+                    if (jsonMemberObject.has("date_of_birth") && jsonMemberObject.optString("date_of_birth") != null && !jsonMemberObject.optString("date_of_birth").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrDateOfBirth(jsonMemberObject.optString("date_of_birth"));
+                    }
+                    if (jsonMemberObject.has("email") && jsonMemberObject.getString("email") != null ) {
+                        memberDetailsItem.setStrEmail(jsonMemberObject.getString("email"));
+                    }
                     arrMemberList.add(memberDetailsItem);
                 }
                 globalMemberDetailsItem.setArrMemberList(arrMemberList);
@@ -312,7 +318,7 @@ public class AppParser implements AppConstants {
                     if (jsonObject.has("mobile") && jsonObject.getString("mobile") != null) {
                         memberDetailsItem.setStrMobileNumber(jsonObject.getString("mobile"));
                     }
-                    if (jsonObject.has("email") && jsonObject.getString("email") != null && !jsonObject.getString("email").equalsIgnoreCase("null")) {
+                    if (jsonObject.has("email") && jsonObject.getString("email") != null ) {
                         memberDetailsItem.setStrEmail(jsonObject.getString("email"));
                     }
                     if (jsonObject.has("city") && jsonObject.getString("city") != null) {

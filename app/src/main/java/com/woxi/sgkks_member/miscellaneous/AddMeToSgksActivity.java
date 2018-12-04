@@ -68,6 +68,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private EditText metAddress;
     private TextView tvDob;
     private TextView tvSelectCity;
+    private TextView tvAddSgksMember;
     private Spinner spBloodGroup;
     private String TAG = "AddMeToSgksActivity";
     private String strFirstName;
@@ -96,8 +97,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private ArrayList<String> bloodGroupArrayList;
     private MemberDetailsItem memberDetailsItem;
     private Boolean isFromEdit = false;
-    private RadioButton rbMale;
-    private RadioButton rbFemale;
     private ArrayList <BloodGroupItems>arrbloodGroupList;
 
     @Override
@@ -109,10 +108,11 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         if(bundle != null){
             if(bundle.containsKey("memberItems")){
                 memberDetailsItem = (MemberDetailsItem) bundle.getSerializable("memberItems");
+                Log.i("@@@", "onCreate: "+memberDetailsItem.toString());
             }
             if (bundle.containsKey("activityType")) {
                 strActivityType = bundle.getString("activityType");
-                if(strActivityType.equalsIgnoreCase("EditProfile")){
+                if(strActivityType.equalsIgnoreCase("MemberDetailsActivity")){
                     isFromEdit = true;
                 }
             }
@@ -148,6 +148,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metAddress = findViewById(R.id.etAddress);
         spBloodGroup = findViewById(R.id.spBloodGroup);
         tvDob = findViewById(R.id.tvDob);
+        tvAddSgksMember = findViewById(R.id.addSgksMember);
         tvSelectCity = findViewById(R.id.tvSelectCity);
         tvSelectCity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,44 +164,54 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metFirstName.requestFocus();
         imageUtilityHelper = new ImageUtilityHelper(mContext);
         ivAddImage.setOnClickListener(AddMeToSgksActivity.this);
-        rbMale = findViewById(R.id.rbMale);
-        rbFemale = findViewById(R.id.rbFemale);
         if(isFromEdit){
-            metFirstName.setText(memberDetailsItem.getStrFirstName());
-            metMiddleName.setText(memberDetailsItem.getStrMiddleName());
-            metLastName.setText(memberDetailsItem.getStrLastName());
-            metEmail.setText(memberDetailsItem.getStrEmail());
-            metContact.setText(memberDetailsItem.getStrMobileNumber());
-            metContact.setEnabled(false);
-            tvDob.setText(memberDetailsItem.getStrDateOfBirth());
-            ivProfilePicture.setBackground(Drawable.createFromPath(memberDetailsItem.getStrMemberImageUrl()));
-            if(memberDetailsItem.getStrGender().equalsIgnoreCase("Male")){
-                rbMale.setChecked(true);
-            } else if(memberDetailsItem.getStrGender().equalsIgnoreCase("Female")){
-                rbFemale.setChecked(true);
-            }
-            if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("A")){
-                spBloodGroup.setSelection(1);
-            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("A-")){
-                spBloodGroup.setSelection(2);
-            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("B")){
-                spBloodGroup.setSelection(4);
-            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("B-")){
-                spBloodGroup.setSelection(4);
-            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("O-")){
-                spBloodGroup.setSelection(5);
-            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("O")){
-                spBloodGroup.setSelection(6);
-            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("AB-")){
-                spBloodGroup.setSelection(7);
-            } else if(memberDetailsItem.getStrBloodGroup().equalsIgnoreCase("AB")){
-                spBloodGroup.setSelection(8);
-            }
-            metAddress.setText(memberDetailsItem.getStrAddress());
+            setupDataToEdit();
         } else {
             metContact.setText(strContact);
             metContact.setEnabled(false);
+            tvAddSgksMember.setText("Add Me");
         }
+    }
+
+    public void setupDataToEdit(){
+        metFirstName.setText(memberDetailsItem.getStrFirstName());
+        metMiddleName.setText(memberDetailsItem.getStrMiddleName());
+        metLastName.setText(memberDetailsItem.getStrLastName());
+        Log.i(TAG, "initializeViews: email: "+memberDetailsItem.getStrEmail());
+        metEmail.setText(memberDetailsItem.getStrEmail());
+        metContact.setText(memberDetailsItem.getStrMobileNumber());
+        metContact.setEnabled(true);
+        tvDob.setText(memberDetailsItem.getStrDateOfBirth());
+        Log.i(TAG, "initializeViews: dob: "+memberDetailsItem.getStrDateOfBirth());
+        ivProfilePicture.setBackground(Drawable.createFromPath(memberDetailsItem.getStrMemberImageUrl()));
+        Log.i(TAG, "initializeViews: GENDER "+memberDetailsItem.getStrGender());
+        if(memberDetailsItem.getStrGender().equalsIgnoreCase("Male")){
+            rgGender.check(R.id.rbMale);
+        } else if(memberDetailsItem.getStrGender().equalsIgnoreCase("Female")){
+            rgGender.check(R.id.rbFemale);
+        }
+        String strBg = memberDetailsItem.getStrBloodGroup();
+        Log.i(TAG, "initializeViews: CITY: "+memberDetailsItem.getStrCity());
+        tvSelectCity.setText(memberDetailsItem.getStrCity());
+        if(strBg.toString().equalsIgnoreCase("A+")){
+            spBloodGroup.setSelection(0);
+        } else if(strBg.equalsIgnoreCase("B+")){
+            spBloodGroup.setSelection(1);
+        } else if(strBg.equalsIgnoreCase("A-")){
+            spBloodGroup.setSelection(2);
+        } else if(strBg.equalsIgnoreCase("B-")){
+            spBloodGroup.setSelection(3);
+        } else if(strBg.equalsIgnoreCase("AB+")){
+            spBloodGroup.setSelection(4);
+        } else if(strBg.equalsIgnoreCase("AB-")){
+            spBloodGroup.setSelection(5);
+        } else if(strBg.equalsIgnoreCase("O+")){
+            spBloodGroup.setSelection(6);
+        } else if(strBg.equalsIgnoreCase("O-")){
+            spBloodGroup.setSelection(7);
+        }
+        metAddress.setText(memberDetailsItem.getStrAddress());
+        tvAddSgksMember.setText("Save");
     }
 
     @Override
@@ -399,7 +410,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     }
 
     public void genderCheckBox(){
-        rgGender.clearCheck();
         rgGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {

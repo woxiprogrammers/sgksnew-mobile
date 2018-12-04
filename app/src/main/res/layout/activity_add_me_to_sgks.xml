@@ -242,7 +242,7 @@
         <TextView
             android:id="@+id/addSgksMember"
             style="@style/customButton_16"
-            android:layout_gravity="end"
+            android:layout_gravity="center"
             android:layout_marginTop="@dimen/v16"
             android:text="Add Me" />
     </LinearLayout>

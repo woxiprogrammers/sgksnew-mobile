@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.woxi.sgkks_member.R;
+import com.woxi.sgkks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
 
 /**
@@ -135,11 +135,11 @@ public class MemberDetailsActivity extends AppCompatActivity {
         }
 
         FloatingActionButton mFloatingEdit = findViewById(R.id.memFloatingEdit);
-        mFloatingEdit.setVisibility(View.GONE);
+        mFloatingEdit.setVisibility(View.VISIBLE);
         mFloatingEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent verificationIntent = new Intent(MemberDetailsActivity.this,Verification.class);
+                Intent verificationIntent = new Intent(MemberDetailsActivity.this,AddMeToSgksActivity.class);
                 verificationIntent.putExtra("memberItems",memberDetailsItem);
                 verificationIntent.putExtra("activityType","MemberDetailsActivity");
                 startActivity(verificationIntent);

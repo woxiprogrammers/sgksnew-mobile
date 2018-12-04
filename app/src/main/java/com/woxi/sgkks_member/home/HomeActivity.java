@@ -15,7 +15,6 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -28,11 +27,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.woxi.sgkks_member.AppController;
@@ -42,7 +38,6 @@ import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
 import com.woxi.sgkks_member.local_storage.DataSyncService;
 import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
-import com.woxi.sgkks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgkks_member.miscellaneous.MiscellaneousViewActivity;
 import com.woxi.sgkks_member.miscellaneous.SettingsActivity;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
@@ -117,7 +112,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_add_me_sgks:
-                Intent intentAdd = new Intent(mContext, Verification.class);
+                Intent intentAdd = new Intent(mContext, VerificationActivity.class);
                 intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
                 break;
@@ -225,7 +220,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentAdd = new Intent(mContext, Verification.class);
+                Intent intentAdd = new Intent(mContext, VerificationActivity.class);
                 intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
             }

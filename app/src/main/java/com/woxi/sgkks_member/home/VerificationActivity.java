@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -14,7 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -29,7 +27,7 @@ import com.woxi.sgkks_member.utils.AppURLs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Verification extends AppCompatActivity {
+public class VerificationActivity extends AppCompatActivity {
     private Context mContext;
     private String strMobileNumber;
     private String strOtp;
@@ -68,7 +66,7 @@ public class Verification extends AppCompatActivity {
     }
 
     public void initializeViews(){
-        mContext = Verification.this;
+        mContext = VerificationActivity.this;
         llEnterMobileNumber = findViewById(R.id.llEnterMobileNumber);
         llEnterOtp = findViewById(R.id.llEnterOtp);
         llEnterOtp.setVisibility(View.GONE);
@@ -163,7 +161,7 @@ public class Verification extends AppCompatActivity {
                                 pbVerify.setVisibility(View.GONE);
                                 new AppCommonMethods(mContext).LOG(0,"OTP_VERIFIED",response.toString());
                                 if(response.has("message")){
-                                        Intent addMemberIntent = new Intent(Verification.this, AddMeToSgksActivity.class);
+                                        Intent addMemberIntent = new Intent(VerificationActivity.this, AddMeToSgksActivity.class);
                                         if(isFromEdit){
                                             addMemberIntent.putExtra("memberItems",memberDetailsItem);
                                             addMemberIntent.putExtra("activityType", "EditProfile");
