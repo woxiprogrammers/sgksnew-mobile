@@ -34,8 +34,5 @@ public interface AppConstants {
     int USER_LOGIN_ACTIVITY_RESULT_CODE = 1212;
     String LANGUAGE_GUJURATI = "2", LANGUAGE_ENGLISH = "1", PREFS_LANGUAGE_APPLIED = "languageApplied";
     String CURRENT_PAGE = "";
-    int CITY_SELECT_REQUEST_CODE = 0;
-    int CITY_SELECT_REQUEST_SUCCESS = 1;
-    int CITY_SELECT_REQUEST_ERROR = 2;
-
+    int CITY_SELECT_CODE = 100;
 }

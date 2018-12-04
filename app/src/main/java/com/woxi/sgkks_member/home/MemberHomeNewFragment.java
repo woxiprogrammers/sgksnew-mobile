@@ -104,14 +104,14 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 if (charSequence.length() > 3) {
                     strSearchFullName = charSequence.toString().toLowerCase();
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                        requestToGetMembersData(0,true);
+                        requestToGetMembersData(0,false,true);
                     } else {
                         new AppCommonMethods(mContext).showAlert("You are offline");
                     }
                 } else if (charSequence.length()==0){
                     strSearchFullName = "";
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                        requestToGetMembersData(0,true);
+                        requestToGetMembersData(0,false, true);
                     } else {
                         new AppCommonMethods(mContext).showAlert("You are offline");
                     }
@@ -124,7 +124,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         });
         setUpRecyclerView();
         if (new AppCommonMethods(mContext).isNetworkAvailable()){
-            requestToGetMembersData(pageNumber,true);
+            requestToGetMembersData(pageNumber,true,false);
         } else {
             new AppCommonMethods(mContext).showAlert("You are offline");
         }
@@ -153,7 +153,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mParentView.findViewById(R.id.etSearchMember).clearFocus();
     }
 
-    private void requestToGetMembersData(final int pageId, final boolean isFirstTime) {
+    private void requestToGetMembersData(final int pageId, final boolean isFirstTime, final Boolean isFromSearch) {
         isApiInProgress = true;
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         if(isFirstTime){
@@ -186,7 +186,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                             if (resp instanceof Boolean) {
                                 Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
                             } else if (resp instanceof MemberDetailsItem) {
-                                if(isFirstTime){
+                                if(isFirstTime || isFromSearch){
                                     mArrMemDetails = memberDetailsItem.getArrMemberList();
                                     if (mArrMemDetails.size() != 0){
                                         mRvMemberList.setHasFixedSize(true);
@@ -248,7 +248,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             //Cancelling Pending Request
             AppController.getInstance().cancelPendingRequests("memberSearchList");
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                requestToGetMembersData(pageNumber,false);
+                requestToGetMembersData(pageNumber,false,false);
             } else {
                 new AppCommonMethods(mContext).showAlert("You are offline");
             }

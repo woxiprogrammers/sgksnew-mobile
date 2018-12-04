@@ -1,5 +1,6 @@
 package com.woxi.sgkks_member.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -193,7 +194,7 @@ public class SelectCityActivity extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.putExtra("cityName",strCityName);
                     intent.putExtra("cityId",strCityId);
-                    setResult(AppConstants.CITY_SELECT_REQUEST_CODE,intent);
+                    setResult(Activity.RESULT_OK,intent);
                     finish();
                 } else {
                     CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));

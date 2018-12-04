@@ -9,9 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -39,8 +37,10 @@ import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.home.HomeActivity;
 import com.woxi.sgkks_member.home.SelectCityActivity;
 import com.woxi.sgkks_member.interfaces.AppConstants;
+import com.woxi.sgkks_member.models.BloodGroupItems;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
+import com.woxi.sgkks_member.utils.AppParser;
 import com.woxi.sgkks_member.utils.AppURLs;
 import com.woxi.sgkks_member.utils.ImageUtilityHelper;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -50,10 +50,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -77,7 +73,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private String strFirstName;
     private String strLastName;
     private String strMiddleName;
-    private String strContact;
+    private String strContact ="7709307123";
     private String strGender;
     private String strEmail;
     private String strAddress;
@@ -86,8 +82,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private String strActivityType;
     private String strCityName = "";
     private String strCityId;
-    private int intBloodGroupId;
-    private int intCityId;
+    private String strBloodGroupId;
     private RadioButton rbGender;
     private Calendar calendar;
     private ImageView ivProfilePicture;
@@ -96,16 +91,14 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private Bitmap bitmapProfile;
     private RadioGroup rgGender;
     private ArrayAdapter<String> arrBloodGroupAdapter;
-    private ArrayAdapter<String> arrCityAdapter;
     private Bundle bundle;
-    private JSONArray jsonArrayCity;
     private JSONArray jsonArrayBloodGroup;
-    private ArrayList<String> cityNameArrayList;
     private ArrayList<String> bloodGroupArrayList;
     private MemberDetailsItem memberDetailsItem;
     private Boolean isFromEdit = false;
     private RadioButton rbMale;
     private RadioButton rbFemale;
+    private ArrayList <BloodGroupItems>arrbloodGroupList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,83 +132,10 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         }
         initializeViews();
         requestBloodGroup();
-
-        rgGender.clearCheck();
-        rgGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                rbGender = findViewById(checkedId);
-                if (null != rbGender && checkedId != -1) {
-                    strGender = rbGender.getText().toString();
-                }
-            }
-        });
-
-        spBloodGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                intBloodGroupId = parent.getSelectedItemPosition();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        tvDob.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calendar = Calendar.getInstance();
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(AddMeToSgksActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int mYear, int mMonth, int mDay) {
-                        tvDob.setText(mDay + "-" + mMonth + "-" + mYear);
-                        strDateOfBirth = mYear + "-" + mMonth + "-" + mDay ;
-                    }
-                }, year, month, day);
-                datePickerDialog.show();
-            }
-        });
-        findViewById(R.id.addSgksMember).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                strFirstName = metFirstName.getText().toString().trim();
-                strLastName = metLastName.getText().toString().trim();
-                strMiddleName = metMiddleName.getText().toString().trim();
-                strEmail = metEmail.getText().toString().trim();
-                strAddress = metAddress.getText().toString().trim();
-
-                if (strFirstName.isEmpty()) {
-                    metFirstName.setError("Please Enter your First Name");
-                    metFirstName.requestFocus();
-                    return;
-                }
-                if (strMiddleName.isEmpty()) {
-                    metMiddleName.setError("Please Enter your Middle Name");
-                    metMiddleName.requestFocus();
-                    return;
-                }
-                if (strLastName.isEmpty()) {
-                    metLastName.setError("Please Enter your Last Name");
-                    metLastName.requestFocus();
-                    return;
-                }
-                if (strContact.isEmpty()) {
-                    Toast.makeText(mContext, "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-                        requestAddMember();
-                    } else {
-                        new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.noInternet));
-                    }
-                }
-            }
-        });
+        genderCheckBox();
+        bloodGropSpinnerListener();
+        dobListener();
+        validateFieldsAndApiCall();
     }
 
     private void initializeViews() {
@@ -234,7 +154,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, SelectCityActivity.class);
                 intent.putExtra("isFromCreateMember",true);
-                startActivityForResult(intent,AppConstants.CITY_SELECT_REQUEST_CODE);
+                startActivityForResult(intent,AppConstants.CITY_SELECT_CODE);
             }
         });
         ivProfilePicture = findViewById(R.id.ivProfileImage);
@@ -299,9 +219,11 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             public void onResponse(JSONObject response) {
                 try {
                     new AppCommonMethods(mContext).LOG(0, "get_blood_group", response.toString());
+                    Object resp = AppParser.parseBloodGroupResponse(response.toString());
+                    arrbloodGroupList = (ArrayList<BloodGroupItems>) resp;
                     jsonArrayBloodGroup = response.getJSONArray("data");
                     bloodGroupArrayList = new ArrayList<>();
-                    bloodGroupArrayList.add(0, "Choose One");
+                    //  bloodGroupArrayList.add(0, "Choose One");
                     for (int i = 0; i < jsonArrayBloodGroup.length(); i++) {
                         JSONObject jsonObject = jsonArrayBloodGroup.getJSONObject(i);
                         bloodGroupArrayList.add(jsonObject.getString("blood_group"));
@@ -373,12 +295,12 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             params.put("gender", strGender);
             params.put("address", strAddress);
             params.put("date_of_birth", strDateOfBirth); // Date format is YYYY-MM-DD
-            params.put("blood_group_id", intBloodGroupId);
-            params.put("city_id", intCityId);
+            params.put("blood_group_id", strBloodGroupId);
+            params.put("city_id", strCityId);
             params.put("mobile", strContact);
             params.put("email", strEmail);
-            params.put("profile_pic", strImageName);
-            Log.i("@@@", "requestAddMember: " + params.toString());
+            params.put("profile_images", strImageName);
+            Log.i(TAG, "requestAddMember: "+params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -418,7 +340,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case AppConstants.CITY_SELECT_REQUEST_CODE:
+                case AppConstants.CITY_SELECT_CODE:
                     strCityName = data.getStringExtra("cityName");
                     strCityId = data.getStringExtra("cityId");
                     tvSelectCity.setText(strCityName);
@@ -475,7 +397,97 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 break;
         }
     }
-}
 
+    public void genderCheckBox(){
+        rgGender.clearCheck();
+        rgGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                rbGender = findViewById(checkedId);
+                if (null != rbGender && checkedId != -1) {
+                    strGender = rbGender.getText().toString();
+                }
+            }
+        });
+    }
+
+    public void bloodGropSpinnerListener(){
+        spBloodGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                BloodGroupItems bloodGroupItems = arrbloodGroupList.get(parent.getSelectedItemPosition());
+                strBloodGroupId = bloodGroupItems.getStrBloodGroupId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    public void dobListener(){
+        tvDob.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int mYear, int mMonth, int mDay) {
+                        int intMonth = mMonth+1;
+                        tvDob.setText(mDay + "-" + intMonth + "-" + mYear);
+                        strDateOfBirth = mYear + "-" + intMonth + "-" + mDay ;
+                        Log.i(TAG, "onDateSet: "+strDateOfBirth);
+                    }
+                }, year, month, day);
+                datePickerDialog.show();
+            }
+        });
+    }
+
+    public void validateFieldsAndApiCall(){
+        findViewById(R.id.addSgksMember).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                strFirstName = metFirstName.getText().toString().trim();
+                strLastName = metLastName.getText().toString().trim();
+                strMiddleName = metMiddleName.getText().toString().trim();
+                strEmail = metEmail.getText().toString().trim();
+                strAddress = metAddress.getText().toString().trim();
+
+                if (strFirstName.isEmpty()) {
+                    metFirstName.setError("Please Enter your First Name");
+                    metFirstName.requestFocus();
+                    return;
+                }
+                if (strMiddleName.isEmpty()) {
+                    metMiddleName.setError("Please Enter your Middle Name");
+                    metMiddleName.requestFocus();
+                    return;
+                }
+                if (strLastName.isEmpty()) {
+                    metLastName.setError("Please Enter your Last Name");
+                    metLastName.requestFocus();
+                    return;
+                }
+                if (strContact.isEmpty()) {
+                    Toast.makeText(mContext, "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                        requestAddMember();
+                    } else {
+                        new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.noInternet));
+                    }
+                }
+            }
+        });
+    }
+}
 
 

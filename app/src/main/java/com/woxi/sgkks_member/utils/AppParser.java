@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
+import com.woxi.sgkks_member.models.BloodGroupItems;
 import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
@@ -575,7 +576,6 @@ public class AppParser implements AppConstants {
             CityIteam cityIteam;
             JSONArray jsonDataArray = jsonObject.optJSONArray("data");
             for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
-                ArrayList<String> arrEventImages;
                 cityIteam = new CityIteam();
                 JSONObject jsonCityObject = jsonDataArray.optJSONObject(indexCity);
                 if (jsonCityObject.has("city_name") && jsonCityObject.optString("city_name") != null) {
@@ -593,6 +593,30 @@ public class AppParser implements AppConstants {
                 mArrCityData.add(cityIteam);
             }
             return mArrCityData;
+        }
+        return false;
+    }
+
+    public static Object parseBloodGroupResponse (String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            ArrayList<BloodGroupItems> mArrBloodGroupData = new ArrayList<>();
+            BloodGroupItems bloodGroupItems;
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
+                bloodGroupItems = new BloodGroupItems();
+                JSONObject jsonBloodGroupObject = jsonDataArray.optJSONObject(indexCity);
+                if (jsonBloodGroupObject.has("blood_group") && jsonBloodGroupObject.optString("blood_group") != null) {
+                    String strBloodGroup = jsonBloodGroupObject.optString("blood_group");
+                    bloodGroupItems.setStrBloodGroupName(strBloodGroup);;
+                }
+                if (jsonBloodGroupObject.has("blood_id") && jsonBloodGroupObject.optString("blood_id") != null) {
+                    String strBloodGroupId = jsonBloodGroupObject.optString("blood_id");
+                    bloodGroupItems.setStrBloodGroupId(strBloodGroupId);
+                }
+                mArrBloodGroupData.add(bloodGroupItems);
+            }
+            return mArrBloodGroupData;
         }
         return false;
     }

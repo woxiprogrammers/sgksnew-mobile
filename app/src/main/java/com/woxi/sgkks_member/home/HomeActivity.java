@@ -117,10 +117,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_add_me_sgks:
-//                Intent intentAdd = new Intent(mContext, Verification.class);
-//                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
-//                startActivity(intentAdd);
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                Intent intentAdd = new Intent(mContext, Verification.class);
+                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+                startActivity(intentAdd);
                 break;
             case R.id.nav_suggestion:
                 /*Intent intentSug = new Intent(mContext, SuggestionActivity.class);
@@ -216,12 +215,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if(isFromSplash){
             mViewPager.setCurrentItem(2);
         } else {
-            mViewPager.setCurrentItem(Integer.valueOf(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext)));
+            if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("")){
+                mViewPager.setCurrentItem(2);
+            } else {
+                mViewPager.setCurrentItem(Integer.valueOf(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext)));
+            }
+
         }
         mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentAdd = new Intent(mContext, AddMeToSgksActivity.class);
+                Intent intentAdd = new Intent(mContext, Verification.class);
                 intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
             }
