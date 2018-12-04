@@ -208,6 +208,9 @@ public class AppParser implements AppConstants {
                     if (jsonNewsObject.has("msg_type") && jsonNewsObject.optString("msg_type") != null && !jsonNewsObject.optString("msg_type").equalsIgnoreCase("null")) {
                         messageDetailsItem.setMessageType(jsonNewsObject.optString("msg_type"));
                     }
+                    if (jsonNewsObject.has("message_date") && jsonNewsObject.optString("message_date") != null && !jsonNewsObject.optString("message_date").equalsIgnoreCase("null")) {
+                        messageDetailsItem.setMessageDate(jsonNewsObject.optString("message_date"));
+                    }
                     arrNewsDetails.add(messageDetailsItem);
                 }
                 globalMessageDetailsItem.setArrMessageList(arrNewsDetails);

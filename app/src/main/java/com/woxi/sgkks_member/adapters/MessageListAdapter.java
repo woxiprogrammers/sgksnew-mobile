@@ -64,8 +64,8 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         if (mArrNewsDetails.get(position).getMessageDescription() != null) {
             tvNewsListDescription.setText(mArrNewsDetails.get(position).getMessageDescription());
         }
-        if (mArrNewsDetails.get(position).getMessageCreateDate() != null) {
-            tvNewsCreatedAt.setText("Created On: " + mArrNewsDetails.get(position).getMessageCreateDate());
+        if (mArrNewsDetails.get(position).getMessageDate() != null) {
+            tvNewsCreatedAt.setText("Date : " + mArrNewsDetails.get(position).getMessageDate());
         }
 
         //News Types- birthday, nidhan, achievement , buzz.

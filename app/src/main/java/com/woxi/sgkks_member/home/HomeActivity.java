@@ -212,7 +212,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("")){
                 mViewPager.setCurrentItem(2);
+                mFabAddNewMember.setVisibility(View.VISIBLE);
             } else {
+                mFabAddNewMember.setVisibility(View.GONE);
                 mViewPager.setCurrentItem(Integer.valueOf(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext)));
             }
 

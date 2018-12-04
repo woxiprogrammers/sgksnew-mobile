@@ -8,7 +8,24 @@ import java.util.ArrayList;
  * Created by Rohit.
  */
 public class MessageDetailsItem implements Serializable {
-    private String messageID, messageTitle, messageDescription, messageImage, messageCreateDate, messageType, messageCity, messageIsActive;
+    private String messageID;
+    private String messageTitle;
+    private String messageDescription;
+    private String messageImage;
+    private String messageCreateDate;
+    private String messageType;
+    private String messageCity;
+    private String messageIsActive;
+
+    public String getMessageDate() {
+        return messageDate;
+    }
+
+    public void setMessageDate(String messageDate) {
+        this.messageDate = messageDate;
+    }
+
+    private String messageDate;
     private ArrayList<MessageDetailsItem> arrMessageList;
 
     public ArrayList<MessageDetailsItem> getArrMessageList() {
