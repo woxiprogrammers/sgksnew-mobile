@@ -90,6 +90,9 @@ public class AppParser implements AppConstants {
                     if (jsonMemberObject.has("city") && jsonMemberObject.optString("city") != null && !jsonMemberObject.optString("city").equalsIgnoreCase("null")) {
                         memberDetailsItem.setStrCity(jsonMemberObject.optString("city"));
                     }
+                    if (jsonMemberObject.has("city_id") && jsonMemberObject.optString("city_id") != null && !jsonMemberObject.optString("city_id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrCityId(jsonMemberObject.optString("city_id"));
+                    }
                     if (jsonMemberObject.has("member_id") && jsonMemberObject.optString("member_id") != null && !jsonMemberObject.optString("member_id").equalsIgnoreCase("null")) {
                         memberDetailsItem.setStrMemberId(jsonMemberObject.optString("member_id"));
                     }
@@ -110,6 +113,9 @@ public class AppParser implements AppConstants {
                     }
                     if (jsonMemberObject.has("blood_group") && jsonMemberObject.optString("blood_group") != null && !jsonMemberObject.optString("blood_group").equalsIgnoreCase("null")) {
                         memberDetailsItem.setStrBloodGroup(jsonMemberObject.optString("blood_group"));
+                    }
+                    if (jsonMemberObject.has("blood_group_id") && jsonMemberObject.optString("blood_group_id") != null && !jsonMemberObject.optString("blood_group_id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrBloodGroupId(jsonMemberObject.optString("blood_group_id"));
                     }
                     if (jsonMemberObject.has("address") && jsonMemberObject.optString("address") != null && !jsonMemberObject.optString("address").equalsIgnoreCase("null")) {
                         memberDetailsItem.setStrAddress(jsonMemberObject.optString("address"));

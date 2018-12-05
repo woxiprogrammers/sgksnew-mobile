@@ -210,14 +210,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if(isFromSplash){
             mViewPager.setCurrentItem(2);
         } else {
-            if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("")){
+            if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("") || AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("2")){
                 mViewPager.setCurrentItem(2);
                 mFabAddNewMember.setVisibility(View.VISIBLE);
             } else {
                 mFabAddNewMember.setVisibility(View.GONE);
                 mViewPager.setCurrentItem(Integer.valueOf(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext)));
             }
-
         }
         mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
             @Override

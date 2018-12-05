@@ -32,6 +32,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.home.HomeActivity;
@@ -74,7 +76,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private String strFirstName;
     private String strLastName;
     private String strMiddleName;
-    private String strContact ="7709307123";
+    private String strContact;
     private String strGender;
     private String strEmail;
     private String strAddress;
@@ -84,6 +86,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private String strCityName = "";
     private String strCityId;
     private String strBloodGroupId;
+    private String strMemberId;
     private RadioButton rbGender;
     private Calendar calendar;
     private ImageView ivProfilePicture;
@@ -108,11 +111,10 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         if(bundle != null){
             if(bundle.containsKey("memberItems")){
                 memberDetailsItem = (MemberDetailsItem) bundle.getSerializable("memberItems");
-                Log.i("@@@", "onCreate: "+memberDetailsItem.toString());
             }
             if (bundle.containsKey("activityType")) {
                 strActivityType = bundle.getString("activityType");
-                if(strActivityType.equalsIgnoreCase("MemberDetailsActivity")){
+                if(strActivityType.equalsIgnoreCase("EditProfile")){
                     isFromEdit = true;
                 }
             }
@@ -131,11 +133,11 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 
         }
         initializeViews();
-        requestBloodGroup();
         genderCheckBox();
-        bloodGropSpinnerListener();
-        dobListener();
         validateFieldsAndApiCall();
+        bloodGroupSpinnerListener();
+        dobListener();
+
     }
 
     private void initializeViews() {
@@ -164,6 +166,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metFirstName.requestFocus();
         imageUtilityHelper = new ImageUtilityHelper(mContext);
         ivAddImage.setOnClickListener(AddMeToSgksActivity.this);
+        requestBloodGroup();
         if(isFromEdit){
             setupDataToEdit();
         } else {
@@ -174,39 +177,41 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     }
 
     public void setupDataToEdit(){
+        strMemberId = memberDetailsItem.getStrId();
         metFirstName.setText(memberDetailsItem.getStrFirstName());
         metMiddleName.setText(memberDetailsItem.getStrMiddleName());
         metLastName.setText(memberDetailsItem.getStrLastName());
         metEmail.setText(memberDetailsItem.getStrEmail());
-        metContact.setText(memberDetailsItem.getStrMobileNumber());
+        strContact = memberDetailsItem.getStrMobileNumber();
+        metContact.setText(strContact);
         metContact.setEnabled(true);
-        tvDob.setText(memberDetailsItem.getStrDateOfBirth());
-        ivProfilePicture.setBackground(Drawable.createFromPath(memberDetailsItem.getStrMemberImageUrl()));
-        Log.i("@@@@", "setupDataToEdit: "+memberDetailsItem.getStrMemberImageUrl());
-        if(memberDetailsItem.getStrGender().equalsIgnoreCase("Male")){
-            rgGender.check(R.id.rbMale);
-        } else if(memberDetailsItem.getStrGender().equalsIgnoreCase("Female")){
-            rgGender.check(R.id.rbFemale);
+        strDateOfBirth = memberDetailsItem.getStrDateOfBirth();
+        tvDob.setText(strDateOfBirth);
+        String strImgUrl = memberDetailsItem.getStrMemberImageUrl();
+        Glide.with(mContext)
+                .load(strImgUrl)
+                .crossFade()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .placeholder(R.drawable.ic_place_holder)
+                .error(R.drawable.ic_profile)
+                .into(ivProfilePicture);
+        strCityId = memberDetailsItem.getStrCityId();
+        strBloodGroupId = memberDetailsItem.getStrBloodGroupId();
+        Log.i(TAG, "setupDataToEdit: cityID: "+strCityId);
+        Log.i(TAG, "setupDataToEdit: bloodGroupID: "+strBloodGroupId);
+        spBloodGroup.setSelection(Integer.parseInt(strBloodGroupId));
+        strGender = memberDetailsItem.getStrGender();
+        if((strGender != null)){
+            if(strGender.equalsIgnoreCase("Male")){
+                rgGender.check(R.id.rbMale);
+            } else if(strGender.equalsIgnoreCase("Female")){
+                rgGender.check(R.id.rbFemale);
+            }
+        } else {
+            rgGender.clearCheck();
         }
-        String strBg = memberDetailsItem.getStrBloodGroup();
         tvSelectCity.setText(memberDetailsItem.getStrCity());
-        if(strBg.toString().equalsIgnoreCase("A+")){
-            spBloodGroup.setSelection(0);
-        } else if(strBg.equalsIgnoreCase("B+")){
-            spBloodGroup.setSelection(1);
-        } else if(strBg.equalsIgnoreCase("A-")){
-            spBloodGroup.setSelection(2);
-        } else if(strBg.equalsIgnoreCase("B-")){
-            spBloodGroup.setSelection(3);
-        } else if(strBg.equalsIgnoreCase("AB+")){
-            spBloodGroup.setSelection(4);
-        } else if(strBg.equalsIgnoreCase("AB-")){
-            spBloodGroup.setSelection(5);
-        } else if(strBg.equalsIgnoreCase("O+")){
-            spBloodGroup.setSelection(6);
-        } else if(strBg.equalsIgnoreCase("O-")){
-            spBloodGroup.setSelection(7);
-        }
         metAddress.setText(memberDetailsItem.getStrAddress());
         tvAddSgksMember.setText("Save");
     }
@@ -231,13 +236,16 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     arrbloodGroupList = (ArrayList<BloodGroupItems>) resp;
                     jsonArrayBloodGroup = response.getJSONArray("data");
                     bloodGroupArrayList = new ArrayList<>();
-                    //  bloodGroupArrayList.add(0, "Choose One");
                     for (int i = 0; i < jsonArrayBloodGroup.length(); i++) {
                         JSONObject jsonObject = jsonArrayBloodGroup.getJSONObject(i);
                         bloodGroupArrayList.add(jsonObject.getString("blood_group"));
                     }
                     arrBloodGroupAdapter = new ArrayAdapter<String>(AddMeToSgksActivity.this, android.R.layout.simple_spinner_item, bloodGroupArrayList);
                     spBloodGroup.setAdapter(arrBloodGroupAdapter);
+                    if (isFromEdit){
+                        // Reduce 1 from the recieved ID as the Blood group ID's start from 1
+                        spBloodGroup.setSelection(Integer.parseInt(memberDetailsItem.getStrBloodGroupId())-1);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -295,47 +303,92 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
-        JSONObject params = new JSONObject();
-        try {
-            params.put("first_name", strFirstName);
-            params.put("middle_name", strMiddleName);
-            params.put("last_name", strLastName);
-            params.put("gender", strGender);
-            params.put("address", strAddress);
-            params.put("date_of_birth", strDateOfBirth); // Date format is YYYY-MM-DD
-            params.put("blood_group_id", strBloodGroupId);
-            params.put("city_id", strCityId);
-            params.put("mobile", strContact);
-            params.put("email", strEmail);
-            params.put("profile_images", strImageName);
-            Log.i(TAG, "requestAddMember: "+params.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_ADD_MEMBER, params,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            pDialog.hide();
-                            new AppCommonMethods(mContext).LOG(0, "member_added", response.toString());
-                            Toast.makeText(mContext,response.get("message").toString(),Toast.LENGTH_SHORT);
-                            goToHomeScreen();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+        if (isFromEdit) {
+            JSONObject params = new JSONObject();
+            try {
+                params.put("member_id",strMemberId);
+                params.put("first_name", strFirstName);
+                params.put("middle_name", strMiddleName);
+                params.put("last_name", strLastName);
+                params.put("gender", strGender);
+                params.put("address", strAddress);
+                params.put("date_of_birth", strDateOfBirth); // Date format is YYYY-MM-DD
+                params.put("blood_group_id", strBloodGroupId);
+                params.put("city_id", strCityId);
+                params.put("mobile", strContact);
+                params.put("email", strEmail);
+                params.put("profile_images", strImageName);
+                Log.i(TAG, "requestAddMember: "+params.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_EDIT_MEMBER, params,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                pDialog.hide();
+                                new AppCommonMethods(mContext).LOG(0, "member_edited", response.toString());
+                                Toast.makeText(mContext,response.get("message").toString(),Toast.LENGTH_SHORT);
+                                goToHomeScreen();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        pDialog.hide();
-                        new AppCommonMethods(mContext).LOG(0, "error_member_added", error.toString());
-                        Toast.makeText(mContext, "Failed. Please Try Again", Toast.LENGTH_LONG);
-                    }
-                });
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            pDialog.hide();
+                            new AppCommonMethods(mContext).LOG(0, "error_member_added", error.toString());
+                            Toast.makeText(mContext, "Failed. Please Try Again", Toast.LENGTH_LONG);
+                        }
+                    });
 
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "add_new_member");
+            AppController.getInstance().addToRequestQueue(jsonObjectRequest, "edit_member");
+        } else {
+            JSONObject params = new JSONObject();
+            try {
+                params.put("first_name", strFirstName);
+                params.put("middle_name", strMiddleName);
+                params.put("last_name", strLastName);
+                params.put("gender", strGender);
+                params.put("address", strAddress);
+                params.put("date_of_birth", strDateOfBirth); // Date format is YYYY-MM-DD
+                params.put("blood_group_id", strBloodGroupId);
+                params.put("city_id", strCityId);
+                params.put("mobile", strContact);
+                params.put("email", strEmail);
+                params.put("profile_images", strImageName);
+                Log.i(TAG, "requestAddMember: "+params.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_ADD_MEMBER, params,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                pDialog.hide();
+                                new AppCommonMethods(mContext).LOG(0, "member_added", response.toString());
+                                Toast.makeText(mContext,response.get("message").toString(),Toast.LENGTH_SHORT);
+                                goToHomeScreen();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            pDialog.hide();
+                            new AppCommonMethods(mContext).LOG(0, "error_member_added", error.toString());
+                            Toast.makeText(mContext, "Failed. Please Try Again", Toast.LENGTH_LONG);
+                        }
+                    });
+
+            AppController.getInstance().addToRequestQueue(jsonObjectRequest, "add_new_member");
+        }
     }
 
     private void getImageChooser() {
@@ -418,18 +471,16 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         });
     }
 
-    public void bloodGropSpinnerListener(){
+    public void bloodGroupSpinnerListener(){
         spBloodGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                BloodGroupItems bloodGroupItems = arrbloodGroupList.get(parent.getSelectedItemPosition());
-                strBloodGroupId = bloodGroupItems.getStrBloodGroupId();
+                    BloodGroupItems bloodGroupItems = arrbloodGroupList.get(parent.getSelectedItemPosition());
+                    strBloodGroupId = bloodGroupItems.getStrBloodGroupId();
+                Log.i(TAG, "onItemSelected: BLOOD GROUP ID: "+strBloodGroupId);
             }
-
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 

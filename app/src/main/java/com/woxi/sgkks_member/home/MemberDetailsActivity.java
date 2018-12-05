@@ -142,9 +142,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
             mFloatingEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent verificationIntent = new Intent(MemberDetailsActivity.this,AddMeToSgksActivity.class);
+                    Intent verificationIntent = new Intent(mContext,AddMeToSgksActivity.class);
                     verificationIntent.putExtra("memberItems",memberDetailsItem);
-                    verificationIntent.putExtra("activityType","MemberDetailsActivity");
+                    verificationIntent.putExtra("activityType","EditProfile");
                     startActivity(verificationIntent);
                 }
             });
