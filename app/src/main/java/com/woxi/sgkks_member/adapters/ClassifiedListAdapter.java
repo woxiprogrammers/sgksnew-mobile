@@ -47,15 +47,20 @@ public class ClassifiedListAdapter extends RecyclerView.Adapter<ClassifiedListAd
             tvTitle.setText(mArrClassifiedDetails.get(position).getClassifiedTitle());
         }
         //Loading image from url.
-        String strUrl = mArrClassifiedDetails.get(position).getArrClassifiedImages().get(0);
-        Glide.with(mContext)
-                .load(strUrl)
-                .crossFade()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .placeholder(R.drawable.ic_place_holder)
-                .error(R.drawable.ic_broken_image)
-                .into(ivClassifiedListImg);
+        if (mArrClassifiedDetails.get(position).getArrClassifiedImages().size() != 0){
+            String strUrl = mArrClassifiedDetails.get(position).getArrClassifiedImages().get(0);
+            Glide.with(mContext)
+                    .load(strUrl)
+                    .crossFade()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .placeholder(R.drawable.ic_place_holder)
+                    .error(R.drawable.ic_broken_image)
+                    .into(ivClassifiedListImg);
+        } else {
+            ivClassifiedListImg.setImageResource(R.drawable.img_classified);
+        }
+
         /*if (mArrClassifiedDetails.get(position).getClassifiedDescription() != null) {
             tvDescription.setText(mArrClassifiedDetails.get(position).getClassifiedDescription());
         }*/

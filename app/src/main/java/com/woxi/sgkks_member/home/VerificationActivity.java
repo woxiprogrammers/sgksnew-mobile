@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -41,7 +42,7 @@ public class VerificationActivity extends AppCompatActivity {
     private ProgressBar pbVerify;
     private MemberDetailsItem memberDetailsItem;
     private String strActivityType;
-    private boolean isFromEdit = false;
+    private boolean isFromEdit = false, isOtpSent = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +58,7 @@ public class VerificationActivity extends AppCompatActivity {
             }
             if(bundle.containsKey("activityType")){
                 strActivityType = bundle.getString("activityType");
-                if(strActivityType.equalsIgnoreCase("MemberDetailsActivity")){
+                if(strActivityType.equalsIgnoreCase("EditProfile")){
                     isFromEdit = true;
                 }
             }
@@ -73,36 +74,10 @@ public class VerificationActivity extends AppCompatActivity {
         pbVerify = findViewById(R.id.pbVerify);
         tvErrorMessage = findViewById(R.id.tvErrorMessage);
         tvConfirmMobileNumber = findViewById(R.id.tvConfirmMobileNumber);
-
         etMobileNumber = findViewById(R.id.etMobileNumber);
-        etMobileNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence mobileNumber, int start, int before, int count) {
-                if(mobileNumber.length() == 10){
-                    tvErrorMessage.setVisibility(View.GONE);
-                    strMobileNumber = mobileNumber.toString();
-                    if(new AppCommonMethods(mContext).isNetworkAvailable()){
-                        sendMobileNumberToServer();
-
-                    } else {
-                        new AppCommonMethods(mContext).showAlert("You are Offline");
-                    }
-                } else {
-                    tvErrorMessage.setVisibility(View.VISIBLE);
-                    tvErrorMessage.setText("Please enter a valid Mobile Number");
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        if(!isOtpSent){
+            mobileNumberListener();
+        }
         if(isFromEdit){
             String strMobile = memberDetailsItem.getStrMobileNumber();
             etMobileNumber.setText(memberDetailsItem.getStrMobileNumber());
@@ -177,7 +152,7 @@ public class VerificationActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         pbVerify.setVisibility(View.GONE);
                         new AppCommonMethods(mContext).LOG(0,"OTP_NOT_VERIFIED",error.toString());
-                        Toast.makeText(mContext,"Wrong OTP",Toast.LENGTH_LONG);
+                        new AppCommonMethods(mContext).showAlert("You have entered a wrong OTP!");
                         etOtp.setText("");
 
                     }
@@ -202,6 +177,7 @@ public class VerificationActivity extends AppCompatActivity {
                                 new AppCommonMethods(mContext).LOG(0,"GET_OTP",response.toString());
                                 if (response.has("message")) {
                                     try {
+                                        isOtpSent = true;
                                         llEnterMobileNumber.setVisibility(View.GONE);
                                         llEnterOtp.setVisibility(View.VISIBLE);
                                         Toast.makeText(mContext, "" + response.getString("message"), Toast.LENGTH_SHORT).show();
@@ -219,6 +195,40 @@ public class VerificationActivity extends AppCompatActivity {
                     }
                 });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "send_OTP");
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+    }
 
+    public void mobileNumberListener(){
+        etMobileNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence mobileNumber, int start, int before, int count) {
+                if(mobileNumber.length() == 10){
+                    tvErrorMessage.setVisibility(View.GONE);
+                    strMobileNumber = mobileNumber.toString();
+                    if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                        sendMobileNumberToServer();
+
+                    } else {
+                        new AppCommonMethods(mContext).showAlert("You are Offline");
+                    }
+                } else {
+                    tvErrorMessage.setVisibility(View.VISIBLE);
+                    tvErrorMessage.setText("Please enter a valid Mobile Number");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 }

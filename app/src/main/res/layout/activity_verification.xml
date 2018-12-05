@@ -97,7 +97,8 @@
                 android:layout_marginBottom="@dimen/v8"
                 android:paddingLeft="@dimen/v8"
                 android:textColor="@color/colorBlack"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:inputType="number"/>
         </LinearLayout>
     </RelativeLayout>
     <android.support.design.widget.AppBarLayout
