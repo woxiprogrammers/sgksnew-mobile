@@ -7,13 +7,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -28,7 +26,6 @@ import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.EndlessRvScrollListener;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
-import com.woxi.sgkks_member.models.MessageDetailsItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
 import com.woxi.sgkks_member.utils.AppSettings;
@@ -46,8 +43,7 @@ import java.util.ArrayList;
 public class ClassifiedHomeNewFragment extends Fragment implements FragmentInterface {
     private View mParentView;
     private Context mContext;
-    private boolean isClassifiedApiRequested = false;
-    private boolean isClassifiedApiInProgress = false;
+    private boolean isApiRequested = false;
     private RecyclerView mRvClassifiedList;
     private RelativeLayout mPbLazyLoad;
     private LinearLayoutManager linearLayoutManager;
@@ -82,7 +78,6 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
         mPbLazyLoad.setVisibility(View.GONE);
         pbMessages = mParentView.findViewById(R.id.pbMessages);
         setUpRecyclerView();
-        requestToGetClassifiedList(pageNumber, true);
     }
 
     private void setUpRecyclerView() {
@@ -158,6 +153,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                             pDialog.dismiss();
                             pbMessages.setVisibility(View.GONE);
                             isApiInProgress = false;
+                            isApiRequested = true;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -194,5 +190,13 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
 
     @Override
     public void fragmentBecameVisible() {
+        if(!isApiRequested){
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                requestToGetClassifiedList(pageNumber, true);
+
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
+        }
     }
 }

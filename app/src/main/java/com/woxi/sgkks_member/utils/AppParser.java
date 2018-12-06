@@ -123,7 +123,7 @@ public class AppParser implements AppConstants {
                     if (jsonMemberObject.has("date_of_birth") && jsonMemberObject.optString("date_of_birth") != null && !jsonMemberObject.optString("date_of_birth").equalsIgnoreCase("null")) {
                         memberDetailsItem.setStrDateOfBirth(jsonMemberObject.optString("date_of_birth"));
                     }
-                    if (jsonMemberObject.has("email") && jsonMemberObject.getString("email") != null ) {
+                    if (jsonMemberObject.has("email") && jsonMemberObject.getString("email") != null && !jsonMemberObject.optString("email").equalsIgnoreCase("null")) {
                         memberDetailsItem.setStrEmail(jsonMemberObject.getString("email"));
                     }
                     arrMemberList.add(memberDetailsItem);

@@ -181,7 +181,12 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metFirstName.setText(memberDetailsItem.getStrFirstName());
         metMiddleName.setText(memberDetailsItem.getStrMiddleName());
         metLastName.setText(memberDetailsItem.getStrLastName());
-        metEmail.setText(memberDetailsItem.getStrEmail());
+        if(!memberDetailsItem.getStrGender().equalsIgnoreCase("null")){
+            metEmail.setText(memberDetailsItem.getStrEmail());
+        } else {
+            metEmail.setText("");
+        }
+
         strContact = memberDetailsItem.getStrMobileNumber();
         metContact.setText(strContact);
         metContact.setEnabled(true);

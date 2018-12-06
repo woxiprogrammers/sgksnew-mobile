@@ -134,17 +134,20 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             }
         });
 
-        requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+
     }
 
     @Override
     public void fragmentBecameVisible() {
         if (!isApiRequested) {
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
 
         }
     }
-
-
 
     private void requestEventDetailsApi(String year) {
         //ToDo Lazy Loading
