@@ -181,12 +181,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metFirstName.setText(memberDetailsItem.getStrFirstName());
         metMiddleName.setText(memberDetailsItem.getStrMiddleName());
         metLastName.setText(memberDetailsItem.getStrLastName());
-        if(!memberDetailsItem.getStrGender().equalsIgnoreCase("null")){
-            metEmail.setText(memberDetailsItem.getStrEmail());
-        } else {
-            metEmail.setText("");
-        }
-
+        metEmail.setText(memberDetailsItem.getStrEmail());
         strContact = memberDetailsItem.getStrMobileNumber();
         metContact.setText(strContact);
         metContact.setEnabled(true);
@@ -203,8 +198,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 .into(ivProfilePicture);
         strCityId = memberDetailsItem.getStrCityId();
         strBloodGroupId = memberDetailsItem.getStrBloodGroupId();
-        Log.i(TAG, "setupDataToEdit: cityID: "+strCityId);
-        Log.i(TAG, "setupDataToEdit: bloodGroupID: "+strBloodGroupId);
         spBloodGroup.setSelection(Integer.parseInt(strBloodGroupId));
         strGender = memberDetailsItem.getStrGender();
         if((strGender != null)){
@@ -331,22 +324,17 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            try {
                                 pDialog.hide();
                                 new AppCommonMethods(mContext).LOG(0, "member_edited", response.toString());
-                                Toast.makeText(mContext,response.get("message").toString(),Toast.LENGTH_SHORT);
-                                goToHomeScreen();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                                new AppCommonMethods(mContext).showAlert("Information of "+strFirstName+" "+strMiddleName+ " "+strLastName+" updated successfully.");
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             pDialog.hide();
+                            new AppCommonMethods(mContext).showAlert("Something went wrong while editing");
                             new AppCommonMethods(mContext).LOG(0, "error_member_added", error.toString());
-                            Toast.makeText(mContext, "Failed. Please Try Again", Toast.LENGTH_LONG);
                         }
                     });
 
@@ -373,22 +361,19 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            try {
                                 pDialog.hide();
                                 new AppCommonMethods(mContext).LOG(0, "member_added", response.toString());
-                                Toast.makeText(mContext,response.get("message").toString(),Toast.LENGTH_SHORT);
-                                goToHomeScreen();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                                new AppCommonMethods(mContext).showAlert(strFirstName+" "+strMiddleName+ " "+strLastName+" added successfully to SGKKS");
+                                //goToHomeScreen();
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             pDialog.hide();
+                            new AppCommonMethods(mContext).showAlert("Something went wrong");
                             new AppCommonMethods(mContext).LOG(0, "error_member_added", error.toString());
-                            Toast.makeText(mContext, "Failed. Please Try Again", Toast.LENGTH_LONG);
+
                         }
                     });
 
@@ -421,10 +406,12 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
                     if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
                         String fileName = "ImageFile.jpg";
-                        bitmapProfile = imageUtilityHelper.bitmapProfile;
-                        //Uploading (bitmapProfileImage) to server using API.
-                        // If successful then set image to (mIvMyImage).
-                        sendImageToServerRequest();
+                        if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                            bitmapProfile = imageUtilityHelper.bitmapProfile;
+                            sendImageToServerRequest();
+                        } else {
+                            new AppCommonMethods(mContext).showAlert("You are Offline");
+                        }
 
                     } else return;
                 default:
@@ -438,6 +425,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private void goToHomeScreen() {
         Intent goToHomeIntent = new Intent(AddMeToSgksActivity.this, HomeActivity.class);
         startActivity(goToHomeIntent);
+
     }
 
     public static String convertImageToBase64(Bitmap bitmap, int compression) {
@@ -480,8 +468,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         spBloodGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    BloodGroupItems bloodGroupItems = arrbloodGroupList.get(parent.getSelectedItemPosition());
-                    strBloodGroupId = bloodGroupItems.getStrBloodGroupId();
+                BloodGroupItems bloodGroupItems = arrbloodGroupList.get(parent.getSelectedItemPosition());
+                strBloodGroupId = bloodGroupItems.getStrBloodGroupId();
                 Log.i(TAG, "onItemSelected: BLOOD GROUP ID: "+strBloodGroupId);
             }
             @Override

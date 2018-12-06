@@ -234,10 +234,15 @@
 
         <EditText
             android:id="@+id/etAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/customEditText_16"
+            android:layout_height="@dimen/review_height"
+            android:layout_marginBottom="@dimen/v8"
             android:background="@drawable/edit_text_border"
-            android:lines="5"/>
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:maxLength="@integer/suggestion_max_length"
+            android:maxLines="@null"
+            android:padding="@dimen/v8"/>
 
         <TextView
             android:id="@+id/addSgksMember"

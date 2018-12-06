@@ -19,6 +19,7 @@ import com.woxi.sgkks_member.models.MessageDetailsItem;
 import com.woxi.sgkks_member.models.SGKSAreaItem;
 import com.woxi.sgkks_member.models.SGKSCategory;
 import com.woxi.sgkks_member.models.AccountImages;
+import com.woxi.sgkks_member.models.SuggestionCategoriesItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -632,6 +633,30 @@ public class AppParser implements AppConstants {
                 mArrBloodGroupData.add(bloodGroupItems);
             }
             return mArrBloodGroupData;
+        }
+        return false;
+    }
+
+    public static Object parseSuggestionCategoryResponse (String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            ArrayList<SuggestionCategoriesItem> mArrSuggestionCategory = new ArrayList<>();
+            SuggestionCategoriesItem suggestionCategoriesItem;
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
+                suggestionCategoriesItem = new SuggestionCategoriesItem();
+                JSONObject jsonSuggestionCategoryObject = jsonDataArray.optJSONObject(indexCity);
+                if (jsonSuggestionCategoryObject.has("category_id") && jsonSuggestionCategoryObject.optString("category_id") != null) {
+                    String strCategoryId = jsonSuggestionCategoryObject.optString("category_id");
+                    suggestionCategoriesItem.setStrCategoryId(strCategoryId);
+                }
+                if (jsonSuggestionCategoryObject.has("category") && jsonSuggestionCategoryObject.optString("category") != null) {
+                    String strCategory = jsonSuggestionCategoryObject.optString("category");
+                    suggestionCategoriesItem.setStrCategoryName(strCategory);
+                }
+                mArrSuggestionCategory.add(suggestionCategoriesItem);
+            }
+            return mArrSuggestionCategory;
         }
         return false;
     }

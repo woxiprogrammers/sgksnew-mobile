@@ -40,6 +40,7 @@ import com.woxi.sgkks_member.local_storage.DataSyncService;
 import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
 import com.woxi.sgkks_member.miscellaneous.MiscellaneousViewActivity;
 import com.woxi.sgkks_member.miscellaneous.SettingsActivity;
+import com.woxi.sgkks_member.miscellaneous.SuggestionActivity;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppSettings;
 import com.woxi.sgkks_member.utils.LocaleHelper;
@@ -117,10 +118,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intentAdd);
                 break;
             case R.id.nav_suggestion:
-                /*Intent intentSug = new Intent(mContext, SuggestionActivity.class);
+                Intent intentSug = new Intent(mContext, SuggestionActivity.class);
                 intentSug.putExtra("activityType", getString(R.string.suggestion_box));
-                startActivity(intentSug);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentSug);
+//                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_accounts:
                 Intent intentAccount = new Intent(mContext, AccountsActivity.class);
