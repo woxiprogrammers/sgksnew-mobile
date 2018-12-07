@@ -117,6 +117,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|right"
-        android:src="@drawable/ic_add_green" />
+        android:src="@drawable/ic_add_green"
+        android:visibility="gone"/>
 
 </android.support.design.widget.CoordinatorLayout>

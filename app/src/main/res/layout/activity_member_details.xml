@@ -251,6 +251,7 @@
             android:src="@drawable/ic_edit"
             app:backgroundTint="@color/colorPrimaryDark"
             app:elevation="0dp"
-            app:fabSize="normal" />
+            app:fabSize="normal"
+            android:visibility="gone"/>
     </RelativeLayout>
 </ScrollView>

@@ -3,12 +3,10 @@ package com.woxi.sgkks_member.miscellaneous;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -26,9 +24,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
-import com.woxi.sgkks_member.SplashAndCityActivity;
-import com.woxi.sgkks_member.interfaces.AppConstants;
-import com.woxi.sgkks_member.models.SGKSCategory;
 import com.woxi.sgkks_member.models.SuggestionCategoriesItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
@@ -39,12 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
-import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_SUGGESTION_CATEGORY;
 import static com.woxi.sgkks_member.interfaces.AppConstants.STATUS_SOMETHING_WENT_WRONG;
 
 /**
@@ -60,11 +53,12 @@ public class SuggestionActivity extends AppCompatActivity {
     private ArrayList<String> arrSuggestions;
     private ArrayAdapter<String> arrayAdapterSuggestion;
     private ArrayList<SuggestionCategoriesItem> arrCategoriesList;
-    private String strSuggestionCategory;
+    private String strSuggestionType="";
     private String strSuggestionMessage;
     private String TAG = "SuggestionActivity";
     private JSONArray arrJsonCategories;
     private String strCategoryId;
+    private RadioGroup mRgSuggestionType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +69,6 @@ public class SuggestionActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         initializeViews();
-
     }
 
     @Override
@@ -90,7 +83,7 @@ public class SuggestionActivity extends AppCompatActivity {
 
     private void initializeViews() {
         mContext = SuggestionActivity.this;
-        RadioGroup mRgSuggestionType = findViewById(R.id.radioGroup);
+        mRgSuggestionType = findViewById(R.id.radioGroup);
         mEtComplaintsSuggestion =  findViewById(R.id.editTextSuggestion);
         mSpinCategories = findViewById(R.id.spinnerSelect);
         if (new AppCommonMethods(mContext).isNetworkAvailable()){
@@ -114,19 +107,7 @@ public class SuggestionActivity extends AppCompatActivity {
 
             }
         });
-
-
-        mRgSuggestionType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == 1) {
-                    strSuggestionCategory = "true";
-                } else if (checkedId == 2){
-                    strSuggestionCategory = "false";
-                }
-               Log.i(TAG, "onCheckedChanged: "+strSuggestionCategory);
-            }
-        });
+        categorySpinnerListener();
         validateDateAndRequest();
     }
 
@@ -136,12 +117,9 @@ public class SuggestionActivity extends AppCompatActivity {
         pDialog.setCancelable(false);
         pDialog.show();
         strSuggestionMessage = mEtComplaintsSuggestion.getText().toString().trim();
-        strSuggestionCategory = mSpinCategories.getSelectedItem().toString();
-        String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
         JSONObject params = new JSONObject();
         try {
-           // params.put("is_suggestion", strSuggestionType);
-            params.put("suggestion_type",strSuggestionCategory);
+            params.put("suggestion_type",strSuggestionType.toLowerCase());
             params.put("suggestion_cat", strCategoryId);
             params.put("suggestion_message", strSuggestionMessage);
             params.put("sgks_city", AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext));
@@ -215,7 +193,7 @@ public class SuggestionActivity extends AppCompatActivity {
                         JSONObject jsonObject = arrJsonCategories.getJSONObject(i);
                         arrSuggestions.add(jsonObject.getString("category"));
                     }
-                    arrayAdapterSuggestion = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrSuggestions);
+                    arrayAdapterSuggestion = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, arrSuggestions);
                     mSpinCategories.setAdapter(arrayAdapterSuggestion);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -236,15 +214,18 @@ public class SuggestionActivity extends AppCompatActivity {
                                   @Override
                                   public void onClick(View v) {
                                       strSuggestionMessage = mEtComplaintsSuggestion.getText().toString().trim();
+                                      Log.i(TAG, "onClick: "+strSuggestionType);
                                       if (strSuggestionMessage.isEmpty()) {
                                           mEtComplaintsSuggestion.setError("Please Enter Your Message");
                                           mEtComplaintsSuggestion.requestFocus();
                                           return;
-                                      } else if (mSpinCategories.getSelectedItemId() == 0) {
+                                      } else if (mSpinCategories.getSelectedItemId() == -1) {
                                           Toast.makeText(mContext, "Please Select Category", Toast.LENGTH_SHORT).show();
                                           return;
-                                      }
-                                      else {
+                                      } else if (strSuggestionType.isEmpty()) {
+                                              new AppCommonMethods(mContext).showAlert("Is it Suggestion or Complaint? \nPlease Select One");
+                                              return;
+                                      } else {
                                           if (new AppCommonMethods(mContext).isNetworkAvailable()) {
                                               requestCommentSgksContentAPI();
                                           } else {
@@ -255,5 +236,20 @@ public class SuggestionActivity extends AppCompatActivity {
                                   }
                               }
         );
+    }
+
+    private void categorySpinnerListener(){
+        mRgSuggestionType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton radioButton;
+                Log.i(TAG, "onCheckedChanged: "+checkedId);
+                radioButton = findViewById(checkedId);
+                if (null != radioButton && checkedId != -1) {
+                    strSuggestionType = radioButton.getText().toString();
+                    Log.i(TAG, "onCheckedChanged: "+strSuggestionType);
+                }
+            }
+        });
     }
 }

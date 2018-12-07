@@ -18,6 +18,7 @@
         android:orientation="horizontal">
 
         <RadioButton
+            android:id="@+id/rbSuggestion"
             style="@style/customTextView_12"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -26,6 +27,7 @@
             android:text="Suggestion" />
 
         <RadioButton
+            android:id="@+id/rbComplaint"
             style="@style/customTextView_12"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -57,7 +59,7 @@
                 android:id="@+id/spinnerSelect"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textAlignment="center"
+                android:gravity="center"
                 />
         </RelativeLayout>
     </LinearLayout>

@@ -37,7 +37,7 @@ public class VerificationActivity extends AppCompatActivity {
     private EditText etMobileNumber;
     private EditText etOtp;
     private TextView tvErrorMessage;
-    private TextView tvConfirmMobileNumber,tvVerificationFor,tvEtLable;
+    private TextView tvConfirmMobileNumber,tvVerificationFor,tvEtLable, tvOtpSent;
     private ProgressBar pbVerify;
     private MemberDetailsItem memberDetailsItem;
     private String strActivityType;
@@ -76,6 +76,7 @@ public class VerificationActivity extends AppCompatActivity {
         tvConfirmMobileNumber = findViewById(R.id.tvConfirmMobileNumber);
         etMobileNumber = findViewById(R.id.etMobileNumber);
         tvVerificationFor = findViewById(R.id.verificationFor);
+        tvOtpSent = findViewById(R.id.tvOtpSent);
         if(!isOtpSent){
             mobileNumberListener();
         }
@@ -104,7 +105,7 @@ public class VerificationActivity extends AppCompatActivity {
                     strOtp = otp.toString();
                     tvErrorMessage.setVisibility(View.GONE);
                     if(new AppCommonMethods(mContext).isNetworkAvailable()){
-                        sendOtpToServer();
+                        verifyOtp();
                     } else {
                         new AppCommonMethods(mContext).showAlert("You are Offline");
                     }
@@ -119,10 +120,6 @@ public class VerificationActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void sendOtpToServer() {
-        verifyOtp();
     }
 
     private void verifyOtp() {
@@ -187,6 +184,7 @@ public class VerificationActivity extends AppCompatActivity {
                                         tvEtLable.setText("Enter OTP");
                                         etMobileNumber.setVisibility(View.GONE);
                                         etOtp.setVisibility(View.VISIBLE);
+                                        tvOtpSent.setVisibility(View.VISIBLE);
                                         Toast.makeText(mContext, "" + response.getString("message"), Toast.LENGTH_SHORT).show();
                                     } catch (JSONException e) {
                                         e.printStackTrace();

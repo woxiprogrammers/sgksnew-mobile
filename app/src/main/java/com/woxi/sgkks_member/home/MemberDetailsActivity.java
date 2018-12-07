@@ -138,11 +138,11 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         FloatingActionButton mFloatingEdit = findViewById(R.id.memFloatingEdit);
         if (AppSettings.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
-            mFloatingEdit.setVisibility(View.VISIBLE);
+            mFloatingEdit.setVisibility(View.GONE);
             mFloatingEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent verificationIntent = new Intent(mContext,AddMeToSgksActivity.class);
+                    Intent verificationIntent = new Intent(mContext,VerificationActivity.class);
                     verificationIntent.putExtra("memberItems",memberDetailsItem);
                     verificationIntent.putExtra("activityType","EditProfile");
                     startActivity(verificationIntent);

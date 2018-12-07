@@ -113,9 +113,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_add_me_sgks:
-                Intent intentAdd = new Intent(mContext, VerificationActivity.class);
+                /*Intent intentAdd = new Intent(mContext, VerificationActivity.class);
                 intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
-                startActivity(intentAdd);
+                startActivity(intentAdd);*/
+                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_suggestion:
                 Intent intentSug = new Intent(mContext, SuggestionActivity.class);
@@ -213,7 +214,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("") || AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("2")){
                 mViewPager.setCurrentItem(2);
-                mFabAddNewMember.setVisibility(View.VISIBLE);
+                mFabAddNewMember.setVisibility(View.GONE);
             } else {
                 mFabAddNewMember.setVisibility(View.GONE);
                 mViewPager.setCurrentItem(Integer.valueOf(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext)));
@@ -259,9 +260,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
                     AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
-                Log.i("@@@", "onPageSelected: "+position);
                 if (position == 2){
-                    mFabAddNewMember.setVisibility(View.VISIBLE);
+                    mFabAddNewMember.setVisibility(View.GONE);
                 } else {
                     mFabAddNewMember.setVisibility(View.GONE);
                 }
