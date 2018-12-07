@@ -2,9 +2,11 @@ package com.woxi.sgkks_member.miscellaneous;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -176,43 +178,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         }
     }
 
-    public void setupDataToEdit(){
-        strMemberId = memberDetailsItem.getStrId();
-        metFirstName.setText(memberDetailsItem.getStrFirstName());
-        metMiddleName.setText(memberDetailsItem.getStrMiddleName());
-        metLastName.setText(memberDetailsItem.getStrLastName());
-        metEmail.setText(memberDetailsItem.getStrEmail());
-        strContact = memberDetailsItem.getStrMobileNumber();
-        metContact.setText(strContact);
-        metContact.setEnabled(true);
-        strDateOfBirth = memberDetailsItem.getStrDateOfBirth();
-        tvDob.setText(strDateOfBirth);
-        String strImgUrl = memberDetailsItem.getStrMemberImageUrl();
-        Glide.with(mContext)
-                .load(strImgUrl)
-                .crossFade()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .placeholder(R.drawable.ic_place_holder)
-                .error(R.drawable.ic_profile)
-                .into(ivProfilePicture);
-        strCityId = memberDetailsItem.getStrCityId();
-        strBloodGroupId = memberDetailsItem.getStrBloodGroupId();
-        spBloodGroup.setSelection(Integer.parseInt(strBloodGroupId));
-        strGender = memberDetailsItem.getStrGender();
-        if((strGender != null)){
-            if(strGender.equalsIgnoreCase("Male")){
-                rgGender.check(R.id.rbMale);
-            } else if(strGender.equalsIgnoreCase("Female")){
-                rgGender.check(R.id.rbFemale);
-            }
-        } else {
-            rgGender.clearCheck();
-        }
-        tvSelectCity.setText(memberDetailsItem.getStrCity());
-        metAddress.setText(memberDetailsItem.getStrAddress());
-        tvAddSgksMember.setText("Save");
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -238,7 +204,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                         JSONObject jsonObject = jsonArrayBloodGroup.getJSONObject(i);
                         bloodGroupArrayList.add(jsonObject.getString("blood_group"));
                     }
-                    arrBloodGroupAdapter = new ArrayAdapter<String>(AddMeToSgksActivity.this, android.R.layout.simple_spinner_item, bloodGroupArrayList);
+                    arrBloodGroupAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, bloodGroupArrayList);
+                    arrBloodGroupAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
                     spBloodGroup.setAdapter(arrBloodGroupAdapter);
                     if (isFromEdit){
                         // Reduce 1 from the recieved ID as the Blood group ID's start from 1
@@ -296,7 +263,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 
     }
 
-    private void requestAddMember() {
+    private void requestAddMember()  {
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
@@ -316,7 +283,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 params.put("mobile", strContact);
                 params.put("email", strEmail);
                 params.put("profile_images", strImageName);
-                Log.i(TAG, "requestAddMember: "+params.toString());
+                Log.i(TAG, "requestEditMember: "+params.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -326,7 +293,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                         public void onResponse(JSONObject response) {
                                 pDialog.hide();
                                 new AppCommonMethods(mContext).LOG(0, "member_edited", response.toString());
-                                new AppCommonMethods(mContext).showAlert("Information of "+strFirstName+" "+strMiddleName+ " "+strLastName+" updated successfully.");
+                                showAlert("Information of "+strFirstName+" "+strMiddleName+ " "+strLastName+" updated successfully.");
                         }
                     },
                     new Response.ErrorListener() {
@@ -363,8 +330,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                         public void onResponse(JSONObject response) {
                                 pDialog.hide();
                                 new AppCommonMethods(mContext).LOG(0, "member_added", response.toString());
-                                new AppCommonMethods(mContext).showAlert(strFirstName+" "+strMiddleName+ " "+strLastName+" added successfully to SGKKS");
-                                //goToHomeScreen();
+                                showAlert(strFirstName+" "+strMiddleName+ " "+strLastName+" added successfully to SGKKS");
+
                         }
                     },
                     new Response.ErrorListener() {
@@ -417,9 +384,9 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 default:
                     break;
             }
-        } else {
+        } /*else {
             onBackPressed();
-        }
+        }*/
     }
 
     private void goToHomeScreen() {
@@ -427,6 +394,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         startActivity(goToHomeIntent);
 
     }
+
 
     public static String convertImageToBase64(Bitmap bitmap, int compression) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -479,7 +447,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 
     public void dobListener(){
         tvDob.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 calendar = Calendar.getInstance();
@@ -487,13 +454,12 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, android.R.style.Theme_Holo_Dialog, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int mYear, int mMonth, int mDay) {
                         int intMonth = mMonth+1;
                         tvDob.setText(mDay + "-" + intMonth + "-" + mYear);
                         strDateOfBirth = mYear + "-" + intMonth + "-" + mDay ;
-                        Log.i(TAG, "onDateSet: "+strDateOfBirth);
                     }
                 }, year, month, day);
                 datePickerDialog.show();
@@ -538,6 +504,84 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 }
             }
         });
+    }
+
+    public void setupDataToEdit(){
+        strMemberId = memberDetailsItem.getStrId();
+        metFirstName.setText(memberDetailsItem.getStrFirstName());
+        metMiddleName.setText(memberDetailsItem.getStrMiddleName());
+        metLastName.setText(memberDetailsItem.getStrLastName());
+        metEmail.setText(memberDetailsItem.getStrEmail());
+        strContact = memberDetailsItem.getStrMobileNumber();
+        metContact.setText(strContact);
+        metContact.setEnabled(true);
+        strDateOfBirth = chageDateFormat(memberDetailsItem.getStrDateOfBirth());
+        tvDob.setText(memberDetailsItem.getStrDateOfBirth());
+        String strImgUrl = memberDetailsItem.getStrMemberImageUrl();
+        setProfileImage(strImgUrl);
+        strCityId = memberDetailsItem.getStrCityId();
+        strBloodGroupId = memberDetailsItem.getStrBloodGroupId();
+        spBloodGroup.setSelection(Integer.parseInt(strBloodGroupId));
+        strGender = memberDetailsItem.getStrGender();
+        setGengerRadioButton();
+        tvSelectCity.setText(memberDetailsItem.getStrCity());
+        metAddress.setText(memberDetailsItem.getStrAddress());
+        tvAddSgksMember.setText("Save");
+    }
+
+    public String chageDateFormat(String strDateOfBirth){
+        String dd="",mm="",yyyy ="",dob="";
+        int i=0;
+        for (String retval: strDateOfBirth.split("-")) {
+            if(i==0){
+                dd = retval;
+            } else if (i==1){
+                mm=retval;
+            } else if (i==2){
+                yyyy=retval;
+            }
+            i++;
+        }
+        dob=yyyy+"-"+mm+"-"+dd;
+        return dob;
+    }
+
+    public void setProfileImage(String strImgUrl){
+        Glide.with(mContext)
+                .load(strImgUrl)
+                .crossFade()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .placeholder(R.drawable.ic_place_holder)
+                .error(R.drawable.ic_profile)
+                .into(ivProfilePicture);
+    }
+
+    public void setGengerRadioButton(){
+        if((strGender != null)){
+            if(strGender.equalsIgnoreCase("Male")){
+                rgGender.check(R.id.rbMale);
+            } else if(strGender.equalsIgnoreCase("Female")){
+                rgGender.check(R.id.rbFemale);
+            }
+        } else {
+            rgGender.clearCheck();
+        }
+    }
+
+    public AlertDialog showAlert(String message) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        alertDialogBuilder.setTitle(mContext.getString(R.string.app_name));
+        alertDialogBuilder.setMessage(message);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setNegativeButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                goToHomeScreen();
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+        return alertDialog;
     }
 }
 

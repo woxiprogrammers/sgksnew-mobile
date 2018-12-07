@@ -60,7 +60,6 @@ public class SuggestionActivity extends AppCompatActivity {
     private ArrayList<String> arrSuggestions;
     private ArrayAdapter<String> arrayAdapterSuggestion;
     private ArrayList<SuggestionCategoriesItem> arrCategoriesList;
-    private String strSuggestionType = "suggestion";
     private String strSuggestionCategory;
     private String strSuggestionMessage;
     private String TAG = "SuggestionActivity";

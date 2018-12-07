@@ -25,6 +25,19 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:visibility="gone"/>
+        <TextView
+            android:id="@+id/verificationFor"
+            android:layout_above="@+id/tvConfirmMobileNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="@dimen/v8"
+            android:paddingBottom="@dimen/v8"
+            android:textColor="@color/colorBlack"
+            android:textAlignment="center"
+            android:textSize="@dimen/textsize_normal_18dp"
+            android:textStyle="bold"
+            android:text="Type"/>
 
         <TextView
             android:id="@+id/tvConfirmMobileNumber"
@@ -36,8 +49,8 @@
             android:paddingBottom="@dimen/v8"
             android:textColor="@color/colorBlack"
             android:textAlignment="center"
-            android:layout_above="@+id/llEnterOtp"
-            android:visibility="gone"/>
+            android:layout_above="@+id/llEnterMobileNumber"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/llEnterMobileNumber"
@@ -45,9 +58,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_centerInParent="true">
-
-
             <TextView
+                android:id="@+id/etLable"
                 style="@style/customTextView_16_Normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,15 +67,30 @@
                 android:paddingStart="@dimen/v8"
                 android:text="@string/enter_contactNumber"
                 android:textColor="@color/colorBlack"
-                android:textAlignment="center"/>
-            <EditText
-                android:id="@+id/etMobileNumber"
-                style="@style/customEditText_16"
-                android:layout_marginBottom="@dimen/v8"
-                android:inputType="phone"
-                android:paddingLeft="@dimen/v8"
-                android:textColor="@color/colorBlack"
-                android:textAlignment="center"/>
+                android:textAlignment="center" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <EditText
+                    android:id="@+id/etMobileNumber"
+                    style="@style/customEditText_16"
+                    android:layout_marginBottom="@dimen/v8"
+                    android:inputType="phone"
+                    android:paddingLeft="@dimen/v8"
+                    android:textColor="@color/colorBlack"
+                    android:textAlignment="center"
+                    android:hint="Mobile"/>
+                <EditText
+                    android:id="@+id/etOtp"
+                    style="@style/customEditText_16"
+                    android:layout_marginBottom="@dimen/v8"
+                    android:paddingLeft="@dimen/v8"
+                    android:textColor="@color/colorBlack"
+                    android:textAlignment="center"
+                    android:inputType="phone"
+                    android:hint="OTP"/>
+            </RelativeLayout>
+
             <TextView
                 android:id="@+id/tvErrorMessage"
                 style="@style/customTextView_16_Normal"
@@ -76,30 +103,23 @@
                 android:textAlignment="center"
                 android:visibility="gone"/>
         </LinearLayout>
-        <LinearLayout
-            android:id="@+id/llEnterOtp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_centerInParent="true">
-            <TextView
-                style="@style/customTextView_16_Normal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="@dimen/v8"
-                android:text="@string/enter_otp"
-                android:textColor="@color/colorBlack"
-                android:textAlignment="center"/>
-            <EditText
-                android:id="@+id/etOtp"
-                style="@style/customEditText_16"
-                android:layout_marginBottom="@dimen/v8"
-                android:paddingLeft="@dimen/v8"
-                android:textColor="@color/colorBlack"
-                android:textAlignment="center"
-                android:inputType="number"/>
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/llEnterOtp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_centerInParent="true">z-->
+            <!--<TextView-->
+                <!--style="@style/customTextView_16_Normal"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:paddingStart="@dimen/v8"-->
+                <!--android:text="@string/enter_otp"-->
+                <!--android:textColor="@color/colorBlack"-->
+                <!--android:textAlignment="center"/>-->
+            <!---->
+        <!--</LinearLayout>-->
     </RelativeLayout>
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

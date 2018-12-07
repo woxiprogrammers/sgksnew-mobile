@@ -34,11 +34,10 @@ public class VerificationActivity extends AppCompatActivity {
     private String strOtp;
 
     private LinearLayout llEnterMobileNumber;
-    private LinearLayout llEnterOtp;
     private EditText etMobileNumber;
     private EditText etOtp;
     private TextView tvErrorMessage;
-    private TextView tvConfirmMobileNumber;
+    private TextView tvConfirmMobileNumber,tvVerificationFor,tvEtLable;
     private ProgressBar pbVerify;
     private MemberDetailsItem memberDetailsItem;
     private String strActivityType;
@@ -47,10 +46,6 @@ public class VerificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(R.string.verification);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             if(bundle.containsKey("memberItems")){
@@ -63,18 +58,24 @@ public class VerificationActivity extends AppCompatActivity {
                 }
             }
         }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("SGKKS Moblie Number "+R.string.verification);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         initializeViews();
     }
 
     public void initializeViews(){
         mContext = VerificationActivity.this;
         llEnterMobileNumber = findViewById(R.id.llEnterMobileNumber);
-        llEnterOtp = findViewById(R.id.llEnterOtp);
-        llEnterOtp.setVisibility(View.GONE);
+        //llEnterOtp = findViewById(R.id.llEnterOtp);
+        tvEtLable = findViewById(R.id.etLable);
+        tvEtLable.setText("Please Enter Your Mobile Number");
         pbVerify = findViewById(R.id.pbVerify);
         tvErrorMessage = findViewById(R.id.tvErrorMessage);
         tvConfirmMobileNumber = findViewById(R.id.tvConfirmMobileNumber);
         etMobileNumber = findViewById(R.id.etMobileNumber);
+        tvVerificationFor = findViewById(R.id.verificationFor);
         if(!isOtpSent){
             mobileNumberListener();
         }
@@ -84,8 +85,13 @@ public class VerificationActivity extends AppCompatActivity {
             etMobileNumber.setEnabled(false);
             tvConfirmMobileNumber.setVisibility(View.VISIBLE);
             tvConfirmMobileNumber.setText("An OTP is sent on "+strMobile);
+            tvVerificationFor.setText("Update Information");
+            etOtp.setVisibility(View.VISIBLE);
+            etMobileNumber.setVisibility(View.GONE);
         }
         etOtp = findViewById(R.id.etOtp);
+        etOtp.setVisibility(View.GONE);
+        tvVerificationFor.setText("Adding New Member");
         etOtp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -178,8 +184,9 @@ public class VerificationActivity extends AppCompatActivity {
                                 if (response.has("message")) {
                                     try {
                                         isOtpSent = true;
-                                        llEnterMobileNumber.setVisibility(View.GONE);
-                                        llEnterOtp.setVisibility(View.VISIBLE);
+                                        tvEtLable.setText("Enter OTP");
+                                        etMobileNumber.setVisibility(View.GONE);
+                                        etOtp.setVisibility(View.VISIBLE);
                                         Toast.makeText(mContext, "" + response.getString("message"), Toast.LENGTH_SHORT).show();
                                     } catch (JSONException e) {
                                         e.printStackTrace();
