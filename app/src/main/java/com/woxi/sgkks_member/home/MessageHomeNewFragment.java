@@ -76,7 +76,16 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
         setUpRecyclerView();
         pbMessages = mParentView.findViewById(R.id.pbMessages);
-
+        boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
+        boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
+        if(isLanguageChanged || isCityChanged){
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                pageNumber=0;
+                requestMessageList(pageNumber, true);
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
+        }
     }
 
     private void setUpRecyclerView(){
@@ -194,6 +203,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     public void fragmentBecameVisible() {
         if (!isApiRequested){
             if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                pageNumber=0;
                 requestMessageList(pageNumber,true);
             }else {
                 new AppCommonMethods(mContext).showAlert("You are Offline");

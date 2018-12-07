@@ -176,7 +176,6 @@ public class ImageZoomDialogFragment extends DialogFragment {
                     .error(R.drawable.ic_broken_image)
                     .into(mIvAccountImage);
         } else {
-            Toast.makeText(getActivity().getBaseContext(), "Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
             mViewList = new ArrayList<>();
             floatingImageDownloadButton.setVisibility(View.GONE);
             mTvAccountName.setVisibility(View.VISIBLE);

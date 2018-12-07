@@ -123,10 +123,17 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             }
         });
         setUpRecyclerView();
-        if (new AppCommonMethods(mContext).isNetworkAvailable()){
-            requestToGetMembersData(pageNumber,true,false);
-        } else {
-            new AppCommonMethods(mContext).showAlert("You are offline");
+        boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
+        boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
+        if(isLanguageChanged || isCityChanged){
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                    pageNumber=0;
+                    requestToGetMembersData(pageNumber,true,false);
+                }
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
         }
     }
 
@@ -151,6 +158,14 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     @Override
     public void fragmentBecameVisible() {
         mParentView.findViewById(R.id.etSearchMember).clearFocus();
+        if(new AppCommonMethods(mContext).isNetworkAvailable()){
+            if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                pageNumber=0;
+                requestToGetMembersData(pageNumber,true,false);
+            }
+        } else {
+            new AppCommonMethods(mContext).showAlert("You are Offline");
+        }
     }
 
     private void requestToGetMembersData(final int pageId, final boolean isFirstTime, final Boolean isFromSearch) {
@@ -169,6 +184,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             params.put("sgks_city",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
             params.put("language_id",AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext));
             params.put("search_fullname",strSearchFullName);
+            Log.i(TAG, "requestToGetMembersData: "+params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

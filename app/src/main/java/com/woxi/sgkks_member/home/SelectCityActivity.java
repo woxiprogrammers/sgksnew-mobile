@@ -48,6 +48,7 @@ public class SelectCityActivity extends AppCompatActivity {
     public static ArrayList<CityIteam> arrCityList;
     private Context mContext;
     boolean isFromCreateMember = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -200,6 +201,7 @@ public class SelectCityActivity extends AppCompatActivity {
                     CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));
                     String strCityName = cityIteam.getStrCityName();
                     String strCityId = String.valueOf(cityIteam.getIntCityId());
+                    AppCommonMethods.putBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,true,mContext);
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString(AppConstants.PREFS_CURRENT_CITY,strCityId);

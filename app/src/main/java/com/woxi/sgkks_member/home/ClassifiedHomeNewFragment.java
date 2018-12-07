@@ -68,6 +68,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
         mParentView = inflater.inflate(R.layout.fragment_messages_classified_home, container, false);
         //Calling function to initialize required views.
         initializeViews();
+
         return mParentView;
     }
 
@@ -78,6 +79,16 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
         mPbLazyLoad.setVisibility(View.GONE);
         pbMessages = mParentView.findViewById(R.id.pbMessages);
         setUpRecyclerView();
+        boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
+        boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
+        if(isLanguageChanged || isCityChanged){
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                pageNumber=0;
+                requestToGetClassifiedList(pageNumber, true);
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
+        }
     }
 
     private void setUpRecyclerView() {
@@ -192,8 +203,8 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
     public void fragmentBecameVisible() {
         if(!isApiRequested){
             if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                pageNumber=0;
                 requestToGetClassifiedList(pageNumber, true);
-
             } else {
                 new AppCommonMethods(mContext).showAlert("You are Offline");
             }

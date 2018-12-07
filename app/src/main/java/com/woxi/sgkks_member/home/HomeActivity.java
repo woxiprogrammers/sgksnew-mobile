@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import static com.woxi.sgkks_member.interfaces.AppConstants.CURRENT_PAGE;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_ENGLISH;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_GUJURATI;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_IS_LANGUAGE_CHANGED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME;
 
@@ -353,6 +354,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     tvValueEnglish.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlack));
                     tvValueGujurati.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlueDark));
                     mContext = LocaleHelper.onAttach(mContext, LANGUAGE_GUJURATI);
+                    AppCommonMethods.putBooleanPref(PREFS_IS_LANGUAGE_CHANGED,true,mContext);
                     restartActivity(mContext);
 
                 }
@@ -367,6 +369,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     tvValueEnglish.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlueDark));
                     tvValueGujurati.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlack));
                     mContext = LocaleHelper.onAttach(mContext, LANGUAGE_ENGLISH);
+                    AppCommonMethods.putBooleanPref(PREFS_IS_LANGUAGE_CHANGED,true,mContext);
                     restartActivity(mContext);
                 }
                 dialog.dismiss();

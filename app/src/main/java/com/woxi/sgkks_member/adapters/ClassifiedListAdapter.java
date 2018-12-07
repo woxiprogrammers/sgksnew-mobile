@@ -42,9 +42,12 @@ public class ClassifiedListAdapter extends RecyclerView.Adapter<ClassifiedListAd
         Context mContext = holder.mContext;
         ImageView ivClassifiedListImg = holder.ivClassifiedListImg;
         TextView tvTitle = holder.tvTitle;
-//      TextView tvDescription = holder.tvDescription;
+        TextView tvDescription = holder.tvDescription;
         if (mArrClassifiedDetails.get(position).getClassifiedTitle() != null) {
             tvTitle.setText(mArrClassifiedDetails.get(position).getClassifiedTitle());
+        }
+        if(mArrClassifiedDetails.get(position).getClassifiedDescription() != null){
+            tvDescription.setText(mArrClassifiedDetails.get(position).getClassifiedDescription());
         }
         //Loading image from url.
         if (mArrClassifiedDetails.get(position).getArrClassifiedImages().size() != 0){
@@ -75,14 +78,14 @@ public class ClassifiedListAdapter extends RecyclerView.Adapter<ClassifiedListAd
         Context mContext;
         ImageView ivClassifiedListImg;
         TextView tvTitle;
-//        TextView tvDescription;
+        TextView tvDescription;
 
         ItemHolder(View itemView) {
             super(itemView);
             this.mContext = itemView.getContext();
             this.ivClassifiedListImg =  itemView.findViewById(R.id.ivNewsListImg);
             this.tvTitle =  itemView.findViewById(R.id.tvNewsListTitle);
-//            this.tvDescription = (TextView) itemView.findViewById(R.id.tvNewsListDescription);
+            this.tvDescription = (TextView) itemView.findViewById(R.id.tvNewsListDescription);
         }
     }
 }
