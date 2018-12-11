@@ -75,14 +75,15 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
     private void initializeViews() {
         mContext = getActivity();
         mRvCommitteeHome =  mParentView.findViewById(R.id.rvCommitteeList);
-        requestCommitteeListAPI();
-        //Call API only if this page is home/landing page.
-        /*if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-            requestCommitteeListAPI();
-        } else {
-            new AppCommonMethods(mContext).showAlert(mContext
-                    .getString(R.string.noInternet));
-        }*/
+        boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
+        boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
+        if(isLanguageChanged || isCityChanged){
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                getAllCommitteesOnline();
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
+        }
     }
 
     private void requestCommitteeListAPI() {

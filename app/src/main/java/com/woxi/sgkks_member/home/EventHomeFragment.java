@@ -26,6 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.adapters.EventsListAdapter;
+import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
 import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
 import com.woxi.sgkks_member.models.EventDataItem;
@@ -133,18 +134,29 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
+        boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
+        if(isLanguageChanged || isCityChanged){
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
+        }
 
-        requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
     }
 
     @Override
     public void fragmentBecameVisible() {
         if (!isApiRequested) {
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
 
         }
     }
-
-
 
     private void requestEventDetailsApi(String year) {
         //ToDo Lazy Loading

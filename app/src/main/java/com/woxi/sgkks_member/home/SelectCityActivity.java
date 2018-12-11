@@ -1,5 +1,6 @@
 package com.woxi.sgkks_member.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +26,7 @@ import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.adapters.CityAdapter;
 import com.woxi.sgkks_member.interfaces.AppConstants;
+import com.woxi.sgkks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
@@ -45,13 +47,23 @@ public class SelectCityActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     public static ArrayList<CityIteam> arrCityList;
     private Context mContext;
+    boolean isFromCreateMember = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle;
+        bundle = getIntent().getExtras();{
+            if (bundle != null){
+                if( bundle.containsKey("isFromCreateMember")){
+                    isFromCreateMember = true;
+                }
+            }
+        }
         setContentView(R.layout.activity_select_city);
         if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle(R.string.select_city);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.select_city);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         initializeViews();
     }
@@ -176,15 +188,27 @@ public class SelectCityActivity extends AppCompatActivity {
         onCityClickListener = new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));
-                String strCityName = cityIteam.getStrCityName();
-                String strCityId = String.valueOf(cityIteam.getIntCityId());
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(AppConstants.PREFS_CURRENT_CITY,strCityId);
-                editor.putString(AppConstants.PREFS_CITY_NAME,strCityName);
-                editor.apply();
-                restartActivity(mContext);
+                if (isFromCreateMember) {
+                    CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));
+                    String strCityName = cityIteam.getStrCityName();
+                    String strCityId = String.valueOf(cityIteam.getIntCityId());
+                    Intent intent = new Intent();
+                    intent.putExtra("cityName",strCityName);
+                    intent.putExtra("cityId",strCityId);
+                    setResult(Activity.RESULT_OK,intent);
+                    finish();
+                } else {
+                    CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));
+                    String strCityName = cityIteam.getStrCityName();
+                    String strCityId = String.valueOf(cityIteam.getIntCityId());
+                    AppCommonMethods.putBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,true,mContext);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString(AppConstants.PREFS_CURRENT_CITY,strCityId);
+                    editor.putString(AppConstants.PREFS_CITY_NAME,strCityName);
+                    editor.apply();
+                    restartActivity(mContext);
+                }
             }
         };
 

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
+import com.woxi.sgkks_member.models.BloodGroupItems;
 import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
@@ -18,6 +19,7 @@ import com.woxi.sgkks_member.models.MessageDetailsItem;
 import com.woxi.sgkks_member.models.SGKSAreaItem;
 import com.woxi.sgkks_member.models.SGKSCategory;
 import com.woxi.sgkks_member.models.AccountImages;
+import com.woxi.sgkks_member.models.SuggestionCategoriesItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,6 +91,9 @@ public class AppParser implements AppConstants {
                     if (jsonMemberObject.has("city") && jsonMemberObject.optString("city") != null && !jsonMemberObject.optString("city").equalsIgnoreCase("null")) {
                         memberDetailsItem.setStrCity(jsonMemberObject.optString("city"));
                     }
+                    if (jsonMemberObject.has("city_id") && jsonMemberObject.optString("city_id") != null && !jsonMemberObject.optString("city_id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrCityId(jsonMemberObject.optString("city_id"));
+                    }
                     if (jsonMemberObject.has("member_id") && jsonMemberObject.optString("member_id") != null && !jsonMemberObject.optString("member_id").equalsIgnoreCase("null")) {
                         memberDetailsItem.setStrMemberId(jsonMemberObject.optString("member_id"));
                     }
@@ -110,8 +115,17 @@ public class AppParser implements AppConstants {
                     if (jsonMemberObject.has("blood_group") && jsonMemberObject.optString("blood_group") != null && !jsonMemberObject.optString("blood_group").equalsIgnoreCase("null")) {
                         memberDetailsItem.setStrBloodGroup(jsonMemberObject.optString("blood_group"));
                     }
+                    if (jsonMemberObject.has("blood_group_id") && jsonMemberObject.optString("blood_group_id") != null && !jsonMemberObject.optString("blood_group_id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrBloodGroupId(jsonMemberObject.optString("blood_group_id"));
+                    }
                     if (jsonMemberObject.has("address") && jsonMemberObject.optString("address") != null && !jsonMemberObject.optString("address").equalsIgnoreCase("null")) {
                         memberDetailsItem.setStrAddress(jsonMemberObject.optString("address"));
+                    }
+                    if (jsonMemberObject.has("date_of_birth") && jsonMemberObject.optString("date_of_birth") != null && !jsonMemberObject.optString("date_of_birth").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrDateOfBirth(jsonMemberObject.optString("date_of_birth"));
+                    }
+                    if (jsonMemberObject.has("email") && jsonMemberObject.getString("email") != null && !jsonMemberObject.optString("email").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrEmail(jsonMemberObject.getString("email"));
                     }
                     arrMemberList.add(memberDetailsItem);
                 }
@@ -200,6 +214,9 @@ public class AppParser implements AppConstants {
                     }
                     if (jsonNewsObject.has("msg_type") && jsonNewsObject.optString("msg_type") != null && !jsonNewsObject.optString("msg_type").equalsIgnoreCase("null")) {
                         messageDetailsItem.setMessageType(jsonNewsObject.optString("msg_type"));
+                    }
+                    if (jsonNewsObject.has("message_date") && jsonNewsObject.optString("message_date") != null && !jsonNewsObject.optString("message_date").equalsIgnoreCase("null")) {
+                        messageDetailsItem.setMessageDate(jsonNewsObject.optString("message_date"));
                     }
                     arrNewsDetails.add(messageDetailsItem);
                 }
@@ -311,7 +328,7 @@ public class AppParser implements AppConstants {
                     if (jsonObject.has("mobile") && jsonObject.getString("mobile") != null) {
                         memberDetailsItem.setStrMobileNumber(jsonObject.getString("mobile"));
                     }
-                    if (jsonObject.has("email") && jsonObject.getString("email") != null && !jsonObject.getString("email").equalsIgnoreCase("null")) {
+                    if (jsonObject.has("email") && jsonObject.getString("email") != null ) {
                         memberDetailsItem.setStrEmail(jsonObject.getString("email"));
                     }
                     if (jsonObject.has("city") && jsonObject.getString("city") != null) {
@@ -575,7 +592,6 @@ public class AppParser implements AppConstants {
             CityIteam cityIteam;
             JSONArray jsonDataArray = jsonObject.optJSONArray("data");
             for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
-                ArrayList<String> arrEventImages;
                 cityIteam = new CityIteam();
                 JSONObject jsonCityObject = jsonDataArray.optJSONObject(indexCity);
                 if (jsonCityObject.has("city_name") && jsonCityObject.optString("city_name") != null) {
@@ -593,6 +609,54 @@ public class AppParser implements AppConstants {
                 mArrCityData.add(cityIteam);
             }
             return mArrCityData;
+        }
+        return false;
+    }
+
+    public static Object parseBloodGroupResponse (String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            ArrayList<BloodGroupItems> mArrBloodGroupData = new ArrayList<>();
+            BloodGroupItems bloodGroupItems;
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
+                bloodGroupItems = new BloodGroupItems();
+                JSONObject jsonBloodGroupObject = jsonDataArray.optJSONObject(indexCity);
+                if (jsonBloodGroupObject.has("blood_group") && jsonBloodGroupObject.optString("blood_group") != null) {
+                    String strBloodGroup = jsonBloodGroupObject.optString("blood_group");
+                    bloodGroupItems.setStrBloodGroupName(strBloodGroup);;
+                }
+                if (jsonBloodGroupObject.has("blood_id") && jsonBloodGroupObject.optString("blood_id") != null) {
+                    String strBloodGroupId = jsonBloodGroupObject.optString("blood_id");
+                    bloodGroupItems.setStrBloodGroupId(strBloodGroupId);
+                }
+                mArrBloodGroupData.add(bloodGroupItems);
+            }
+            return mArrBloodGroupData;
+        }
+        return false;
+    }
+
+    public static Object parseSuggestionCategoryResponse (String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            ArrayList<SuggestionCategoriesItem> mArrSuggestionCategory = new ArrayList<>();
+            SuggestionCategoriesItem suggestionCategoriesItem;
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
+                suggestionCategoriesItem = new SuggestionCategoriesItem();
+                JSONObject jsonSuggestionCategoryObject = jsonDataArray.optJSONObject(indexCity);
+                if (jsonSuggestionCategoryObject.has("category_id") && jsonSuggestionCategoryObject.optString("category_id") != null) {
+                    String strCategoryId = jsonSuggestionCategoryObject.optString("category_id");
+                    suggestionCategoriesItem.setStrCategoryId(strCategoryId);
+                }
+                if (jsonSuggestionCategoryObject.has("category") && jsonSuggestionCategoryObject.optString("category") != null) {
+                    String strCategory = jsonSuggestionCategoryObject.optString("category");
+                    suggestionCategoriesItem.setStrCategoryName(strCategory);
+                }
+                mArrSuggestionCategory.add(suggestionCategoriesItem);
+            }
+            return mArrSuggestionCategory;
         }
         return false;
     }

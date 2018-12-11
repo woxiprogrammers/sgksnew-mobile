@@ -104,14 +104,14 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 if (charSequence.length() > 3) {
                     strSearchFullName = charSequence.toString().toLowerCase();
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                        requestToGetMembersData(0,true);
+                        requestToGetMembersData(0,false,true);
                     } else {
                         new AppCommonMethods(mContext).showAlert("You are offline");
                     }
                 } else if (charSequence.length()==0){
                     strSearchFullName = "";
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                        requestToGetMembersData(0,true);
+                        requestToGetMembersData(0,false, true);
                     } else {
                         new AppCommonMethods(mContext).showAlert("You are offline");
                     }
@@ -123,10 +123,17 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             }
         });
         setUpRecyclerView();
-        if (new AppCommonMethods(mContext).isNetworkAvailable()){
-            requestToGetMembersData(pageNumber,true);
-        } else {
-            new AppCommonMethods(mContext).showAlert("You are offline");
+        boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
+        boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
+        if(isLanguageChanged || isCityChanged){
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                    pageNumber=0;
+                    requestToGetMembersData(pageNumber,true,false);
+                }
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
         }
     }
 
@@ -151,9 +158,17 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     @Override
     public void fragmentBecameVisible() {
         mParentView.findViewById(R.id.etSearchMember).clearFocus();
+        if(new AppCommonMethods(mContext).isNetworkAvailable()){
+            if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                pageNumber=0;
+                requestToGetMembersData(pageNumber,true,false);
+            }
+        } else {
+            new AppCommonMethods(mContext).showAlert("You are Offline");
+        }
     }
 
-    private void requestToGetMembersData(final int pageId, final boolean isFirstTime) {
+    private void requestToGetMembersData(final int pageId, final boolean isFirstTime, final Boolean isFromSearch) {
         isApiInProgress = true;
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         if(isFirstTime){
@@ -169,6 +184,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             params.put("sgks_city",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
             params.put("language_id",AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext));
             params.put("search_fullname",strSearchFullName);
+            Log.i(TAG, "requestToGetMembersData: "+params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -186,7 +202,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                             if (resp instanceof Boolean) {
                                 Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
                             } else if (resp instanceof MemberDetailsItem) {
-                                if(isFirstTime){
+                                if(isFirstTime || isFromSearch){
                                     mArrMemDetails = memberDetailsItem.getArrMemberList();
                                     if (mArrMemDetails.size() != 0){
                                         mRvMemberList.setHasFixedSize(true);
@@ -248,7 +264,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             //Cancelling Pending Request
             AppController.getInstance().cancelPendingRequests("memberSearchList");
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                requestToGetMembersData(pageNumber,false);
+                requestToGetMembersData(pageNumber,false,false);
             } else {
                 new AppCommonMethods(mContext).showAlert("You are offline");
             }

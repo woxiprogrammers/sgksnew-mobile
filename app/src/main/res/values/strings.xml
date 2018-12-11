@@ -77,9 +77,10 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="enter_otp">Enter OTP</string>
-    <string name="verification">Verification</string>
+    <string name="verification">SGKKS Moblie Number Verification</string>
     <string name="change_language" translatable="true">Change Language</string>
     <string name="english">English</string>
     <string name="gujarati">Gujarati</string>
     <string name="update_app_dialog">You are using an older version of SGKKS app which is not being supported anymore. Please update.</string>
+    <string name="otp_sent"> An OTP has been sent to mobile number, please check</string>
 </resources>

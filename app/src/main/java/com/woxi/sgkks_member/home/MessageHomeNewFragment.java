@@ -52,7 +52,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     public static View.OnClickListener onRvItemClickListener;
     private ArrayList<MessageDetailsItem> mArrMessageDetails;
     private int pageNumber = 0, arrSize = 0;
-    private boolean isApiInProgress = false;
+    private boolean isApiInProgress = false, isApiRequested = false;
     public MessageHomeNewFragment() {
         // Required empty public constructor
     }
@@ -76,10 +76,15 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
         setUpRecyclerView();
         pbMessages = mParentView.findViewById(R.id.pbMessages);
-        if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-            requestMessageList(pageNumber,true);
-        }else {
-            new AppCommonMethods(mContext).showAlert("You are Offline");
+        boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
+        boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
+        if(isLanguageChanged || isCityChanged){
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                pageNumber=0;
+                requestMessageList(pageNumber, true);
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
         }
     }
 
@@ -100,6 +105,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     }
 
     private void requestMessageList(int page_id, final boolean isFirstTime) {
+        isApiInProgress = true;
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         if(isFirstTime){
             pDialog.setMessage("Loading, Please wait...");
@@ -155,6 +161,8 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                             }
                             pDialog.dismiss();
                             pbMessages.setVisibility(View.GONE);
+                            isApiInProgress = false;
+                            isApiRequested = true;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -193,5 +201,13 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
 
     @Override
     public void fragmentBecameVisible() {
+        if (!isApiRequested){
+            if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                pageNumber=0;
+                requestMessageList(pageNumber,true);
+            }else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
+        } 
     }
 }

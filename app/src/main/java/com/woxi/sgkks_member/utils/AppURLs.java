@@ -19,7 +19,6 @@ public class AppURLs {
     public static final String API_ACCOUNT_LISTING=BASE_URL + "sgks-account/listing";
     public static final String API_MISCELLANEOUS_WEBVIEW = BASE_URL + "sgks-public/";
     public static final String API_MASTER_LIST=BASE_URL + "sgks-public/master-list";
-    public static final String API_ADDME_TO_SGKS=BASE_URL + "sgks-public/addmetosgks";
     public static final String API_SGKS_SUGGESTIONS=BASE_URL+"sgks-public/sgks-suggestion";
     public static final String API_SKS_OFFLINE=BASE_URL + "sgks-offline/local-storage-offline";
 
@@ -30,8 +29,10 @@ public class AppURLs {
     public static final String API_GET_CITY = BASE_URL + "sgks-miss/get-city";
     public static final String API_GET_BLOOD_GROUP = BASE_URL + "sgks-miss/get-bloodgroups";
     public static final String API_ADD_MEMBER = BASE_URL + "sgks-member/add-member";
+    public static final String API_EDIT_MEMBER = BASE_URL + "sgks-member/edit-member";
     public static final String API_MIN_VERSION = BASE_URL + "sgks-public/sgks-version";
     public static final String PLAYSTORE_APP_URL ="https://play.google.com/store/apps/details?id=com.woxi.sgkks_member";
+    public static final String API_SUGGESTION_CATEGORIES = BASE_URL + "sgks-public/suggestion-category";
 
 
 

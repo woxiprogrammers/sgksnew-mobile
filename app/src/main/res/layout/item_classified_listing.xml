@@ -31,18 +31,19 @@
                 android:ellipsize="end"
                 android:maxLines="2" />
 
-            <!--<TextView
+            <TextView
                 android:id="@+id/tvNewsListDescription"
                 style="@style/customTextView_12"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/v4"
                 android:layout_marginTop="@dimen/v4"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:textColor="@color/colorTextHintDark"
-                android:textStyle="italic" />
+                android:textStyle="italic"
+                android:singleLine="false"/>
 
-            <TextView
+           <!-- <TextView
                 android:id="@+id/tvNewsCreatedAt"
                 style="@style/customTextView_12"
                 android:layout_height="wrap_content"
