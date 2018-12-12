@@ -83,4 +83,6 @@
     <string name="gujarati">Gujarati</string>
     <string name="update_app_dialog">You are using an older version of SGKKS app which is not being supported anymore. Please update.</string>
     <string name="otp_sent"> An OTP has been sent to mobile number, please check</string>
+    <string name="default_city_english">Pune</string>
+    <string name="default_city_gujarati">પુને</string>
 </resources>

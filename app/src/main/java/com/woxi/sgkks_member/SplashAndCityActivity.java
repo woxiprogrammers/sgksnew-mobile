@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -25,6 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.home.HomeActivity;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.MasterDataItem;
+import com.woxi.sgkks_member.models.MasterItem;
 import com.woxi.sgkks_member.models.SGKSAreaItem;
 import com.woxi.sgkks_member.models.SGKSCategory;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
@@ -40,12 +42,14 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
     private static final String APP_FIRST_RUN = "appFirstRun";
     private Context mContext;
     private String TAG = "SplashAndCityActivity";
-    private boolean isMasterApiInProgress;
+    private boolean isMasterApiInProgress = false;
     public static ArrayList<SGKSAreaItem> sgksAreaItems;
     public static ArrayList<SGKSCategory> sgksCategory;
     private AlertDialog.Builder builder;
     private String strServerVersion, strCurrentVersionName;
     PackageInfo pInfo = null;
+    private String strBuzzImageUrl;
+    private int intMessageCount, intClassifiedCount,intBuzzId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +61,9 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(AppConstants.PREFS_CURRENT_CITY,"1");
-            editor.putString(AppConstants.PREFS_CITY_NAME,"Pune");
+            editor.putString(AppConstants.PREFS_CITY_NAME,getString(R.string.default_city_english));
+            editor.putString(AppConstants.PREFS_CITY_NAME_EN,getString(R.string.default_city_english));
+            editor.putString(AppConstants.PREFS_CITY_NAME_GJ,getString(R.string.default_city_gujarati));
             editor.apply();
         }
         try {
@@ -69,6 +75,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
 
         if (new AppCommonMethods(mContext).isNetworkAvailable()){
             requestToGetMinVersion();
+            requestMasterApi();
         } else {
             showOfflineAlertDialog();
         }
@@ -123,6 +130,10 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
                 Intent intentHome = new Intent(mContext, HomeActivity.class);
                 Bundle bundleExtras = new Bundle();
                 bundleExtras.putBoolean("isFromSplash",true);
+                bundleExtras.putInt("messageCount",intMessageCount);
+                bundleExtras.putInt("classifiedCount",intClassifiedCount);
+                bundleExtras.putString("buzzImageUrl",strBuzzImageUrl);
+                bundleExtras.putInt("buzzId",intBuzzId);
                 intentHome.putExtra("bundleHome", bundleExtras);
                 startActivity(intentHome);
                 finish();
@@ -243,6 +254,28 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
         AppController.getInstance().addToRequestQueue(jsonObjReq, "getMasterList");
     }
 
+    private void openUpdateDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(SplashAndCityActivity.this/*, R.style.MyDialogTheme*/);
+        builder.setMessage(getString(R.string.update_app_dialog))
+                .setCancelable(false)
+                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        openPlayStoreLink();
+                    }
+                });
+        android.app.AlertDialog alert = builder.create();
+        alert.setTitle("Update App");
+        alert.show();
+    }
+
+    private void openPlayStoreLink() {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.woxi.sgkks_member")));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AppURLs.PLAYSTORE_APP_URL)));
+        }
+    }
+
     private void requestToGetMinVersion() {
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
@@ -281,25 +314,39 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
         AppController.getInstance().addToRequestQueue(req, "messageList");
     }
 
-    private void openUpdateDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(SplashAndCityActivity.this/*, R.style.MyDialogTheme*/);
-        builder.setMessage(getString(R.string.update_app_dialog))
-                .setCancelable(false)
-                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        openPlayStoreLink();
+    private void requestMasterApi(){
+        isMasterApiInProgress = true;
+        JSONObject params = new JSONObject();
+        try {
+            params.put("sgks_city",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
+            params.put("last_updated_date_message","2018-12-12 03:12:38");
+            params.put("last_updated_date_classified","2018-12-12 03:12:38");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String URL="http://www.mocky.io/v2/5c10df342e0000d21455b761";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "onResponse: "+response.toString());
+                        try {
+                            Object resp = AppParser.parseMasterResponse(response.toString());
+                            MasterItem masterItem = (MasterItem) resp;
+                            strBuzzImageUrl = masterItem.getStrBuzzImageUrl();
+                            intMessageCount = masterItem.getIntMessagesCount();
+                            intClassifiedCount = masterItem.getIntMessagesCount();
+                            intBuzzId = masterItem.getIntBuzzId();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i(TAG, "onErrorResponse: "+error);
+                        Toast.makeText(mContext,"Something went wrong",Toast.LENGTH_SHORT).show();
                     }
                 });
-        android.app.AlertDialog alert = builder.create();
-        alert.setTitle("Update App");
-        alert.show();
-    }
-
-    private void openPlayStoreLink() {
-        try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.woxi.sgkks_member")));
-        } catch (android.content.ActivityNotFoundException anfe) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AppURLs.PLAYSTORE_APP_URL)));
-        }
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest,TAG);
     }
 }

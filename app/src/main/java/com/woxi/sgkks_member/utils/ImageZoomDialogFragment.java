@@ -69,6 +69,14 @@ public class ImageZoomDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    public static ImageZoomDialogFragment newInstance(String strImageUrl, int buzzId) {
+        Bundle args = new Bundle();
+        args.putString("eventImageUrl", strImageUrl);
+        ImageZoomDialogFragment fragment = new ImageZoomDialogFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public static ImageZoomDialogFragment newInstance(boolean isForClassifiedGallery, String strImageUrl) {
         Bundle args = new Bundle();
         args.putString("classifiedImageUrl", strImageUrl);

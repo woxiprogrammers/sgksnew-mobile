@@ -163,7 +163,6 @@ public class SelectCityActivity extends AppCompatActivity {
                             rvCityList.setAdapter(rvAdapter);
                             Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -200,12 +199,16 @@ public class SelectCityActivity extends AppCompatActivity {
                 } else {
                     CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));
                     String strCityName = cityIteam.getStrCityName();
+                    String strCityNameGujarati = cityIteam.getStrCityNameGujarati();
+                    String strCityNameEnglish = cityIteam.getStrCityNameEnglish();
                     String strCityId = String.valueOf(cityIteam.getIntCityId());
                     AppCommonMethods.putBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,true,mContext);
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString(AppConstants.PREFS_CURRENT_CITY,strCityId);
                     editor.putString(AppConstants.PREFS_CITY_NAME,strCityName);
+                    editor.putString(AppConstants.PREFS_CITY_NAME_GJ,strCityNameGujarati);
+                    editor.putString(AppConstants.PREFS_CITY_NAME_EN,strCityNameEnglish);
                     editor.apply();
                     restartActivity(mContext);
                 }

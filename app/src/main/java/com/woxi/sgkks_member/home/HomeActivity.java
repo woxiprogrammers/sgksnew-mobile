@@ -44,6 +44,7 @@ import com.woxi.sgkks_member.miscellaneous.SettingsActivity;
 import com.woxi.sgkks_member.miscellaneous.SuggestionActivity;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppSettings;
+import com.woxi.sgkks_member.utils.ImageZoomDialogFragment;
 import com.woxi.sgkks_member.utils.LocaleHelper;
 
 import java.util.ArrayList;
@@ -52,6 +53,8 @@ import java.util.Arrays;
 import static com.woxi.sgkks_member.interfaces.AppConstants.CURRENT_PAGE;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_ENGLISH;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_GUJURATI;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME_EN;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME_GJ;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_IS_LANGUAGE_CHANGED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME;
@@ -76,6 +79,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private FloatingActionButton mFabAddNewMember;
     private ImageView ivLanguage, ivCity;
+    int intMessageCount,intClassifiedCount,intBuzzId;
+    private String strBuzzImageUrl;
 
 
     @Override
@@ -88,6 +93,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Bundle extras = getIntent().getBundleExtra("bundleHome");
         boolean isFromLanguage = false;
         if (extras != null) {
+            if(extras.containsKey("messageCount")){
+                intMessageCount = extras.getInt("messageCount");
+            }
+            if(extras.containsKey("classifiedCount")){
+                intClassifiedCount = extras.getInt("classifiedCount");
+            }
+            if(extras.containsKey("buzzId")){
+                intBuzzId = extras.getInt("buzzId");
+            }
+            if(extras.containsKey("buzzImageUrl")){
+                strBuzzImageUrl = extras.getString("buzzImageUrl");
+            }
             if (extras.containsKey("isFromLanguage")) {
                 isFromLanguage = extras.getBoolean("isFromLanguage");
             }
@@ -107,6 +124,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView =  findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         initializeViews();
+        showBuzzImage();
 
     }
 
@@ -189,7 +207,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void initializeViews() {
         tvLableCityName = findViewById(R.id.tvLableCityName);
         tvLableCityName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        tvLableCityName.setText(AppCommonMethods.getStringPref(PREFS_CITY_NAME,mContext).toUpperCase());
+        setupCityNameInHeader();
         mViewPager =  findViewById(R.id.homeViewPager);
         TabLayout mTabLayout =  findViewById(R.id.tavLayout);
         mFabAddNewMember = findViewById(R.id.fabAddNewMember);
@@ -217,7 +235,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("") || AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("2")){
                 mViewPager.setCurrentItem(2);
-                mFabAddNewMember.setVisibility(View.GONE);
+                mFabAddNewMember.setVisibility(View.VISIBLE);
             } else {
                 mFabAddNewMember.setVisibility(View.GONE);
                 mViewPager.setCurrentItem(Integer.valueOf(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext)));
@@ -264,7 +282,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //                    AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
                 if (position == 2){
-                    mFabAddNewMember.setVisibility(View.GONE);
+                    mFabAddNewMember.setVisibility(View.VISIBLE);
                 } else {
                     mFabAddNewMember.setVisibility(View.GONE);
                 }
@@ -408,108 +426,47 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setClassifiedCount(TabLayout mTabLayout) {
-        //Get locally stored Message ids.
-        /*arrLocalClassifiedIds = new ArrayList<>();
-        String strLocalClassifiedIds = AppCommonMethods.getStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, mContext);
-        strLocalClassifiedIds = strLocalClassifiedIds.replace("[", "");
-        strLocalClassifiedIds = strLocalClassifiedIds.replace("]", "");
-        arrLocalClassifiedIds = new ArrayList<>(Arrays.asList(strLocalClassifiedIds.split(",")));
-
-        //Get latest (from server) news ids.
-        arrClassifiedIds = new ArrayList<>();
-        String strClassifiedIds = AppCommonMethods.getStringPref(AppConstants.PREFS_LATEST_CLASSIFIED_ID, mContext);
-        strClassifiedIds = strClassifiedIds.replace("[", "");
-        strClassifiedIds = strClassifiedIds.replace("]", "");
-        arrClassifiedIds = new ArrayList<>(Arrays.asList(strClassifiedIds.split(",")));
-        ArrayList<String> arrTempLatestClassified = new ArrayList<>(Arrays.asList(strClassifiedIds.split(",")));*/
-
-        /**
-         * 1. get all local Classified ids in arraylist - arrLocalClassifiedIds
-         * 2. get latest Classified ids in arraylist - arrClassifiedIds, arrTempLatest
-         * 3. compare local id with latest id
-         * 4. if local id equal to latest id then remove that id from latest ids array i.e. - arrClassifiedIds
-         * 5. Now get size of arrClassifiedIds array which is count to be shown
-         * 6. Later on selection of news tab add all items from arrClassifiedIds array to arrLocalClassifiedIds
-         */
-      /*  for (String strLocalClassifiedId : arrLocalClassifiedIds) {
-            strLocalClassifiedId = strLocalClassifiedId.replace("\"", "");
-            strLocalClassifiedId = strLocalClassifiedId.replace(" ", "");
-            for (String strLatestId : arrTempLatestClassified) {
-                String strTemp = strLatestId;
-                strLatestId = strLatestId.replace("\"", "");
-//                strLatestId = strLatestId.replace(" ", "");
-                if (strLocalClassifiedId.equalsIgnoreCase(strLatestId)) {
-                    try {
-                        arrClassifiedIds.remove(strTemp);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        if (arrClassifiedIds.size() > 0 && !arrClassifiedIds.get(0).equalsIgnoreCase("")) {*/
             View view = LayoutInflater.from(this).inflate(R.layout.badge_layout_tab_count, null);
             badgeClassifiedTab = (TextView) view.findViewById(R.id.tvTabBadge);
             ImageView ivTabIcon = (ImageView) view.findViewById(R.id.ivTabIcon);
             ivTabIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_classified, null));
-//            badgeClassifiedTab.setText(String.valueOf(arrClassifiedIds.size()));
-            badgeClassifiedTab.setText("12");
+            if(intClassifiedCount != 0){
+                badgeClassifiedTab.setText(String.valueOf(intClassifiedCount));
+            } else {
+                badgeClassifiedTab.setVisibility(View.GONE);
+            }
             mTabLayout.getTabAt(intClassifiedTabIndex).setCustomView(view);
             isClassifiedCountApplied = true;
-        //}
     }
 
     private void setMessageCount(TabLayout mTabLayout) {
-        //Get locally stored Message ids.
-       /* arrLocalMessageIds = new ArrayList<>();
-        String strLocalMessageIds = AppCommonMethods.getStringPref(AppConstants.PREFS_LOCAL_MESSAGE_ID, mContext);
-        strLocalMessageIds = strLocalMessageIds.replace("[", "");
-        strLocalMessageIds = strLocalMessageIds.replace("]", "");
-        arrLocalMessageIds = new ArrayList<>(Arrays.asList(strLocalMessageIds.split(",")));
-
-        //Get latest (from server) news ids.
-        arrMessageIds = new ArrayList<>();
-        String strMessageIds = AppCommonMethods.getStringPref(AppConstants.PREFS_LATEST_MESSAGE_ID, mContext);
-        strMessageIds = strMessageIds.replace("[", "");
-        strMessageIds = strMessageIds.replace("]", "");
-        arrMessageIds = new ArrayList<>(Arrays.asList(strMessageIds.split(",")));
-        ArrayList<String> arrTempLatest = new ArrayList<>(Arrays.asList(strMessageIds.split(",")));*/
-
-        /**
-         * 1. get all local Message ids in arraylist - arrLocalMessageIds
-         * 2. get latest Message ids in arraylist - arrMessageIds, arrTempLatest
-         * 3. compare local id with latest id
-         * 4. if local id equal to latest id then remove that id from latest ids array i.e. - arrMessageIds
-         * 5. Now get size of arrMessageIds array which is count to be shown
-         * 6. Later on selection of news tab add all items from arrMessageIds array to arrLocalMessageIds
-         */
-       /* for (String strLocalMessageId : arrLocalMessageIds) {
-            strLocalMessageId = strLocalMessageId.replace("\"", "");
-            strLocalMessageId = strLocalMessageId.replace(" ", "");
-            for (String strLatestId : arrTempLatest) {
-                String strTemp = strLatestId;
-                strLatestId = strLatestId.replace("\"", "");
-//                strLatestId = strLatestId.replace(" ", "");
-                if (strLocalMessageId.equalsIgnoreCase(strLatestId)) {
-                    try {
-                        arrMessageIds.remove(strTemp);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        if (arrMessageIds.size() > 0 && !arrMessageIds.get(0).equalsIgnoreCase("")) {*/
             View view = LayoutInflater.from(this).inflate(R.layout.badge_layout_tab_count, null);
             badgeMessageTab = (TextView) view.findViewById(R.id.tvTabBadge);
             ImageView ivTabIcon = (ImageView) view.findViewById(R.id.ivTabIcon);
             ivTabIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_messages, null));
-            //badgeMessageTab.setText(String.valueOf(arrMessageIds.size()));
-        badgeMessageTab.setText("10");
+            if(intMessageCount != 0){
+                badgeMessageTab.setText(String.valueOf(intMessageCount));
+            } else {
+                badgeMessageTab.setVisibility(View.GONE);
+            }
+
             mTabLayout.getTabAt(intMessageTabIndex).setCustomView(view);
             isMessageCountApplied = true;
-       // }
     }
 
+    private void setupCityNameInHeader(){
+        if(AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+            tvLableCityName.setText(AppCommonMethods.getStringPref(PREFS_CITY_NAME_EN,mContext).toUpperCase());
+        }
+        else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
+            tvLableCityName.setText(AppCommonMethods.getStringPref(PREFS_CITY_NAME_GJ,mContext).toUpperCase());
+        }
 
+    }
+
+    private void showBuzzImage(){
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(strBuzzImageUrl);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
+    }
 }
