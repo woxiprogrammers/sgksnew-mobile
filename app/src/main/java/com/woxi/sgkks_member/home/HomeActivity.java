@@ -31,7 +31,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.adapters.HomeViewPagerAdapter;
@@ -42,10 +47,16 @@ import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
 import com.woxi.sgkks_member.miscellaneous.MiscellaneousViewActivity;
 import com.woxi.sgkks_member.miscellaneous.SettingsActivity;
 import com.woxi.sgkks_member.miscellaneous.SuggestionActivity;
+import com.woxi.sgkks_member.models.MasterItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
+import com.woxi.sgkks_member.utils.AppParser;
 import com.woxi.sgkks_member.utils.AppSettings;
+import com.woxi.sgkks_member.utils.AppURLs;
 import com.woxi.sgkks_member.utils.ImageZoomDialogFragment;
 import com.woxi.sgkks_member.utils.LocaleHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,11 +88,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private int intClassifiedTabIndex = 4;
     private boolean isClassifiedCountApplied = false, isFromSplash=false;
     private Toolbar toolbar;
-    private FloatingActionButton mFabAddNewMember;
+    private FloatingActionButton mFabAddNewMember, mFabMessageInfo;
     private ImageView ivLanguage, ivCity;
     int intMessageCount,intClassifiedCount,intBuzzId;
     private String strBuzzImageUrl;
-
+    private  MasterItem masterItem = new MasterItem();
+    private TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,18 +105,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Bundle extras = getIntent().getBundleExtra("bundleHome");
         boolean isFromLanguage = false;
         if (extras != null) {
-            if(extras.containsKey("messageCount")){
-                intMessageCount = extras.getInt("messageCount");
-            }
-            if(extras.containsKey("classifiedCount")){
-                intClassifiedCount = extras.getInt("classifiedCount");
-            }
-            if(extras.containsKey("buzzId")){
-                intBuzzId = extras.getInt("buzzId");
-            }
-            if(extras.containsKey("buzzImageUrl")){
-                strBuzzImageUrl = extras.getString("buzzImageUrl");
-            }
             if (extras.containsKey("isFromLanguage")) {
                 isFromLanguage = extras.getBoolean("isFromLanguage");
             }
@@ -124,8 +124,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView =  findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         initializeViews();
-        showBuzzImage();
-
     }
 
     @Override
@@ -205,12 +203,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initializeViews() {
+        requestMasterApi();
         tvLableCityName = findViewById(R.id.tvLableCityName);
         tvLableCityName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         setupCityNameInHeader();
         mViewPager =  findViewById(R.id.homeViewPager);
-        TabLayout mTabLayout =  findViewById(R.id.tavLayout);
+        mTabLayout =  findViewById(R.id.tavLayout);
         mFabAddNewMember = findViewById(R.id.fabAddNewMember);
+        mFabMessageInfo = findViewById(R.id.fabMessageInfo);
         viewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), mContext);
         mViewPager.setAdapter(viewPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -235,9 +235,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("") || AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("2")){
                 mViewPager.setCurrentItem(2);
-                mFabAddNewMember.setVisibility(View.VISIBLE);
+                mFabAddNewMember.setVisibility(View.GONE);
+                mFabMessageInfo.setVisibility(View.GONE);
+            } else if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("3")){
+                mViewPager.setCurrentItem(3);
+                mFabMessageInfo.setVisibility(View.VISIBLE);
+                mFabAddNewMember.setVisibility(View.GONE);
             } else {
                 mFabAddNewMember.setVisibility(View.GONE);
+                mFabMessageInfo.setVisibility(View.GONE);
                 mViewPager.setCurrentItem(Integer.valueOf(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext)));
             }
         }
@@ -247,6 +253,41 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 Intent intentAdd = new Intent(mContext, VerificationActivity.class);
                 intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
+            }
+        });
+
+        mFabMessageInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    //AppCommonMethods.putStringPref(CURRENT_PAGE,String.valueOf(mViewPager.getCurrentItem()),mContext);
+                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mContext);
+                    builder.setCancelable(true);
+                    View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_message_info, null);
+                    builder.setView(view);
+                    TextView tvBuzz, tvDukhadNidhan, tvBirthday, tvAchievement, tvGeneral, tvDialogTitle;
+                    tvDialogTitle = view.findViewById(R.id.dialog_title);
+                    tvBuzz = view.findViewById(R.id.tvBuzzInfo);
+                    tvDukhadNidhan = view.findViewById(R.id.tvDukhadNidhanInfo);
+                    tvBirthday = view.findViewById(R.id.tvBirthdayInfo);
+                    tvAchievement = view.findViewById(R.id.tvAchievementInfo);
+                    tvGeneral = view.findViewById(R.id.tvGeneralInfo);
+                    if(AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+                        tvDialogTitle.setText(R.string.dialog_title_en);
+                        tvBuzz.setText(R.string.buzz_en);
+                        tvDukhadNidhan.setText(R.string.dukhad_nidhan_en);
+                        tvBirthday.setText(R.string.birthday_en);
+                        tvAchievement.setText(R.string.achievement_en);
+                        tvGeneral.setText(R.string.general_en);
+                    } else if(AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
+                        tvDialogTitle.setText(R.string.dialog_title_gj);
+                        tvBuzz.setText(R.string.buzz_gj);
+                        tvDukhadNidhan.setText(R.string.dukhad_nidhan_gj);
+                        tvBirthday.setText(R.string.birthday_gj);
+                        tvAchievement.setText(R.string.achievement_gj);
+                        tvGeneral.setText(R.string.general_gj);
+                    }
+                    final android.support.v7.app.AlertDialog dialog = builder.create();
+                    dialog.show();
             }
         });
 
@@ -282,9 +323,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //                    AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
                 if (position == 2){
-                    mFabAddNewMember.setVisibility(View.VISIBLE);
+                    mFabAddNewMember.setVisibility(View.GONE);
+                    mFabMessageInfo.setVisibility(View.GONE);
+                } else if (position == 3){
+                    mFabAddNewMember.setVisibility(View.GONE);
+                    mFabMessageInfo.setVisibility(View.VISIBLE);
                 } else {
                     mFabAddNewMember.setVisibility(View.GONE);
+                    mFabMessageInfo.setVisibility(View.GONE);
                 }
             }
 
@@ -300,12 +346,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             AppCommonMethods.putBooleanPref(APP_DATABASE_CREATED, true, mContext);
         }
 
-        if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+       /* if (new AppCommonMethods(mContext).isNetworkAvailable()) {
             //Setting message count on Message Tab
             setMessageCount(mTabLayout);
             //Setting classified count on Message Tab
             setClassifiedCount(mTabLayout);
-        }
+        }*/
 //        boolean isLocalStorageSyncEnabled = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LOCAL_STORAGE_SYNC_ENABLED, mContext);
 //        if (isLocalStorageSyncEnabled) {
 //            if (new AppCommonMethods(mContext).isNetworkAvailable()) {
@@ -426,32 +472,32 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setClassifiedCount(TabLayout mTabLayout) {
-            View view = LayoutInflater.from(this).inflate(R.layout.badge_layout_tab_count, null);
-            badgeClassifiedTab = (TextView) view.findViewById(R.id.tvTabBadge);
-            ImageView ivTabIcon = (ImageView) view.findViewById(R.id.ivTabIcon);
-            ivTabIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_classified, null));
-            if(intClassifiedCount != 0){
-                badgeClassifiedTab.setText(String.valueOf(intClassifiedCount));
-            } else {
-                badgeClassifiedTab.setVisibility(View.GONE);
-            }
-            mTabLayout.getTabAt(intClassifiedTabIndex).setCustomView(view);
-            isClassifiedCountApplied = true;
+        View view = LayoutInflater.from(this).inflate(R.layout.badge_layout_tab_count, null);
+        badgeClassifiedTab = (TextView) view.findViewById(R.id.tvTabBadge);
+        ImageView ivTabIcon = (ImageView) view.findViewById(R.id.ivTabIcon);
+        ivTabIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_classified, null));
+        if(intClassifiedCount != 0){
+            badgeClassifiedTab.setText(String.valueOf(intClassifiedCount));
+        } else {
+            badgeClassifiedTab.setVisibility(View.GONE);
+        }
+        mTabLayout.getTabAt(intClassifiedTabIndex).setCustomView(view);
+        isClassifiedCountApplied = true;
     }
 
     private void setMessageCount(TabLayout mTabLayout) {
-            View view = LayoutInflater.from(this).inflate(R.layout.badge_layout_tab_count, null);
-            badgeMessageTab = (TextView) view.findViewById(R.id.tvTabBadge);
-            ImageView ivTabIcon = (ImageView) view.findViewById(R.id.ivTabIcon);
-            ivTabIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_messages, null));
-            if(intMessageCount != 0){
-                badgeMessageTab.setText(String.valueOf(intMessageCount));
-            } else {
-                badgeMessageTab.setVisibility(View.GONE);
-            }
+        View view = LayoutInflater.from(this).inflate(R.layout.badge_layout_tab_count, null);
+        badgeMessageTab = (TextView) view.findViewById(R.id.tvTabBadge);
+        ImageView ivTabIcon = (ImageView) view.findViewById(R.id.ivTabIcon);
+        ivTabIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_messages, null));
+        if(intMessageCount != 0){
+            badgeMessageTab.setText(String.valueOf(intMessageCount));
+        } else {
+            badgeMessageTab.setVisibility(View.GONE);
+        }
 
-            mTabLayout.getTabAt(intMessageTabIndex).setCustomView(view);
-            isMessageCountApplied = true;
+        mTabLayout.getTabAt(intMessageTabIndex).setCustomView(view);
+        isMessageCountApplied = true;
     }
 
     private void setupCityNameInHeader(){
@@ -465,8 +511,53 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void showBuzzImage(){
-        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(strBuzzImageUrl);
-        imageZoomDialogFragment.setCancelable(true);
-        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
+        int intStoredBuzzId = AppCommonMethods.getIntPref(String.valueOf(AppConstants.PREFS_BUZZ_ID),mContext);
+        if(intStoredBuzzId != intBuzzId){
+            if (strBuzzImageUrl != null){
+                ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(strBuzzImageUrl,intBuzzId);
+                imageZoomDialogFragment.setCancelable(true);
+                imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
+            }
+        }
+    }
+
+    private void requestMasterApi(){
+        JSONObject params = new JSONObject();
+        Log.i(TAG, "requestMasterApi: "+AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_MESSAGE_DATE,mContext));
+        Log.i(TAG, "requestMasterApi: "+AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_CLASSIFIED_DATE,mContext));
+        try {
+            params.put("sgks_city",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
+            params.put("last_updated_date_message",AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_MESSAGE_DATE,mContext));
+            params.put("last_updated_date_classified",AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_CLASSIFIED_DATE,mContext));
+            Log.i(TAG, "requestMasterApi: params \n"+params);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_MASTER, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                new AppCommonMethods(mContext).LOG(0,TAG,response.toString());
+                try {
+                    Object resp = AppParser.parseMasterResponse(response.toString());
+                    masterItem = (MasterItem) resp;
+                    strBuzzImageUrl = masterItem.getStrBuzzImageUrl();
+                    intMessageCount = masterItem.getIntMessagesCount();
+                    intClassifiedCount = masterItem.getIntMessagesCount();
+                    intBuzzId = masterItem.getIntBuzzId();
+                    showBuzzImage();
+                    setMessageCount(mTabLayout);
+                    setClassifiedCount(mTabLayout);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG, "onErrorResponse: "+error);
+                Toast.makeText(mContext,"Something went wrong",Toast.LENGTH_SHORT).show();
+            }
+        });
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest,TAG);
     }
 }

@@ -75,7 +75,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
 
         if (new AppCommonMethods(mContext).isNetworkAvailable()){
             requestToGetMinVersion();
-            requestMasterApi();
+            //requestMasterApi();
         } else {
             showOfflineAlertDialog();
         }
@@ -130,15 +130,15 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
                 Intent intentHome = new Intent(mContext, HomeActivity.class);
                 Bundle bundleExtras = new Bundle();
                 bundleExtras.putBoolean("isFromSplash",true);
-                bundleExtras.putInt("messageCount",intMessageCount);
+               /* bundleExtras.putInt("messageCount",intMessageCount);
                 bundleExtras.putInt("classifiedCount",intClassifiedCount);
                 bundleExtras.putString("buzzImageUrl",strBuzzImageUrl);
-                bundleExtras.putInt("buzzId",intBuzzId);
+                bundleExtras.putInt("buzzId",intBuzzId);*/
                 intentHome.putExtra("bundleHome", bundleExtras);
                 startActivity(intentHome);
                 finish();
                 // requestMasterList();
-//                boolean notFirstRun = AppCommonMethods.getBooleanPref(APP_FIRST_RUN, mContext);
+//                boolean notFirstRun = AppCommonMethods.getBooleanPref(APP_FIRST_RUN, mContext);v
                 /*if (!notFirstRun) {
                     getCitySelectionScreen();
                     //Local Storage Sync is enabled by-default.
@@ -314,39 +314,5 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
         AppController.getInstance().addToRequestQueue(req, "messageList");
     }
 
-    private void requestMasterApi(){
-        isMasterApiInProgress = true;
-        JSONObject params = new JSONObject();
-        try {
-            params.put("sgks_city",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
-            params.put("last_updated_date_message","2018-12-12 03:12:38");
-            params.put("last_updated_date_classified","2018-12-12 03:12:38");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String URL="http://www.mocky.io/v2/5c10df342e0000d21455b761";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(TAG, "onResponse: "+response.toString());
-                        try {
-                            Object resp = AppParser.parseMasterResponse(response.toString());
-                            MasterItem masterItem = (MasterItem) resp;
-                            strBuzzImageUrl = masterItem.getStrBuzzImageUrl();
-                            intMessageCount = masterItem.getIntMessagesCount();
-                            intClassifiedCount = masterItem.getIntMessagesCount();
-                            intBuzzId = masterItem.getIntBuzzId();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i(TAG, "onErrorResponse: "+error);
-                        Toast.makeText(mContext,"Something went wrong",Toast.LENGTH_SHORT).show();
-                    }
-                });
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest,TAG);
-    }
+
 }

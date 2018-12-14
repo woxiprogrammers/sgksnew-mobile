@@ -39,5 +39,7 @@ public interface AppConstants {
     int CITY_SELECT_CODE = 100;
     String PREFS_IS_CITY_CHANGED = "isCityChanged";
     String PREFS_IS_LANGUAGE_CHANGED = "isLanguageChanged";
-    String PREFS_BUZZ_ID = "buzzId";
+    int PREFS_BUZZ_ID = 0;
+    String PREFS_LAST_MESSAGE_DATE = null;
+    String PREFS_LAST_CLASSIFIED_DATE = null;
 }

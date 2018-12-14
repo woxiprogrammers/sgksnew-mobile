@@ -3,7 +3,9 @@ package com.woxi.sgkks_member.home;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -35,7 +38,9 @@ import com.woxi.sgkks_member.utils.AppURLs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -105,6 +110,13 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     }
 
     private void requestMessageList(int page_id, final boolean isFirstTime) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String format = simpleDateFormat.format(new Date());
+        Log.i("@@@", "requestMessageList: "+format);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(AppConstants.PREFS_LAST_MESSAGE_DATE,format);
+        editor.apply();
         isApiInProgress = true;
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         if(isFirstTime){
@@ -210,4 +222,6 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
             }
         } 
     }
+
+
 }

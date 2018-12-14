@@ -686,11 +686,16 @@ public class AppParser implements AppConstants {
                 }
                 {
                     JSONObject jsonBuzzObject = jsonMasterObject.optJSONObject("buzz");
-                    String strBuzzUrl = jsonBuzzObject.optString("msg_img");
-                    int intId = jsonBuzzObject.optInt("id");
-                    Log.i("@@1",strBuzzUrl);
-                    masterItem.setStrBuzzImageUrl(strBuzzUrl);
-                    masterItem.setIntBuzzId(intId);
+                    if(jsonBuzzObject.has("msg_img") && jsonBuzzObject.optString("msg_img") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
+                        String strBuzzUrl = jsonBuzzObject.optString("msg_img");
+                        masterItem.setStrBuzzImageUrl(strBuzzUrl);
+                        Log.i("@@1",strBuzzUrl);
+                    }
+                    if (jsonBuzzObject.has("id")&& jsonBuzzObject.optString("id") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
+                        int intId = jsonBuzzObject.optInt("id");
+                        masterItem.setIntBuzzId(intId);
+                    }
+
                 }
             }
             return masterItem;
