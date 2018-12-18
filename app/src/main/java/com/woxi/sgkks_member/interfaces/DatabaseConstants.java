@@ -20,9 +20,11 @@ public interface DatabaseConstants {
     String COLUMN_FAMILY_CITY = "family_city";
 
     //Member's Details Table
-    String TABLE_MEMBER_DETAILS = "table_members";
+    String TABLE_MEMBER_DETAILS_EN = "table_members_en";
+    String TABLE_MEMBER_DETAILS_GJ = "table_members_gj";
     //    String COLUMN_MEMBER_PRIMARY_INDEX = "member_index_primary";
     String COLUMN_MEMBER_ID_PRIMARY = "member_id_primary";
+    String COLUMN_MEMBER_ID_FOREIGN_KEY = "member_id_foreign";
     String COLUMN_MEMBER_FAMILY_ID_FOREIGN_KEY = "family_id_foreign";
     String COLUMN_MEMBER_SGKS_MEMBER_ID = "sgks_mem_id";
     String COLUMN_MEMBER_SGKS_FAMILY_ID = "sgks_family_id";
@@ -33,13 +35,16 @@ public interface DatabaseConstants {
     String COLUMN_MEMBER_MOBILE = "mobile_number";
     String COLUMN_MEMBER_EMAIL = "email_id";
     String COLUMN_MEMBER_BLOOD_GROUP = "blood_group";
+    String COLUMN_MEMBER_BLOOD_GROUP_ID = "blood_group_id";
     String COLUMN_MEMBER_MARITAL_STATUS = "marital_status";
     String COLUMN_MEMBER_SGKS_AREA = "sgks_area";
     String COLUMN_MEMBER_LATITUDE = "latitude";
     String COLUMN_MEMBER_LONGITUDE = "longitude";
     String COLUMN_MEMBER_IMAGE_URL = "image_url";
     String COLUMN_MEMBER_SGKS_CITY = "sgks_city";
-    String COLUMN_MEMBER_ADDRESS_ID = "address_id";
+    String COLUMN_MEMBER_SGKS_CITY_ID = "sgks_city_id";
+    String COLUMN_MEMBER_ADDRESS = "address";
+    String COLUMN_DATE_OF_BIRTH = "date_of_birth";
     String COLUMN_MEMBER_IS_ACTIVE = "is_active";
 
     //Member's Address Table

@@ -87,9 +87,9 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    public boolean insertOrUpdateAllMembers(ArrayList<MemberDetailsItem> arrMemDetails) {
+    public boolean insertOrUpdateAllMembersEnglish(ArrayList<MemberDetailsItem> arrMemDetails) {
         //SQL Prepared Statement
-        String insertMemberPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_MEMBER_DETAILS + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String insertMemberPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_MEMBER_DETAILS_EN + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
             /*INSERT INTO used to insert data/row in table*/
             /*"INSERT OR REPLACE INTO" used to insert/replace data/row in table using primary key only.
@@ -132,39 +132,40 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 if (memberDetailsItem.getStrCity() != null) {
                     memberStatement.bindString(6, memberDetailsItem.getStrCity());
                 }
+                if (memberDetailsItem.getStrCityId() != null) {
+                    memberStatement.bindString(7, memberDetailsItem.getStrCityId());
+                }
                 if (memberDetailsItem.getStrGender() != null) {
-                    memberStatement.bindString(7, memberDetailsItem.getStrGender());
+                    memberStatement.bindString(8, memberDetailsItem.getStrGender());
                 }
                 if (memberDetailsItem.getStrMobileNumber() != null) {
-                    memberStatement.bindString(8, memberDetailsItem.getStrMobileNumber());
+                    memberStatement.bindString(9, memberDetailsItem.getStrMobileNumber());
                 }
                 if (memberDetailsItem.getStrDateOfBirth() != null) {
-                    memberStatement.bindString(9, memberDetailsItem.getStrDateOfBirth());
+                    memberStatement.bindString(10, memberDetailsItem.getStrDateOfBirth());
                 }
                 if (memberDetailsItem.getStrEmail() != null) {
-                    memberStatement.bindString(10, memberDetailsItem.getStrEmail());
+                    memberStatement.bindString(11, memberDetailsItem.getStrEmail());
                 }
                 if (memberDetailsItem.getStrBloodGroup() != null) {
-                    memberStatement.bindString(11, memberDetailsItem.getStrBloodGroup());
+                    memberStatement.bindString(12, memberDetailsItem.getStrBloodGroup());
+                }
+                if (memberDetailsItem.getStrBloodGroupId() != null) {
+                    memberStatement.bindString(13, memberDetailsItem.getStrBloodGroupId());
                 }
                 if (memberDetailsItem.getStrLatitude() != null) {
-                    memberStatement.bindString(12, memberDetailsItem.getStrLatitude());
+                    memberStatement.bindString(14, memberDetailsItem.getStrLatitude());
                 }
                 if (memberDetailsItem.getStrLongitude() != null) {
-                    memberStatement.bindString(13, memberDetailsItem.getStrLongitude());
+                    memberStatement.bindString(15, memberDetailsItem.getStrLongitude());
                 }
                 if (memberDetailsItem.getStrMemberImageUrl() != null) {
-                    memberStatement.bindString(14, memberDetailsItem.getStrMemberImageUrl());
-                }
-                if (memberDetailsItem.getStrCreatedAt() != null) {
-                    memberStatement.bindString(15, memberDetailsItem.getStrCreatedAt());
-                }
-                if (memberDetailsItem.getStrUpdatedAt() != null) {
-                    memberStatement.bindString(16, memberDetailsItem.getStrUpdatedAt());
+                    memberStatement.bindString(16, memberDetailsItem.getStrMemberImageUrl());
                 }
                 memberStatement.execute();
             }
             mSqLiteDatabase.setTransactionSuccessful();
+            Log.i(TAG, "insertOrUpdateAllMembersEnglish: saved successfully");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -415,38 +416,27 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             }
         }
         //Cursor cursor = sqLiteDatabase.query(tableName, tableColumns, whereClause, whereArgs, groupBy, having, orderBy);
-        Cursor cursorMember = mSqLiteDatabase.query(TABLE_MEMBER_DETAILS, null, null, null, null, null, null);
+        Cursor cursorMember = mSqLiteDatabase.query(TABLE_MEMBER_DETAILS_EN, null, null, null, null, null, null);
         if (cursorMember.moveToFirst()) {
             do {
-//                if (isMemberActive.equalsIgnoreCase("true")) {
                     MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
                     memberDetailsItem.setStrId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY)));
-//                    memberDetailsItem.setMemFamilyId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FAMILY_ID_FOREIGN_KEY)));
-                    memberDetailsItem.setStrMemberId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_MEMBER_ID)));
-//                    memberDetailsItem.setMemSgksFamilyId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_FAMILY_ID)));
                     memberDetailsItem.setStrFirstName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
                     memberDetailsItem.setStrMiddleName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
                     memberDetailsItem.setStrLastName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
+                    memberDetailsItem.setStrAddress(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
+                    memberDetailsItem.setStrCity(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY)));
+                    memberDetailsItem.setStrCityId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY_ID)));
                     memberDetailsItem.setStrGender(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_GENDER)));
                     memberDetailsItem.setStrMobileNumber(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MOBILE)));
+                    memberDetailsItem.setStrDateOfBirth(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH)));
                     memberDetailsItem.setStrEmail(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_EMAIL)));
                     memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP)));
-//                    memberDetailsItem.setMemMaritalStatus(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MARITAL_STATUS)));
-//                    memberDetailsItem.setMemSgksArea(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_AREA)));
-                    memberDetailsItem.setStrCity(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY)));
+                    memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP_ID)));
                     memberDetailsItem.setStrLatitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LATITUDE)));
                     memberDetailsItem.setStrLongitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LONGITUDE)));
                     memberDetailsItem.setStrMemberImageUrl(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IMAGE_URL)));
-                    memberDetailsItem.setStrAddress(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS_ID)));
-//                    memberDetailsItem.setMemIsActive(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IS_ACTIVE)));
-//////////////////
-                    String strFamilyId = cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FAMILY_ID_FOREIGN_KEY));
-                    String strMemberAddressId = cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS_ID));
-                    /*MemberAddressItem memberAddressItem = queryAddress(strFamilyId, strMemberAddressId);
-                    memberDetailsItem.setMemAddress(memberAddressItem);*/
-/////////////////
-//                    arrMemDetails.add(memberDetailsItem);
-//                }
+                    arrMemDetails.add(memberDetailsItem);
             } while (cursorMember.moveToNext());
         }
         if (cursorMember != null && !cursorMember.isClosed()) {

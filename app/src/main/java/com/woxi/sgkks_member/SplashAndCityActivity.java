@@ -71,6 +71,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
             requestToGetMinVersion();
         } else {
             showOfflineAlertDialog();
+            getNextScreen();
         }
     }
 

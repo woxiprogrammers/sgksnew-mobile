@@ -130,7 +130,7 @@ public class DataSyncService extends Service {
                                         new AppCommonMethods().LOG(0, TAG + "  CurrentServerTime- ", strCurrentServerTime);
                                     }
                                     if (arrMemberDetailsItems != null) {
-                                        databaseQueryHandler.insertOrUpdateAllMembers(MemberHomeNewFragment.mArrMemDetails);
+                                        databaseQueryHandler.insertOrUpdateAllMembersEnglish(MemberHomeNewFragment.mArrMemDetails);
                                     }
                                     if (arrCommitteeDetailsItems.size() != 0) {
                                         isCommitteeSuccessful = databaseQueryHandler.insertOrUpdateAllCommittees(arrCommitteeDetailsItems, true);

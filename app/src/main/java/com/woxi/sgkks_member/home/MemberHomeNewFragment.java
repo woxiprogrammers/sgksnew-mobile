@@ -3,6 +3,7 @@ package com.woxi.sgkks_member.home;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -82,6 +83,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mParentView = inflater.inflate(R.layout.fragment_members_home, container, false);
         //Calling function to initialize required views.
         initializeViews();
+
         return mParentView;
     }
 
@@ -92,7 +94,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
-        //databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
+        databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
         pbMemberListing = mParentView.findViewById(R.id.pbMemberListing);
         mEtMemberSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -103,8 +105,12 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (charSequence.length() > 3) {
                     strSearchFullName = charSequence.toString().toLowerCase();
+                    ArrayList<MemberDetailsItem> arrTrial = databaseQueryHandler.queryMembers("");
+                    Log.i("@@@", "onTextChanged: "+arrTrial.toString());
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
                         requestToGetMembersData(0,false,true);
+
+
                     } else {
                         new AppCommonMethods(mContext).showAlert("You are offline");
                     }
@@ -135,6 +141,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 new AppCommonMethods(mContext).showAlert("You are Offline");
             }
         }
+        requestToGetMembersData(pageNumber,true,false);
     }
 
     private void setUpRecyclerView() {
@@ -204,23 +211,26 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                             } else if (resp instanceof MemberDetailsItem) {
                                 if(isFirstTime || isFromSearch){
                                     mArrMemDetails = memberDetailsItem.getArrMemberList();
+                                    databaseQueryHandler.insertOrUpdateAllMembersEnglish(mArrMemDetails);
                                     if (mArrMemDetails.size() != 0){
                                         mRvMemberList.setHasFixedSize(true);
                                         mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                         mRvMemberList.setAdapter(mRvAdapter);
+                                        ArrayList<MemberDetailsItem> memberDetailsItems = databaseQueryHandler.queryMembers("");
+                                        Log.i("abc", "onResponse: "+memberDetailsItems.toString());
                                     } else {
                                         mRvMemberList.setHasFixedSize(true);
                                         mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                         mRvMemberList.setAdapter(mRvAdapter);
                                         Toast.makeText(mContext,"No Records Found", Toast.LENGTH_SHORT).show();
                                     }
-                                    //databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
                                 } else {
                                     ArrayList<MemberDetailsItem> arrNextMembers = memberDetailsItem.getArrMemberList();
                                     if(arrNextMembers.size() != 0){
                                         mArrMemDetails.addAll(arrNextMembers);
                                         mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
                                         mRvMemberList.getAdapter().notifyDataSetChanged();
+                                        ArrayList<MemberDetailsItem> memberDetailsItems = databaseQueryHandler.queryMembers("");
                                     } else {
                                         mArrMemDetails.addAll(arrNextMembers);
                                         mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
@@ -228,6 +238,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                         Toast.makeText(mContext,"All the Records are Listed", Toast.LENGTH_SHORT).show();
                                     }
                                 }
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -270,4 +281,5 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             }
         }
     }
+
 }
