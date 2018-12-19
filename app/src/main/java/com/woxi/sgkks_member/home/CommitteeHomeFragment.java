@@ -185,7 +185,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
             if (isOfflineSupportEnabled) {
                 databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
                 String strCurrentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
-                arrMainCommList = databaseQueryHandler.queryCommittees("", strCurrentCity);
+//                arrMainCommList = databaseQueryHandler.queryCommittees("", strCurrentCity);
                 if (arrMainCommList == null || arrMainCommList.size() == 0) {
                     getAllCommitteesOnline();
                 } else {

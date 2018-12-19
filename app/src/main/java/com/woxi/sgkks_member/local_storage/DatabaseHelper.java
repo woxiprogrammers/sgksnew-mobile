@@ -49,36 +49,15 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
     // If a database already exists on disk with the same DATABASE_NAME, this method will NOT be called.
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_FAMILY_DETAILS_TABLE_QUERY = "CREATE TABLE " + TABLE_FAMILY_DETAILS + " (" + COLUMN_FAMILY_ID_PRIMARY + " INTEGER PRIMARY KEY, "
+       /* String CREATE_FAMILY_DETAILS_TABLE_QUERY = "CREATE TABLE " + TABLE_FAMILY_DETAILS + " (" + COLUMN_FAMILY_ID_PRIMARY + " INTEGER PRIMARY KEY, "
                 + COLUMN_FAMILY_SGKS_FAMILY_ID + " VARCHAR(500), " + COLUMN_FAMILY_SURNAME + " VARCHAR(500), " + COLUMN_FAMILY_NATIVE_PLACE + " VARCHAR(500), "
                 + COLUMN_FAMILY_CITY + " VARCHAR(500))";
-        new AppCommonMethods().LOG(0, TAG, CREATE_FAMILY_DETAILS_TABLE_QUERY);
+        new AppCommonMethods().LOG(0, TAG, CREATE_FAMILY_DETAILS_TABLE_QUERY);*/
 
         //+ COLUMN_MEMBER_PRIMARY_INDEX + " INTEGER PRIMARY KEY AUTOINCREMENT, "
         String CREATE_MEMBER_DETAILS_TABLE_QUERY_EN = "CREATE TABLE " + TABLE_MEMBER_DETAILS_EN
                 + " ("
-                + COLUMN_MEMBER_ID_PRIMARY + " VARCHAR(500) PRIMARY KEY, "
-                + COLUMN_MEMBER_FIRST_NAME + " VARCHAR(500), "
-                + COLUMN_MEMBER_MIDDLE_NAME + " VARCHAR(500), "
-                + COLUMN_MEMBER_LAST_NAME + " VARCHAR(500), "
-                + COLUMN_MEMBER_ADDRESS + " VARCHAR(500), "
-                + COLUMN_MEMBER_SGKS_CITY + " VARCHAR(500), "
-                + COLUMN_MEMBER_SGKS_CITY_ID + " VARCHAR(500), "
-                + COLUMN_MEMBER_GENDER + " VARCHAR(500), "
-                + COLUMN_MEMBER_MOBILE + " VARCHAR(500), "
-                + COLUMN_DATE_OF_BIRTH + " VARCHAR(500), "
-                + COLUMN_MEMBER_EMAIL + " VARCHAR(500), "
-                + COLUMN_MEMBER_BLOOD_GROUP + " VARCHAR(500), "
-                + COLUMN_MEMBER_BLOOD_GROUP_ID + " VARCHAR(500), "
-                + COLUMN_MEMBER_LATITUDE + " VARCHAR(500), "
-                + COLUMN_MEMBER_LONGITUDE + " VARCHAR(500), "
-                + COLUMN_MEMBER_IMAGE_URL + " VARCHAR(500) "
-                + ")";
-        new AppCommonMethods().LOG(0, TAG, CREATE_MEMBER_DETAILS_TABLE_QUERY_EN);
-
-        String CREATE_MEMBER_DETAILS_TABLE_QUERY_GJ = "CREATE TABLE " + TABLE_MEMBER_DETAILS_GJ
-                + " ("
-                + COLUMN_MEMBER_ID_PRIMARY + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_MEMBER_ID_PRIMARY_EN + " VARCHAR(500) PRIMARY KEY, "
                 + COLUMN_MEMBER_FIRST_NAME + " VARCHAR(500), "
                 + COLUMN_MEMBER_MIDDLE_NAME + " VARCHAR(500), "
                 + COLUMN_MEMBER_LAST_NAME + " VARCHAR(500), "
@@ -94,8 +73,31 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + COLUMN_MEMBER_LATITUDE + " VARCHAR(500), "
                 + COLUMN_MEMBER_LONGITUDE + " VARCHAR(500), "
                 + COLUMN_MEMBER_IMAGE_URL + " VARCHAR(500), "
-                + "FOREIGN KEY(" + COLUMN_MEMBER_ID_FOREIGN_KEY + ") REFERENCES "
-                + TABLE_MEMBER_DETAILS_EN + " (" + COLUMN_MEMBER_ID_PRIMARY + ")"
+                + COLUMN_COMMITTEE_IS_ACTIVE + " VARCHAR(500) "
+                + ")";
+        new AppCommonMethods().LOG(0, TAG, CREATE_MEMBER_DETAILS_TABLE_QUERY_EN);
+
+        String CREATE_MEMBER_DETAILS_TABLE_QUERY_GJ = "CREATE TABLE " + TABLE_MEMBER_DETAILS_GJ
+                + " ("
+                + COLUMN_MEMBER_ID_PRIMARY_GJ + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_MEMBER_ID_FOREIGN_KEY + " VARCHAR(500), "
+                + COLUMN_MEMBER_FIRST_NAME + " VARCHAR(500), "
+                + COLUMN_MEMBER_MIDDLE_NAME + " VARCHAR(500), "
+                + COLUMN_MEMBER_LAST_NAME + " VARCHAR(500), "
+                + COLUMN_MEMBER_ADDRESS + " VARCHAR(500), "
+                + COLUMN_MEMBER_SGKS_CITY + " VARCHAR(500), "
+                + COLUMN_MEMBER_SGKS_CITY_ID + " VARCHAR(500), "
+                + COLUMN_MEMBER_GENDER + " VARCHAR(500), "
+                + COLUMN_MEMBER_MOBILE + " VARCHAR(500), "
+                + COLUMN_DATE_OF_BIRTH + " VARCHAR(500), "
+                + COLUMN_MEMBER_EMAIL + " VARCHAR(500), "
+                + COLUMN_MEMBER_BLOOD_GROUP + " VARCHAR(500), "
+                + COLUMN_MEMBER_BLOOD_GROUP_ID + " VARCHAR(500), "
+                + COLUMN_MEMBER_LATITUDE + " VARCHAR(500), "
+                + COLUMN_MEMBER_LONGITUDE + " VARCHAR(500), "
+                + COLUMN_MEMBER_IMAGE_URL + " VARCHAR(500), "
+                + "FOREIGN KEY(" + COLUMN_MEMBER_ID_FOREIGN_KEY + " ) REFERENCES "
+                + TABLE_MEMBER_DETAILS_EN + " (" + COLUMN_MEMBER_ID_PRIMARY_EN + ")"
                 + ")";
         new AppCommonMethods().LOG(0, TAG, CREATE_MEMBER_DETAILS_TABLE_QUERY_GJ);
 

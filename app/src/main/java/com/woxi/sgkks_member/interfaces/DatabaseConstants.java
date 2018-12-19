@@ -23,7 +23,8 @@ public interface DatabaseConstants {
     String TABLE_MEMBER_DETAILS_EN = "table_members_en";
     String TABLE_MEMBER_DETAILS_GJ = "table_members_gj";
     //    String COLUMN_MEMBER_PRIMARY_INDEX = "member_index_primary";
-    String COLUMN_MEMBER_ID_PRIMARY = "member_id_primary";
+    String COLUMN_MEMBER_ID_PRIMARY_EN = "member_id_primary_en";
+    String COLUMN_MEMBER_ID_PRIMARY_GJ = "member_id_primary_gj";
     String COLUMN_MEMBER_ID_FOREIGN_KEY = "member_id_foreign";
     String COLUMN_MEMBER_FAMILY_ID_FOREIGN_KEY = "family_id_foreign";
     String COLUMN_MEMBER_SGKS_MEMBER_ID = "sgks_mem_id";

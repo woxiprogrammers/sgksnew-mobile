@@ -16,6 +16,7 @@ import com.woxi.sgkks_member.utils.AppCommonMethods;
 
 import java.util.ArrayList;
 
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LAST_COMMITTEE_ID;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LAST_FAMILY_ID;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LAST_MESSAGE_ID;
@@ -91,13 +92,13 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         //SQL Prepared Statement
         String insertMemberPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_MEMBER_DETAILS_EN + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-            /*INSERT INTO used to insert data/row in table*/
+        /*INSERT INTO used to insert data/row in table*/
             /*"INSERT OR REPLACE INTO" used to insert/replace data/row in table using primary key only.
             doesn't allow to use WHERE clause. It works only on primary key
             * If primary key exists replace row (first delete and then insert row) else insert row directly*/
-            /* UPDATE TABLE_NAME SET COLUMN_1=?, COLUMN_2=? WHERE COLUMN_3=?       used to replace selected values/columns from table using WHERE clause
-            * It is helpful when table doesn't have a primary key column
-            * OR It is helpful when table's primary key column if not useful*/
+        /* UPDATE TABLE_NAME SET COLUMN_1=?, COLUMN_2=? WHERE COLUMN_3=?       used to replace selected values/columns from table using WHERE clause
+         * It is helpful when table doesn't have a primary key column
+         * OR It is helpful when table's primary key column if not useful*/
 
             /*UPDATE Example
             insertMemberPreparedStatement = "UPDATE " + DatabaseHelper.TABLE_MEMBER_DETAILS + " SET " + COLUMN_MEMBER_ID_PRIMARY + "=?, " + COLUMN_MEMBER_FAMILY_ID_FOREIGN_KEY + "=?, "
@@ -364,81 +365,75 @@ public class DatabaseQueryHandler implements DatabaseConstants {
 
     public ArrayList<MemberDetailsItem> queryMembers(String searchString) {
         ArrayList<MemberDetailsItem> arrMemDetails = new ArrayList<>();
-        String whereClause = COLUMN_MEMBER_SGKS_CITY + " =?";
-//        String[] whereArgs = new String[]{strCurrentCity};
-        if (searchString.equalsIgnoreCase("")) {
-//            if (searchString.contains("-")) {
-            if (searchString.matches("^[0-9]*-[0-9]*$")) {
-                //TODO Search in member id column
-                Log.d(TAG, "search by: Member ID");
-//                whereClause = COLUMN_MEMBER_ID_PRIMARY + "=?";
-//                whereArgs = new String[]{searchString};
-                whereClause = COLUMN_MEMBER_SGKS_CITY + " =? AND " + COLUMN_MEMBER_SGKS_MEMBER_ID + " LIKE ?";
-//                whereArgs = new String[]{strCurrentCity, searchString + "%"};
-            } else if (searchString.matches("^[0-9]*$")) {
-                //TODO Search in mobile no column
-                Log.d(TAG, "search by: Mobile");
-//              whereClause = COLUMN_MEMBER_MOBILE + "=?";
-//              whereArgs = new String[]{searchString};
-                whereClause = COLUMN_MEMBER_SGKS_CITY + " =? AND " + COLUMN_MEMBER_MOBILE + " LIKE ?";
-//              whereArgs = new String[]{strCurrentCity, searchString + "%"};
-            } else if (searchString.contains(" ")) {
-                //TODO Search in name & surname column and vice-versa
-                String[] splitStrings = searchString.split("\\s+");
-                String firstString, secondString, thirdString;
-                if (splitStrings.length == 2) {
-                    Log.d(TAG, "search by: Name Surname");
-                    firstString = splitStrings[0].trim();
-                    secondString = splitStrings[1].trim();
-//                  whereClause = "(" + COLUMN_MEMBER_FIRST_NAME + "=? AND " + COLUMN_MEMBER_LAST_NAME + "=?) OR (" + COLUMN_MEMBER_FIRST_NAME + "=? AND " + COLUMN_MEMBER_LAST_NAME + "=? )";
-//                  whereArgs = new String[]{firstString, secondString, secondString, firstString};
-                    whereClause = COLUMN_MEMBER_SGKS_CITY + " =? AND (" + "(" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? AND " + COLUMN_MEMBER_LAST_NAME + " LIKE ?) OR (" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? AND " + COLUMN_MEMBER_LAST_NAME + " LIKE ? ))";
-//                    whereArgs = new String[]{strCurrentCity, firstString + "%", secondString + "%", secondString + "%", firstString + "%"};
-                } else if (splitStrings.length == 3) {
-                    Log.d(TAG, "search by: FullName");
-                    firstString = splitStrings[0].trim();
-                    secondString = splitStrings[1].trim();
-                    thirdString = splitStrings[2].trim();
-//                    whereClause = "(" + COLUMN_MEMBER_FIRST_NAME + "=? AND " + COLUMN_MEMBER_MIDDLE_NAME + "=? AND " + COLUMN_MEMBER_LAST_NAME + "=?) OR (" + COLUMN_MEMBER_FIRST_NAME + "=? AND " + COLUMN_MEMBER_MIDDLE_NAME + "=? AND " + COLUMN_MEMBER_LAST_NAME + "=?)";
-//                    whereArgs = new String[]{firstString, secondString, thirdString, thirdString, secondString, firstString};
-                    whereClause = COLUMN_MEMBER_SGKS_CITY + " =? AND (" + "(" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? AND " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE ? AND " + COLUMN_MEMBER_LAST_NAME + " LIKE ?) OR (" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? AND " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE ? AND " + COLUMN_MEMBER_LAST_NAME + " LIKE ?))";
-//                    whereArgs = new String[]{strCurrentCity, firstString + "%", secondString + "%", thirdString + "%", thirdString + "%", secondString + "%", firstString + "%"};
-                }
-            } else if (searchString.matches("^[A-Za-z]*$")) {
-                //TODO Search in name OR surname column
-                Log.d(TAG, "search by: Name AND Surname");
-//                whereClause = COLUMN_MEMBER_FIRST_NAME + "=? OR " + COLUMN_MEMBER_LAST_NAME + "=?";
-//                whereArgs = new String[]{searchString, searchString};
-//                whereClause = "(" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? OR " + COLUMN_MEMBER_LAST_NAME + " LIKE ?) AND (" + COLUMN_MEMBER_LAST_NAME + " LIKE ? OR " + COLUMN_MEMBER_FIRST_NAME + " LIKE ? )";
-//                whereArgs = new String[]{searchString + "%", searchString + "%", searchString + "%", searchString + "%"};
-                whereClause = COLUMN_MEMBER_SGKS_CITY + " =? AND (" + COLUMN_MEMBER_FIRST_NAME + " LIKE ? OR " + COLUMN_MEMBER_LAST_NAME + " LIKE ? )";
-//                whereArgs = new String[]{strCurrentCity, searchString + "%", searchString + "%"};
+        String sqlQuery = "";
+        if (searchString.equalsIgnoreCase("")){
+            Log.i(TAG, "Display all records");
+            sqlQuery = "select * from "
+                    +TABLE_MEMBER_DETAILS_EN
+                    + " where "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext);
+            new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
+        }  else if (searchString.contains(" ")) {
+            //TODO Search in name & surname column and vice-versa
+            String[] splitStrings = searchString.split("\\s+");
+            String firstString, secondString, thirdString;
+            if (splitStrings.length == 2) {
+                Log.d(TAG, "search by: Name Surname");
+                firstString = splitStrings[0].trim();
+                secondString = splitStrings[1].trim();
+                /*sqlQuery = "select * from "
+                        + TABLE_MEMBER_DETAILS_EN
+                        + " where " + COLUMN_MEMBER_FIRST_NAME + " like " + "'" + firstString + "'"
+                        + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'" + secondString + "'";*/
+                new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
             }
+            if (splitStrings.length == 3) {
+                Log.d(TAG, "search by: FullName");
+                firstString = splitStrings[0].trim();
+                secondString = splitStrings[1].trim();
+                thirdString = splitStrings[2].trim();
+               /* sqlQuery = "select * from "
+                        + TABLE_MEMBER_DETAILS_EN
+                        + " where " + COLUMN_MEMBER_FIRST_NAME + " like " + "'" + firstString + "'"
+                        + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'" + secondString + "'"
+                        + " or " + COLUMN_MEMBER_LAST_NAME + " like " + "'" + thirdString + "'";*/
+                new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
+            }
+        } else if (searchString.matches("^[A-Za-z]*$")) {
+            //TODO Search in name OR surname column
+            Log.d(TAG, "search by: Name AND Surname");
+            sqlQuery = "select * from "
+                    +TABLE_MEMBER_DETAILS_EN
+                    + " where "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext)
+                    + " and "+ COLUMN_MEMBER_FIRST_NAME +"="+"'"+searchString+"'";
+            new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
         }
-        //Cursor cursor = sqLiteDatabase.query(tableName, tableColumns, whereClause, whereArgs, groupBy, having, orderBy);
-        Cursor cursorMember = mSqLiteDatabase.query(TABLE_MEMBER_DETAILS_EN, null, null, null, null, null, null);
+//        Cursor cursor = sqLiteDatabase.query(tableName, tableColumns, whereClause, whereArgs, groupBy, having, orderBy);
+//        Cursor cursorMember = mSqLiteDatabase.query(TABLE_MEMBER_DETAILS_EN, null, null, null, null, null, null);
+        Cursor cursorMember = mSqLiteDatabase.rawQuery(sqlQuery,null);
+        Log.i(TAG, "queryMembers: cursorMember.moveToFirst(): "+cursorMember.moveToFirst());
         if (cursorMember.moveToFirst()) {
             do {
-                    MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
-                    memberDetailsItem.setStrId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY)));
-                    memberDetailsItem.setStrFirstName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
-                    memberDetailsItem.setStrMiddleName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
-                    memberDetailsItem.setStrLastName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
-                    memberDetailsItem.setStrAddress(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
-                    memberDetailsItem.setStrCity(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY)));
-                    memberDetailsItem.setStrCityId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY_ID)));
-                    memberDetailsItem.setStrGender(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_GENDER)));
-                    memberDetailsItem.setStrMobileNumber(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MOBILE)));
-                    memberDetailsItem.setStrDateOfBirth(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH)));
-                    memberDetailsItem.setStrEmail(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_EMAIL)));
-                    memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP)));
-                    memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP_ID)));
-                    memberDetailsItem.setStrLatitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LATITUDE)));
-                    memberDetailsItem.setStrLongitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LONGITUDE)));
-                    memberDetailsItem.setStrMemberImageUrl(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IMAGE_URL)));
-                    arrMemDetails.add(memberDetailsItem);
+                MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
+                memberDetailsItem.setStrId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY_EN)));
+                memberDetailsItem.setStrFirstName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
+                memberDetailsItem.setStrMiddleName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
+                memberDetailsItem.setStrLastName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
+                memberDetailsItem.setStrAddress(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
+                memberDetailsItem.setStrCity(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY)));
+                memberDetailsItem.setStrCityId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY_ID)));
+                memberDetailsItem.setStrGender(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_GENDER)));
+                memberDetailsItem.setStrMobileNumber(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MOBILE)));
+                memberDetailsItem.setStrDateOfBirth(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH)));
+                memberDetailsItem.setStrEmail(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_EMAIL)));
+                memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP)));
+                memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP_ID)));
+                memberDetailsItem.setStrLatitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LATITUDE)));
+                memberDetailsItem.setStrLongitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LONGITUDE)));
+                memberDetailsItem.setStrMemberImageUrl(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IMAGE_URL)));
+                arrMemDetails.add(memberDetailsItem);
             } while (cursorMember.moveToNext());
         }
+
         if (cursorMember != null && !cursorMember.isClosed()) {
             cursorMember.close();
         }

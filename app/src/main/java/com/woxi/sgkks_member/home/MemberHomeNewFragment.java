@@ -66,6 +66,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private LinearLayoutManager linearLayoutManager;
     private boolean isApiInProgress = false;
     private DatabaseQueryHandler databaseQueryHandler;
+    private DatabaseQueryHandler databaseQueryHandler2;
     private int pageNumber = 0;
     private ProgressBar pbMemberListing;
     private String strSearchFullName = "";
@@ -94,7 +95,8 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
-        databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
+        databaseQueryHandler = new DatabaseQueryHandler(mContext, true);
+        databaseQueryHandler2 = new DatabaseQueryHandler(mContext, false);
         pbMemberListing = mParentView.findViewById(R.id.pbMemberListing);
         mEtMemberSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -105,9 +107,9 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (charSequence.length() > 3) {
                     strSearchFullName = charSequence.toString().toLowerCase();
-                    ArrayList<MemberDetailsItem> arrTrial = databaseQueryHandler.queryMembers("");
-                    Log.i("@@@", "onTextChanged: "+arrTrial.toString());
+                    ArrayList<MemberDetailsItem> arrTrial = databaseQueryHandler2.queryMembers(strSearchFullName);
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
+
                         requestToGetMembersData(0,false,true);
 
 
@@ -139,9 +141,17 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 }
             } else {
                 new AppCommonMethods(mContext).showAlert("You are Offline");
+                Log.i("@@@", "onResponse: "+databaseQueryHandler2.queryMembers(""));
             }
         }
-        requestToGetMembersData(pageNumber,true,false);
+        if (new AppCommonMethods(mContext).isNetworkAvailable()){
+            requestToGetMembersData(pageNumber,true,false);
+        } else {
+            ArrayList<MemberDetailsItem> arrTrial = databaseQueryHandler2.queryMembers(strSearchFullName);
+            mRvMemberList.setHasFixedSize(true);
+            mRvAdapter = new MemberListAdapter(arrTrial);
+            mRvMemberList.setAdapter(mRvAdapter);
+        }
     }
 
     private void setUpRecyclerView() {
@@ -211,13 +221,10 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                             } else if (resp instanceof MemberDetailsItem) {
                                 if(isFirstTime || isFromSearch){
                                     mArrMemDetails = memberDetailsItem.getArrMemberList();
-                                    databaseQueryHandler.insertOrUpdateAllMembersEnglish(mArrMemDetails);
                                     if (mArrMemDetails.size() != 0){
                                         mRvMemberList.setHasFixedSize(true);
                                         mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                         mRvMemberList.setAdapter(mRvAdapter);
-                                        ArrayList<MemberDetailsItem> memberDetailsItems = databaseQueryHandler.queryMembers("");
-                                        Log.i("abc", "onResponse: "+memberDetailsItems.toString());
                                     } else {
                                         mRvMemberList.setHasFixedSize(true);
                                         mRvAdapter = new MemberListAdapter(mArrMemDetails);
@@ -230,7 +237,6 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                         mArrMemDetails.addAll(arrNextMembers);
                                         mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
                                         mRvMemberList.getAdapter().notifyDataSetChanged();
-                                        ArrayList<MemberDetailsItem> memberDetailsItems = databaseQueryHandler.queryMembers("");
                                     } else {
                                         mArrMemDetails.addAll(arrNextMembers);
                                         mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
@@ -238,6 +244,8 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                         Toast.makeText(mContext,"All the Records are Listed", Toast.LENGTH_SHORT).show();
                                     }
                                 }
+                                databaseQueryHandler.insertOrUpdateAllMembersEnglish(mArrMemDetails);
+                                Log.i("@@@", "onResponse: REQUEST: "+databaseQueryHandler.queryMembers(""));
 
                             }
                         } catch (JSONException e) {
@@ -250,8 +258,9 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                isApiInProgress = false;
+                pDialog.dismiss();
                 pbMemberListing.setVisibility(View.GONE);
+                isApiInProgress = false;
                 new AppCommonMethods(mContext).LOG(0,"error_member_listing",error.toString());
                 new AppCommonMethods(mContext).showAlert("Something went wrong");
                 VolleyLog.e("Error: ", error.getMessage());
