@@ -11,11 +11,20 @@ import java.util.ArrayList;
 public class LocalDataSyncItem implements Serializable {
     private ArrayList<FamilyDetailsItem> arrFamilyDetailsItems = new ArrayList<>();
     private ArrayList<MemberDetailsItem> arrMemberDetailsItems = new ArrayList<>();
+    private ArrayList<MemberDetailsItem> arrMemberDetailsGujaratiItems = new ArrayList<>();
     private ArrayList<MemberAddressItem> arrMemberAddressItems = new ArrayList<>();
     private ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems = new ArrayList<>();
     private ArrayList<MessageDetailsItem> arrMessageDetailsItems = new ArrayList<>();
 
     public LocalDataSyncItem() {
+    }
+
+    public ArrayList<MemberDetailsItem> getArrMemberDetailsGujaratiItems() {
+        return arrMemberDetailsGujaratiItems;
+    }
+
+    public void setArrMemberDetailsGujaratiItems(ArrayList<MemberDetailsItem> arrMemberDetailsGujaratiItems) {
+        this.arrMemberDetailsGujaratiItems = arrMemberDetailsGujaratiItems;
     }
 
     public ArrayList<FamilyDetailsItem> getArrFamilyDetailsItems() {

@@ -54,6 +54,7 @@ public class DataSyncService extends Service {
     private static final int VOLLEY_SERVICE_REQUEST_SOCKET_TIMEOUT_MS = 3000;
     private static final int VOLLEY_SERVICE_REQUEST_RETRY_COUNT = 3;
     private ArrayList<MemberDetailsItem> arrMemberDetailsItems;
+    private ArrayList<MemberDetailsItem> arrMemberDetailsGujaratiItems;
     private ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems;
     private ArrayList<MessageDetailsItem> arrMessageDetailsItems;
     private String TAG = "DataSyncService";
@@ -108,7 +109,8 @@ public class DataSyncService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_SKS_OFFLINE, params,
+        String url = "http://www.mocky.io/v2/5c1b68e23300004d007fd771";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,/* AppURLs.API_SKS_OFFLINE*/url, /*params*/null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -118,21 +120,25 @@ public class DataSyncService extends Service {
                             if (resp instanceof LocalDataSyncItem) {
                                 LocalDataSyncItem localDataSyncItem = (LocalDataSyncItem) resp;
                                 arrMemberDetailsItems= localDataSyncItem.getArrMemberDetailsItems();
-                                arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems();
-                                arrMessageDetailsItems = localDataSyncItem.getArrMessageDetailsItems();
+                                arrMemberDetailsGujaratiItems = localDataSyncItem.getArrMemberDetailsGujaratiItems();
+                               /* arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems();
+                                arrMessageDetailsItems = localDataSyncItem.getArrMessageDetailsItems();*/
                                 boolean isCommitteeSuccessful = false;
                                 boolean isMessageSuccessful = false;
                                 try {
-                                    JSONObject jsonObject=response.getJSONObject("data");
-                                    if (jsonObject.has("current_timestamp") && !jsonObject.getString("current_timestamp").equalsIgnoreCase("")) {
+                                    //JSONObject jsonObject=response.getJSONObject("data");
+                                    if (response.has("current_timestamp") && !response.getString("current_timestamp").equalsIgnoreCase("")) {
                                         //This Server TimeStamp is used to maintain consistency in time
-                                        strCurrentServerTime = jsonObject.getString("current_timestamp");
+                                        strCurrentServerTime = response.getString("current_timestamp");
                                         new AppCommonMethods().LOG(0, TAG + "  CurrentServerTime- ", strCurrentServerTime);
                                     }
                                     if (arrMemberDetailsItems != null) {
-                                        databaseQueryHandler.insertOrUpdateAllMembersEnglish(MemberHomeNewFragment.mArrMemDetails);
+                                        databaseQueryHandler.insertOrUpdateAllMembersEnglish(arrMemberDetailsItems);
                                     }
-                                    if (arrCommitteeDetailsItems.size() != 0) {
+                                    if (arrMemberDetailsGujaratiItems != null) {
+                                        databaseQueryHandler.insertOrUpdateAllMembersGujarati(arrMemberDetailsGujaratiItems);
+                                    }
+                                   /* if (arrCommitteeDetailsItems.size() != 0) {
                                         isCommitteeSuccessful = databaseQueryHandler.insertOrUpdateAllCommittees(arrCommitteeDetailsItems, true);
                                         AppCommonMethods.putStringPref(PREFS_LAST_UPDATED_DATE, strCurrentServerTime, getApplicationContext());
                                         new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Committee Update Sync Complete At " + strCurrentServerTime);
@@ -144,7 +150,7 @@ public class DataSyncService extends Service {
                                             AppCommonMethods.putStringPref(PREFS_LAST_UPDATED_DATE, strCurrentServerTime, getApplicationContext());
                                             new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Message Update Sync Complete At " + strCurrentServerTime);
                                         }
-                                        else isMessageSuccessful = false;
+                                        else isMessageSuccessful = false;*/
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();

@@ -66,10 +66,10 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private LinearLayoutManager linearLayoutManager;
     private boolean isApiInProgress = false;
     private DatabaseQueryHandler databaseQueryHandler;
-    private DatabaseQueryHandler databaseQueryHandler2;
     private int pageNumber = 0;
     private ProgressBar pbMemberListing;
     private String strSearchFullName = "";
+    private ArrayList<MemberDetailsItem> arrTrial;
     public MemberHomeNewFragment() {
         // Required empty public constructor
     }
@@ -95,8 +95,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
-        databaseQueryHandler = new DatabaseQueryHandler(mContext, true);
-        databaseQueryHandler2 = new DatabaseQueryHandler(mContext, false);
+        databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
         pbMemberListing = mParentView.findViewById(R.id.pbMemberListing);
         mEtMemberSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -107,21 +106,18 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (charSequence.length() > 3) {
                     strSearchFullName = charSequence.toString().toLowerCase();
-                    ArrayList<MemberDetailsItem> arrTrial = databaseQueryHandler2.queryMembers(strSearchFullName);
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
-
                         requestToGetMembersData(0,false,true);
-
-
                     } else {
-                        new AppCommonMethods(mContext).showAlert("You are offline");
+                       new AppCommonMethods(mContext).showAlert("You need to be online to search member");
                     }
                 } else if (charSequence.length()==0){
                     strSearchFullName = "";
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
                         requestToGetMembersData(0,false, true);
                     } else {
-                        new AppCommonMethods(mContext).showAlert("You are offline");
+                        arrTrial = databaseQueryHandler.queryMembers("");
+                        fetchMembersOffline(arrTrial);
                     }
                 }
             }
@@ -140,17 +136,14 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                     requestToGetMembersData(pageNumber,true,false);
                 }
             } else {
-                new AppCommonMethods(mContext).showAlert("You are Offline");
-                Log.i("@@@", "onResponse: "+databaseQueryHandler2.queryMembers(""));
+                //new AppCommonMethods(mContext).showAlert("You are Offline");
             }
         }
         if (new AppCommonMethods(mContext).isNetworkAvailable()){
             requestToGetMembersData(pageNumber,true,false);
         } else {
-            ArrayList<MemberDetailsItem> arrTrial = databaseQueryHandler2.queryMembers(strSearchFullName);
-            mRvMemberList.setHasFixedSize(true);
-            mRvAdapter = new MemberListAdapter(arrTrial);
-            mRvMemberList.setAdapter(mRvAdapter);
+            arrTrial = databaseQueryHandler.queryMembers("");
+            fetchMembersOffline(arrTrial);
         }
     }
 
@@ -162,10 +155,17 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         onMemberClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(v));
-                Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
-                intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
-                startActivity(intentDetails);
+                if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                    MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(v));
+                    Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
+                    intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
+                    startActivity(intentDetails);
+                } else {
+                    MemberDetailsItem memberDetailsItem = arrTrial.get(mRvMemberList.getChildAdapterPosition(v));
+                    Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
+                    intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
+                    startActivity(intentDetails);
+                }
             }
         };
         //Following method call is for listening to scroll events
@@ -181,7 +181,11 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 requestToGetMembersData(pageNumber,true,false);
             }
         } else {
-            new AppCommonMethods(mContext).showAlert("You are Offline");
+            arrTrial = databaseQueryHandler.queryMembers(strSearchFullName);
+            Log.i(TAG, "fragmentBecameVisible: "+arrTrial);
+            mRvMemberList.setHasFixedSize(true);
+            mRvAdapter = new MemberListAdapter(arrTrial);
+            mRvMemberList.setAdapter(mRvAdapter);
         }
     }
 
@@ -244,9 +248,6 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                         Toast.makeText(mContext,"All the Records are Listed", Toast.LENGTH_SHORT).show();
                                     }
                                 }
-                                databaseQueryHandler.insertOrUpdateAllMembersEnglish(mArrMemDetails);
-                                Log.i("@@@", "onResponse: REQUEST: "+databaseQueryHandler.queryMembers(""));
-
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -286,9 +287,15 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
                 requestToGetMembersData(pageNumber,false,false);
             } else {
-                new AppCommonMethods(mContext).showAlert("You are offline");
+               // new AppCommonMethods(mContext).showAlert("You are offline");
             }
         }
+    }
+
+    private void fetchMembersOffline(ArrayList <MemberDetailsItem> arrTrial){
+        mRvMemberList.setHasFixedSize(true);
+        mRvAdapter = new MemberListAdapter(arrTrial);
+        mRvMemberList.setAdapter(mRvAdapter);
     }
 
 }

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
+import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.DatabaseConstants;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
 import com.woxi.sgkks_member.models.FamilyDetailsItem;
@@ -88,9 +89,11 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
+    /*-------------------------------------------MEMBER LISTING-------------------------------------------*/
+
     public boolean insertOrUpdateAllMembersEnglish(ArrayList<MemberDetailsItem> arrMemDetails) {
         //SQL Prepared Statement
-        String insertMemberPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_MEMBER_DETAILS_EN + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String insertMemberPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_MEMBER_DETAILS_EN + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         /*INSERT INTO used to insert data/row in table*/
             /*"INSERT OR REPLACE INTO" used to insert/replace data/row in table using primary key only.
@@ -163,10 +166,12 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 if (memberDetailsItem.getStrMemberImageUrl() != null) {
                     memberStatement.bindString(16, memberDetailsItem.getStrMemberImageUrl());
                 }
+                if (memberDetailsItem.getBolIsActive() != null) {
+                    memberStatement.bindString(17, memberDetailsItem.getBolIsActive());
+                }
                 memberStatement.execute();
             }
             mSqLiteDatabase.setTransactionSuccessful();
-            Log.i(TAG, "insertOrUpdateAllMembersEnglish: saved successfully");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -175,6 +180,150 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             mSqLiteDatabase.endTransaction();
         }
     }
+
+    public boolean insertOrUpdateAllMembersGujarati(ArrayList<MemberDetailsItem> arrMemDetails) {
+        //SQL Prepared Statement
+        String insertMemberPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_MEMBER_DETAILS_GJ + " VALUES (?,?,?,?,?,?,?)";
+
+        /*INSERT INTO used to insert data/row in table*/
+            /*"INSERT OR REPLACE INTO" used to insert/replace data/row in table using primary key only.
+            doesn't allow to use WHERE clause. It works only on primary key
+            * If primary key exists replace row (first delete and then insert row) else insert row directly*/
+        /* UPDATE TABLE_NAME SET COLUMN_1=?, COLUMN_2=? WHERE COLUMN_3=?       used to replace selected values/columns from table using WHERE clause
+         * It is helpful when table doesn't have a primary key column
+         * OR It is helpful when table's primary key column if not useful*/
+
+            /*UPDATE Example
+            insertMemberPreparedStatement = "UPDATE " + DatabaseHelper.TABLE_MEMBER_DETAILS + " SET " + COLUMN_MEMBER_ID_PRIMARY + "=?, " + COLUMN_MEMBER_FAMILY_ID_FOREIGN_KEY + "=?, "
+                    + COLUMN_MEMBER_SGKS_MEMBER_ID + "=?, " + COLUMN_MEMBER_SGKS_FAMILY_ID + "=?, " + COLUMN_MEMBER_FIRST_NAME + "=?, " + COLUMN_MEMBER_MIDDLE_NAME + "=?, "
+                    + COLUMN_MEMBER_LAST_NAME + "=?, " + COLUMN_MEMBER_GENDER + "=?, " + COLUMN_MEMBER_MOBILE + "=?, " + COLUMN_MEMBER_EMAIL + "=?, " + COLUMN_MEMBER_BLOOD_GROUP + "=?, "
+                    + COLUMN_MEMBER_MARITAL_STATUS + "=?, " + COLUMN_MEMBER_SGKS_AREA + "=?, " + COLUMN_MEMBER_LATITUDE + "=?, " + COLUMN_MEMBER_LONGITUDE + "=?, "
+                    + COLUMN_MEMBER_SGKS_CITY + "=?, " + COLUMN_MEMBER_ADDRESS_ID + "=?, " + COLUMN_MEMBER_IMAGE_URL + "=? "
+                    + " WHERE " + COLUMN_MEMBER_ID_PRIMARY + "=?";*/
+
+        SQLiteStatement memberStatement = mSqLiteDatabase.compileStatement(insertMemberPreparedStatement);
+        mSqLiteDatabase.beginTransaction();
+        MemberDetailsItem memberDetailsItem;
+        try {
+            for (int arrMemberIndex = 0; arrMemberIndex < arrMemDetails.size(); arrMemberIndex++) {
+                memberDetailsItem = arrMemDetails.get(arrMemberIndex);
+                memberStatement.clearBindings();
+                if (memberDetailsItem.getStrId() != null) {
+                    memberStatement.bindString(1, memberDetailsItem.getStrId());
+                }
+                if (memberDetailsItem.getStrFirstName() != null) {
+                    memberStatement.bindString(2, memberDetailsItem.getStrFirstName());
+                }
+                if (memberDetailsItem.getStrMiddleName() != null) {
+                    memberStatement.bindString(3, memberDetailsItem.getStrMiddleName());
+                }
+                if (memberDetailsItem.getStrLastName() != null) {
+                    memberStatement.bindString(4, memberDetailsItem.getStrLastName());
+                }
+                if (memberDetailsItem.getStrAddress() != null) {
+                    memberStatement.bindString(5, memberDetailsItem.getStrAddress());
+                }
+                if (memberDetailsItem.getStrLanguageId() != null) {
+                    memberStatement.bindString(6, memberDetailsItem.getStrLanguageId());
+                }
+                if (memberDetailsItem.getStrMemberId() != null) {
+                    memberStatement.bindString(7, memberDetailsItem.getStrMemberId());
+                }
+                memberStatement.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public ArrayList<MemberDetailsItem> queryMembers(String searchString) {
+        ArrayList<MemberDetailsItem> arrMemDetails = new ArrayList<>();
+        String sqlQuery = "";
+        if (searchString.equalsIgnoreCase("")){
+            Log.i(TAG, "Display all records");
+            sqlQuery = "select * from "
+                    +TABLE_MEMBER_DETAILS_EN
+            + " where "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext)
+            + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";
+            new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
+        }  else if (searchString.matches("^[A-Za-z]*$")) {
+            //TODO Search in name OR surname column
+            Log.d(TAG, "search by: Name AND Surname");
+            sqlQuery = "select * from "
+                    +TABLE_MEMBER_DETAILS_EN
+                    + " where "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext)
+                    + " and "+ COLUMN_MEMBER_FIRST_NAME +"="+"'"+searchString+"'"
+                    + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";
+
+            new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
+        } else if (searchString.contains(" ")) {
+            //TODO Search in name & surname column and vice-versa
+            String[] splitStrings = searchString.split("\\s+");
+            String firstString, secondString, thirdString;
+            if (splitStrings.length == 2) {
+                Log.d(TAG, "search by: Name Surname");
+                firstString = splitStrings[0].trim();
+                secondString = splitStrings[1].trim();
+                sqlQuery = "select * from "
+                        + TABLE_MEMBER_DETAILS_EN
+                        + " where " + COLUMN_MEMBER_FIRST_NAME + " like " + "'" + firstString + "'"
+                        + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'" + secondString + "'"
+                        + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";;
+                new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
+            }
+            if (splitStrings.length == 3) {
+                Log.d(TAG, "search by: FullName");
+                firstString = splitStrings[0].trim();
+                secondString = splitStrings[1].trim();
+                thirdString = splitStrings[2].trim();
+                sqlQuery = "select * from "
+                        + TABLE_MEMBER_DETAILS_EN
+                        + " where " + COLUMN_MEMBER_FIRST_NAME + " like " + "'" + firstString + "'"
+                        + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'" + secondString + "'"
+                        + " or " + COLUMN_MEMBER_LAST_NAME + " like " + "'" + thirdString + "'"
+                        + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";;
+                new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
+            }
+        }
+//        Cursor cursor = sqLiteDatabase.query(tableName, tableColumns, whereClause, whereArgs, groupBy, having, orderBy);
+    //   Cursor cursorMember = mSqLiteDatabase.query(TABLE_MEMBER_DETAILS_EN, null, null, null, null, null, null);
+        Cursor cursorMember = mSqLiteDatabase.rawQuery(sqlQuery,null);
+        Log.i(TAG, "queryMembers: cursorMember.moveToFirst(): "+cursorMember.moveToFirst());
+        if (cursorMember.moveToFirst()) {
+            do {
+                MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
+                memberDetailsItem.setStrId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY_EN)));
+                memberDetailsItem.setStrFirstName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
+                memberDetailsItem.setStrMiddleName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
+                memberDetailsItem.setStrLastName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
+                memberDetailsItem.setStrAddress(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
+                memberDetailsItem.setStrCity(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY)));
+                memberDetailsItem.setStrCityId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY_ID)));
+                memberDetailsItem.setStrGender(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_GENDER)));
+                memberDetailsItem.setStrMobileNumber(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MOBILE)));
+                memberDetailsItem.setStrDateOfBirth(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH)));
+                memberDetailsItem.setStrEmail(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_EMAIL)));
+                memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP)));
+                memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP_ID)));
+                memberDetailsItem.setStrLatitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LATITUDE)));
+                memberDetailsItem.setStrLongitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LONGITUDE)));
+                memberDetailsItem.setStrMemberImageUrl(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IMAGE_URL)));
+                arrMemDetails.add(memberDetailsItem);
+            } while (cursorMember.moveToNext());
+        }
+
+        if (cursorMember != null && !cursorMember.isClosed()) {
+            cursorMember.close();
+        }
+        return arrMemDetails;
+    }
+
+    /*-------------------------------------------MEMBER LISTING-------------------------------------------*/
 
     boolean insertOrUpdateAllAddresses(ArrayList<MemberAddressItem> arrMemberAddressItems, boolean isUpdate) {
         //SQL Prepared Statement
@@ -363,82 +512,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    public ArrayList<MemberDetailsItem> queryMembers(String searchString) {
-        ArrayList<MemberDetailsItem> arrMemDetails = new ArrayList<>();
-        String sqlQuery = "";
-        if (searchString.equalsIgnoreCase("")){
-            Log.i(TAG, "Display all records");
-            sqlQuery = "select * from "
-                    +TABLE_MEMBER_DETAILS_EN
-                    + " where "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext);
-            new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
-        }  else if (searchString.contains(" ")) {
-            //TODO Search in name & surname column and vice-versa
-            String[] splitStrings = searchString.split("\\s+");
-            String firstString, secondString, thirdString;
-            if (splitStrings.length == 2) {
-                Log.d(TAG, "search by: Name Surname");
-                firstString = splitStrings[0].trim();
-                secondString = splitStrings[1].trim();
-                /*sqlQuery = "select * from "
-                        + TABLE_MEMBER_DETAILS_EN
-                        + " where " + COLUMN_MEMBER_FIRST_NAME + " like " + "'" + firstString + "'"
-                        + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'" + secondString + "'";*/
-                new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
-            }
-            if (splitStrings.length == 3) {
-                Log.d(TAG, "search by: FullName");
-                firstString = splitStrings[0].trim();
-                secondString = splitStrings[1].trim();
-                thirdString = splitStrings[2].trim();
-               /* sqlQuery = "select * from "
-                        + TABLE_MEMBER_DETAILS_EN
-                        + " where " + COLUMN_MEMBER_FIRST_NAME + " like " + "'" + firstString + "'"
-                        + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'" + secondString + "'"
-                        + " or " + COLUMN_MEMBER_LAST_NAME + " like " + "'" + thirdString + "'";*/
-                new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
-            }
-        } else if (searchString.matches("^[A-Za-z]*$")) {
-            //TODO Search in name OR surname column
-            Log.d(TAG, "search by: Name AND Surname");
-            sqlQuery = "select * from "
-                    +TABLE_MEMBER_DETAILS_EN
-                    + " where "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext)
-                    + " and "+ COLUMN_MEMBER_FIRST_NAME +"="+"'"+searchString+"'";
-            new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
-        }
-//        Cursor cursor = sqLiteDatabase.query(tableName, tableColumns, whereClause, whereArgs, groupBy, having, orderBy);
-//        Cursor cursorMember = mSqLiteDatabase.query(TABLE_MEMBER_DETAILS_EN, null, null, null, null, null, null);
-        Cursor cursorMember = mSqLiteDatabase.rawQuery(sqlQuery,null);
-        Log.i(TAG, "queryMembers: cursorMember.moveToFirst(): "+cursorMember.moveToFirst());
-        if (cursorMember.moveToFirst()) {
-            do {
-                MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
-                memberDetailsItem.setStrId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY_EN)));
-                memberDetailsItem.setStrFirstName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
-                memberDetailsItem.setStrMiddleName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
-                memberDetailsItem.setStrLastName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
-                memberDetailsItem.setStrAddress(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
-                memberDetailsItem.setStrCity(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY)));
-                memberDetailsItem.setStrCityId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY_ID)));
-                memberDetailsItem.setStrGender(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_GENDER)));
-                memberDetailsItem.setStrMobileNumber(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MOBILE)));
-                memberDetailsItem.setStrDateOfBirth(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH)));
-                memberDetailsItem.setStrEmail(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_EMAIL)));
-                memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP)));
-                memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP_ID)));
-                memberDetailsItem.setStrLatitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LATITUDE)));
-                memberDetailsItem.setStrLongitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LONGITUDE)));
-                memberDetailsItem.setStrMemberImageUrl(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IMAGE_URL)));
-                arrMemDetails.add(memberDetailsItem);
-            } while (cursorMember.moveToNext());
-        }
 
-        if (cursorMember != null && !cursorMember.isClosed()) {
-            cursorMember.close();
-        }
-        return arrMemDetails;
-    }
 
     private MemberAddressItem queryAddress(String strFamilyId, String strMemberAddressId) {
         MemberAddressItem memberAddressItem = new MemberAddressItem();

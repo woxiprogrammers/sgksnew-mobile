@@ -47,6 +47,7 @@ public interface DatabaseConstants {
     String COLUMN_MEMBER_ADDRESS = "address";
     String COLUMN_DATE_OF_BIRTH = "date_of_birth";
     String COLUMN_MEMBER_IS_ACTIVE = "is_active";
+    String COLUMN_LANGUAGE_ID = "language_id";
 
     //Member's Address Table
     String TABLE_MEM_ADDRESS_DETAILS = "table_member_address";

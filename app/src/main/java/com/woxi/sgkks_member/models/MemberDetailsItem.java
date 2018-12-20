@@ -28,7 +28,34 @@ public class MemberDetailsItem implements Serializable {
     private String strAddress;
     private String strCreatedAt;
     private String strUpdatedAt;
+    private String strLanguageId;
+    private String bolIsActive;
     private ArrayList<MemberDetailsItem> arrMemberList;
+    private ArrayList<MemberDetailsItem> arrMemberListGujarati;
+
+    public String getBolIsActive() {
+        return bolIsActive;
+    }
+
+    public void setBolIsActive(String bolIsActive) {
+        this.bolIsActive = bolIsActive;
+    }
+
+    public String getStrLanguageId() {
+        return strLanguageId;
+    }
+
+    public void setStrLanguageId(String strLanguageId) {
+        this.strLanguageId = strLanguageId;
+    }
+
+    public ArrayList<MemberDetailsItem> getArrMemberListGujarati() {
+        return arrMemberListGujarati;
+    }
+
+    public void setArrMemberListGujarati(ArrayList<MemberDetailsItem> arrMemberListGujarati) {
+        this.arrMemberListGujarati = arrMemberListGujarati;
+    }
 
     public ArrayList<MemberDetailsItem> getArrMemberList() {
         return arrMemberList;
