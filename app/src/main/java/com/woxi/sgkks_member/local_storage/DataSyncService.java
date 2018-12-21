@@ -63,6 +63,7 @@ public class DataSyncService extends Service {
     private ArrayList<EventDataItem> arrEventGujarati;
     private ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems;
     private ArrayList<MessageDetailsItem> arrMessageDetailsItems;
+    private ArrayList<MessageDetailsItem> arrMessageGujaratiDetailsItems;
     private String TAG = "DataSyncService";
     private DatabaseQueryHandler databaseQueryHandler;
     private String strCurrentServerTime = "";
@@ -131,8 +132,8 @@ public class DataSyncService extends Service {
                                 arrCityGujaratiItems = localDataSyncItem.getArrCityItemsGujarati();
                                 arrEventEnglish = localDataSyncItem.getArrEventDataItem();
                                 arrEventGujarati = localDataSyncItem.getArrEventDataGujaratiItem();
-                               /* arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems();
-                                arrMessageDetailsItems = localDataSyncItem.getArrMessageDetailsItems();*/
+                               /* arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems(); */
+                                arrMessageDetailsItems = localDataSyncItem.getArrMessageDetailsItems();
                                 boolean isCommitteeSuccessful = false;
                                 boolean isMessageSuccessful = false;
                                 try {
@@ -158,6 +159,9 @@ public class DataSyncService extends Service {
                                     }
                                     if(arrEventGujarati != null){
                                         databaseQueryHandler.insertOrUpdateEventGujarati(arrEventGujarati);
+                                    }
+                                    if (arrMessageDetailsItems != null){
+
                                     }
                                    /* if (arrCommitteeDetailsItems.size() != 0) {
                                         isCommitteeSuccessful = databaseQueryHandler.insertOrUpdateAllCommittees(arrCommitteeDetailsItems, true);

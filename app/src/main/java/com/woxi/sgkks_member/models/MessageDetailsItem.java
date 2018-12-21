@@ -16,6 +16,52 @@ public class MessageDetailsItem implements Serializable {
     private String messageType;
     private String messageCity;
     private String messageIsActive;
+    private String id;
+    private String langugeId;
+    private String messageCityId;
+    private String isActive;
+    private String messageDate;
+    private String messageTypeId;
+
+    public String getMessageTypeId() {
+        return messageTypeId;
+    }
+
+    public void setMessageTypeId(String messageTypeId) {
+        this.messageTypeId = messageTypeId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getLangugeId() {
+        return langugeId;
+    }
+
+    public void setLangugeId(String langugeId) {
+        this.langugeId = langugeId;
+    }
+
+    public String getMessageCityId() {
+        return messageCityId;
+    }
+
+    public void setMessageCityId(String messageCityId) {
+        this.messageCityId = messageCityId;
+    }
+
+    public String getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(String isActive) {
+        this.isActive = isActive;
+    }
 
     public String getMessageDate() {
         return messageDate;
@@ -25,7 +71,7 @@ public class MessageDetailsItem implements Serializable {
         this.messageDate = messageDate;
     }
 
-    private String messageDate;
+
     private ArrayList<MessageDetailsItem> arrMessageList;
 
     public ArrayList<MessageDetailsItem> getArrMessageList() {

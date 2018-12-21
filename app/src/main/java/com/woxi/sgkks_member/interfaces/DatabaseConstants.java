@@ -75,15 +75,20 @@ public interface DatabaseConstants {
 
     //Message/News Details Table
     String TABLE_MESSAGE_NEWS_DETAILS = "table_messages";
+    String TABLE_MESSAGE_NEWS_DETAILS_GJ = "table_messages_gj";
     //    String COLUMN_MESSAGES_PRIMARY_INDEX = "message_index_primary";
     String COLUMN_MESSAGES_ID_PRIMARY = "message_id_primary";
+    String COLUMN_MESSAGES_ID_FOREIGN = "message_id_foreign";
     String COLUMN_MESSAGES_TITLE = "message_title";
     String COLUMN_MESSAGES_DESCRIPTION = "message_description";
     String COLUMN_MESSAGES_IMAGE_URL = "message_image_url";
     String COLUMN_MESSAGES_CREATED_DATE = "message_date";
     String COLUMN_MESSAGES_TYPE = "message_type";
+    String COLUMN_MESSAGES_TYPE_ID = "message_type_id";
     String COLUMN_MESSAGES_CITY = "message_city";
+    String COLUMN_MESSAGES_CITY_ID = "message_city_id";
     String COLUMN_MESSAGES_IS_ACTIVE = "is_active";
+    String COLUMN_MESSAGE_LANGUAGE_ID = "langauge_id";
 
 
     //TABLES CITIES

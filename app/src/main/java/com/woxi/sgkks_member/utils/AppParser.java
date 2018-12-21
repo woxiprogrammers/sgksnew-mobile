@@ -141,14 +141,6 @@ public class AppParser implements AppConstants {
     public static Object parseMessageResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
         MessageAndClassifiedResponseItem messageAndClassifiedResponseItem = new MessageAndClassifiedResponseItem();
-        /*if (jsonResponseObject.has("pagination") && jsonResponseObject.optJSONObject("pagination") != null) {
-            JSONObject jsonPaginationObject = jsonResponseObject.optJSONObject("pagination");
-            if (jsonPaginationObject != null) {
-                if (jsonPaginationObject.has("next_page_url") && jsonPaginationObject.optString("next_page_url") != null) {
-                    messageAndClassifiedResponseItem.setStrNextPageUrl(jsonPaginationObject.optString("next_page_url"));
-                }
-            }
-        }*/
         if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
             JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
             ArrayList<MessageDetailsItem> arrNewsDetails = new ArrayList<>();
@@ -453,6 +445,8 @@ public class AppParser implements AppConstants {
                 }
                 localDataSyncItem.setArrCityItemsGujarati(arrCityItemGujarati);
             }
+        } else {
+            Log.i(TAG, "parseLocalDataSyncResponse: Cities not present");
         }
         if (jsonObject.has("events") && jsonObject.optJSONObject("events") != null) {
             Log.i(TAG, "parseLocalDataSyncResponse: Events is present");
@@ -544,8 +538,60 @@ public class AppParser implements AppConstants {
                 }
                 localDataSyncItem.setArrEventDataGujaratiItem(arrEventGujaratiDataItems);
             }
+        } else {
+            Log.i(TAG, "parseLocalDataSyncResponse: Events not present");
         }
+        if (jsonObject.has("messages") && jsonObject.optJSONObject("messages") != null) {
+            ArrayList<MessageDetailsItem> arrMessageDetailsItems = new ArrayList<>();
+            ArrayList<MessageDetailsItem> arrMessageGujaratiDetailsItems = new ArrayList<>();
+            JSONObject jsonObjectMessages = jsonObject.optJSONObject("messages");
+            if (jsonObjectMessages.has("message_en") && jsonObjectMessages.optJSONArray("message_en") != null){
+                Log.i(TAG, "parseLocalDataSyncResponse: message_en present");
+                JSONArray jsonArray = jsonObjectMessages.optJSONArray("message_en");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++){
+                    MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
+                    JSONObject jsonObjectMessage = jsonArray.optJSONObject(arrIndex);
+                    if (jsonObjectMessage.has("id") && jsonObjectMessage.optString("id") != null){
+                        messageDetailsItem.setId(jsonObjectMessage.optString("id"));
+                    }
+                    if (jsonObjectMessage.has("title") && jsonObjectMessage.optString("title") != null){
+                        messageDetailsItem.setMessageTitle(jsonObjectMessage.optString("title"));
+                    }
+                    if (jsonObjectMessage.has("description") && jsonObjectMessages.optString("description") != null){
+                        messageDetailsItem.setMessageDescription(jsonObjectMessage.optString("description"));
+                    }
+                    if (jsonObjectMessages.has("message_type") && jsonObjectMessages.optString("message_type") != null){
+                        messageDetailsItem.setMessageType(jsonObjectMessage.optString("message_type"));
+                    }
+                    if (jsonObjectMessages.has("message_type_id") && jsonObjectMessages.optString("message_type_id") != null){
+                        messageDetailsItem.setMessageTypeId(jsonObjectMessage.optString("message_type_id"));
+                    }
+                    if (jsonObjectMessages.has("is_active") && jsonObjectMessages.optString("is_active") != null){
+                        messageDetailsItem.setIsActive(jsonObjectMessages.optString("is_active"));
+                    }
+                    if (jsonObjectMessages.has("city") && jsonObjectMessages.optString("city") != null){
+                        messageDetailsItem.setMessageCity(jsonObjectMessages.optString("city"));
+                    }
+                    if (jsonObjectMessages.has("city_id") && jsonObjectMessages.optString("city_id") != null){
+                        messageDetailsItem.setMessageCityId(jsonObjectMessage.optString("city_id"));
+                    }
+                    if (jsonObjectMessages.has("message_date") && jsonObjectMessages.optString("message_date") != null){
+                        messageDetailsItem.setMessageDate(jsonObjectMessage.optString("message_date"));
+                    }
+                    if (jsonObjectMessages.has("image_url") && jsonObjectMessages.optString("image_url") != null){
+                        messageDetailsItem.setMessageImage(jsonObjectMessage.optString("image_url"));
+                    }
+                    arrMessageDetailsItems.add(messageDetailsItem);
+                }
+                localDataSyncItem.setArrMessageDetailsItems(arrMessageDetailsItems);
 
+            }
+            if (jsonObjectMessages.has("message_gj") && jsonObjectMessages.optJSONArray("message_gj") != null){
+                Log.i(TAG, "parseLocalDataSyncResponse: message_gn present");    
+            }
+        } else {
+            Log.i(TAG, "parseLocalDataSyncResponse: Messages not present");
+        }
         /*if (jsonResponseObject.has("committees") && jsonResponseObject.optString("committees") != null) {
             ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems = new ArrayList<>();
             JSONArray jsonCommitteeArray = jsonResponseObject.optJSONArray("committees");
@@ -574,40 +620,7 @@ public class AppParser implements AppConstants {
             }
             localDataSyncItem.setArrCommitteeDetailsItems(arrCommitteeDetailsItems);
         }
-        if (jsonResponseObject.has("messages") && jsonResponseObject.optString("messages") != null) {
-            ArrayList<MessageDetailsItem> arrMessageDetailsItems = new ArrayList<>();
-            JSONArray jsonMessageArray = jsonResponseObject.optJSONArray("messages");
-            if (jsonMessageArray != null) {
-                MessageDetailsItem messageDetailsItem;
-                for (int arrIndex = 0; arrIndex < jsonMessageArray.length(); arrIndex++) {
-                    messageDetailsItem = new MessageDetailsItem();
-                    JSONObject jsonObject = jsonMessageArray.optJSONObject(arrIndex);
-                    if (jsonObject.has("id") && jsonObject.getString("id") != null) {
-                        messageDetailsItem.setMessageID(jsonObject.getString("id"));
-                    }
-                    if (jsonObject.has("title") && jsonObject.getString("title") != null) {
-                        messageDetailsItem.setMessageTitle(jsonObject.getString("title"));
-                    }
-                    if (jsonObject.has("msg_desc") && jsonObject.getString("msg_desc") != null) {
-                        messageDetailsItem.setMessageDescription(jsonObject.getString("msg_desc"));
-                    }
-                    if (jsonObject.has("msg_url") && jsonObject.getString("msg_url") != null) {
-                        messageDetailsItem.setMessageImage(jsonObject.getString("msg_url"));
-                    }
-                    if (jsonObject.has("created_at") && jsonObject.getString("created_at") != null) {
-                        messageDetailsItem.setMessageCreateDate(jsonObject.getString("created_at"));
-                    }
-                    if (jsonObject.has("msg_type") && jsonObject.getString("msg_type") != null) {
-                        messageDetailsItem.setMessageType(jsonObject.getString("msg_type"));
-                    }
-                    if (jsonObject.has("city") && jsonObject.getString("city") != null) {
-                        messageDetailsItem.setMessageCity(jsonObject.getString("city"));
-                    }
-                    arrMessageDetailsItems.add(messageDetailsItem);
-                }
-            }
-            localDataSyncItem.setArrMessageDetailsItems(arrMessageDetailsItems);
-        }*/
+       */
         return localDataSyncItem;
     }
 
