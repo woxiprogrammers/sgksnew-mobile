@@ -17,6 +17,7 @@ import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.home.HomeActivity;
 import com.woxi.sgkks_member.home.MemberHomeNewFragment;
+import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
 import com.woxi.sgkks_member.models.FamilyDetailsItem;
 import com.woxi.sgkks_member.models.LocalDataSyncItem;
@@ -55,6 +56,8 @@ public class DataSyncService extends Service {
     private static final int VOLLEY_SERVICE_REQUEST_RETRY_COUNT = 3;
     private ArrayList<MemberDetailsItem> arrMemberDetailsItems;
     private ArrayList<MemberDetailsItem> arrMemberDetailsGujaratiItems;
+    private ArrayList<CityIteam> arrCityEnglishItems;
+    private ArrayList<CityIteam> arrCityGujaratiItems;
     private ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems;
     private ArrayList<MessageDetailsItem> arrMessageDetailsItems;
     private String TAG = "DataSyncService";
@@ -109,7 +112,7 @@ public class DataSyncService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String url = "http://www.mocky.io/v2/5c1b68e23300004d007fd771";
+        String url = "http://www.mocky.io/v2/5c1bda213100002a00103ef0";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,/* AppURLs.API_SKS_OFFLINE*/url, /*params*/null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -121,12 +124,13 @@ public class DataSyncService extends Service {
                                 LocalDataSyncItem localDataSyncItem = (LocalDataSyncItem) resp;
                                 arrMemberDetailsItems= localDataSyncItem.getArrMemberDetailsItems();
                                 arrMemberDetailsGujaratiItems = localDataSyncItem.getArrMemberDetailsGujaratiItems();
+                                arrCityEnglishItems = localDataSyncItem.getArrCityItems();
+                                arrCityGujaratiItems = localDataSyncItem.getArrCityItemsGujarati();
                                /* arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems();
                                 arrMessageDetailsItems = localDataSyncItem.getArrMessageDetailsItems();*/
                                 boolean isCommitteeSuccessful = false;
                                 boolean isMessageSuccessful = false;
                                 try {
-                                    //JSONObject jsonObject=response.getJSONObject("data");
                                     if (response.has("current_timestamp") && !response.getString("current_timestamp").equalsIgnoreCase("")) {
                                         //This Server TimeStamp is used to maintain consistency in time
                                         strCurrentServerTime = response.getString("current_timestamp");
@@ -137,6 +141,12 @@ public class DataSyncService extends Service {
                                     }
                                     if (arrMemberDetailsGujaratiItems != null) {
                                         databaseQueryHandler.insertOrUpdateAllMembersGujarati(arrMemberDetailsGujaratiItems);
+                                    }
+                                    if(arrCityEnglishItems != null){
+                                        databaseQueryHandler.insertOrUpdateCitiesEnglish(arrCityEnglishItems);
+                                    }
+                                    if (arrCityGujaratiItems != null){
+                                        databaseQueryHandler.insertOrUpdateCitiesGujarati(arrCityGujaratiItems);
                                     }
                                    /* if (arrCommitteeDetailsItems.size() != 0) {
                                         isCommitteeSuccessful = databaseQueryHandler.insertOrUpdateAllCommittees(arrCommitteeDetailsItems, true);

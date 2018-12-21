@@ -49,12 +49,7 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
     // If a database already exists on disk with the same DATABASE_NAME, this method will NOT be called.
     @Override
     public void onCreate(SQLiteDatabase db) {
-       /* String CREATE_FAMILY_DETAILS_TABLE_QUERY = "CREATE TABLE " + TABLE_FAMILY_DETAILS + " (" + COLUMN_FAMILY_ID_PRIMARY + " INTEGER PRIMARY KEY, "
-                + COLUMN_FAMILY_SGKS_FAMILY_ID + " VARCHAR(500), " + COLUMN_FAMILY_SURNAME + " VARCHAR(500), " + COLUMN_FAMILY_NATIVE_PLACE + " VARCHAR(500), "
-                + COLUMN_FAMILY_CITY + " VARCHAR(500))";
-        new AppCommonMethods().LOG(0, TAG, CREATE_FAMILY_DETAILS_TABLE_QUERY);*/
 
-        //+ COLUMN_MEMBER_PRIMARY_INDEX + " INTEGER PRIMARY KEY AUTOINCREMENT, "
         String CREATE_MEMBER_DETAILS_TABLE_QUERY_EN = "CREATE TABLE " + TABLE_MEMBER_DETAILS_EN
                 + " ("
                 + COLUMN_MEMBER_ID_PRIMARY_EN + " VARCHAR(500) PRIMARY KEY, "
@@ -91,31 +86,31 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + ")";
         new AppCommonMethods().LOG(0, TAG, CREATE_MEMBER_DETAILS_TABLE_QUERY_GJ);
 
-        /*String CREATE_MEMBER_ADDRESS_TABLE_QUERY = "CREATE TABLE " + TABLE_MEM_ADDRESS_DETAILS + " (" + COLUMN_ADDRESS_PRIMARY_INDEX + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_ADDRESS_FAMILY_ID_FOREIGN_KEY + " VARCHAR(500), " + COLUMN_ADDRESS_ADDRESS_ID + " VARCHAR(500), " + COLUMN_ADDRESS_ADDRESS_LINE + " VARCHAR(500), " + COLUMN_ADDRESS_AREA + " VARCHAR(500), " +
-                COLUMN_ADDRESS_LANDMARK + " VARCHAR(500), " + COLUMN_ADDRESS_CITY + " VARCHAR(500), " + COLUMN_ADDRESS_PINCODE + " VARCHAR(500), "
-                + COLUMN_ADDRESS_STATE + " VARCHAR(500), " + COLUMN_ADDRESS_COUNTRY + " VARCHAR(500), " + "FOREIGN KEY(" + COLUMN_ADDRESS_FAMILY_ID_FOREIGN_KEY + ") REFERENCES " + TABLE_FAMILY_DETAILS + " (" + COLUMN_FAMILY_ID_PRIMARY + "))";
-        new AppCommonMethods().LOG(0, TAG, CREATE_MEMBER_ADDRESS_TABLE_QUERY);
+        String CREATE_CITY_TABLE_QUERY_EN = "CREATE TABLE "+ TABLE_CITIES_EN
+                + " ("
+                + COLUMN_CITY_ID_PRIMARY + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_CITY_NAME+ " VARCHAR(500), "
+                + COLUMN_STATE_ID+ " VARCHAR(500), "
+                + COLUMN_CITY_IS_ACTIVE+" BOOLEAN"
+                + ")";
+        new AppCommonMethods().LOG(0,TAG,CREATE_CITY_TABLE_QUERY_EN);
 
-        //+ COLUMN_COMMITTEE_PRIMARY_INDEX + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-        String CREATE_COMMITTEE_DETAILS_TABLE_QUERY = "CREATE TABLE " + TABLE_COMMITTEE_DETAILS + " (" + COLUMN_COMMITTEE_ID_PRIMARY + " VARCHAR(500) PRIMARY KEY, "
-                + COLUMN_COMMITTEE_NAME + " VARCHAR(500), " + COLUMN_COMMITTEE_DESCRIPTION + " TEXT, " + COLUMN_COMMITTEE_CITY + " VARCHAR(500), "
-                + COLUMN_COMMITTEE_MEMBERS + "  TEXT, " + COLUMN_COMMITTEE_IS_ACTIVE + " VARCHAR(500))";
-        new AppCommonMethods().LOG(0, TAG, CREATE_COMMITTEE_DETAILS_TABLE_QUERY);
+        String CREATE_CITY_TABLE_QUERY_GJ = "CREATE TABLE "+ TABLE_CITIES_GJ
+                + "("
+                + COLUMN_CITY_ID_PRIMARY + " VARCAHR(500) PRIMARY KEY,"
+                + COLUMN_CITY_NAME+ " VARCHAR(500), "
+                + COLUMN_CITY_ID_FOREIGN + " VARCHAR(500), "
+                + COLUMN_CITY_LANGUAGE_ID+ " VARCHAR(500), "
+                + "FOREIGN KEY(" + COLUMN_CITY_ID_FOREIGN + ") REFERENCES "
+                + TABLE_CITIES_EN + " ("+ COLUMN_CITY_ID_PRIMARY + ")"
+                + ")";
+        new AppCommonMethods().LOG(0,TAG,CREATE_CITY_TABLE_QUERY_GJ);
 
-        //+ COLUMN_MESSAGES_PRIMARY_INDEX + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-        String CREATE_MESSAGE_NEWS_DETAILS_TABLE_QUERY = "CREATE TABLE " + TABLE_MESSAGE_NEWS_DETAILS + " (" + COLUMN_MESSAGES_ID_PRIMARY + " VARCHAR(500) PRIMARY KEY, "
-                + COLUMN_MESSAGES_TITLE + " VARCHAR(500), " + COLUMN_MESSAGES_DESCRIPTION + " TEXT, " + COLUMN_MESSAGES_IMAGE_URL + " VARCHAR(500), "
-                + COLUMN_MESSAGES_CREATED_DATE + " VARCHAR(500), " + COLUMN_MESSAGES_TYPE + " VARCHAR(500), "
-                + COLUMN_MESSAGES_CITY + " VARCHAR(500), " + COLUMN_MESSAGES_IS_ACTIVE + " VARCHAR(500))";
-        new AppCommonMethods().LOG(0, TAG, CREATE_MESSAGE_NEWS_DETAILS_TABLE_QUERY);*/
-
-        //db.execSQL(CREATE_FAMILY_DETAILS_TABLE_QUERY);
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_EN);
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_GJ);
-        /*db.execSQL(CREATE_MEMBER_ADDRESS_TABLE_QUERY);
-        db.execSQL(CREATE_COMMITTEE_DETAILS_TABLE_QUERY);
-        db.execSQL(CREATE_MESSAGE_NEWS_DETAILS_TABLE_QUERY);*/
+        db.execSQL(CREATE_CITY_TABLE_QUERY_EN);
+        db.execSQL(CREATE_CITY_TABLE_QUERY_GJ);
+
     }
 
     // Called when the database needs to be upgraded.
@@ -127,10 +122,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
             // Simplest implementation is to drop all old tables and recreate them
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBER_DETAILS_EN);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBER_DETAILS_GJ);
-           /* db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEM_ADDRESS_DETAILS);
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAMILY_DETAILS);
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMMITTEE_DETAILS);
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE_NEWS_DETAILS);*/
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CITIES_EN);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CITIES_GJ);
             onCreate(db);
         }
     }

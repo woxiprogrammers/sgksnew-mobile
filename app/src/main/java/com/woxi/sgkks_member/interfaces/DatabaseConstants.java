@@ -22,6 +22,7 @@ public interface DatabaseConstants {
     //Member's Details Table
     String TABLE_MEMBER_DETAILS_EN = "table_members_en";
     String TABLE_MEMBER_DETAILS_GJ = "table_members_gj";
+
     //    String COLUMN_MEMBER_PRIMARY_INDEX = "member_index_primary";
     String COLUMN_MEMBER_ID_PRIMARY_EN = "member_id_primary_en";
     String COLUMN_MEMBER_ID_PRIMARY_GJ = "member_id_primary_gj";
@@ -83,4 +84,17 @@ public interface DatabaseConstants {
     String COLUMN_MESSAGES_TYPE = "message_type";
     String COLUMN_MESSAGES_CITY = "message_city";
     String COLUMN_MESSAGES_IS_ACTIVE = "is_active";
+
+
+    //TABLES CITIES
+    String TABLE_CITIES_GJ = "table_cities_gj";
+    String TABLE_CITIES_EN = "table_cities_en";
+
+    //COLUMN CITIES TABLE
+    String COLUMN_CITY_ID_PRIMARY = "city_id";
+    String COLUMN_CITY_NAME = "city_name";
+    String COLUMN_STATE_ID = "state_id";
+    String COLUMN_CITY_IS_ACTIVE = "is_active";
+    String COLUMN_CITY_ID_FOREIGN = "city_id_foreign";
+    String COLUMN_CITY_LANGUAGE_ID = "language_id";
 }

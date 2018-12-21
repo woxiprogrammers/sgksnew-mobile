@@ -402,6 +402,59 @@ public class AppParser implements AppConstants {
         } else {
             Log.i(TAG, "parseLocalDataSyncResponse: members not present");
         }
+
+        if (jsonObject.has("cities") && jsonObject.optJSONObject("cities") != null){
+            ArrayList<CityIteam> arrCityItem = new ArrayList<>();
+            ArrayList<CityIteam> arrCityItemGujarati = new ArrayList<>();
+            CityIteam cityIteam;
+            JSONObject jsonObjectCity = jsonObject.optJSONObject("cities");
+            if(jsonObjectCity.has("city_en") && jsonObjectCity.optJSONArray("city_en") != null){
+                Log.i(TAG, "parseLocalDataSyncResponse: city_en present");
+                JSONArray jsonArray = jsonObjectCity.optJSONArray("city_en");
+                for (int arrIndex=0; arrIndex < jsonArray.length(); arrIndex++){
+                    cityIteam = new CityIteam();
+                    JSONObject cityJsonObject = jsonArray.getJSONObject(arrIndex);
+                    if (cityJsonObject.has("id") && cityJsonObject.optString("id") != null && !cityJsonObject.optString("id").equalsIgnoreCase(null)){
+                        cityIteam.setIntCityId(Integer.valueOf(cityJsonObject.optString("id")));
+                    }
+                    if(cityJsonObject.has("name") && cityJsonObject.optString("name") != null && !cityJsonObject.optString("name").equalsIgnoreCase(null)){
+                        cityIteam.setStrCityName(cityJsonObject.optString("name"));
+                        Log.i(TAG, "parseLocalDataSyncResponse: "+(cityJsonObject.optString("name")));
+                    }
+                    if(cityJsonObject.has("state_id") && cityJsonObject.optString("state_id") != null && !cityJsonObject.optString("state_id").equalsIgnoreCase(null)){
+                        cityIteam.setStrStateId(cityJsonObject.optString("state_id"));
+                    }
+                    if(cityJsonObject.has("is_active") && cityJsonObject.optString("is_active") != null && !cityJsonObject.optString("is_active").equalsIgnoreCase(null)){
+                        cityIteam.setIs_active(cityJsonObject.optString("is_active"));
+                    }
+                    arrCityItem.add(cityIteam);
+                }
+                localDataSyncItem.setArrCityItems(arrCityItem);
+            }
+            if(jsonObjectCity.has("city_gj") && jsonObjectCity.optJSONArray("city_gj") != null){
+                Log.i(TAG, "parseLocalDataSyncResponse: city_gj present");
+                JSONArray jsonArray = jsonObjectCity.optJSONArray("city_gj");
+                for (int arrIndex=0; arrIndex < jsonArray.length(); arrIndex++){
+                    cityIteam = new CityIteam();
+                    JSONObject cityJsonObject = jsonArray.getJSONObject(arrIndex);
+                    Log.i(TAG, "parseLocalDataSyncResponse: GJ--------"+(cityJsonObject.has("id") && cityJsonObject.optString("id") != null && !cityJsonObject.optString("id").equalsIgnoreCase(null)));
+                    if (cityJsonObject.has("id") && cityJsonObject.optString("id") != null && !cityJsonObject.optString("id").equalsIgnoreCase(null)){
+                        cityIteam.setId(cityJsonObject.optString("id"));
+                    }
+                    if (cityJsonObject.has("city_id") && cityJsonObject.optString("city_id") != null && !cityJsonObject.optString("city_id").equalsIgnoreCase(null)){
+                        cityIteam.setIntCityId(Integer.valueOf(cityJsonObject.optString("city_id")));
+                    }
+                    if(cityJsonObject.has("name") && cityJsonObject.optString("name") != null && !cityJsonObject.optString("name").equalsIgnoreCase(null)){
+                        cityIteam.setStrCityName(cityJsonObject.optString("name"));
+                    }
+                    if(cityJsonObject.has("language_id") && cityJsonObject.optString("language_id") != null && !cityJsonObject.optString("language_id").equalsIgnoreCase(null)){
+                        cityIteam.setLanguageId(cityJsonObject.optString("language_id"));
+                    }
+                    arrCityItemGujarati.add(cityIteam);
+                }
+                localDataSyncItem.setArrCityItemsGujarati(arrCityItemGujarati);
+            }
+        }
         /*if (jsonResponseObject.has("committees") && jsonResponseObject.optString("committees") != null) {
             ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems = new ArrayList<>();
             JSONArray jsonCommitteeArray = jsonResponseObject.optJSONArray("committees");

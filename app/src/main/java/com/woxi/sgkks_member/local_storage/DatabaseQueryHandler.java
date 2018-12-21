@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.DatabaseConstants;
+import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
 import com.woxi.sgkks_member.models.FamilyDetailsItem;
 import com.woxi.sgkks_member.models.MemberAddressItem;
@@ -18,6 +19,7 @@ import com.woxi.sgkks_member.utils.AppCommonMethods;
 import java.util.ArrayList;
 
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LAST_COMMITTEE_ID;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LAST_FAMILY_ID;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LAST_MESSAGE_ID;
@@ -324,6 +326,106 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     }
 
     /*-------------------------------------------MEMBER LISTING-------------------------------------------*/
+
+    /*-------------------------------------------CITY LISTING-------------------------------------------*/
+
+    public boolean insertOrUpdateCitiesEnglish(ArrayList<CityIteam> arrCityItems){
+        String inserCityPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_CITIES_EN + " VALUES (?,?,?,?)";
+        SQLiteStatement cityStatement = mSqLiteDatabase.compileStatement(inserCityPreparedStatement);
+        mSqLiteDatabase.beginTransaction();
+        CityIteam cityIteam;
+        try{
+            for (int arrCityIndex = 0; arrCityIndex < arrCityItems.size(); arrCityIndex++){
+                cityIteam = arrCityItems.get(arrCityIndex);
+                cityStatement.clearBindings();
+                if (cityIteam.getIntCityId() != -1){
+                    cityStatement.bindString(1,String.valueOf(cityIteam.getIntCityId()));
+                }
+                if (cityIteam.getStrCityName() != null){
+                    cityStatement.bindString(2,cityIteam.getStrCityName());
+                }
+                if (cityIteam.getStrStateId() != null){
+                    cityStatement.bindString(3,cityIteam.getStrStateId());
+                }
+                if (cityIteam.getIs_active() != null){
+                    cityStatement.bindString(4,cityIteam.getIs_active());
+                }
+                cityStatement.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public boolean insertOrUpdateCitiesGujarati(ArrayList<CityIteam> arrCityItems){
+        String insertCityPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_CITIES_GJ + " VALUES (?,?,?,?)";
+        SQLiteStatement cityStatement = mSqLiteDatabase.compileStatement(insertCityPreparedStatement);
+        mSqLiteDatabase.beginTransaction();
+        CityIteam cityIteam;
+        try{
+            for (int arrCityIndex = 0; arrCityIndex < arrCityItems.size(); arrCityIndex++){
+                cityIteam = arrCityItems.get(arrCityIndex);
+                cityStatement.clearBindings();
+                if (cityIteam.getId() != null){
+                    cityStatement.bindString(1,cityIteam.getId());
+                }
+                if (cityIteam.getStrCityName() != null){
+                    cityStatement.bindString(2,cityIteam.getStrCityName());
+                }
+                if (cityIteam.getIntCityId() != -1){
+                    cityStatement.bindString(3,String.valueOf(cityIteam.getIntCityId()));
+                }
+                if (cityIteam.getLanguageId() != null){
+                    cityStatement.bindString(4,cityIteam.getLanguageId());
+                }
+                cityStatement.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public ArrayList<CityIteam> queryCities(String strSearchKey){
+        ArrayList<CityIteam> arrCityIteam = new ArrayList<>();
+        String sqlQuery="";
+        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1") && strSearchKey.equalsIgnoreCase("")){
+            sqlQuery = "SELECT * FROM "+TABLE_CITIES_EN;
+            new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
+
+        } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2") && strSearchKey.equalsIgnoreCase("")){
+            sqlQuery = "SELECT * FROM "+TABLE_CITIES_GJ;
+            new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
+        }
+        Cursor cityCursor = mSqLiteDatabase.rawQuery(sqlQuery,null);
+        Log.i(TAG, "queryCities: "+cityCursor);
+        Log.i(TAG, "queryCities: "+cityCursor.moveToFirst());
+        if (cityCursor.moveToFirst()){
+            do {
+                CityIteam cityIteam = new CityIteam();
+                cityIteam.setIntCityId(Integer.parseInt(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY))));
+                cityIteam.setStrCityName(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
+                cityIteam.setStrStateId(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_STATE_ID)));
+                cityIteam.setIs_active(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_IS_ACTIVE)));
+                arrCityIteam.add(cityIteam);
+            } while (cityCursor.moveToNext());
+        }
+        if (cityCursor !=null && !cityCursor.isClosed()){
+            cityCursor.close();
+        }
+        return  arrCityIteam;
+    }
+
+    /*-------------------------------------------CITY LISTING-------------------------------------------*/
 
     boolean insertOrUpdateAllAddresses(ArrayList<MemberAddressItem> arrMemberAddressItems, boolean isUpdate) {
         //SQL Prepared Statement
