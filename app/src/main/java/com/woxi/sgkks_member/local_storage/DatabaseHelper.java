@@ -106,10 +106,46 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + ")";
         new AppCommonMethods().LOG(0,TAG,CREATE_CITY_TABLE_QUERY_GJ);
 
+        String CREATE_EVENTS_TABLE_QUERY_EN = "CREATE TABLE " + TABLE_EVENTS_EN
+                + " ("
+                + COLUMN_EVENT_ID_PRIMARY_KEY + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_EVENT_NAME + " VARCHAR(500), "
+                + COLUMN_EVENT_DESCRIPTION + " VARCHAR(500), "
+                + COLUMN_EVENT_VENUE + " VARCHAR(500), "
+                + COLUMN_EVENT_DATE + " VARCHAR(500), "
+                + COLUMN_EVENT_CITY + " VARCHAR(500) "
+                + ")";
+        new AppCommonMethods().LOG(0,TAG,CREATE_EVENTS_TABLE_QUERY_EN);
+
+        String CREATE_EVENTS_TABLE_QUERY_GJ = "CREATE TABLE " + TABLE_EVENTS_GJ
+                + " ("
+                + COLUMN_EVENT_ID_PRIMARY_KEY + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_EVENT_NAME + " VARCHAR(500), "
+                + COLUMN_EVENT_DESCRIPTION + " VARCHAR(500), "
+                + COLUMN_EVENT_VENUE + " VARCHAR(500), "
+                + COLUMN_EVENT_LANGUAGE_ID + " VARCHAR(500), "
+                + COLUMN_EVENTS_ID_FOREIGN_KEY + " VARCHAR(500), "
+                + " FOREIGN KEY("+COLUMN_EVENTS_ID_FOREIGN_KEY + ") REFERENCES "
+                + TABLE_EVENTS_EN + "(" + COLUMN_EVENT_ID_PRIMARY_KEY + ")"
+                + ")";
+        new AppCommonMethods().LOG(0,TAG,CREATE_EVENTS_TABLE_QUERY_GJ);
+
+        String CREATE_EVENTS_IMAGES = "CREATE TABLE " + TABLE_EVENT_IMAGES
+                + " ("
+                + COLUMN_IMAGE_ID_PRIMARY_KEY + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_EVENT_IMAGE_URL + " VARCHAR(500), "
+                + COLUMN_EVENTS_ID_FOREIGN_KEY + " VARCHAR(500), "
+                + " FOREIGN KEY("+COLUMN_EVENTS_ID_FOREIGN_KEY + ") REFERENCES "
+                + TABLE_EVENTS_EN + "(" + COLUMN_EVENT_ID_PRIMARY_KEY + "))";
+        new AppCommonMethods().LOG(0,TAG,CREATE_EVENTS_IMAGES);
+
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_EN);
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_GJ);
         db.execSQL(CREATE_CITY_TABLE_QUERY_EN);
         db.execSQL(CREATE_CITY_TABLE_QUERY_GJ);
+        db.execSQL(CREATE_EVENTS_TABLE_QUERY_EN);
+        db.execSQL(CREATE_EVENTS_TABLE_QUERY_GJ);
+        db.execSQL(CREATE_EVENTS_IMAGES);
 
     }
 
@@ -124,6 +160,9 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBER_DETAILS_GJ);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_CITIES_EN);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_CITIES_GJ);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENTS_EN);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENTS_GJ);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENT_IMAGES);
             onCreate(db);
         }
     }

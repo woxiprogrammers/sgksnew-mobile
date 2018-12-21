@@ -97,4 +97,23 @@ public interface DatabaseConstants {
     String COLUMN_CITY_IS_ACTIVE = "is_active";
     String COLUMN_CITY_ID_FOREIGN = "city_id_foreign";
     String COLUMN_CITY_LANGUAGE_ID = "language_id";
+
+    //TABLE EVENTS
+    String TABLE_EVENTS_EN = "table_events_en";
+    String TABLE_EVENTS_GJ = "table_events_gj";
+    String TABLE_EVENT_IMAGES = "table_events_images";
+
+    //COLUMN EVENTS TABLE
+    String COLUMN_EVENT_ID_PRIMARY_KEY = "id_primary_key";
+    String COLUMN_EVENTS_ID_FOREIGN_KEY = "id_foreign_key";
+    String COLUMN_EVENT_NAME = "event_name";
+    String COLUMN_EVENT_DESCRIPTION = "event_descp";
+    String COLUMN_EVENT_VENUE = "event_venue";
+    String COLUMN_EVENT_DATE = "event_date";
+    String COLUMN_EVENT_IS_ACTIVE = "is_active";
+    String COLUMN_EVENT_CITY = "city";
+    String COLUMN_EVENT_CITY_ID = "city_id";
+    String COLUMN_EVENT_IMAGE_URL = "image_url";
+    String COLUMN_IMAGE_ID_PRIMARY_KEY = "image_id";
+    String COLUMN_EVENT_LANGUAGE_ID = "language_id";
 }

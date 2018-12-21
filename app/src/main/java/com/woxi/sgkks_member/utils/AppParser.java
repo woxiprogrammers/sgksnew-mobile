@@ -437,7 +437,6 @@ public class AppParser implements AppConstants {
                 for (int arrIndex=0; arrIndex < jsonArray.length(); arrIndex++){
                     cityIteam = new CityIteam();
                     JSONObject cityJsonObject = jsonArray.getJSONObject(arrIndex);
-                    Log.i(TAG, "parseLocalDataSyncResponse: GJ--------"+(cityJsonObject.has("id") && cityJsonObject.optString("id") != null && !cityJsonObject.optString("id").equalsIgnoreCase(null)));
                     if (cityJsonObject.has("id") && cityJsonObject.optString("id") != null && !cityJsonObject.optString("id").equalsIgnoreCase(null)){
                         cityIteam.setId(cityJsonObject.optString("id"));
                     }
@@ -455,6 +454,98 @@ public class AppParser implements AppConstants {
                 localDataSyncItem.setArrCityItemsGujarati(arrCityItemGujarati);
             }
         }
+        if (jsonObject.has("events") && jsonObject.optJSONObject("events") != null) {
+            Log.i(TAG, "parseLocalDataSyncResponse: Events is present");
+            ArrayList<EventDataItem> arrEventDataItems = new ArrayList<>();
+            ArrayList<EventDataItem> arrEventGujaratiDataItems = new ArrayList<>();
+            EventDataItem eventDataItem;
+            JSONObject jsonObjectEvents = jsonObject.optJSONObject("events");
+            if(jsonObjectEvents.has("event_en") && jsonObjectEvents.optJSONArray("event_en") != null){
+                Log.i(TAG, "parseLocalDataSyncResponse: event_en is present");
+                JSONArray jsonDataArray = jsonObjectEvents.optJSONArray("event_en");
+                for (int indexYear = 0; indexYear < jsonDataArray.length(); indexYear++) {
+                    ArrayList<String> arrEventImages;
+                    eventDataItem = new EventDataItem();
+                    JSONObject jsonEventObject = jsonDataArray.optJSONObject(indexYear);
+                    if(jsonEventObject.has("id") && jsonEventObject.optString("id") != null){
+                        eventDataItem.setStrEventId(jsonEventObject.optString("id"));
+                    }
+                    if (jsonEventObject.has("event_name") && jsonEventObject.optString("event_name") != null) {
+                        String strEventName = jsonEventObject.optString("event_name");
+                        eventDataItem.setEventName(strEventName);
+                    }
+                    if (jsonEventObject.has("description") && jsonEventObject.optString("description") != null) {
+                        String strEventDesc = jsonEventObject.optString("description");
+                        eventDataItem.setEventDescription(strEventDesc);
+                    }
+                    if (jsonEventObject.has("event_date") && jsonEventObject.optString("event_date") != null) {
+                        String strEventDate = jsonEventObject.optString("event_date");
+                        eventDataItem.setEventDate(strEventDate);
+                    }
+                    if (jsonEventObject.has("year") && jsonEventObject.optString("year") != null) {
+                        String strEventYear = jsonEventObject.optString("year");
+                        eventDataItem.setEventYear(strEventYear);
+                    }
+                    if (jsonEventObject.has("venue") && jsonEventObject.opt("venue") != null) {
+                        String strEventVenue = jsonEventObject.optString("venue");
+                        eventDataItem.setVenue(strEventVenue);
+                    }
+                    if (jsonEventObject.has("city") && jsonEventObject.opt("city") != null) {
+                        String strEventCity = jsonEventObject.optString("city");
+                        eventDataItem.setCity(strEventCity);
+                    }
+                    if (jsonEventObject.has("event_images") && jsonEventObject.optJSONArray("event_images") != null) {
+                        arrEventImages = new ArrayList<>();
+                        JSONArray jsonImageUrlArray = jsonEventObject.optJSONArray("event_images");
+                        for (int yearIndex = 0; yearIndex < jsonImageUrlArray.length(); yearIndex++) {
+                            String strImgUrl = jsonImageUrlArray.optString(yearIndex);
+                            arrEventImages.add(strImgUrl);
+                        }
+                        eventDataItem.setArrEventImageURLs(arrEventImages);
+                        localDataSyncItem.setArrEventImageURLs(arrEventImages);
+                    }
+                    arrEventDataItems.add(eventDataItem);
+                }
+                localDataSyncItem.setArrEventDataItem(arrEventDataItems);
+
+            }
+            if(jsonObjectEvents.has("event_gj") && jsonObjectEvents.optJSONArray("event_gj") != null){
+                Log.i(TAG, "parseLocalDataSyncResponse: event_gj is present");
+                JSONArray jsonDataArray = jsonObjectEvents.optJSONArray("event_gj");
+                for (int indexYear = 0; indexYear < jsonDataArray.length(); indexYear++) {
+                    eventDataItem = new EventDataItem();
+                    JSONObject jsonEventObject = jsonDataArray.optJSONObject(indexYear);
+                    if (jsonEventObject.has("id") && jsonEventObject.optString("id") != null) {
+                        eventDataItem.setStrId(jsonEventObject.optString("id"));
+                    }
+                    if (jsonEventObject.has("event_name") && jsonEventObject.optString("event_name") != null) {
+                        String strEventName = jsonEventObject.optString("event_name");
+                        eventDataItem.setEventName(strEventName);
+                    }
+                    if (jsonEventObject.has("description") && jsonEventObject.optString("description") != null) {
+                        String strEventDesc = jsonEventObject.optString("description");
+                        eventDataItem.setEventDescription(strEventDesc);
+                    }
+                    if (jsonEventObject.has("year") && jsonEventObject.optString("year") != null) {
+                        String strEventYear = jsonEventObject.optString("year");
+                        eventDataItem.setEventYear(strEventYear);
+                    }
+                    if (jsonEventObject.has("venue") && jsonEventObject.opt("venue") != null) {
+                        String strEventVenue = jsonEventObject.optString("venue");
+                        eventDataItem.setVenue(strEventVenue);
+                    }
+                    if (jsonEventObject.has("language_id") && jsonEventObject.opt("language_id") != null) {
+                        eventDataItem.setStrlanguageId(jsonEventObject.optString("language_id"));
+                    }
+                    if (jsonEventObject.has("event_id") && jsonEventObject.opt("event_id") != null) {
+                        eventDataItem.setStrEventId(jsonEventObject.optString("event_id"));
+                    }
+                    arrEventGujaratiDataItems.add(eventDataItem);
+                }
+                localDataSyncItem.setArrEventDataGujaratiItem(arrEventGujaratiDataItems);
+            }
+        }
+
         /*if (jsonResponseObject.has("committees") && jsonResponseObject.optString("committees") != null) {
             ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems = new ArrayList<>();
             JSONArray jsonCommitteeArray = jsonResponseObject.optJSONArray("committees");

@@ -10,6 +10,7 @@ import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.DatabaseConstants;
 import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
+import com.woxi.sgkks_member.models.EventDataItem;
 import com.woxi.sgkks_member.models.FamilyDetailsItem;
 import com.woxi.sgkks_member.models.MemberAddressItem;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
@@ -250,8 +251,8 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             Log.i(TAG, "Display all records");
             sqlQuery = "select * from "
                     +TABLE_MEMBER_DETAILS_EN
-            + " where "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext)
-            + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";
+                    + " where "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext)
+                    + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";
             new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
         }  else if (searchString.matches("^[A-Za-z]*$")) {
             //TODO Search in name OR surname column
@@ -293,7 +294,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             }
         }
 //        Cursor cursor = sqLiteDatabase.query(tableName, tableColumns, whereClause, whereArgs, groupBy, having, orderBy);
-    //   Cursor cursorMember = mSqLiteDatabase.query(TABLE_MEMBER_DETAILS_EN, null, null, null, null, null, null);
+        //   Cursor cursorMember = mSqLiteDatabase.query(TABLE_MEMBER_DETAILS_EN, null, null, null, null, null, null);
         Cursor cursorMember = mSqLiteDatabase.rawQuery(sqlQuery,null);
         Log.i(TAG, "queryMembers: cursorMember.moveToFirst(): "+cursorMember.moveToFirst());
         if (cursorMember.moveToFirst()) {
@@ -426,6 +427,104 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     }
 
     /*-------------------------------------------CITY LISTING-------------------------------------------*/
+
+    /*-------------------------------------------EVENTS LISTING-------------------------------------------*/
+
+    public boolean insertOrUpdateEventsEnglish(ArrayList<EventDataItem> arrayListEvent){
+        String insertEventPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_EVENTS_EN + " VALUES (?,?,?,?,?,?)";
+        SQLiteStatement eventStatement = mSqLiteDatabase.compileStatement(insertEventPreparedStatement);
+        mSqLiteDatabase.beginTransaction();
+        EventDataItem eventDataItem;
+        try{
+            for (int arrEventIndex = 0; arrEventIndex < arrayListEvent.size(); arrEventIndex++) {
+                eventDataItem = arrayListEvent.get(arrEventIndex);
+                if(eventDataItem.getStrEventId() != null){
+                    eventStatement.bindString(1,eventDataItem.getStrEventId());
+                }
+                if (eventDataItem.getEventName() != null){
+                    eventStatement.bindString(2,eventDataItem.getEventName());
+                }
+                if (eventDataItem.getEventDescription() != null){
+                    eventStatement.bindString(3, eventDataItem.getEventDescription());
+                }
+                if (eventDataItem.getVenue() != null){
+                    eventStatement.bindString(4, eventDataItem.getVenue());
+                }
+                if (eventDataItem.getEventDate() != null){
+                    eventStatement.bindString(5, eventDataItem.getEventDate());
+                }
+                if (eventDataItem.getCity() != null){
+                    eventStatement.bindString(6, eventDataItem.getCity());
+                }
+                eventStatement.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public boolean insertOrUpdateEventGujarati(ArrayList<EventDataItem> arrayListEvent) {
+        String insertEventPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_EVENTS_GJ + " VALUES (?,?,?,?,?,?)";
+        SQLiteStatement eventStatement = mSqLiteDatabase.compileStatement(insertEventPreparedStatement);
+        mSqLiteDatabase.beginTransaction();
+        EventDataItem eventDataItem;
+        try{
+            for (int arrEventIndex = 0; arrEventIndex < arrayListEvent.size(); arrEventIndex++) {
+                eventDataItem = arrayListEvent.get(arrEventIndex);
+                if(eventDataItem.getStrId() != null){
+                    eventStatement.bindString(1,eventDataItem.getStrId());
+                }
+                if (eventDataItem.getEventName() != null){
+                    eventStatement.bindString(2,eventDataItem.getEventName());
+                }
+                if (eventDataItem.getEventDescription() != null){
+                    eventStatement.bindString(3, eventDataItem.getEventDescription());
+                }
+                if (eventDataItem.getVenue() != null){
+                    eventStatement.bindString(4, eventDataItem.getVenue());
+                }
+                if (eventDataItem.getStrlanguageId() != null){
+                    eventStatement.bindString(5, eventDataItem.getStrlanguageId());
+                }
+                if (eventDataItem.getStrEventId() != null){
+                    eventStatement.bindString(6, eventDataItem.getStrEventId());
+                }
+                eventStatement.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public boolean insertOrUpdateEventImages(ArrayList<EventDataItem> arrayListEvents) {
+        String insertImages = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_EVENT_IMAGES + " VALUES (?,?,?)";
+        SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(insertImages);
+        mSqLiteDatabase.beginTransaction();
+        EventDataItem eventDataItem;
+        try {
+            for (int arrIndex = 0; arrIndex < arrayListEvents.size(); arrIndex++) {
+                eventDataItem = arrayListEvents.get(arrIndex);
+
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    /*-------------------------------------------EVENTS LISTING-------------------------------------------*/
 
     boolean insertOrUpdateAllAddresses(ArrayList<MemberAddressItem> arrMemberAddressItems, boolean isUpdate) {
         //SQL Prepared Statement

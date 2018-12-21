@@ -18,6 +18,7 @@ public class LocalDataSyncItem implements Serializable {
 
     private ArrayList<EventDataItem> arrEventDataItem = new ArrayList<>();
     private ArrayList<EventDataItem> arrEventDataGujaratiItem = new ArrayList<>();
+    private ArrayList<String> arrEventImageURLs;
 
     private ArrayList<AccountDetailsItem> arrAccountItem = new ArrayList<>();
     private ArrayList<AccountDetailsItem> arrAccountGujaratiItem = new ArrayList<>();
@@ -31,7 +32,13 @@ public class LocalDataSyncItem implements Serializable {
     private ArrayList<ClassifiedDetailsItem> arrClassifiedItems = new ArrayList<>();
     private ArrayList<ClassifiedDetailsItem> arrClassifiedGujaratiItems = new ArrayList<>();
 
+    public ArrayList<String> getArrEventImageURLs() {
+        return arrEventImageURLs;
+    }
 
+    public void setArrEventImageURLs(ArrayList<String> arrEventImageURLs) {
+        this.arrEventImageURLs = arrEventImageURLs;
+    }
 
     public LocalDataSyncItem() {
     }

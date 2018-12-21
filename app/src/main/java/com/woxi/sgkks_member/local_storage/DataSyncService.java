@@ -19,6 +19,7 @@ import com.woxi.sgkks_member.home.HomeActivity;
 import com.woxi.sgkks_member.home.MemberHomeNewFragment;
 import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
+import com.woxi.sgkks_member.models.EventDataItem;
 import com.woxi.sgkks_member.models.FamilyDetailsItem;
 import com.woxi.sgkks_member.models.LocalDataSyncItem;
 import com.woxi.sgkks_member.models.MemberAddressItem;
@@ -58,6 +59,8 @@ public class DataSyncService extends Service {
     private ArrayList<MemberDetailsItem> arrMemberDetailsGujaratiItems;
     private ArrayList<CityIteam> arrCityEnglishItems;
     private ArrayList<CityIteam> arrCityGujaratiItems;
+    private ArrayList<EventDataItem> arrEventEnglish;
+    private ArrayList<EventDataItem> arrEventGujarati;
     private ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems;
     private ArrayList<MessageDetailsItem> arrMessageDetailsItems;
     private String TAG = "DataSyncService";
@@ -126,6 +129,8 @@ public class DataSyncService extends Service {
                                 arrMemberDetailsGujaratiItems = localDataSyncItem.getArrMemberDetailsGujaratiItems();
                                 arrCityEnglishItems = localDataSyncItem.getArrCityItems();
                                 arrCityGujaratiItems = localDataSyncItem.getArrCityItemsGujarati();
+                                arrEventEnglish = localDataSyncItem.getArrEventDataItem();
+                                arrEventGujarati = localDataSyncItem.getArrEventDataGujaratiItem();
                                /* arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems();
                                 arrMessageDetailsItems = localDataSyncItem.getArrMessageDetailsItems();*/
                                 boolean isCommitteeSuccessful = false;
@@ -147,6 +152,12 @@ public class DataSyncService extends Service {
                                     }
                                     if (arrCityGujaratiItems != null){
                                         databaseQueryHandler.insertOrUpdateCitiesGujarati(arrCityGujaratiItems);
+                                    }
+                                    if(arrEventEnglish != null){
+                                        databaseQueryHandler.insertOrUpdateEventsEnglish(arrEventEnglish);
+                                    }
+                                    if(arrEventGujarati != null){
+                                        databaseQueryHandler.insertOrUpdateEventGujarati(arrEventGujarati);
                                     }
                                    /* if (arrCommitteeDetailsItems.size() != 0) {
                                         isCommitteeSuccessful = databaseQueryHandler.insertOrUpdateAllCommittees(arrCommitteeDetailsItems, true);
