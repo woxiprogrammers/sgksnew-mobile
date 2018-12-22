@@ -74,10 +74,11 @@ public interface DatabaseConstants {
     String COLUMN_COMMITTEE_IS_ACTIVE = "is_active";
 
     //Message/News Details Table
-    String TABLE_MESSAGE_NEWS_DETAILS = "table_messages";
+    String TABLE_MESSAGE_NEWS_DETAILS = "table_messages_en";
     String TABLE_MESSAGE_NEWS_DETAILS_GJ = "table_messages_gj";
     //    String COLUMN_MESSAGES_PRIMARY_INDEX = "message_index_primary";
     String COLUMN_MESSAGES_ID_PRIMARY = "message_id_primary";
+    String COLUMN_MESSAGES_ID_PRIMARY_GJ = "message_id_primary";
     String COLUMN_MESSAGES_ID_FOREIGN = "message_id_foreign";
     String COLUMN_MESSAGES_TITLE = "message_title";
     String COLUMN_MESSAGES_DESCRIPTION = "message_description";

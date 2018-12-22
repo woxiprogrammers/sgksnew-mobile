@@ -132,8 +132,9 @@ public class DataSyncService extends Service {
                                 arrCityGujaratiItems = localDataSyncItem.getArrCityItemsGujarati();
                                 arrEventEnglish = localDataSyncItem.getArrEventDataItem();
                                 arrEventGujarati = localDataSyncItem.getArrEventDataGujaratiItem();
-                               /* arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems(); */
                                 arrMessageDetailsItems = localDataSyncItem.getArrMessageDetailsItems();
+                                arrMessageGujaratiDetailsItems = localDataSyncItem.getArrMessageDetailsGujaratiItems();
+                               /* arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems(); */
                                 boolean isCommitteeSuccessful = false;
                                 boolean isMessageSuccessful = false;
                                 try {
@@ -161,7 +162,10 @@ public class DataSyncService extends Service {
                                         databaseQueryHandler.insertOrUpdateEventGujarati(arrEventGujarati);
                                     }
                                     if (arrMessageDetailsItems != null){
-
+                                        databaseQueryHandler.insertOrUpdateMessageEnglish(arrMessageDetailsItems);
+                                    }
+                                    if (arrMessageGujaratiDetailsItems != null){
+                                        databaseQueryHandler.insertOrUpdateMessageGujarati(arrMessageGujaratiDetailsItems);
                                     }
                                    /* if (arrCommitteeDetailsItems.size() != 0) {
                                         isCommitteeSuccessful = databaseQueryHandler.insertOrUpdateAllCommittees(arrCommitteeDetailsItems, true);

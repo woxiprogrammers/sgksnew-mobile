@@ -557,28 +557,28 @@ public class AppParser implements AppConstants {
                     if (jsonObjectMessage.has("title") && jsonObjectMessage.optString("title") != null){
                         messageDetailsItem.setMessageTitle(jsonObjectMessage.optString("title"));
                     }
-                    if (jsonObjectMessage.has("description") && jsonObjectMessages.optString("description") != null){
+                    if (jsonObjectMessage.has("description") && jsonObjectMessage.optString("description") != null){
                         messageDetailsItem.setMessageDescription(jsonObjectMessage.optString("description"));
                     }
-                    if (jsonObjectMessages.has("message_type") && jsonObjectMessages.optString("message_type") != null){
+                    if (jsonObjectMessage.has("message_type") && jsonObjectMessage.optString("message_type") != null){
                         messageDetailsItem.setMessageType(jsonObjectMessage.optString("message_type"));
                     }
-                    if (jsonObjectMessages.has("message_type_id") && jsonObjectMessages.optString("message_type_id") != null){
+                    if (jsonObjectMessage.has("message_type_id") && jsonObjectMessage.optString("message_type_id") != null){
                         messageDetailsItem.setMessageTypeId(jsonObjectMessage.optString("message_type_id"));
                     }
-                    if (jsonObjectMessages.has("is_active") && jsonObjectMessages.optString("is_active") != null){
-                        messageDetailsItem.setIsActive(jsonObjectMessages.optString("is_active"));
+                    if (jsonObjectMessage.has("is_active") && jsonObjectMessage.optString("is_active") != null){
+                        messageDetailsItem.setIsActive(jsonObjectMessage.optString("is_active"));
                     }
-                    if (jsonObjectMessages.has("city") && jsonObjectMessages.optString("city") != null){
-                        messageDetailsItem.setMessageCity(jsonObjectMessages.optString("city"));
+                    if (jsonObjectMessage.has("city") && jsonObjectMessage.optString("city") != null){
+                        messageDetailsItem.setMessageCity(jsonObjectMessage.optString("city"));
                     }
-                    if (jsonObjectMessages.has("city_id") && jsonObjectMessages.optString("city_id") != null){
+                    if (jsonObjectMessage.has("city_id") && jsonObjectMessage.optString("city_id") != null){
                         messageDetailsItem.setMessageCityId(jsonObjectMessage.optString("city_id"));
                     }
-                    if (jsonObjectMessages.has("message_date") && jsonObjectMessages.optString("message_date") != null){
+                    if (jsonObjectMessage.has("message_date") && jsonObjectMessage.optString("message_date") != null){
                         messageDetailsItem.setMessageDate(jsonObjectMessage.optString("message_date"));
                     }
-                    if (jsonObjectMessages.has("image_url") && jsonObjectMessages.optString("image_url") != null){
+                    if (jsonObjectMessage.has("image_url") && jsonObjectMessage.optString("image_url") != null){
                         messageDetailsItem.setMessageImage(jsonObjectMessage.optString("image_url"));
                     }
                     arrMessageDetailsItems.add(messageDetailsItem);
@@ -587,7 +587,29 @@ public class AppParser implements AppConstants {
 
             }
             if (jsonObjectMessages.has("message_gj") && jsonObjectMessages.optJSONArray("message_gj") != null){
-                Log.i(TAG, "parseLocalDataSyncResponse: message_gn present");    
+                Log.i(TAG, "parseLocalDataSyncResponse: message_gj present");
+                JSONArray jsonArray = jsonObjectMessages.optJSONArray("message_gj");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++){
+                    MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
+                    JSONObject jsonObjectMessage = jsonArray.optJSONObject(arrIndex);
+                    if (jsonObjectMessage.has("id") && jsonObjectMessage.optString("id") != null){
+                        messageDetailsItem.setId(jsonObjectMessage.optString("id"));
+                    }
+                    if (jsonObjectMessage.has("title") && jsonObjectMessage.optString("title") != null){
+                        messageDetailsItem.setMessageTitle(jsonObjectMessage.optString("title"));
+                    }
+                    if (jsonObjectMessage.has("description") && jsonObjectMessage.optString("description") != null){
+                        messageDetailsItem.setMessageDescription(jsonObjectMessage.optString("description"));
+                    }
+                    if (jsonObjectMessage.has("message_id") && jsonObjectMessage.optString("message_id") != null) {
+                        messageDetailsItem.setMessageID(jsonObjectMessage.optString("message_id"));
+                    }
+                    if (jsonObjectMessage.has("language_id") && jsonObject.optString("language_id") != null) {
+                        messageDetailsItem.setLangugeId(jsonObjectMessage.optString("language_id"));
+                    }
+                    arrMessageGujaratiDetailsItems.add(messageDetailsItem);
+                }
+                localDataSyncItem.setArrMessageDetailsGujaratiItems(arrMessageGujaratiDetailsItems);
             }
         } else {
             Log.i(TAG, "parseLocalDataSyncResponse: Messages not present");

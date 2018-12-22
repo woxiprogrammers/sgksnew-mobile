@@ -132,7 +132,7 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
 
         String CREATE_EVENTS_IMAGES = "CREATE TABLE " + TABLE_EVENT_IMAGES
                 + " ("
-                + COLUMN_IMAGE_ID_PRIMARY_KEY + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_IMAGE_ID_PRIMARY_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_EVENT_IMAGE_URL + " VARCHAR(500), "
                 + COLUMN_EVENTS_ID_FOREIGN_KEY + " VARCHAR(500), "
                 + " FOREIGN KEY("+COLUMN_EVENTS_ID_FOREIGN_KEY + ") REFERENCES "
@@ -156,14 +156,13 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
 
         String CREATE_MESSAGE_TABLE_QUERY_GJ = "CREATE TABLE " + TABLE_MESSAGE_NEWS_DETAILS_GJ
                 + " ("
-                + COLUMN_MESSAGES_ID_PRIMARY + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_MESSAGES_ID_PRIMARY_GJ + " VARCHAR(500) PRIMARY KEY, "
                 + COLUMN_MESSAGES_TITLE + " VARCHAR(500), "
                 + COLUMN_MESSAGES_DESCRIPTION + " VARCHAR(500), "
                 + COLUMN_MESSAGES_ID_FOREIGN + " VARCHAR(500), "
                 + COLUMN_MESSAGE_LANGUAGE_ID + " VARCHAR(500), "
-                + " FOREIGN KEY(" + COLUMN_MESSAGES_ID_FOREIGN + ") REFERENCES "
-                + TABLE_MESSAGE_NEWS_DETAILS + "(" + COLUMN_MESSAGES_ID_PRIMARY + ")"
-                + ")";
+                + " FOREIGN KEY("+COLUMN_MESSAGES_ID_FOREIGN + ") REFERENCES "
+                + TABLE_MESSAGE_NEWS_DETAILS + "(" + COLUMN_MESSAGES_ID_PRIMARY + "))";
         new AppCommonMethods().LOG(0,TAG,CREATE_MESSAGE_TABLE_QUERY_EN);
 
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_EN);

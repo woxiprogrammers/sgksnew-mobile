@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +52,8 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     private ArrayList<MessageDetailsItem> mArrMessageDetails;
     private int pageNumber = 0, arrSize = 0;
     private boolean isApiInProgress = false, isApiRequested = false;
+    private DatabaseQueryHandler databaseQueryHandler;
+    ArrayList<MessageDetailsItem> arrOfflineMessages;
     public MessageHomeNewFragment() {
         // Required empty public constructor
     }
@@ -74,6 +75,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         //databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
         mRvMessageList = mParentView.findViewById(R.id.rvNewsAndClassified);
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
+        databaseQueryHandler = new DatabaseQueryHandler(mContext,false);
         setUpRecyclerView();
         pbMessages = mParentView.findViewById(R.id.pbMessages);
         boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
@@ -83,7 +85,8 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                 pageNumber=0;
                 requestMessageList(pageNumber, true);
             } else {
-                new AppCommonMethods(mContext).showAlert("You are Offline");
+                arrOfflineMessages = databaseQueryHandler.querryMessages();
+                showMessages(arrOfflineMessages);
             }
         }
     }
@@ -95,10 +98,18 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         onRvItemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MessageDetailsItem messageDetailsItem = mArrMessageDetails.get(mRvMessageList.getChildAdapterPosition(v));
-                Intent intentDetails = new Intent(mContext, MessageDetailsActivity.class);
-                intentDetails.putExtra("currentNewsDetail", messageDetailsItem);
-                startActivity(intentDetails);
+                if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                    MessageDetailsItem messageDetailsItem = mArrMessageDetails.get(mRvMessageList.getChildAdapterPosition(v));
+                    Intent intentDetails = new Intent(mContext, MessageDetailsActivity.class);
+                    intentDetails.putExtra("currentNewsDetail", messageDetailsItem);
+                    startActivity(intentDetails);
+                } else {
+                    MessageDetailsItem messageDetailsItem = arrOfflineMessages.get(mRvMessageList.getChildAdapterPosition(v));
+                    Intent intentDetails = new Intent(mContext, MessageDetailsActivity.class);
+                    intentDetails.putExtra("currentNewsDetail", messageDetailsItem);
+                    startActivity(intentDetails);
+                }
+
             }
         };
         recyclerViewScrollListener();
@@ -139,9 +150,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                                 if(isFirstTime){
                                     mArrMessageDetails = messageDetailsItem.getArrMessageList();
                                     if(mArrMessageDetails.size() != 0){
-                                        mRvMessageList.setHasFixedSize(true);
-                                        mRvAdapter = new MessageListAdapter(mArrMessageDetails);
-                                        mRvMessageList.setAdapter(mRvAdapter);
+                                       showMessages(mArrMessageDetails);
                                     } else {
                                         Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT);
                                     }
@@ -151,9 +160,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                                 } else {
                                     ArrayList <MessageDetailsItem> arrNextMessages = messageDetailsItem.getArrMessageList();
                                     if(arrNextMessages.size() != 0){
-                                        mArrMessageDetails.addAll(arrNextMessages);
-                                        mRvMessageList.getAdapter().notifyItemRangeChanged(arrSize -1, mArrMessageDetails.size() - 1);
-                                        mRvMessageList.getAdapter().notifyDataSetChanged();
+                                        showMessages(arrNextMessages);
                                     } else {
                                         Toast.makeText(mContext,"All the Records are Listed",Toast.LENGTH_SHORT);
                                     }
@@ -193,9 +200,9 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
             AppController.getInstance().cancelPendingRequests("memberSearchList");
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
                 requestMessageList(pageNumber,false);
-            } else {
+            }/* else {
                 new AppCommonMethods(mContext).showAlert("You are offline");
-            }
+            }*/
         }
     }
 
@@ -206,8 +213,15 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                 pageNumber=0;
                 requestMessageList(pageNumber,true);
             }else {
-                new AppCommonMethods(mContext).showAlert("You are Offline");
+                arrOfflineMessages = databaseQueryHandler.querryMessages();
+                showMessages(arrOfflineMessages);
             }
         } 
+    }
+
+    public void showMessages(ArrayList<MessageDetailsItem> arrayList){
+        mRvMessageList.setHasFixedSize(true);
+        mRvAdapter = new MessageListAdapter(arrayList);
+        mRvMessageList.setAdapter(mRvAdapter);
     }
 }

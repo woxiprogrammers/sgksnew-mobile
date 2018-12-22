@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
+import com.bumptech.glide.signature.MediaStoreSignature;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.DatabaseConstants;
 import com.woxi.sgkks_member.models.CityIteam;
@@ -525,6 +526,157 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     }
 
     /*-------------------------------------------EVENTS LISTING-------------------------------------------*/
+
+    /*-------------------------------------------MESSAGE LISTING-------------------------------------------*/
+
+    public boolean insertOrUpdateMessageEnglish(ArrayList<MessageDetailsItem> arrayListMessage) {
+        String insetMessageQuerry = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_MESSAGE_NEWS_DETAILS + " VALUES (?,?,?,?,?,?,?,?,?,?)";
+        SQLiteStatement sqLiteStatementMessage = mSqLiteDatabase.compileStatement(insetMessageQuerry);
+        mSqLiteDatabase.beginTransaction();
+        MessageDetailsItem messageDetailsItem;
+        try {
+            for (int arrIndex = 0; arrIndex < arrayListMessage.size(); arrIndex++){
+                messageDetailsItem = arrayListMessage.get(arrIndex);
+                if (messageDetailsItem.getId() != null){
+                    sqLiteStatementMessage.bindString(1,messageDetailsItem.getId());
+                }
+                if (messageDetailsItem.getMessageTitle() != null){
+                    sqLiteStatementMessage.bindString(2,messageDetailsItem.getMessageTitle());
+                }
+                if (messageDetailsItem.getMessageDescription() != null){
+                    sqLiteStatementMessage.bindString(3,messageDetailsItem.getMessageDescription());
+                }
+                if (messageDetailsItem.getMessageType() != null){
+                    sqLiteStatementMessage.bindString(4, messageDetailsItem.getMessageType());
+                }
+                if (messageDetailsItem.getMessageTypeId() != null){
+                    sqLiteStatementMessage.bindString(5,messageDetailsItem.getMessageTypeId());
+                }
+                if (messageDetailsItem.getIsActive() != null){
+                    sqLiteStatementMessage.bindString(6,messageDetailsItem.getIsActive());
+                }
+                if (messageDetailsItem.getMessageCity() != null){
+                    sqLiteStatementMessage.bindString(7,messageDetailsItem.getMessageCity());
+                }
+                if (messageDetailsItem.getMessageCityId() != null){
+                    sqLiteStatementMessage.bindString(8,messageDetailsItem.getMessageCityId());
+                }
+                if (messageDetailsItem.getMessageDate() != null){
+                    sqLiteStatementMessage.bindString(9,messageDetailsItem.getMessageDate());
+                }
+                if (messageDetailsItem.getMessageImage() != null){
+                    sqLiteStatementMessage.bindString(10, messageDetailsItem.getMessageImage());
+                }
+                sqLiteStatementMessage.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public boolean insertOrUpdateMessageGujarati(ArrayList<MessageDetailsItem> arrayListMessage) {
+        String insetMessageQuerry = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_MESSAGE_NEWS_DETAILS_GJ + " VALUES (?,?,?,?,?)";
+        SQLiteStatement sqLiteStatementMessage = mSqLiteDatabase.compileStatement(insetMessageQuerry);
+        mSqLiteDatabase.beginTransaction();
+        MessageDetailsItem messageDetailsItem;
+        try {
+            for (int arrIndex = 0; arrIndex < arrayListMessage.size(); arrIndex++){
+                messageDetailsItem = arrayListMessage.get(arrIndex);
+                Log.i(TAG, "insertOrUpdateMessageGujarati: "+(messageDetailsItem.getId() != null));
+                if (messageDetailsItem.getId() != null){
+                    sqLiteStatementMessage.bindString(1,messageDetailsItem.getId());
+                }
+                if (messageDetailsItem.getMessageTitle() != null){
+                    sqLiteStatementMessage.bindString(2,messageDetailsItem.getMessageTitle());
+                }
+                if (messageDetailsItem.getMessageDescription() != null){
+                    sqLiteStatementMessage.bindString(3,messageDetailsItem.getMessageDescription());
+                }
+                if (messageDetailsItem.getMessageID() != null) {
+                    sqLiteStatementMessage.bindString(4,messageDetailsItem.getMessageID());
+                    Log.i(TAG, "insertOrUpdateMessageGujarati: FOREIGN KEY---------"+messageDetailsItem.getMessageID());
+                }
+                if (messageDetailsItem.getLangugeId() != null){
+                    sqLiteStatementMessage.bindString(5,messageDetailsItem.getLangugeId());
+                }
+                sqLiteStatementMessage.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public ArrayList<MessageDetailsItem> querryMessages(){
+        ArrayList<MessageDetailsItem> arrayListMessages = new ArrayList<>();
+
+        String sqlQueryEnglish = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS;
+        String sqlQueryGujarati = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS_GJ;
+        Cursor cursorMessages;
+        Cursor cursorMessagesGujarati;
+        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+            cursorMessages = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
+            if (cursorMessages.moveToFirst()){
+                do {
+                    MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
+                    messageDetailsItem.setId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY)));
+                    messageDetailsItem.setMessageTitle(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
+                    messageDetailsItem.setMessageDescription(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
+                    messageDetailsItem.setMessageType(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TYPE)));
+                    messageDetailsItem.setMessageTypeId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TYPE_ID)));
+                    messageDetailsItem.setMessageIsActive(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_IS_ACTIVE)));
+                    messageDetailsItem.setMessageCity(cursorMessages.getColumnName(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CITY)));
+                    messageDetailsItem.setMessageCityId(cursorMessages.getColumnName(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CITY_ID)));
+                    messageDetailsItem.setMessageDate(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CREATED_DATE)));
+                    messageDetailsItem.setMessageImage(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_IMAGE_URL)));
+                    arrayListMessages.add(messageDetailsItem);
+                } while (cursorMessages.moveToNext());
+            }
+
+        } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
+            cursorMessages = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
+            cursorMessagesGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
+            if (cursorMessagesGujarati.moveToFirst() && cursorMessages.moveToFirst()){
+                do {
+                    MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
+                    messageDetailsItem.setId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY_GJ)));
+                    if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)) != null){
+                        messageDetailsItem.setMessageTitle(cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
+                    } else {
+                        messageDetailsItem.setMessageTitle(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
+                    }
+                    if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)) != null){
+                        messageDetailsItem.setMessageDescription(cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
+                    } else {
+                        messageDetailsItem.setMessageDescription(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
+                    }
+                    messageDetailsItem.setMessageDescription(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
+                    messageDetailsItem.setMessageType(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TYPE)));
+                    messageDetailsItem.setMessageTypeId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TYPE_ID)));
+                    messageDetailsItem.setMessageIsActive(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_IS_ACTIVE)));
+                    messageDetailsItem.setMessageCity(cursorMessages.getColumnName(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CITY)));
+                    messageDetailsItem.setMessageCityId(cursorMessages.getColumnName(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CITY_ID)));
+                    messageDetailsItem.setMessageDate(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CREATED_DATE)));
+                    messageDetailsItem.setMessageImage(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_IMAGE_URL)));
+                    arrayListMessages.add(messageDetailsItem);
+                } while (cursorMessagesGujarati.moveToNext() && cursorMessages.moveToNext());
+            }
+        }
+        return arrayListMessages;
+    }
+
+    /*-------------------------------------------MESSAGE LISTING-------------------------------------------*/
 
     boolean insertOrUpdateAllAddresses(ArrayList<MemberAddressItem> arrMemberAddressItems, boolean isUpdate) {
         //SQL Prepared Statement
