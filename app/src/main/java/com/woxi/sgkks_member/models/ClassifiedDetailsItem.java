@@ -10,7 +10,16 @@ import java.util.ArrayList;
  */
 
 public class ClassifiedDetailsItem implements Serializable {
-    private String classifiedID, classifiedTitle, classifiedDescription, classifiedPackage, classifiedType, classifiedCreateDate, classifiedCity,id,isActive;
+    private String classifiedID;
+    private String classifiedTitle;
+    private String classifiedDescription;
+    private String classifiedPackage;
+    private String classifiedType;
+    private String classifiedCreateDate;
+    private String classifiedCity;
+    private String id;
+    private String isActive;
+    private String cityId;
     private ArrayList<String> arrClassifiedImages;
     private ArrayList<ClassifiedDetailsItem> arrClassifiedList;
 
@@ -20,6 +29,14 @@ public class ClassifiedDetailsItem implements Serializable {
 
     public void setIsActive(String isActive) {
         this.isActive = isActive;
+    }
+
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
     }
 
     public String getId() {

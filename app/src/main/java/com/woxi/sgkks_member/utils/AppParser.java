@@ -640,6 +640,9 @@ public class AppParser implements AppConstants {
                     if (jsonObjectClassifiedEn.has("city") && jsonObjectClassifiedEn.optString("city") != null) {
                         classifiedDetailsItem.setClassifiedCity(jsonObjectClassifiedEn.optString("city"));
                     }
+                    if (jsonObjectClassifiedEn.has("city_id") && jsonObjectClassifiedEn.optString("city_id") != null) {
+                        classifiedDetailsItem.setCityId(jsonObjectClassifiedEn.optString("city_id"));
+                    }
                     if (jsonObjectClassifiedEn.has("created_at") && jsonObjectClassifiedEn.optString("created_at") != null) {
                         classifiedDetailsItem.setClassifiedCreateDate(jsonObjectClassifiedEn.optString("created_at"));
                     }

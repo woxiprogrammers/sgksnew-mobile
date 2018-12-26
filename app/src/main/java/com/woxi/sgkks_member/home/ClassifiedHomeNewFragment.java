@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.woxi.sgkks_member.adapters.ClassifiedListAdapter;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.EndlessRvScrollListener;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
+import com.woxi.sgkks_member.local_storage.DatabaseQueryHandler;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
@@ -50,6 +52,8 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
     private RecyclerView.Adapter mRvAdapter;
     public static View.OnClickListener onRvItemClickListener;
     public static ArrayList<ClassifiedDetailsItem> mArrClassifiedDetails;
+    public static ArrayList<ClassifiedDetailsItem> mArrClassifiedOfflineData;
+    DatabaseQueryHandler databaseQueryHandler;
     private String TAG = "ClassifiedHomeFragment";
     private int pageNumber = 0, arrSize =0;
     private boolean isApiInProgress = false;
@@ -81,30 +85,53 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
         setUpRecyclerView();
         boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
         boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
+        databaseQueryHandler = new DatabaseQueryHandler(mContext,false);
         if(isLanguageChanged || isCityChanged){
             if(new AppCommonMethods(mContext).isNetworkAvailable()){
                 pageNumber=0;
                 requestToGetClassifiedList(pageNumber, true);
             } else {
-                new AppCommonMethods(mContext).showAlert("You are Offline");
+                mArrClassifiedOfflineData = databaseQueryHandler.queryClassified();
+                setupClassifiedData(mArrClassifiedOfflineData);
             }
+        }
+        if (!new AppCommonMethods(mContext).isNetworkAvailable()){
+            mArrClassifiedOfflineData = databaseQueryHandler.queryClassified();
+            setupClassifiedData(mArrClassifiedOfflineData);
         }
     }
 
     private void setUpRecyclerView() {
-        mRvClassifiedList.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(mContext);
-        mRvClassifiedList.setLayoutManager(linearLayoutManager);
-        mRvClassifiedList.setAdapter(mRvAdapter);
-        onRvItemClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ClassifiedDetailsItem classifiedDetailsItem = mArrClassifiedDetails.get(mRvClassifiedList.getChildAdapterPosition(v));
-                Intent intentDetails = new Intent(mContext, EventAndClassifiedDetailActivity.class);
-                intentDetails.putExtra("currentClassifiedDetail", classifiedDetailsItem);
-                startActivity(intentDetails);
-            }
-        };
+        if (new AppCommonMethods(mContext).isNetworkAvailable()){
+            mRvClassifiedList.setHasFixedSize(true);
+            linearLayoutManager = new LinearLayoutManager(mContext);
+            mRvClassifiedList.setLayoutManager(linearLayoutManager);
+            mRvClassifiedList.setAdapter(mRvAdapter);
+            onRvItemClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ClassifiedDetailsItem classifiedDetailsItem = mArrClassifiedDetails.get(mRvClassifiedList.getChildAdapterPosition(v));
+                    Intent intentDetails = new Intent(mContext, EventAndClassifiedDetailActivity.class);
+                    intentDetails.putExtra("currentClassifiedDetail", classifiedDetailsItem);
+                    startActivity(intentDetails);
+                }
+            };
+        } else {
+            mRvClassifiedList.setHasFixedSize(true);
+            linearLayoutManager = new LinearLayoutManager(mContext);
+            mRvClassifiedList.setLayoutManager(linearLayoutManager);
+            mRvClassifiedList.setAdapter(mRvAdapter);
+            onRvItemClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ClassifiedDetailsItem classifiedDetailsItem = mArrClassifiedOfflineData.get(mRvClassifiedList.getChildAdapterPosition(v));
+                    Intent intentDetails = new Intent(mContext, EventAndClassifiedDetailActivity.class);
+                    intentDetails.putExtra("currentClassifiedDetail", classifiedDetailsItem);
+                    startActivity(intentDetails);
+                }
+            };
+        }
+
         recyclerViewScrollListener();
     }
 
@@ -143,7 +170,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                             }else if(resp instanceof ClassifiedDetailsItem){
                                 if(isFirstTime){
                                     mArrClassifiedDetails = classifiedDetailsItem.getArrClassifiedList();
-                                    if(mArrClassifiedDetails !=null){
+                                    if(mArrClassifiedDetails != null){
                                         mRvClassifiedList.setHasFixedSize(true);
                                         mRvAdapter = new ClassifiedListAdapter(mArrClassifiedDetails);
                                         mRvClassifiedList.setAdapter(mRvAdapter);
@@ -206,8 +233,16 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                 pageNumber=0;
                 requestToGetClassifiedList(pageNumber, true);
             } else {
-                new AppCommonMethods(mContext).showAlert("You are Offline");
+                mArrClassifiedOfflineData = databaseQueryHandler.queryClassified();
+                Log.i(TAG, "fragmentBecameVisible: "+mArrClassifiedOfflineData);
+                setupClassifiedData(mArrClassifiedOfflineData);
             }
         }
+    }
+
+    public void setupClassifiedData (ArrayList<ClassifiedDetailsItem> arrayList ){
+        mRvClassifiedList.setHasFixedSize(true);
+        mRvAdapter = new ClassifiedListAdapter(arrayList);
+        mRvClassifiedList.setAdapter(mRvAdapter);
     }
 }

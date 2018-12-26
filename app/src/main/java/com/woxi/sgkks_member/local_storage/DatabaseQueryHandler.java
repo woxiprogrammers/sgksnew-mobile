@@ -685,7 +685,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
 
     public boolean inserOrUpdateClassifiedEnglish(ArrayList<ClassifiedDetailsItem> arrayListClassified) {
         try{
-            String insertQuery = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_CLASSIFIED_EN + " VALUES (?,?,?,?,?,?)";
+            String insertQuery = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_CLASSIFIED_EN + " VALUES (?,?,?,?,?,?,?)";
             SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(insertQuery);
             mSqLiteDatabase.beginTransaction();
             ClassifiedDetailsItem classifiedDetailsItem;
@@ -708,6 +708,9 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 }
                 if (classifiedDetailsItem.getClassifiedCreateDate() != null) {
                     sqLiteStatement.bindString(6, classifiedDetailsItem.getClassifiedCreateDate());
+                }
+                if (classifiedDetailsItem.getCityId() != null){
+                    sqLiteStatement.bindString(7, classifiedDetailsItem.getCityId());
                 }
                 sqLiteStatement.execute();
             }
@@ -756,19 +759,61 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     }
 
     public  ArrayList<ClassifiedDetailsItem> queryClassified () {
-        String sqlQueryEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_EN;
+        String sqlQueryEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_EN
+                + " WHERE " + COLUMN_CLASSIFIED_IS_ACTIVE + "='true'";
+//                + " AND " + COLUMN_CLASSIFIED_CITY_ID + "='"+ AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext) +"'" ;
         String sqlQueryGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_GJ;
         ArrayList<ClassifiedDetailsItem> arrayListClassified = new ArrayList<>();
-        ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
+        ArrayList<String> arrImage = new ArrayList<>();
+
         Cursor cursorEnglish;
         Cursor cursorGujarati;
-        if (AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext).equalsIgnoreCase("1")) {
+        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")) {
             cursorEnglish = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
-            arrayListClassified.add(classifiedDetailsItem);
-        } else if (AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext).equalsIgnoreCase("2")) {
-            cursorEnglish = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
+            new AppCommonMethods(mContext).LOG(0,TAG,sqlQueryEnglish);
+            if (cursorEnglish.moveToFirst()) {
+              do {
+                  ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
+                  classifiedDetailsItem.setClassifiedID(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_ID_PRIMARY_KEY)));
+                  classifiedDetailsItem.setClassifiedTitle(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)));
+                  classifiedDetailsItem.setClassifiedDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)));
+                  classifiedDetailsItem.setClassifiedCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_CITY)));
+                  classifiedDetailsItem.setIsActive(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_IS_ACTIVE)));
+                  classifiedDetailsItem.setClassifiedCreateDate(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_CREATED_AT)));
+                  arrImage.add("");
+                  classifiedDetailsItem.setArrClassifiedImages(arrImage);
+                  arrayListClassified.add(classifiedDetailsItem);
+              } while (cursorEnglish.moveToNext());
+            }
+
+        } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")) {
             cursorGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
-            arrayListClassified.add(classifiedDetailsItem);
+            cursorEnglish = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
+            new AppCommonMethods(mContext).LOG(0,TAG,sqlQueryEnglish);
+            new AppCommonMethods(mContext).LOG(0,TAG,sqlQueryGujarati);
+            if (cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()){
+                do {
+                    ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
+                    // Check if title is present in Gujarati
+                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)) != null){
+                        classifiedDetailsItem.setClassifiedTitle(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)));
+                    } else {
+                        classifiedDetailsItem.setClassifiedTitle(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)));
+                    }
+                    //Check if description is present in Gujarati
+                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)) != null){
+                        classifiedDetailsItem.setClassifiedDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)));
+                    } else {
+                        classifiedDetailsItem.setClassifiedDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)));
+                    }
+                    classifiedDetailsItem.setClassifiedCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_CITY)));
+                    classifiedDetailsItem.setIsActive(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_IS_ACTIVE)));
+                    classifiedDetailsItem.setClassifiedCreateDate(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_CREATED_AT)));
+                    arrImage.add("");
+                    classifiedDetailsItem.setArrClassifiedImages(arrImage);
+                    arrayListClassified.add(classifiedDetailsItem);
+                } while (cursorEnglish.moveToNext() && cursorGujarati.moveToNext());
+            }
         }
         return arrayListClassified;
     }

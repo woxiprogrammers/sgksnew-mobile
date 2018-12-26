@@ -134,6 +134,7 @@ public interface DatabaseConstants {
     String COLUMN_CLASSIFIED_DESCRIPTION = "description";
     String COLUMN_CLASSIFIED_IS_ACTIVE = "is_active";
     String COLUMN_CLASSIFIED_CITY = "city";
+    String COLUMN_CLASSIFIED_CITY_ID = "city_id";
     String COLUMN_CLASSIFIED_CREATED_AT = "created_at";
 
 }

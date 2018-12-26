@@ -172,7 +172,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + COLUMN_CLASSIFIED_DESCRIPTION + " VARCHAR(500), "
                 + COLUMN_CLASSIFIED_CITY + " VARCHAR(500), "
                 + COLUMN_CLASSIFIED_IS_ACTIVE + " VARCHAR(500), "
-                + COLUMN_CLASSIFIED_CREATED_AT + " VARCHAR(500) "
+                + COLUMN_CLASSIFIED_CREATED_AT + " VARCHAR(500), "
+                + COLUMN_CLASSIFIED_CITY_ID + " VARCHAR(500) "
                 +")";
         new AppCommonMethods().LOG(0,TAG,CREATE_MESSAGE_TABLE_QUERY_EN);
 
