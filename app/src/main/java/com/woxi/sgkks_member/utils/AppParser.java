@@ -635,7 +635,7 @@ public class AppParser implements AppConstants {
                         classifiedDetailsItem.setClassifiedID(jsonObjectClassifiedEn.optString("id"));
                     }
                     if (jsonObjectClassifiedEn.has("title") && jsonObjectClassifiedEn.optString("title") != null){
-                        classifiedDetailsItem.setClassifiedTitle(jsonObjectClassified.optString("title"));
+                        classifiedDetailsItem.setClassifiedTitle(jsonObjectClassifiedEn.optString("title"));
                     }
                     if (jsonObjectClassifiedEn.has("description") && jsonObjectClassifiedEn.optString("description") != null) {
                         classifiedDetailsItem.setClassifiedDescription(jsonObjectClassifiedEn.optString("description"));
@@ -668,7 +668,7 @@ public class AppParser implements AppConstants {
                     Log.i(TAG, "parseLocalDataSyncResponse: "+(jsonObjectGujarati.has("title") && jsonObjectGujarati.optString("title") != null));
                     if (jsonObjectGujarati.has("title") && jsonObjectGujarati.optString("title") != null){
                         classifiedDetailsItem.setClassifiedTitle(jsonObjectGujarati.optString("title"));
-                        Log.i(TAG, "parseLocalDataSyncResponse: "+jsonObjectClassified.optString("title"));
+                        Log.i(TAG, "parseLocalDataSyncResponse: TITLE-------------"+jsonObjectClassified.optString("title"));
                     }
                     if (jsonObjectGujarati.has("classified_desc") && jsonObjectGujarati.optString("classified_desc") != null) {
                         classifiedDetailsItem.setClassifiedDescription(jsonObjectGujarati.optString("classified_desc"));
