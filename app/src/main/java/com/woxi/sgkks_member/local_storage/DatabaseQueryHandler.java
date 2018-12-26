@@ -478,7 +478,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     /*-------------------------------------------EVENTS LISTING-------------------------------------------*/
 
     public boolean insertOrUpdateEventsEnglish(ArrayList<EventDataItem> arrayListEvent){
-        String insertEventPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_EVENTS_EN + " VALUES (?,?,?,?,?,?,?,?)";
+        String insertEventPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_EVENTS_EN + " VALUES (?,?,?,?,?,?,?,?,?)";
         SQLiteStatement eventStatement = mSqLiteDatabase.compileStatement(insertEventPreparedStatement);
         mSqLiteDatabase.beginTransaction();
         EventDataItem eventDataItem;
@@ -508,6 +508,9 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 }
                 if (eventDataItem.getStrIsActive() != null) {
                     eventStatement.bindString(8, eventDataItem.getStrIsActive());
+                }
+                if (eventDataItem.getEventYear() != null){
+                    eventStatement.bindString(9,eventDataItem.getEventYear());
                 }
                 eventStatement.execute();
             }
@@ -577,18 +580,20 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    public ArrayList<EventDataItem> queryEvents(){
+    public ArrayList<EventDataItem> queryEvents(String year){
         ArrayList<EventDataItem> arrayListEvents = new ArrayList<>();
         ArrayList<String> arrImage = new ArrayList<>();
         String sqlEventEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_EVENTS_EN
                 + " WHERE " + COLUMN_EVENT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
-                + " AND " + COLUMN_EVENT_IS_ACTIVE + "='true'";
+                + " AND " + COLUMN_EVENT_IS_ACTIVE + "='true'"
+                + " AND " + COLUMN_EVENT_YEAR + "='" + year + "'";
         String sqlEventGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_EVENTS_GJ;
         Cursor cursorEnglish;
         Cursor cursorGujarati;
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")) {
             cursorEnglish = mSqLiteDatabase.rawQuery(sqlEventEnglish,null);
             Log.i(TAG, "queryEvents: "+sqlEventEnglish);
+            Log.i(TAG, "queryEvents: "+cursorEnglish.moveToFirst());
             if (cursorEnglish.moveToFirst()){
                 do {
                     EventDataItem eventDataItem = new EventDataItem();
@@ -601,6 +606,8 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     eventDataItem.setArrEventImageURLs(arrImage);
                     arrayListEvents.add(eventDataItem);
                 } while (cursorEnglish.moveToNext());
+            } else {
+
             }
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")) {
             cursorEnglish = mSqLiteDatabase.rawQuery(sqlEventEnglish,null);

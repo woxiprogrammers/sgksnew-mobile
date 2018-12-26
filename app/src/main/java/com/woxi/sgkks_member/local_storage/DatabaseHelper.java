@@ -115,7 +115,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + COLUMN_EVENT_DATE + " VARCHAR(500), "
                 + COLUMN_EVENT_CITY + " VARCHAR(500), "
                 + COLUMN_EVENT_CITY_ID + " VARCHAR(500), "
-                + COLUMN_EVENT_IS_ACTIVE + " VARCHAR(500)"
+                + COLUMN_EVENT_IS_ACTIVE + " VARCHAR(500),"
+                + COLUMN_EVENT_YEAR + " VARCHAR(500)"
                 + ")";
         new AppCommonMethods().LOG(0,TAG,CREATE_EVENTS_TABLE_QUERY_EN);
 

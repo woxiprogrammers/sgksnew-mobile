@@ -66,7 +66,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
     private ArrayList<EventDataItem> mArrEventData;
     private ArrayList<EventDataItem> mArrEventOfflineData;
     private boolean isApiRequested = false;
-    private String selectedYear = "";
+    private String selectedYear = "2018";
     private Spinner mSpinAccountYear;
     private DatabaseQueryHandler databaseQueryHandler;
     private ArrayList<Integer> arrayYearIntegerList = new ArrayList<>();
@@ -115,8 +115,15 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedYear = mSpinAccountYear.getSelectedItem().toString();
+                Log.i("@@@", "onItemSelected: "+selectedYear);
                 if (!selectedYear.equalsIgnoreCase("null")) {
-                    requestEventDetailsApi(String.valueOf(parent.getSelectedItem()));
+                    if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                        requestEventDetailsApi(String.valueOf(parent.getSelectedItem()));
+                    } else {
+                     mArrEventOfflineData = databaseQueryHandler.queryEvents(selectedYear);
+                     Log.i(TAG, "onItemSelected: "+mArrEventOfflineData);
+                     setupEventData(mArrEventOfflineData);
+                    }
                 } else {
                     ArrayAdapter<String> arrayYearAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, new ArrayList<String>());
                     arrayYearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -134,7 +141,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             if(new AppCommonMethods(mContext).isNetworkAvailable()){
                 requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
             } else {
-                mArrEventOfflineData = databaseQueryHandler.queryEvents();
+                mArrEventOfflineData = databaseQueryHandler.queryEvents(selectedYear);
                 setupEventData(mArrEventOfflineData);
             }
         }
@@ -147,7 +154,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             if(new AppCommonMethods(mContext).isNetworkAvailable()){
                 requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
             } else {
-                mArrEventOfflineData = databaseQueryHandler.queryEvents();
+                mArrEventOfflineData = databaseQueryHandler.queryEvents(selectedYear);
                 setupEventData(mArrEventOfflineData);
             }
         }

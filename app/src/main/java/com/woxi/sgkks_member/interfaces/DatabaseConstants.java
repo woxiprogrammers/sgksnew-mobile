@@ -122,6 +122,7 @@ public interface DatabaseConstants {
     String COLUMN_EVENT_IMAGE_URL = "image_url";
     String COLUMN_IMAGE_ID_PRIMARY_KEY = "image_id";
     String COLUMN_EVENT_LANGUAGE_ID = "language_id";
+    String COLUMN_EVENT_YEAR = "year";
 
 
     //TABLE CLASSIFIED
