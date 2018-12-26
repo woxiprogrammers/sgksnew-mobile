@@ -435,7 +435,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     /*-------------------------------------------EVENTS LISTING-------------------------------------------*/
 
     public boolean insertOrUpdateEventsEnglish(ArrayList<EventDataItem> arrayListEvent){
-        String insertEventPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_EVENTS_EN + " VALUES (?,?,?,?,?,?)";
+        String insertEventPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_EVENTS_EN + " VALUES (?,?,?,?,?,?,?,?)";
         SQLiteStatement eventStatement = mSqLiteDatabase.compileStatement(insertEventPreparedStatement);
         mSqLiteDatabase.beginTransaction();
         EventDataItem eventDataItem;
@@ -459,6 +459,12 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 }
                 if (eventDataItem.getCity() != null){
                     eventStatement.bindString(6, eventDataItem.getCity());
+                }
+                if (eventDataItem.getCitryId() != null) {
+                    eventStatement.bindString(7,eventDataItem.getCitryId());
+                }
+                if (eventDataItem.getStrIsActive() != null) {
+                    eventStatement.bindString(8, eventDataItem.getStrIsActive());
                 }
                 eventStatement.execute();
             }
@@ -526,6 +532,67 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         } finally {
             mSqLiteDatabase.endTransaction();
         }
+    }
+
+    public ArrayList<EventDataItem> queryEvents(){
+        ArrayList<EventDataItem> arrayListEvents = new ArrayList<>();
+        ArrayList<String> arrImage = new ArrayList<>();
+        String sqlEventEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_EVENTS_EN
+                + " WHERE " + COLUMN_EVENT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
+                + " AND " + COLUMN_EVENT_IS_ACTIVE + "='true'";
+        String sqlEventGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_EVENTS_GJ;
+        Cursor cursorEnglish;
+        Cursor cursorGujarati;
+        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")) {
+            cursorEnglish = mSqLiteDatabase.rawQuery(sqlEventEnglish,null);
+            Log.i(TAG, "queryEvents: "+sqlEventEnglish);
+            if (cursorEnglish.moveToFirst()){
+                do {
+                    EventDataItem eventDataItem = new EventDataItem();
+                    eventDataItem.setEventName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_NAME)));
+                    eventDataItem.setEventDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)));
+                    eventDataItem.setVenue(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)));
+                    eventDataItem.setEventYear(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_DATE)));
+                    eventDataItem.setCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_CITY)));
+                    arrImage.add("");
+                    eventDataItem.setArrEventImageURLs(arrImage);
+                    arrayListEvents.add(eventDataItem);
+                } while (cursorEnglish.moveToNext());
+            }
+        } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")) {
+            cursorEnglish = mSqLiteDatabase.rawQuery(sqlEventEnglish,null);
+            cursorGujarati = mSqLiteDatabase.rawQuery(sqlEventGujarati,null);
+            Log.i(TAG, "queryEvents: "+sqlEventGujarati);
+            if (cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()){
+                do {
+                    EventDataItem eventDataItem = new EventDataItem();
+                    //Check if title is present in Gujarati
+                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_NAME)) != null) {
+                        eventDataItem.setEventName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_NAME)));
+                    } else {
+                        eventDataItem.setEventName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_NAME)));
+                    }
+                    //CHECK IF DESCRIPTION IS PRESENT IN GUJARATI
+                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)) != null) {
+                        eventDataItem.setEventDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)));
+                    } else {
+                        eventDataItem.setEventDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)));
+                    }
+                    //check if venue is present in Gujarati
+                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)) != null){
+                        eventDataItem.setVenue(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)));
+                    } else {
+                        eventDataItem.setVenue(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)));
+                    }
+                    eventDataItem.setEventYear(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_DATE)));
+                    eventDataItem.setCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_CITY)));
+                    arrImage.add("");
+                    eventDataItem.setArrEventImageURLs(arrImage);
+                    arrayListEvents.add(eventDataItem);
+                } while (cursorEnglish.moveToNext() && cursorGujarati.moveToNext());
+            }
+        }
+        return arrayListEvents;
     }
 
     /*-------------------------------------------EVENTS LISTING-------------------------------------------*/

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.adapters.EventsListAdapter;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
+import com.woxi.sgkks_member.local_storage.DatabaseQueryHandler;
 import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
 import com.woxi.sgkks_member.models.EventDataItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
@@ -62,9 +64,11 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
     private RecyclerView mRvEventList;
     private EventsListAdapter mEventListAdapter;
     private ArrayList<EventDataItem> mArrEventData;
+    private ArrayList<EventDataItem> mArrEventOfflineData;
     private boolean isApiRequested = false;
     private String selectedYear = "";
     private Spinner mSpinAccountYear;
+    private DatabaseQueryHandler databaseQueryHandler;
     private ArrayList<Integer> arrayYearIntegerList = new ArrayList<>();
 
     public EventHomeFragment() {
@@ -104,18 +108,8 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
         mArrEventData = new ArrayList<>();
         mEventListAdapter = new EventsListAdapter(mArrEventData);
         mRvEventList.setAdapter(mEventListAdapter);
-
-        onEventClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View selectedView) {
-                Intent intent = new Intent(mContext, EventAndClassifiedDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventDetails", mArrEventData.get(mRvEventList.getChildAdapterPosition(selectedView)));
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        };
-
+        databaseQueryHandler = new DatabaseQueryHandler(mContext,false);
+        eventClickListner();
         //Function for spinner year change listener
         mSpinAccountYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -140,7 +134,8 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             if(new AppCommonMethods(mContext).isNetworkAvailable()){
                 requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
             } else {
-                new AppCommonMethods(mContext).showAlert("You are Offline");
+                mArrEventOfflineData = databaseQueryHandler.queryEvents();
+                setupEventData(mArrEventOfflineData);
             }
         }
 
@@ -152,9 +147,9 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             if(new AppCommonMethods(mContext).isNetworkAvailable()){
                 requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
             } else {
-                new AppCommonMethods(mContext).showAlert("You are Offline");
+                mArrEventOfflineData = databaseQueryHandler.queryEvents();
+                setupEventData(mArrEventOfflineData);
             }
-
         }
     }
 
@@ -228,5 +223,36 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             }
         };
         AppController.getInstance().addToRequestQueue(jsonObjectRequest, "apiEventDetailsTAG");
+    }
+
+    private void setupEventData(ArrayList<EventDataItem> arrList) {
+        mEventListAdapter = new EventsListAdapter(arrList);
+        mRvEventList.setAdapter(mEventListAdapter);
+    }
+
+    private void eventClickListner () {
+        if (new AppCommonMethods(mContext).isNetworkAvailable()){
+            onEventClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View selectedView) {
+                    Intent intent = new Intent(mContext, EventAndClassifiedDetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("eventDetails", mArrEventData.get(mRvEventList.getChildAdapterPosition(selectedView)));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            };
+        } else {
+            onEventClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View selectedView) {
+                    Intent intent = new Intent(mContext, EventAndClassifiedDetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("eventDetails", mArrEventOfflineData.get(mRvEventList.getChildAdapterPosition(selectedView)));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            };
+        }
     }
 }

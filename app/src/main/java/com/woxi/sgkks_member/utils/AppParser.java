@@ -488,6 +488,12 @@ public class AppParser implements AppConstants {
                         String strEventCity = jsonEventObject.optString("city");
                         eventDataItem.setCity(strEventCity);
                     }
+                    if (jsonEventObject.has("city_id") && jsonEventObject.optString("city_id") != null) {
+                        eventDataItem.setCitryId(jsonEventObject.optString("city_id"));
+                    }
+                    if (jsonEventObject.has("is_active") && jsonEventObject.optString("is_active") != null) {
+                        eventDataItem.setStrIsActive(jsonEventObject.optString("is_active"));
+                    }
                     if (jsonEventObject.has("event_images") && jsonEventObject.optJSONArray("event_images") != null) {
                         arrEventImages = new ArrayList<>();
                         JSONArray jsonImageUrlArray = jsonEventObject.optJSONArray("event_images");
