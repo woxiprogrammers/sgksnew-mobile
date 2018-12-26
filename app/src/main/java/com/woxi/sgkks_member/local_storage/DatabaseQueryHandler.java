@@ -10,6 +10,7 @@ import com.bumptech.glide.signature.MediaStoreSignature;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.DatabaseConstants;
 import com.woxi.sgkks_member.models.CityIteam;
+import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
 import com.woxi.sgkks_member.models.EventDataItem;
 import com.woxi.sgkks_member.models.FamilyDetailsItem;
@@ -17,6 +18,8 @@ import com.woxi.sgkks_member.models.MemberAddressItem;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
 import com.woxi.sgkks_member.models.MessageDetailsItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -677,6 +680,100 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     }
 
     /*-------------------------------------------MESSAGE LISTING-------------------------------------------*/
+
+    /*-------------------------------------------CLASSIFIED LISTING-------------------------------------------*/
+
+    public boolean inserOrUpdateClassifiedEnglish(ArrayList<ClassifiedDetailsItem> arrayListClassified) {
+        try{
+            String insertQuery = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_CLASSIFIED_EN + " VALUES (?,?,?,?,?,?)";
+            SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(insertQuery);
+            mSqLiteDatabase.beginTransaction();
+            ClassifiedDetailsItem classifiedDetailsItem;
+            for (int arrIndex = 0; arrIndex < arrayListClassified.size(); arrIndex++) {
+                classifiedDetailsItem = arrayListClassified.get(arrIndex);
+                if (classifiedDetailsItem.getClassifiedID() != null){
+                    sqLiteStatement.bindString(1,classifiedDetailsItem.getClassifiedID());
+                }
+                if (classifiedDetailsItem.getClassifiedTitle() != null){
+                    sqLiteStatement.bindString(2, classifiedDetailsItem.getClassifiedTitle());
+                }
+                if (classifiedDetailsItem.getClassifiedDescription() != null) {
+                    sqLiteStatement.bindString(3, classifiedDetailsItem.getClassifiedDescription());
+                }
+                if (classifiedDetailsItem.getClassifiedCity() != null){
+                    sqLiteStatement.bindString(4, classifiedDetailsItem.getClassifiedCity());
+                }
+                if (classifiedDetailsItem.getIsActive() != null) {
+                    sqLiteStatement.bindString(5, classifiedDetailsItem.getIsActive());
+                }
+                if (classifiedDetailsItem.getClassifiedCreateDate() != null) {
+                    sqLiteStatement.bindString(6, classifiedDetailsItem.getClassifiedCreateDate());
+                }
+                sqLiteStatement.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public boolean insertOrUpdateClassifiedGujarati(ArrayList<ClassifiedDetailsItem> arrayListClassified) {
+        try {
+            String insertClassified = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_CLASSIFIED_GJ + " VALUES (?,?,?,?)";
+            SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(insertClassified);
+            mSqLiteDatabase.beginTransaction();
+            ClassifiedDetailsItem classifiedDetailsItem;
+            for (int arrIndex = 0; arrIndex < arrayListClassified.size(); arrIndex++){
+                classifiedDetailsItem = arrayListClassified.get(arrIndex);
+                if (classifiedDetailsItem.getId() != null){
+                    sqLiteStatement.bindString(1, classifiedDetailsItem.getId());
+                }
+                Log.i(TAG, "insertOrUpdateClassifiedGujarati: "+(classifiedDetailsItem.getClassifiedTitle() != null));
+                if (classifiedDetailsItem.getClassifiedTitle() != null) {
+                    Log.i(TAG, "insertOrUpdateClassifiedGujarati: "+classifiedDetailsItem.getClassifiedTitle());
+                    sqLiteStatement.bindString(2,classifiedDetailsItem.getClassifiedTitle());
+                }
+                if (classifiedDetailsItem.getClassifiedDescription() != null) {
+                    sqLiteStatement.bindString(3,classifiedDetailsItem.getClassifiedDescription());
+                }
+                if (classifiedDetailsItem.getClassifiedID() != null) {
+                    sqLiteStatement.bindString(4,classifiedDetailsItem.getClassifiedID());
+                }
+                sqLiteStatement.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public  ArrayList<ClassifiedDetailsItem> queryClassified () {
+        String sqlQueryEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_EN;
+        String sqlQueryGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_GJ;
+        ArrayList<ClassifiedDetailsItem> arrayListClassified = new ArrayList<>();
+        ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
+        Cursor cursorEnglish;
+        Cursor cursorGujarati;
+        if (AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext).equalsIgnoreCase("1")) {
+            cursorEnglish = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
+            arrayListClassified.add(classifiedDetailsItem);
+        } else if (AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext).equalsIgnoreCase("2")) {
+            cursorEnglish = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
+            cursorGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
+            arrayListClassified.add(classifiedDetailsItem);
+        }
+        return arrayListClassified;
+    }
+
+    /*-------------------------------------------CLASSIFIED LISTING-------------------------------------------*/
 
     boolean insertOrUpdateAllAddresses(ArrayList<MemberAddressItem> arrMemberAddressItems, boolean isUpdate) {
         //SQL Prepared Statement

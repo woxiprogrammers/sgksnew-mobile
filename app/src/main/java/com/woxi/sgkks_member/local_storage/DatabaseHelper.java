@@ -165,6 +165,26 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + TABLE_MESSAGE_NEWS_DETAILS + "(" + COLUMN_MESSAGES_ID_PRIMARY + "))";
         new AppCommonMethods().LOG(0,TAG,CREATE_MESSAGE_TABLE_QUERY_EN);
 
+        String CREATE_CLASSIFIED_TABLE_QUERY_EN = "CREATE TABLE " + TABLE_CLASSIFIED_EN
+                + "("
+                + COLUMN_CLASSIFIED_ID_PRIMARY_KEY + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_CLASSIFIED_TITLE + " VARCHAR(500), "
+                + COLUMN_CLASSIFIED_DESCRIPTION + " VARCHAR(500), "
+                + COLUMN_CLASSIFIED_CITY + " VARCHAR(500), "
+                + COLUMN_CLASSIFIED_IS_ACTIVE + " VARCHAR(500), "
+                + COLUMN_CLASSIFIED_CREATED_AT + " VARCHAR(500) "
+                +")";
+        new AppCommonMethods().LOG(0,TAG,CREATE_MESSAGE_TABLE_QUERY_EN);
+
+        String CREATE_CLASSIFIED_TABLE_QUERY_GJ = "CREATE TABLE " + TABLE_CLASSIFIED_GJ
+                + "("
+                + COLUMN_CLASSIFIED_ID_PRIMARY_KEY_GJ + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_CLASSIFIED_TITLE + " VARCHAR(500), "
+                + COLUMN_CLASSIFIED_DESCRIPTION + " VARCHAR(500), "
+                + COLUMN_CLASSIFIED_ID_FOREIGN_KEY + " VARCHAR(500), "
+                + " FOREIGN KEY(" + COLUMN_CLASSIFIED_ID_FOREIGN_KEY + ")REFERENCES "
+                + TABLE_CLASSIFIED_EN + "(" + COLUMN_CLASSIFIED_ID_PRIMARY_KEY + "))";
+
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_EN);
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_GJ);
         db.execSQL(CREATE_CITY_TABLE_QUERY_EN);
@@ -174,6 +194,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
         db.execSQL(CREATE_EVENTS_IMAGES);
         db.execSQL(CREATE_MESSAGE_TABLE_QUERY_EN);
         db.execSQL(CREATE_MESSAGE_TABLE_QUERY_GJ);
+        db.execSQL(CREATE_CLASSIFIED_TABLE_QUERY_EN);
+        db.execSQL(CREATE_CLASSIFIED_TABLE_QUERY_GJ);
     }
 
     // Called when the database needs to be upgraded.
@@ -192,6 +214,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENT_IMAGES);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBER_DETAILS_EN);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBER_DETAILS_GJ);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLASSIFIED_EN);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLASSIFIED_GJ);
             onCreate(db);
         }
     }

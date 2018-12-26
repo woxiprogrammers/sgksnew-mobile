@@ -122,4 +122,18 @@ public interface DatabaseConstants {
     String COLUMN_EVENT_IMAGE_URL = "image_url";
     String COLUMN_IMAGE_ID_PRIMARY_KEY = "image_id";
     String COLUMN_EVENT_LANGUAGE_ID = "language_id";
+
+
+    //TABLE CLASSIFIED
+    String TABLE_CLASSIFIED_EN = "table_classified_en";
+    String TABLE_CLASSIFIED_GJ = "table_classified_gj";
+    String COLUMN_CLASSIFIED_ID_PRIMARY_KEY = "id";
+    String COLUMN_CLASSIFIED_ID_PRIMARY_KEY_GJ = "id";
+    String COLUMN_CLASSIFIED_ID_FOREIGN_KEY = "foreign_id";
+    String COLUMN_CLASSIFIED_TITLE = "title";
+    String COLUMN_CLASSIFIED_DESCRIPTION = "description";
+    String COLUMN_CLASSIFIED_IS_ACTIVE = "is_active";
+    String COLUMN_CLASSIFIED_CITY = "city";
+    String COLUMN_CLASSIFIED_CREATED_AT = "created_at";
+
 }

@@ -10,9 +10,25 @@ import java.util.ArrayList;
  */
 
 public class ClassifiedDetailsItem implements Serializable {
-    private String classifiedID, classifiedTitle, classifiedDescription, classifiedPackage, classifiedType, classifiedCreateDate, classifiedCity;
+    private String classifiedID, classifiedTitle, classifiedDescription, classifiedPackage, classifiedType, classifiedCreateDate, classifiedCity,id,isActive;
     private ArrayList<String> arrClassifiedImages;
     private ArrayList<ClassifiedDetailsItem> arrClassifiedList;
+
+    public String getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(String isActive) {
+        this.isActive = isActive;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public ArrayList<ClassifiedDetailsItem> getArrClassifiedList() {
         return arrClassifiedList;

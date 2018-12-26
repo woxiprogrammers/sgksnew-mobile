@@ -614,6 +614,64 @@ public class AppParser implements AppConstants {
         } else {
             Log.i(TAG, "parseLocalDataSyncResponse: Messages not present");
         }
+        if (jsonObject.has("classifieds") && jsonObject.optJSONObject("classifieds") != null){
+            ArrayList<ClassifiedDetailsItem> arrclassifiedDetailsItemsEnglish = new ArrayList<>();
+            ArrayList<ClassifiedDetailsItem> arrclassifiedDetailsItemsGujarati = new ArrayList<>();
+            JSONObject jsonObjectClassified = jsonObject.optJSONObject("classifieds");
+
+            if (jsonObjectClassified.has("classified_en") && jsonObjectClassified.optJSONArray("classified_en") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: classified_en present");
+                JSONArray jsonArray = jsonObjectClassified.optJSONArray("classified_en");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++) {
+                    JSONObject jsonObjectClassifiedEn = jsonArray.optJSONObject(arrIndex);
+                    ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
+                    if (jsonObjectClassifiedEn.has("id") && jsonObjectClassifiedEn.optString("id") != null){
+                        classifiedDetailsItem.setClassifiedID(jsonObjectClassifiedEn.optString("id"));
+                    }
+                    if (jsonObjectClassifiedEn.has("title") && jsonObjectClassifiedEn.optString("title") != null){
+                        classifiedDetailsItem.setClassifiedTitle(jsonObjectClassified.optString("title"));
+                    }
+                    if (jsonObjectClassifiedEn.has("description") && jsonObjectClassifiedEn.optString("description") != null) {
+                        classifiedDetailsItem.setClassifiedDescription(jsonObjectClassifiedEn.optString("description"));
+                    }
+                    if (jsonObjectClassifiedEn.has("is_active") && jsonObjectClassifiedEn.optString("is_active") != null) {
+                        classifiedDetailsItem.setIsActive(jsonObjectClassifiedEn.optString("is_active"));
+                    }
+                    if (jsonObjectClassifiedEn.has("city") && jsonObjectClassifiedEn.optString("city") != null) {
+                        classifiedDetailsItem.setClassifiedCity(jsonObjectClassifiedEn.optString("city"));
+                    }
+                    if (jsonObjectClassifiedEn.has("created_at") && jsonObjectClassifiedEn.optString("created_at") != null) {
+                        classifiedDetailsItem.setClassifiedCreateDate(jsonObjectClassifiedEn.optString("created_at"));
+                    }
+                    arrclassifiedDetailsItemsEnglish.add(classifiedDetailsItem);
+                }
+                localDataSyncItem.setArrClassifiedItems(arrclassifiedDetailsItemsEnglish);
+            }
+            if (jsonObjectClassified.has("classified_gj") && jsonObjectClassified.optJSONArray("classified_gj") != null){
+                Log.i(TAG, "parseLocalDataSyncResponse: classified_gj present");
+                JSONArray jsonArray = jsonObjectClassified.optJSONArray("classified_gj");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++) {
+                    JSONObject jsonObjectGujarati = jsonArray.optJSONObject(arrIndex);
+                    ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
+                    if (jsonObjectGujarati.has("id") && jsonObjectGujarati.optString("id") != null) {
+                        classifiedDetailsItem.setId(jsonObjectGujarati.optString("id"));
+                    }
+                    Log.i(TAG, "parseLocalDataSyncResponse: "+(jsonObjectGujarati.has("title") && jsonObjectGujarati.optString("title") != null));
+                    if (jsonObjectGujarati.has("title") && jsonObjectGujarati.optString("title") != null){
+                        classifiedDetailsItem.setClassifiedTitle(jsonObjectGujarati.optString("title"));
+                        Log.i(TAG, "parseLocalDataSyncResponse: "+jsonObjectClassified.optString("title"));
+                    }
+                    if (jsonObjectGujarati.has("classified_desc") && jsonObjectGujarati.optString("classified_desc") != null) {
+                        classifiedDetailsItem.setClassifiedDescription(jsonObjectGujarati.optString("classified_desc"));
+                    }
+                    if (jsonObjectGujarati.has("classified_id") && jsonObjectGujarati.optString("classified_id") != null) {
+                        classifiedDetailsItem.setClassifiedID(jsonObjectGujarati.optString("classified_id"));
+                    }
+                    arrclassifiedDetailsItemsGujarati.add(classifiedDetailsItem);
+                }
+                localDataSyncItem.setArrClassifiedGujaratiItems(arrclassifiedDetailsItemsGujarati);
+            }
+        }
         /*if (jsonResponseObject.has("committees") && jsonResponseObject.optString("committees") != null) {
             ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems = new ArrayList<>();
             JSONArray jsonCommitteeArray = jsonResponseObject.optJSONArray("committees");
