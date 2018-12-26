@@ -221,7 +221,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
                 requestToGetClassifiedList(pageNumber,false);
             } else {
-                new AppCommonMethods(mContext).showAlert("You are offline");
+                //new AppCommonMethods(mContext).showAlert("You are offline");
             }
         }
     }

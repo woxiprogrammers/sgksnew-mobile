@@ -136,7 +136,8 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                     requestToGetMembersData(pageNumber,true,false);
                 }
             } else {
-                //new AppCommonMethods(mContext).showAlert("You are Offline");
+                arrTrial = databaseQueryHandler.queryMembers("");
+                fetchMembersOffline(arrTrial);
             }
         }
         if (new AppCommonMethods(mContext).isNetworkAvailable()){
