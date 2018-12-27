@@ -189,6 +189,27 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + " FOREIGN KEY(" + COLUMN_CLASSIFIED_ID_FOREIGN_KEY + ")REFERENCES "
                 + TABLE_CLASSIFIED_EN + "(" + COLUMN_CLASSIFIED_ID_PRIMARY_KEY + "))";
 
+        String CREATE_ACCOUNT_TABLE_QUERY_EN = "CREATE TABLE " + TABLE_ACCOUNT_EN
+                + "("
+                + COLUMN_ACCOUNT_ID_PRIMARY + " VARCAHR(500) PRIMARY KEY, "
+                + COLUMN_ACCOUNT_NAME + " VARCHAR(500), "
+                + COLUMN_ACCOUNT_DESCRIPTION + " VARCHAR(500), "
+                + COLUMN_ACCOUNT_IS_ACTIVE + " VARCHAR(500), "
+                + COLUMN_ACCOUNT_CITY + " VARCHAR(500), "
+                + COLUMN_ACCOUNT_CITY_ID + " VARCHAR(500), "
+                + COLUMN_ACCOUNT_YEAR + " VARCHAR(500)"
+                + ")";
+
+        String CREATE_ACCOUNT_TABLE_QUERY_GJ = "CREATE TABLE "+ TABLE_ACCOUNT_GJ
+                +"("
+                + COLUMN_ACCOUNT_ID_PRIMARY_GJ + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_ACCOUNT_NAME + " VARCHAR(500), "
+                + COLUMN_ACCOUNT_DESCRIPTION + " VARCHAR(500), "
+                + COLUMN_ACCOUNT_ID_FOREIGN + " VARCHAR(500), "
+                + " FOREIGN KEY(" + COLUMN_ACCOUNT_ID_FOREIGN + ") REFERENCES "
+                + TABLE_ACCOUNT_EN + "(" + COLUMN_ACCOUNT_ID_PRIMARY +")"
+                +")";
+
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_EN);
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_GJ);
         db.execSQL(CREATE_CITY_TABLE_QUERY_EN);
@@ -200,6 +221,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
         db.execSQL(CREATE_MESSAGE_TABLE_QUERY_GJ);
         db.execSQL(CREATE_CLASSIFIED_TABLE_QUERY_EN);
         db.execSQL(CREATE_CLASSIFIED_TABLE_QUERY_GJ);
+        db.execSQL(CREATE_ACCOUNT_TABLE_QUERY_EN);
+        db.execSQL(CREATE_ACCOUNT_TABLE_QUERY_GJ);
     }
 
     // Called when the database needs to be upgraded.
@@ -220,6 +243,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBER_DETAILS_GJ);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLASSIFIED_EN);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLASSIFIED_GJ);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACCOUNT_EN);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACCOUNT_GJ);
             onCreate(db);
         }
     }

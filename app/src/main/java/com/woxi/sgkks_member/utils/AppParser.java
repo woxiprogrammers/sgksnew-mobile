@@ -621,8 +621,8 @@ public class AppParser implements AppConstants {
             Log.i(TAG, "parseLocalDataSyncResponse: Messages not present");
         }
         if (jsonObject.has("classifieds") && jsonObject.optJSONObject("classifieds") != null){
-            ArrayList<ClassifiedDetailsItem> arrclassifiedDetailsItemsEnglish = new ArrayList<>();
-            ArrayList<ClassifiedDetailsItem> arrclassifiedDetailsItemsGujarati = new ArrayList<>();
+            ArrayList<ClassifiedDetailsItem> arrClassifiedDetailsItemsEnglish = new ArrayList<>();
+            ArrayList<ClassifiedDetailsItem> arrClassifiedDetailsItemsGujarati = new ArrayList<>();
             JSONObject jsonObjectClassified = jsonObject.optJSONObject("classifieds");
 
             if (jsonObjectClassified.has("classified_en") && jsonObjectClassified.optJSONArray("classified_en") != null) {
@@ -652,9 +652,9 @@ public class AppParser implements AppConstants {
                     if (jsonObjectClassifiedEn.has("created_at") && jsonObjectClassifiedEn.optString("created_at") != null) {
                         classifiedDetailsItem.setClassifiedCreateDate(jsonObjectClassifiedEn.optString("created_at"));
                     }
-                    arrclassifiedDetailsItemsEnglish.add(classifiedDetailsItem);
+                    arrClassifiedDetailsItemsEnglish.add(classifiedDetailsItem);
                 }
-                localDataSyncItem.setArrClassifiedItems(arrclassifiedDetailsItemsEnglish);
+                localDataSyncItem.setArrClassifiedItems(arrClassifiedDetailsItemsEnglish);
             }
             if (jsonObjectClassified.has("classified_gj") && jsonObjectClassified.optJSONArray("classified_gj") != null){
                 Log.i(TAG, "parseLocalDataSyncResponse: classified_gj present");
@@ -676,9 +676,9 @@ public class AppParser implements AppConstants {
                     if (jsonObjectGujarati.has("classified_id") && jsonObjectGujarati.optString("classified_id") != null) {
                         classifiedDetailsItem.setClassifiedID(jsonObjectGujarati.optString("classified_id"));
                     }
-                    arrclassifiedDetailsItemsGujarati.add(classifiedDetailsItem);
+                    arrClassifiedDetailsItemsGujarati.add(classifiedDetailsItem);
                 }
-                localDataSyncItem.setArrClassifiedGujaratiItems(arrclassifiedDetailsItemsGujarati);
+                localDataSyncItem.setArrClassifiedGujaratiItems(arrClassifiedDetailsItemsGujarati);
             }
         }
         /*if (jsonResponseObject.has("committees") && jsonResponseObject.optString("committees") != null) {

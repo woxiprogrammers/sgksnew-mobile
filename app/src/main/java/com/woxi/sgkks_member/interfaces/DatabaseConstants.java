@@ -138,4 +138,16 @@ public interface DatabaseConstants {
     String COLUMN_CLASSIFIED_CITY_ID = "city_id";
     String COLUMN_CLASSIFIED_CREATED_AT = "created_at";
 
+    //TABLE ACCOUNTS
+    String TABLE_ACCOUNT_EN = "account_en";
+    String TABLE_ACCOUNT_GJ = "account_gj";
+    String COLUMN_ACCOUNT_ID_PRIMARY = "id";
+    String COLUMN_ACCOUNT_ID_PRIMARY_GJ = "id";
+    String COLUMN_ACCOUNT_ID_FOREIGN = "foreign_key";
+    String COLUMN_ACCOUNT_NAME = "name";
+    String COLUMN_ACCOUNT_DESCRIPTION = "description";
+    String COLUMN_ACCOUNT_IS_ACTIVE = "is_active";
+    String COLUMN_ACCOUNT_CITY = "city";
+    String COLUMN_ACCOUNT_CITY_ID = "city_id";
+    String COLUMN_ACCOUNT_YEAR = "year";
 }
