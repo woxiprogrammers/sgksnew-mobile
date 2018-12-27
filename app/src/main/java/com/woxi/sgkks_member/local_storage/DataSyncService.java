@@ -122,7 +122,7 @@ public class DataSyncService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String url = " http://www.mocky.io/v2/5c237dd82f00006d000495e7";
+        String url = "http://www.mocky.io/v2/5c24ddd830000084007a61c4";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,/* AppURLs.API_SKS_OFFLINE*/url, /*params*/null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -189,6 +189,7 @@ public class DataSyncService extends Service {
                                     if (arrAccountGujarati != null){
                                         databaseQueryHandler.insertOrUpdateAccountGujarati(arrAccountGujarati);
                                     }
+                                    databaseQueryHandler.insertCount(arrCityEnglishItems,arrMessageDetailsItems,arrClassifiedEnglish);
                                    /* if (arrCommitteeDetailsItems.size() != 0) {
                                         isCommitteeSuccessful = databaseQueryHandler.insertOrUpdateAllCommittees(arrCommitteeDetailsItems, true);
                                         AppCommonMethods.putStringPref(PREFS_LAST_UPDATED_DATE, strCurrentServerTime, getApplicationContext());

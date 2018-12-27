@@ -210,6 +210,13 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + TABLE_ACCOUNT_EN + "(" + COLUMN_ACCOUNT_ID_PRIMARY +")"
                 +")";
 
+        String CREATE_COUNT_TABLE = "CREATE TABLE " + TABLE_COUNTS
+                +"("
+                + COLUMN_COUNT_CITY_ID + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_COUNT_MESSAGE + " VARCHAR(500), "
+                + COLUMN_COUNT_CLASSIFIED + " VARCHAR(500)"
+                + ")";
+
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_EN);
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_GJ);
         db.execSQL(CREATE_CITY_TABLE_QUERY_EN);
@@ -223,6 +230,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
         db.execSQL(CREATE_CLASSIFIED_TABLE_QUERY_GJ);
         db.execSQL(CREATE_ACCOUNT_TABLE_QUERY_EN);
         db.execSQL(CREATE_ACCOUNT_TABLE_QUERY_GJ);
+        db.execSQL(CREATE_COUNT_TABLE);
+
     }
 
     // Called when the database needs to be upgraded.
@@ -245,6 +254,7 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLASSIFIED_GJ);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACCOUNT_EN);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACCOUNT_GJ);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_COUNTS);
             onCreate(db);
         }
     }

@@ -150,4 +150,11 @@ public interface DatabaseConstants {
     String COLUMN_ACCOUNT_CITY = "city";
     String COLUMN_ACCOUNT_CITY_ID = "city_id";
     String COLUMN_ACCOUNT_YEAR = "year";
+
+    //TABLE COUNTS
+    String TABLE_COUNTS = "table_counts";
+    String COLUMN_COUNT_CITY_NAME = "city";
+    String COLUMN_COUNT_CITY_ID = "city_id";
+    String COLUMN_COUNT_MESSAGE = "message_count";
+    String COLUMN_COUNT_CLASSIFIED = "classified_count";
 }

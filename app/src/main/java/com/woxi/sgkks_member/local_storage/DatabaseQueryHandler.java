@@ -14,6 +14,7 @@ import com.woxi.sgkks_member.models.AccountImages;
 import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
+import com.woxi.sgkks_member.models.CountItem;
 import com.woxi.sgkks_member.models.EventDataItem;
 import com.woxi.sgkks_member.models.FamilyDetailsItem;
 import com.woxi.sgkks_member.models.MemberAddressItem;
@@ -744,7 +745,8 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     public ArrayList<MessageDetailsItem> querryMessages(){
         ArrayList<MessageDetailsItem> arrayListMessages = new ArrayList<>();
 
-        String sqlQueryEnglish = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS;
+        String sqlQueryEnglish = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS
+                + " WHERE " + COLUMN_MESSAGES_IS_ACTIVE + "='true'" ;
         String sqlQueryGujarati = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS_GJ;
         Cursor cursorMessages;
         Cursor cursorMessagesGujarati;
@@ -880,30 +882,31 @@ public class DatabaseQueryHandler implements DatabaseConstants {
 
     public  ArrayList<ClassifiedDetailsItem> queryClassified () {
         String sqlQueryEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_EN
-                + " WHERE " + COLUMN_CLASSIFIED_IS_ACTIVE + "='true'";
-//                + " AND " + COLUMN_CLASSIFIED_CITY_ID + "='"+ AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext) +"'" ;
+                + " WHERE " + COLUMN_CLASSIFIED_IS_ACTIVE + "='true'"
+                + " AND " + COLUMN_CLASSIFIED_CITY_ID + "='"+ AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'" ;
         String sqlQueryGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_GJ;
         ArrayList<ClassifiedDetailsItem> arrayListClassified = new ArrayList<>();
         ArrayList<String> arrImage = new ArrayList<>();
-
+        Log.i(TAG, "queryClassified: "+sqlQueryEnglish);
+        Log.i(TAG, "queryClassified: "+sqlQueryGujarati);
         Cursor cursorEnglish;
         Cursor cursorGujarati;
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")) {
             cursorEnglish = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
             new AppCommonMethods(mContext).LOG(0,TAG,sqlQueryEnglish);
             if (cursorEnglish.moveToFirst()) {
-              do {
-                  ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
-                  classifiedDetailsItem.setClassifiedID(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_ID_PRIMARY_KEY)));
-                  classifiedDetailsItem.setClassifiedTitle(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)));
-                  classifiedDetailsItem.setClassifiedDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)));
-                  classifiedDetailsItem.setClassifiedCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_CITY)));
-                  classifiedDetailsItem.setIsActive(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_IS_ACTIVE)));
-                  classifiedDetailsItem.setClassifiedCreateDate(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_CREATED_AT)));
-                  arrImage.add("");
-                  classifiedDetailsItem.setArrClassifiedImages(arrImage);
-                  arrayListClassified.add(classifiedDetailsItem);
-              } while (cursorEnglish.moveToNext());
+                do {
+                    ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
+                    classifiedDetailsItem.setClassifiedID(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_ID_PRIMARY_KEY)));
+                    classifiedDetailsItem.setClassifiedTitle(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)));
+                    classifiedDetailsItem.setClassifiedDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)));
+                    classifiedDetailsItem.setClassifiedCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_CITY)));
+                    classifiedDetailsItem.setIsActive(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_IS_ACTIVE)));
+                    classifiedDetailsItem.setClassifiedCreateDate(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_CREATED_AT)));
+                    arrImage.add("");
+                    classifiedDetailsItem.setArrClassifiedImages(arrImage);
+                    arrayListClassified.add(classifiedDetailsItem);
+                } while (cursorEnglish.moveToNext());
             }
 
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")) {
@@ -1072,220 +1075,65 @@ public class DatabaseQueryHandler implements DatabaseConstants {
 
     /*-------------------------------------------ACCOUNT LISTING-------------------------------------------*/
 
-    boolean insertOrUpdateAllAddresses(ArrayList<MemberAddressItem> arrMemberAddressItems, boolean isUpdate) {
-        //SQL Prepared Statement
-        String insertAddressPreparedStatement;
-        if (isUpdate) {
-            insertAddressPreparedStatement = "UPDATE " + DatabaseHelper.TABLE_MEM_ADDRESS_DETAILS + " SET " + COLUMN_ADDRESS_ADDRESS_LINE + "=?, "
-                    + COLUMN_ADDRESS_AREA + "=?, " + COLUMN_ADDRESS_LANDMARK + "=?, " + COLUMN_ADDRESS_CITY + "=?, " + COLUMN_ADDRESS_PINCODE + "=?, "
-                    + COLUMN_ADDRESS_STATE + "=?, " + COLUMN_ADDRESS_COUNTRY + "=? "
-                    + " WHERE " + COLUMN_ADDRESS_FAMILY_ID_FOREIGN_KEY + "=? AND " + COLUMN_ADDRESS_ADDRESS_ID + "=?";
-        } else {
-            insertAddressPreparedStatement = "INSERT INTO " + DatabaseHelper.TABLE_MEM_ADDRESS_DETAILS + " VALUES (?,?,?,?,?,?,?,?,?,?)";
-        }
-        SQLiteStatement addressStatement = mSqLiteDatabase.compileStatement(insertAddressPreparedStatement);
-        mSqLiteDatabase.beginTransaction();
-        MemberAddressItem memberAddressItem;
-        try {
-            for (int arrIndex = 0; arrIndex < arrMemberAddressItems.size(); arrIndex++) {
-                addressStatement.clearBindings();
-                memberAddressItem = arrMemberAddressItems.get(arrIndex);
-                if (isUpdate) {
-                    if (memberAddressItem.getAddAddressLine() != null) {
-                        addressStatement.bindString(1, memberAddressItem.getAddAddressLine());
-                    }
-                    if (memberAddressItem.getAddArea() != null) {
-                        addressStatement.bindString(2, memberAddressItem.getAddArea());
-                    }
-                    if (memberAddressItem.getAddLandMark() != null) {
-                        addressStatement.bindString(3, memberAddressItem.getAddLandMark());
-                    }
-                    if (memberAddressItem.getAddCity() != null) {
-                        addressStatement.bindString(4, memberAddressItem.getAddCity());
-                    }
-                    if (memberAddressItem.getAddPincode() != null) {
-                        addressStatement.bindString(5, memberAddressItem.getAddPincode());
-                    }
-                    if (memberAddressItem.getAddState() != null) {
-                        addressStatement.bindString(6, memberAddressItem.getAddState());
-                    }
-                    if (memberAddressItem.getAddCountry() != null) {
-                        addressStatement.bindString(7, memberAddressItem.getAddCountry());
-                    }
-                    if (memberAddressItem.getAddFamilyId() != null) {
-                        addressStatement.bindString(8, memberAddressItem.getAddFamilyId());
-                    }
-                    if (memberAddressItem.getAddAddressId() != null) {
-                        addressStatement.bindString(9, memberAddressItem.getAddAddressId());
-                    }
-                } else {
-//        addressStatement.bindString(1,memAddress); //Index
-                    if (memberAddressItem.getAddFamilyId() != null) {
-                        addressStatement.bindString(2, memberAddressItem.getAddFamilyId());
-                    }
-                    if (memberAddressItem.getAddAddressId() != null) {
-                        addressStatement.bindString(3, memberAddressItem.getAddAddressId());
-                    }
-                    if (memberAddressItem.getAddAddressLine() != null) {
-                        addressStatement.bindString(4, memberAddressItem.getAddAddressLine());
-                    }
-                    if (memberAddressItem.getAddArea() != null) {
-                        addressStatement.bindString(5, memberAddressItem.getAddArea());
-                    }
-                    if (memberAddressItem.getAddLandMark() != null) {
-                        addressStatement.bindString(6, memberAddressItem.getAddLandMark());
-                    }
-                    if (memberAddressItem.getAddCity() != null) {
-                        addressStatement.bindString(7, memberAddressItem.getAddCity());
-                    }
-                    if (memberAddressItem.getAddPincode() != null) {
-                        addressStatement.bindString(8, memberAddressItem.getAddPincode());
-                    }
-                    if (memberAddressItem.getAddState() != null) {
-                        addressStatement.bindString(9, memberAddressItem.getAddState());
-                    }
-                    if (memberAddressItem.getAddCountry() != null) {
-                        addressStatement.bindString(10, memberAddressItem.getAddCountry());
-                    }
+    public void insertCount (ArrayList<CityIteam> arrCity, ArrayList<MessageDetailsItem> arrMessage, ArrayList<ClassifiedDetailsItem> arrClassified) {
+        int messageCount=0, classifiedCount=0,cityID = 0;
+        CountItem countItem;
+        ArrayList<CountItem> arrayListCount = new ArrayList<>();
+        //arrCityIndex = 1 as city ID starts from 1
+        for (int arrCityIndex = 1; arrCityIndex <= arrCity.size(); arrCityIndex++){
+            messageCount = 0;
+            classifiedCount = 0;
+            cityID = arrCityIndex;
+            countItem = new CountItem();
+            String sqlMessage ="SELECT * FROM " + DatabaseHelper.TABLE_MESSAGE_NEWS_DETAILS
+                    + " WHERE " + COLUMN_MESSAGES_CITY_ID + "='" + arrCityIndex + "'"
+                    + " AND " + COLUMN_MESSAGES_IS_ACTIVE + "='true'";
+
+            Log.i(TAG, "insertCount: "+sqlMessage);
+
+            String sqlClassified = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_EN
+                    + " WHERE " + COLUMN_CLASSIFIED_CITY_ID + "='" + arrCityIndex + "'"
+                    + " AND " + COLUMN_CLASSIFIED_IS_ACTIVE + "='true'";
+
+            Log.i(TAG, "insertCount: "+sqlClassified);
+
+            for (int arrMessageIndex = 0; arrMessageIndex < arrMessage.size(); arrMessageIndex++) {
+                Cursor cursor = mSqLiteDatabase.rawQuery(sqlMessage,null);
+                if (cursor.moveToFirst()){
+                    messageCount = cursor.getCount();
                 }
-                addressStatement.execute();
+            }
+            for (int arrClassifiedIndex = 0; arrClassifiedIndex < arrClassified.size(); arrClassifiedIndex++) {
+                Cursor cursor = mSqLiteDatabase.rawQuery(sqlClassified,null);
+                if (cursor.moveToFirst()) {
+                    classifiedCount = cursor.getCount();
+                }
+            }
+            Log.i(TAG, "insertCount: CityId------ "+cityID+" MessageCount---- " + messageCount + " ClassifiedCount-----"+classifiedCount );
+            countItem.setStrCityId(String.valueOf(cityID));
+            countItem.setIntMessageCount(messageCount);
+            countItem.setIntClassifiedCount(classifiedCount);
+            arrayListCount.add(countItem);
+        }
+
+
+        String insertCount = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_COUNTS + " VALUES (?,?,?)";
+        SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(insertCount);
+        mSqLiteDatabase.beginTransaction();
+        try {
+            for (int arrIndex = 0 ; arrIndex < arrayListCount.size(); arrIndex++) {
+                countItem = arrayListCount.get(arrIndex);
+                sqLiteStatement.bindString(1,countItem.getStrCityId());
+                sqLiteStatement.bindString(2,String.valueOf(countItem.getIntMessageCount()));
+                sqLiteStatement.bindString(3, String.valueOf(countItem.getIntClassifiedCount()));
+                sqLiteStatement.execute();
             }
             mSqLiteDatabase.setTransactionSuccessful();
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         } finally {
             mSqLiteDatabase.endTransaction();
         }
-    }
-
-    boolean insertOrUpdateAllCommittees(ArrayList<CommitteeDetailsItem> arrMainCommList, boolean isUpdate) {
-        //SQL Prepared Statement
-        String insertCommitteePreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_COMMITTEE_DETAILS + " VALUES (?,?,?,?,?,?);";
-
-        SQLiteStatement committeeStatement = mSqLiteDatabase.compileStatement(insertCommitteePreparedStatement);
-        mSqLiteDatabase.beginTransaction();
-        CommitteeDetailsItem committeeDetailsItem;
-        try {
-            for (int arrCommitteeIndex = 0; arrCommitteeIndex < arrMainCommList.size(); arrCommitteeIndex++) {
-                committeeStatement.clearBindings();
-                committeeDetailsItem = arrMainCommList.get(arrCommitteeIndex);
-                if (committeeDetailsItem.getCommitteeID() != null) {
-                    committeeStatement.bindString(1, committeeDetailsItem.getCommitteeID());
-
-                    //Save last inserted id
-                    if (!isUpdate && arrCommitteeIndex == arrMainCommList.size() - 1) {
-                        String lastCommitteeId = committeeDetailsItem.getCommitteeID();
-                        AppCommonMethods.putStringPref(PREFS_LAST_COMMITTEE_ID, lastCommitteeId, mContext);
-                    }
-                }
-                if (committeeDetailsItem.getCommitteeName() != null) {
-                    committeeStatement.bindString(2, committeeDetailsItem.getCommitteeName());
-                }
-                if (committeeDetailsItem.getCommitteeDescription() != null) {
-                    committeeStatement.bindString(3, committeeDetailsItem.getCommitteeDescription());
-                }
-                if (committeeDetailsItem.getCommitteeCity() != null) {
-                    committeeStatement.bindString(4, committeeDetailsItem.getCommitteeCity());
-                }
-                if (committeeDetailsItem.getCommAllMembers() != null) {
-                    committeeStatement.bindString(5, committeeDetailsItem.getCommAllMembers());
-                }
-                if (committeeDetailsItem.getCommIsActive() != null) {
-                    committeeStatement.bindString(6, committeeDetailsItem.getCommIsActive());
-                }
-                committeeStatement.execute();
-            }
-            mSqLiteDatabase.setTransactionSuccessful();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            mSqLiteDatabase.endTransaction();
-        }
-    }
-
-    public boolean insertOrUpdateAllMessages(ArrayList<MessageDetailsItem> mArrNewsDetails, boolean isUpdate) {
-        String insertMessagePreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_MESSAGE_NEWS_DETAILS + " VALUES (?,?,?,?,?,?,?,?);";
-
-        SQLiteStatement messageStatement = mSqLiteDatabase.compileStatement(insertMessagePreparedStatement);
-        mSqLiteDatabase.beginTransaction();
-        MessageDetailsItem messageDetailsItem;
-        try {
-            for (int arrMessagesIndex = 0; arrMessagesIndex < mArrNewsDetails.size(); arrMessagesIndex++) {
-                messageDetailsItem = mArrNewsDetails.get(arrMessagesIndex);
-                messageStatement.clearBindings();
-                if (messageDetailsItem.getMessageID() != null) {
-                    messageStatement.bindString(1, messageDetailsItem.getMessageID());
-
-                    //Save last inserted id
-                    if (!isUpdate && arrMessagesIndex == mArrNewsDetails.size() - 1) {
-                        String lastMessageId = messageDetailsItem.getMessageID();
-                        AppCommonMethods.putStringPref(PREFS_LAST_MESSAGE_ID, lastMessageId, mContext);
-                    }
-                }
-                if (messageDetailsItem.getMessageTitle() != null) {
-                    messageStatement.bindString(2, messageDetailsItem.getMessageTitle());
-                }
-                if (messageDetailsItem.getMessageDescription() != null) {
-                    messageStatement.bindString(3, messageDetailsItem.getMessageDescription());
-                }
-                if (messageDetailsItem.getMessageImage() != null) {
-                    messageStatement.bindString(4, messageDetailsItem.getMessageImage());
-                }
-                if (messageDetailsItem.getMessageCreateDate() != null) {
-                    messageStatement.bindString(5, messageDetailsItem.getMessageCreateDate());
-                }
-                if (messageDetailsItem.getMessageType() != null) {
-                    messageStatement.bindString(6, messageDetailsItem.getMessageType());
-                }
-                if (messageDetailsItem.getMessageCity() != null) {
-                    messageStatement.bindString(7, messageDetailsItem.getMessageCity());
-                }
-                if (messageDetailsItem.getMessageIsActive() != null) {
-                    messageStatement.bindString(8, messageDetailsItem.getMessageIsActive());
-                }
-                messageStatement.execute();
-            }
-            mSqLiteDatabase.setTransactionSuccessful();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            mSqLiteDatabase.endTransaction();
-        }
-    }
-
-
-
-    private MemberAddressItem queryAddress(String strFamilyId, String strMemberAddressId) {
-        MemberAddressItem memberAddressItem = new MemberAddressItem();
-        String whereClause = null;
-        String[] whereArgs = null;
-        whereClause = COLUMN_ADDRESS_FAMILY_ID_FOREIGN_KEY + "=? AND " + COLUMN_ADDRESS_ADDRESS_ID + "=?";
-        whereArgs = new String[]{strFamilyId, strMemberAddressId};
-        //Cursor cursor = sqLiteDatabase.query(tableName, tableColumns, whereClause, whereArgs, groupBy, having, orderBy);
-        Cursor cursorAddress = mSqLiteDatabase.query(TABLE_MEM_ADDRESS_DETAILS, null, whereClause, whereArgs, null, null, null);
-        if (cursorAddress.moveToFirst()) {
-            do {
-                memberAddressItem.setAddFamilyId(cursorAddress.getString(cursorAddress.getColumnIndexOrThrow(COLUMN_ADDRESS_FAMILY_ID_FOREIGN_KEY)));
-                memberAddressItem.setAddAddressLine(cursorAddress.getString(cursorAddress.getColumnIndexOrThrow(COLUMN_ADDRESS_ADDRESS_LINE)));
-                memberAddressItem.setAddArea(cursorAddress.getString(cursorAddress.getColumnIndexOrThrow(COLUMN_ADDRESS_AREA)));
-                memberAddressItem.setAddLandMark(cursorAddress.getString(cursorAddress.getColumnIndexOrThrow(COLUMN_ADDRESS_LANDMARK)));
-                memberAddressItem.setAddCity(cursorAddress.getString(cursorAddress.getColumnIndexOrThrow(COLUMN_ADDRESS_CITY)));
-                memberAddressItem.setAddPincode(cursorAddress.getString(cursorAddress.getColumnIndexOrThrow(COLUMN_ADDRESS_PINCODE)));
-                memberAddressItem.setAddState(cursorAddress.getString(cursorAddress.getColumnIndexOrThrow(COLUMN_ADDRESS_STATE)));
-                memberAddressItem.setAddCountry(cursorAddress.getString(cursorAddress.getColumnIndexOrThrow(COLUMN_ADDRESS_COUNTRY)));
-                memberAddressItem.setAddAddressId(cursorAddress.getString(cursorAddress.getColumnIndexOrThrow(COLUMN_ADDRESS_ADDRESS_ID)));
-            } while (cursorAddress.moveToNext());
-        }
-        if (cursorAddress != null && !cursorAddress.isClosed()) {
-            cursorAddress.close();
-        }
-        return memberAddressItem;
     }
 
     public ArrayList<CommitteeDetailsItem> queryCommittees(String strCommitteeID, String strCurrentCity) {
