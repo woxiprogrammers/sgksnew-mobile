@@ -10,9 +10,56 @@ import java.util.ArrayList;
  */
 public class AccountDetailsItem implements Serializable {
 
-    private String strAccountName, strAccountDescription;
-
+    private String strAccountName, strAccountDescription, strId, strAccountId, strCity, strCityId, strIsActive, strYear;
     private ArrayList<AccountImages> imagesList;
+
+    public String getStrYear() {
+        return strYear;
+    }
+
+    public void setStrYear(String strYear) {
+        this.strYear = strYear;
+    }
+
+    public String getStrId() {
+        return strId;
+    }
+
+    public void setStrId(String strId) {
+        this.strId = strId;
+    }
+
+    public String getStrAccountId() {
+        return strAccountId;
+    }
+
+    public void setStrAccountId(String strAccountId) {
+        this.strAccountId = strAccountId;
+    }
+
+    public String getStrCity() {
+        return strCity;
+    }
+
+    public void setStrCity(String strCity) {
+        this.strCity = strCity;
+    }
+
+    public String getStrCityId() {
+        return strCityId;
+    }
+
+    public void setStrCityId(String strCityId) {
+        this.strCityId = strCityId;
+    }
+
+    public String getStrIsActive() {
+        return strIsActive;
+    }
+
+    public void setStrIsActive(String strIsActive) {
+        this.strIsActive = strIsActive;
+    }
 
     public String getStrAccountName() {
         return strAccountName;

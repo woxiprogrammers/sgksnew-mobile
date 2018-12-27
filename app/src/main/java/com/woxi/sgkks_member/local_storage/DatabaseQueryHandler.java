@@ -9,6 +9,8 @@ import android.util.Log;
 import com.bumptech.glide.signature.MediaStoreSignature;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.DatabaseConstants;
+import com.woxi.sgkks_member.models.AccountDetailsItem;
+import com.woxi.sgkks_member.models.AccountImages;
 import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
@@ -21,6 +23,7 @@ import com.woxi.sgkks_member.utils.AppCommonMethods;
 
 import org.json.JSONObject;
 
+import java.security.AccessControlContext;
 import java.util.ArrayList;
 
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
@@ -936,6 +939,138 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     }
 
     /*-------------------------------------------CLASSIFIED LISTING-------------------------------------------*/
+
+    /*-------------------------------------------ACCOUNT LISTING-------------------------------------------*/
+
+    public boolean insertOrUpdateAccountsEnglish (ArrayList<AccountDetailsItem> arrayListAccount) {
+        try {
+            String sqlInsert = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_ACCOUNT_EN + " VALUES (?,?,?,?,?,?,?)";
+            SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(sqlInsert);
+            mSqLiteDatabase.beginTransaction();
+            AccountDetailsItem accountDetailsItem;
+            for (int arrIndex = 0; arrIndex < arrayListAccount.size(); arrIndex++) {
+                accountDetailsItem = arrayListAccount.get(arrIndex);
+                if (accountDetailsItem.getStrAccountId() != null) {
+                    sqLiteStatement.bindString(1,accountDetailsItem.getStrAccountId());
+                }
+                if (accountDetailsItem.getStrAccountName() != null) {
+                    sqLiteStatement.bindString(2,accountDetailsItem.getStrAccountName());
+                }
+                if (accountDetailsItem.getStrAccountDescription() != null) {
+                    sqLiteStatement.bindString(3, accountDetailsItem.getStrAccountDescription());
+                }
+                if (accountDetailsItem.getStrIsActive() != null) {
+                    sqLiteStatement.bindString(4,accountDetailsItem.getStrIsActive());
+                }
+                if (accountDetailsItem.getStrCity() != null) {
+                    sqLiteStatement.bindString(5,accountDetailsItem.getStrCity());
+                }
+                if (accountDetailsItem.getStrCityId() != null) {
+                    sqLiteStatement.bindString(6, accountDetailsItem.getStrCityId());
+                }
+                if (accountDetailsItem.getStrYear() != null) {
+                    sqLiteStatement.bindString(7,accountDetailsItem.getStrYear());
+                }
+                sqLiteStatement.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public boolean insertOrUpdateAccountGujarati (ArrayList<AccountDetailsItem> arrayListAccount) {
+        try {
+            String sqlInsert = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_ACCOUNT_GJ + " VALUES (?, ?, ?, ?)";
+            SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(sqlInsert);
+            mSqLiteDatabase.beginTransaction();
+            AccountDetailsItem accountDetailsItem;
+            for (int arrIndex = 0; arrIndex < arrayListAccount.size(); arrIndex++) {
+                accountDetailsItem = arrayListAccount.get(arrIndex);
+                if (accountDetailsItem.getStrId() != null) {
+                    sqLiteStatement.bindString(1,accountDetailsItem.getStrId());
+                }
+                if (accountDetailsItem.getStrAccountName() != null) {
+                    sqLiteStatement.bindString(2, accountDetailsItem.getStrAccountName());
+                }
+                if (accountDetailsItem.getStrAccountDescription() != null) {
+                    sqLiteStatement.bindString(3,accountDetailsItem.getStrAccountDescription());
+                }
+                if (accountDetailsItem.getStrAccountId() != null) {
+                    sqLiteStatement.bindString(4,accountDetailsItem.getStrAccountId());
+                }
+                sqLiteStatement.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public ArrayList<AccountDetailsItem> queryAccounts ( String year) {
+        ArrayList<AccountDetailsItem> arrAccount = new ArrayList<>();
+        String sqlEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_ACCOUNT_EN
+                + " WHERE " + COLUMN_ACCOUNT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
+                + " AND " + COLUMN_ACCOUNT_IS_ACTIVE + "='true'"
+                + " AND " + COLUMN_ACCOUNT_YEAR + "='" + year + "'";
+        Log.i(TAG, "queryAccounts: "+sqlEnglish);
+        String sqlGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_ACCOUNT_GJ;
+        Log.i(TAG, "queryAccounts: "+sqlGujarati);
+        Cursor cursorEnglish = mSqLiteDatabase.rawQuery(sqlEnglish,null);
+        Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlGujarati,null);
+        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+            Log.i(TAG, "queryAccounts: "+cursorEnglish.moveToFirst());
+            if (cursorEnglish.moveToFirst()) {
+                do {
+                    AccountDetailsItem accountDetailsItem = new AccountDetailsItem();
+                    accountDetailsItem.setStrAccountId(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_ID_PRIMARY)));
+                    accountDetailsItem.setStrAccountName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME)));
+                    accountDetailsItem.setStrAccountDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_DESCRIPTION)));
+                    accountDetailsItem.setStrCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_CITY)));
+                    ArrayList<AccountImages> arrImages = new ArrayList<>();
+                    AccountImages img = new AccountImages();
+                    img.setImagePath("");
+                    arrImages.add(img);
+                    accountDetailsItem.setImagesList(arrImages);
+                    arrAccount.add(accountDetailsItem);
+                } while (cursorEnglish.moveToNext());
+            }
+        } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
+            if (cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()) {
+                do {
+                    AccountDetailsItem accountDetailsItem = new AccountDetailsItem();
+                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME)) != null) {
+                        accountDetailsItem.setStrAccountName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME)));
+                    } else {
+                        accountDetailsItem.setStrAccountName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME)));
+                    }
+                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_DESCRIPTION)) != null){
+                        accountDetailsItem.setStrAccountDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_DESCRIPTION)));
+                    } else {
+                        accountDetailsItem.setStrAccountDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_DESCRIPTION)));
+                    }
+                    accountDetailsItem.setStrCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_CITY)));
+                    ArrayList<AccountImages> arrImages = new ArrayList<>();
+                    AccountImages img = new AccountImages();
+                    img.setImagePath("");
+                    arrImages.add(img);
+                    accountDetailsItem.setImagesList(arrImages);
+                    arrAccount.add(accountDetailsItem);
+                } while (cursorEnglish.moveToNext() && cursorGujarati.moveToNext());
+            }
+        }
+        return arrAccount;
+    }
+
+    /*-------------------------------------------ACCOUNT LISTING-------------------------------------------*/
 
     boolean insertOrUpdateAllAddresses(ArrayList<MemberAddressItem> arrMemberAddressItems, boolean isUpdate) {
         //SQL Prepared Statement

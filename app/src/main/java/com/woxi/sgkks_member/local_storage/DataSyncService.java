@@ -17,6 +17,7 @@ import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.home.HomeActivity;
 import com.woxi.sgkks_member.home.MemberHomeNewFragment;
+import com.woxi.sgkks_member.models.AccountDetailsItem;
 import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgkks_member.models.CommitteeDetailsItem;
@@ -67,6 +68,8 @@ public class DataSyncService extends Service {
     private ArrayList<MessageDetailsItem> arrMessageGujaratiDetailsItems;
     private ArrayList<ClassifiedDetailsItem> arrClassifiedEnglish;
     private ArrayList<ClassifiedDetailsItem> arrClassifiedGujarati;
+    private ArrayList<AccountDetailsItem> arrAccountEnglish;
+    private ArrayList<AccountDetailsItem> arrAccountGujarati;
     private String TAG = "DataSyncService";
     private DatabaseQueryHandler databaseQueryHandler;
     private String strCurrentServerTime = "";
@@ -139,6 +142,8 @@ public class DataSyncService extends Service {
                                 arrMessageGujaratiDetailsItems = localDataSyncItem.getArrMessageDetailsGujaratiItems();
                                 arrClassifiedEnglish = localDataSyncItem.getArrClassifiedItems();
                                 arrClassifiedGujarati = localDataSyncItem.getArrClassifiedGujaratiItems();
+                                arrAccountEnglish = localDataSyncItem.getArrAccountItem();
+                                arrAccountGujarati = localDataSyncItem.getArrAccountGujaratiItem();
                                /* arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems(); */
                                 boolean isCommitteeSuccessful = false;
                                 boolean isMessageSuccessful = false;
@@ -177,6 +182,12 @@ public class DataSyncService extends Service {
                                     }
                                     if (arrClassifiedGujarati != null) {
                                         databaseQueryHandler.insertOrUpdateClassifiedGujarati(arrClassifiedGujarati);
+                                    }
+                                    if (arrAccountEnglish != null) {
+                                        databaseQueryHandler.insertOrUpdateAccountsEnglish(arrAccountEnglish);
+                                    }
+                                    if (arrAccountGujarati != null){
+                                        databaseQueryHandler.insertOrUpdateAccountGujarati(arrAccountGujarati);
                                     }
                                    /* if (arrCommitteeDetailsItems.size() != 0) {
                                         isCommitteeSuccessful = databaseQueryHandler.insertOrUpdateAllCommittees(arrCommitteeDetailsItems, true);

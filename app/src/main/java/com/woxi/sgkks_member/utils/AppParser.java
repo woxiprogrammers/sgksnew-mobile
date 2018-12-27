@@ -665,10 +665,8 @@ public class AppParser implements AppConstants {
                     if (jsonObjectGujarati.has("id") && jsonObjectGujarati.optString("id") != null) {
                         classifiedDetailsItem.setId(jsonObjectGujarati.optString("id"));
                     }
-                    Log.i(TAG, "parseLocalDataSyncResponse: "+(jsonObjectGujarati.has("title") && jsonObjectGujarati.optString("title") != null));
                     if (jsonObjectGujarati.has("title") && jsonObjectGujarati.optString("title") != null){
                         classifiedDetailsItem.setClassifiedTitle(jsonObjectGujarati.optString("title"));
-                        Log.i(TAG, "parseLocalDataSyncResponse: TITLE-------------"+jsonObjectClassified.optString("title"));
                     }
                     if (jsonObjectGujarati.has("classified_desc") && jsonObjectGujarati.optString("classified_desc") != null) {
                         classifiedDetailsItem.setClassifiedDescription(jsonObjectGujarati.optString("classified_desc"));
@@ -679,6 +677,81 @@ public class AppParser implements AppConstants {
                     arrClassifiedDetailsItemsGujarati.add(classifiedDetailsItem);
                 }
                 localDataSyncItem.setArrClassifiedGujaratiItems(arrClassifiedDetailsItemsGujarati);
+            }
+        }
+        if (jsonObject.has("accounts") && jsonObject.optJSONObject("accounts") != null) {
+            JSONObject jsonObjectAccounts = jsonObject.getJSONObject("accounts");
+            ArrayList<AccountDetailsItem> arrAccountDetailsEnglish = new ArrayList<>();
+            ArrayList<AccountDetailsItem> arrAccountDetailsGujarati = new ArrayList<>();
+            if (jsonObjectAccounts.has("account_en") && jsonObjectAccounts.optJSONArray("account_en") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: account_en is present");
+                JSONArray jsonArrayEnglish = jsonObjectAccounts.optJSONArray("account_en");
+                for (int arrIndex = 0; arrIndex < jsonArrayEnglish.length(); arrIndex++) {
+                    JSONObject jsonObjectEnglish = jsonArrayEnglish.optJSONObject(arrIndex);
+                    AccountDetailsItem accountDetailsItem = new AccountDetailsItem();
+                    if (jsonObjectEnglish.has("id") && jsonObjectEnglish.optString("id") != null) {
+                        accountDetailsItem.setStrAccountId(jsonObjectEnglish.optString("id"));
+                    }
+                    if (jsonObjectEnglish.has("name") && jsonObjectEnglish.optString("name") != null) {
+                        accountDetailsItem.setStrAccountName(jsonObjectEnglish.optString("name"));
+                    }
+                    if (jsonObjectEnglish.has("description") && jsonObjectEnglish.optString("description") != null){
+                        accountDetailsItem.setStrAccountDescription(jsonObjectEnglish.optString("description"));
+                    }
+                    if (jsonObjectEnglish.has("is_active") && jsonObjectEnglish.optString("is_active") != null) {
+                        accountDetailsItem.setStrIsActive(jsonObjectEnglish.optString("is_active"));
+                    }
+                    if (jsonObjectEnglish.has("city") && jsonObjectEnglish.optString("city") != null) {
+                        accountDetailsItem.setStrCity(jsonObjectEnglish.optString("city"));
+                    }
+                    if (jsonObjectEnglish.has("city_id") && jsonObjectEnglish.optString("city_id") != null) {
+                        accountDetailsItem.setStrCityId(jsonObjectEnglish.optString("city_id"));
+                    }
+                    if (jsonObjectEnglish.has("year") && jsonObjectEnglish.optString("year") != null) {
+                        accountDetailsItem.setStrYear(jsonObjectEnglish.optString("year"));
+                    }
+                    if (jsonObjectEnglish.has("accounts_images") && jsonObjectEnglish.optString("accounts_images") != null && !jsonObjectEnglish.optString("accounts_images").equalsIgnoreCase("null")) {
+                        JSONArray imagesArray = jsonObjectEnglish.getJSONArray("accounts_images");
+                        ArrayList<AccountImages> imageList = new ArrayList<>();
+                        if (imagesArray.length() > 0) {
+                            for (int imageIndex = 0; imageIndex < imagesArray.length(); imageIndex++) {
+                                String temp = imagesArray.getString(imageIndex);
+                                AccountImages img = new AccountImages();
+                                img.setImagePath(temp);
+                                imageList.add(img);
+                            }
+                        }
+                        accountDetailsItem.setImagesList(imageList);
+                    }
+                    arrAccountDetailsEnglish.add(accountDetailsItem);
+                }
+                localDataSyncItem.setArrAccountItem(arrAccountDetailsEnglish);
+            } else {
+                Log.i(TAG, "parseLocalDataSyncResponse: account_en is absent");
+            }
+            if (jsonObjectAccounts.has("account_gj") && jsonObjectAccounts.optJSONArray("account_gj") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: account_gj is present");
+                JSONArray jsonArrayGujarati = jsonObjectAccounts.optJSONArray("account_gj");
+                for (int arrIndex = 0; arrIndex < jsonArrayGujarati.length(); arrIndex++) {
+                    AccountDetailsItem accountDetailsItem = new AccountDetailsItem();
+                    JSONObject jsonObjectGujarati = jsonArrayGujarati.optJSONObject(arrIndex);
+                    if (jsonObjectGujarati.has("id") && jsonObjectGujarati.optString("id") != null) {
+                        accountDetailsItem.setStrId(jsonObjectGujarati.optString("id"));
+                    }
+                    if (jsonObjectGujarati.has("name") && jsonObjectGujarati.optString("name") != null) {
+                        accountDetailsItem.setStrAccountName(jsonObjectGujarati.optString("name"));
+                    }
+                    if (jsonObjectGujarati.has("description") && jsonObjectGujarati.optString("description") != null) {
+                        accountDetailsItem.setStrAccountDescription(jsonObjectGujarati.optString("description"));
+                    }
+                    if (jsonObjectGujarati.has("account_id") && jsonObjectGujarati.optString("account_id") != null) {
+                        accountDetailsItem.setStrAccountId(jsonObjectGujarati.optString("account_id"));
+                    }
+                    arrAccountDetailsGujarati.add(accountDetailsItem);
+                }
+                localDataSyncItem.setArrAccountGujaratiItem(arrAccountDetailsGujarati);
+            } else {
+                Log.i(TAG, "parseLocalDataSyncResponse: account_gj is absent");
             }
         }
         /*if (jsonResponseObject.has("committees") && jsonResponseObject.optString("committees") != null) {

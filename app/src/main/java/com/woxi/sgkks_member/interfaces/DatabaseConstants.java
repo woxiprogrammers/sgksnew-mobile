@@ -139,8 +139,8 @@ public interface DatabaseConstants {
     String COLUMN_CLASSIFIED_CREATED_AT = "created_at";
 
     //TABLE ACCOUNTS
-    String TABLE_ACCOUNT_EN = "account_en";
-    String TABLE_ACCOUNT_GJ = "account_gj";
+    String TABLE_ACCOUNT_EN = "table_account_en";
+    String TABLE_ACCOUNT_GJ = "table_account_gj";
     String COLUMN_ACCOUNT_ID_PRIMARY = "id";
     String COLUMN_ACCOUNT_ID_PRIMARY_GJ = "id";
     String COLUMN_ACCOUNT_ID_FOREIGN = "foreign_key";
