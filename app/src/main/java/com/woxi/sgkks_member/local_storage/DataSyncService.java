@@ -122,7 +122,7 @@ public class DataSyncService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String url = "http://www.mocky.io/v2/5c24ddd830000084007a61c4";
+        String url = "http://www.mocky.io/v2/5c25b7b8300000770067f578";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,/* AppURLs.API_SKS_OFFLINE*/url, /*params*/null,
                 new Response.Listener<JSONObject>() {
                     @Override

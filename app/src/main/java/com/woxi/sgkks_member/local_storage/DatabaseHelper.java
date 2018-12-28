@@ -188,6 +188,7 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + COLUMN_CLASSIFIED_ID_FOREIGN_KEY + " VARCHAR(500), "
                 + " FOREIGN KEY(" + COLUMN_CLASSIFIED_ID_FOREIGN_KEY + ")REFERENCES "
                 + TABLE_CLASSIFIED_EN + "(" + COLUMN_CLASSIFIED_ID_PRIMARY_KEY + "))";
+        new AppCommonMethods().LOG(0,TAG,CREATE_CLASSIFIED_TABLE_QUERY_GJ);
 
         String CREATE_ACCOUNT_TABLE_QUERY_EN = "CREATE TABLE " + TABLE_ACCOUNT_EN
                 + "("
@@ -199,6 +200,7 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + COLUMN_ACCOUNT_CITY_ID + " VARCHAR(500), "
                 + COLUMN_ACCOUNT_YEAR + " VARCHAR(500)"
                 + ")";
+        new AppCommonMethods().LOG(0,TAG,CREATE_ACCOUNT_TABLE_QUERY_EN);
 
         String CREATE_ACCOUNT_TABLE_QUERY_GJ = "CREATE TABLE "+ TABLE_ACCOUNT_GJ
                 +"("
@@ -209,6 +211,7 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + " FOREIGN KEY(" + COLUMN_ACCOUNT_ID_FOREIGN + ") REFERENCES "
                 + TABLE_ACCOUNT_EN + "(" + COLUMN_ACCOUNT_ID_PRIMARY +")"
                 +")";
+        new AppCommonMethods().LOG(0,TAG,CREATE_ACCOUNT_TABLE_QUERY_GJ);
 
         String CREATE_COUNT_TABLE = "CREATE TABLE " + TABLE_COUNTS
                 +"("
@@ -216,6 +219,35 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + COLUMN_COUNT_MESSAGE + " VARCHAR(500), "
                 + COLUMN_COUNT_CLASSIFIED + " VARCHAR(500)"
                 + ")";
+        new AppCommonMethods().LOG(0,TAG,CREATE_COUNT_TABLE);
+
+        String CREATE_TABLE_COMMITTEE_QUERY_EN = "CREATE TABLE " + TABLE_COMMITTEE_DETAILS
+                + "("
+                + COLUMN_COMMITTEE_ID_PRIMARY + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_COMMITTEE_NAME + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_DESCRIPTION + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_IS_ACTIVE + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_CITY + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_CITY_ID + " VARCAHR(500), "
+                + COLUMN_COMMITTEE_MEMBERS + " TEXT "
+                + ")";
+        new AppCommonMethods().LOG(0,TAG,CREATE_TABLE_COMMITTEE_QUERY_EN);
+
+        String CREATE_TABLE_COMMITTEE_QUERY_GJ = "CREATE TABLE " + TABLE_COMMITTEE_DETAILS_GJ
+                + "("
+                + COLUMN_COMMITTEE_ID_PRIMARY_GJ + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_COMMITTEE_NAME + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_DESCRIPTION + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_ID_FOREIGN + " VARCHAR(500), "
+                + " FOREIGN KEY(" + COLUMN_COMMITTEE_ID_FOREIGN + ") REFERENCES "
+                + TABLE_COMMITTEE_DETAILS + "(" + COLUMN_COMMITTEE_ID_PRIMARY + ")"
+                + ")";
+
+        /*String CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_EN = "CREATE TABLE ";
+        new AppCommonMethods().LOG(0,TAG,CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_EN);
+
+        String CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_GJ = "CREATE TABLE ";
+        new AppCommonMethods().LOG(0,TAG,CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_GJ);*/
 
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_EN);
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_GJ);
@@ -231,7 +263,10 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
         db.execSQL(CREATE_ACCOUNT_TABLE_QUERY_EN);
         db.execSQL(CREATE_ACCOUNT_TABLE_QUERY_GJ);
         db.execSQL(CREATE_COUNT_TABLE);
-
+        db.execSQL(CREATE_TABLE_COMMITTEE_QUERY_EN);
+        db.execSQL(CREATE_TABLE_COMMITTEE_QUERY_GJ);
+       /* db.execSQL(CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_GJ);
+        db.execSQL(CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_EN);*/
     }
 
     // Called when the database needs to be upgraded.
@@ -255,6 +290,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACCOUNT_EN);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACCOUNT_GJ);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_COUNTS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMMITTEE_DETAILS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMMITTEE_DETAILS_GJ);
             onCreate(db);
         }
     }

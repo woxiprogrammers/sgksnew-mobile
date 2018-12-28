@@ -64,12 +64,16 @@ public interface DatabaseConstants {
     String COLUMN_ADDRESS_ADDRESS_ID = "address_id";
 
     //Committee Details Table
-    String TABLE_COMMITTEE_DETAILS = "table_committee";
-    //    String COLUMN_COMMITTEE_PRIMARY_INDEX = "committee_index_primary";
+    String TABLE_COMMITTEE_DETAILS = "table_committee_en";
+    String TABLE_COMMITTEE_DETAILS_GJ = "table_committee_gj";
+    String COLUMN_COMMITTEE_PRIMARY_INDEX = "committee_index_primary";
     String COLUMN_COMMITTEE_ID_PRIMARY = "committee_id_primary";
+    String COLUMN_COMMITTEE_ID_PRIMARY_GJ = "committee_id_primary";
+    String COLUMN_COMMITTEE_ID_FOREIGN = "committee_id_foreign";
     String COLUMN_COMMITTEE_NAME = "committee_name";
     String COLUMN_COMMITTEE_DESCRIPTION = "committee_description";
     String COLUMN_COMMITTEE_CITY = "committee_city";
+    String COLUMN_COMMITTEE_CITY_ID = "committee_city";
     String COLUMN_COMMITTEE_MEMBERS = "committee_members";
     String COLUMN_COMMITTEE_IS_ACTIVE = "is_active";
 
@@ -157,4 +161,18 @@ public interface DatabaseConstants {
     String COLUMN_COUNT_CITY_ID = "city_id";
     String COLUMN_COUNT_MESSAGE = "message_count";
     String COLUMN_COUNT_CLASSIFIED = "classified_count";
+
+    //COMMITTEE MEMBERS
+    String TABLE_COMMITTEE_MEMBERS_EN = "table_committee_member_en";
+    String TABLE_COMMITTEE_MEMBERS_GJ = "table_committee_member_gj";
+    String COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_EN = "id";
+    String COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_GJ = "id";
+    String COLUMN_COMMITTEE_MEMBER_ID_FOREIGN = "foreign_id";
+    String COLUMN_MEMBERS_COMMITTEE_ID = "committee_id";
+    String COLUMN_COMMITTEE_MEMBER_NAME = "name";
+    String COLUMN_COMMITTEE_MEMBER_DESIGNATION = "designation";
+    String COLUMN_COMMITTEE_MEMBER_NUMBER = "mobile";
+    String COLUMN_COMMITTEE_MEMBER_EMAIL = "email";
+    String COLUMN_COMMITTEE_MEMBER_IS_ACTIVE = "is_active";
+    String COLUMN_COMMITTEE_MEMBER_PROFILE_IMAGE = "profile_img";
 }
