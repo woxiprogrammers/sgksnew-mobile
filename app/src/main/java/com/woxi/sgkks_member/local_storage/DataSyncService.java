@@ -63,13 +63,14 @@ public class DataSyncService extends Service {
     private ArrayList<CityIteam> arrCityGujaratiItems;
     private ArrayList<EventDataItem> arrEventEnglish;
     private ArrayList<EventDataItem> arrEventGujarati;
-    private ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems;
     private ArrayList<MessageDetailsItem> arrMessageDetailsItems;
     private ArrayList<MessageDetailsItem> arrMessageGujaratiDetailsItems;
     private ArrayList<ClassifiedDetailsItem> arrClassifiedEnglish;
     private ArrayList<ClassifiedDetailsItem> arrClassifiedGujarati;
     private ArrayList<AccountDetailsItem> arrAccountEnglish;
     private ArrayList<AccountDetailsItem> arrAccountGujarati;
+    private ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems;
+    private ArrayList<CommitteeDetailsItem> arrCommitteeGujarati;
     private String TAG = "DataSyncService";
     private DatabaseQueryHandler databaseQueryHandler;
     private String strCurrentServerTime = "";
@@ -122,7 +123,7 @@ public class DataSyncService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String url = "http://www.mocky.io/v2/5c25b7b8300000770067f578";
+        String url = "http://www.mocky.io/v2/5c26129e3000007a0067f6cb";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,/* AppURLs.API_SKS_OFFLINE*/url, /*params*/null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -144,7 +145,8 @@ public class DataSyncService extends Service {
                                 arrClassifiedGujarati = localDataSyncItem.getArrClassifiedGujaratiItems();
                                 arrAccountEnglish = localDataSyncItem.getArrAccountItem();
                                 arrAccountGujarati = localDataSyncItem.getArrAccountGujaratiItem();
-                               /* arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems(); */
+                                arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems();
+                                arrCommitteeGujarati = localDataSyncItem.getArrCommitteeDetailsGujaratiItems();
                                 boolean isCommitteeSuccessful = false;
                                 boolean isMessageSuccessful = false;
                                 try {
@@ -189,21 +191,13 @@ public class DataSyncService extends Service {
                                     if (arrAccountGujarati != null){
                                         databaseQueryHandler.insertOrUpdateAccountGujarati(arrAccountGujarati);
                                     }
+                                    if (arrCommitteeDetailsItems != null) {
+                                        databaseQueryHandler.insertOrUpdateCommitteeDetailsEnglish(arrCommitteeDetailsItems);
+                                    }
+                                    if (arrCommitteeGujarati != null) {
+                                        databaseQueryHandler.insertOrUpdateCommitteeDetailsGuajrati(arrCommitteeGujarati);
+                                    }
                                     databaseQueryHandler.insertCount(arrCityEnglishItems,arrMessageDetailsItems,arrClassifiedEnglish);
-                                   /* if (arrCommitteeDetailsItems.size() != 0) {
-                                        isCommitteeSuccessful = databaseQueryHandler.insertOrUpdateAllCommittees(arrCommitteeDetailsItems, true);
-                                        AppCommonMethods.putStringPref(PREFS_LAST_UPDATED_DATE, strCurrentServerTime, getApplicationContext());
-                                        new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Committee Update Sync Complete At " + strCurrentServerTime);
-                                    } else
-                                        isCommitteeSuccessful = false;
-                                    //For Update
-                                        if (arrMessageDetailsItems.size() != 0) {
-                                            isMessageSuccessful = databaseQueryHandler.insertOrUpdateAllMessages(arrMessageDetailsItems, true);
-                                            AppCommonMethods.putStringPref(PREFS_LAST_UPDATED_DATE, strCurrentServerTime, getApplicationContext());
-                                            new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Message Update Sync Complete At " + strCurrentServerTime);
-                                        }
-                                        else isMessageSuccessful = false;*/
-
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

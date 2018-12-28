@@ -8,7 +8,39 @@ import java.io.Serializable;
  * Created by Rohit.
  */
 public class CommitteeDetailsItem implements Serializable {
-    private String committeeName, committeeDescription, committeeCity, committeeID, commAllMembers, commIsActive;
+    private String committeeName;
+    private String committeeDescription;
+    private String committeeCity, cityId;
+    private String committeeID;
+    private String commAllMembers;
+    private String commIsActive;
+    private String id;
+
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCommAllMembersGujarati() {
+        return commAllMembersGujarati;
+    }
+
+    public void setCommAllMembersGujarati(String commAllMembersGujarati) {
+        this.commAllMembersGujarati = commAllMembersGujarati;
+    }
+
+    private String commAllMembersGujarati;
 
     public CommitteeDetailsItem() {
     }

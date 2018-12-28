@@ -1075,6 +1075,134 @@ public class DatabaseQueryHandler implements DatabaseConstants {
 
     /*-------------------------------------------ACCOUNT LISTING-------------------------------------------*/
 
+    /*-------------------------------------------Committee LISTING-------------------------------------------*/
+
+    public boolean insertOrUpdateCommitteeDetailsEnglish(ArrayList<CommitteeDetailsItem> arrCommittee) {
+        ArrayList<CommitteeDetailsItem> arrayList = arrCommittee;
+        try{
+            String sqlInset = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_COMMITTEE_DETAILS + " VALUES (?,?,?,?,?,?,?,?)";
+            SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(sqlInset);
+            mSqLiteDatabase.beginTransaction();
+            CommitteeDetailsItem committeeDetailsItem;
+            for (int arrIndex = 0; arrIndex < arrCommittee.size(); arrIndex++) {
+                committeeDetailsItem = arrCommittee.get(arrIndex);
+                if (committeeDetailsItem.getCommitteeID() != null) {
+                    sqLiteStatement.bindString(1,committeeDetailsItem.getCommitteeID());
+                }
+                if (committeeDetailsItem.getCommitteeName() != null) {
+                    sqLiteStatement.bindString(2,committeeDetailsItem.getCommitteeName());
+                }
+                if (committeeDetailsItem.getCommitteeDescription() != null) {
+                    sqLiteStatement.bindString(3, committeeDetailsItem.getCommitteeDescription());
+                }
+                if (committeeDetailsItem.getCommIsActive() != null) {
+                    sqLiteStatement.bindString(4, committeeDetailsItem.getCommIsActive());
+                }
+                if (committeeDetailsItem.getCommitteeCity() != null ){
+                    sqLiteStatement.bindString(5, committeeDetailsItem.getCommitteeCity());
+                }
+                if (committeeDetailsItem.getCityId() != null ) {
+                    sqLiteStatement.bindString(6, committeeDetailsItem.getCityId());
+                }
+                if (committeeDetailsItem.getCommAllMembers() != null) {
+                    sqLiteStatement.bindString(7, committeeDetailsItem.getCommAllMembers());
+                }
+                if (committeeDetailsItem.getCommAllMembersGujarati() != null) {
+                    sqLiteStatement.bindString(8, committeeDetailsItem.getCommAllMembersGujarati());
+                }
+                sqLiteStatement.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+
+    public boolean insertOrUpdateCommitteeDetailsGuajrati ( ArrayList<CommitteeDetailsItem> arrCommittee) {
+        try {
+            String insert = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_COMMITTEE_DETAILS_GJ + " VALUES (?,?,?,?)";
+            SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(insert);
+            mSqLiteDatabase.beginTransaction();
+            CommitteeDetailsItem committeeDetailsItem;
+            for (int arrIndex = 0; arrIndex < arrCommittee.size(); arrIndex++) {
+                committeeDetailsItem = arrCommittee.get(arrIndex);
+                if (committeeDetailsItem.getId() != null) {
+                    sqLiteStatement.bindString(1, committeeDetailsItem.getId());
+                }
+                if (committeeDetailsItem.getCommitteeName() != null) {
+                    sqLiteStatement.bindString(2, committeeDetailsItem.getCommitteeName());
+                }
+                if (committeeDetailsItem.getCommitteeDescription() != null) {
+                    sqLiteStatement.bindString(3, committeeDetailsItem.getCommitteeDescription());
+                }
+                if (committeeDetailsItem.getCommitteeID() != null) {
+                    sqLiteStatement.bindString(4, committeeDetailsItem.getCommitteeID());
+                }
+                sqLiteStatement.execute();
+            }
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public ArrayList<CommitteeDetailsItem> queryCommittees() {
+        ArrayList<CommitteeDetailsItem> arrayList = new ArrayList<>();
+        String sqlEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_DETAILS
+                + " WHERE " + COLUMN_COMMITTEE_IS_ACTIVE + "='true'"
+                + " AND " + COLUMN_COMMITTEE_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'";
+        new AppCommonMethods(mContext).LOG(0,TAG,sqlEnglish);
+        String sqlGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_DETAILS_GJ;
+        Cursor cursorEnglish = mSqLiteDatabase.rawQuery(sqlEnglish,null);
+        Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlGujarati,null);
+        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")) {
+            if (cursorEnglish.moveToFirst()) {
+                do {
+                    CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
+//                    committeeDetailsItem.setCommitteeID(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_EN)));
+                    committeeDetailsItem.setCommitteeName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
+                    committeeDetailsItem.setCommitteeDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
+                    committeeDetailsItem.setCommitteeCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_CITY)));
+                    committeeDetailsItem.setCommAllMembers(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBERS_EN)));
+                    arrayList.add(committeeDetailsItem);
+                } while (cursorEnglish.moveToNext());
+            }
+        }
+        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
+            if (cursorGujarati.moveToFirst() && cursorEnglish.moveToFirst()) {
+                do {
+                    CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
+                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)) != null) {
+                        committeeDetailsItem.setCommitteeName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
+                    } else {
+                        committeeDetailsItem.setCommitteeName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
+                    }
+                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)) != null) {
+                        committeeDetailsItem.setCommitteeDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
+                    } else {
+                        committeeDetailsItem.setCommitteeDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
+                    }
+                    committeeDetailsItem.setCommitteeCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_CITY)));
+                    committeeDetailsItem.setCommAllMembersGujarati(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBERS_GJ)));
+                    committeeDetailsItem.setCommAllMembersGujarati(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBERS_EN)));
+                    arrayList.add(committeeDetailsItem);
+                } while (cursorGujarati.moveToNext() && cursorEnglish.moveToNext());
+            }
+        }
+        return arrayList;
+    }
+
+    /*-------------------------------------------Committee LISTING-------------------------------------------*/
+
     public void insertCount (ArrayList<CityIteam> arrCity, ArrayList<MessageDetailsItem> arrMessage, ArrayList<ClassifiedDetailsItem> arrClassified) {
         int messageCount=0, classifiedCount=0,cityID = 0;
         CountItem countItem;
@@ -1157,7 +1285,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     committeeDetailsItem.setCommitteeName(cursorCommittee.getString(cursorCommittee.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
                     committeeDetailsItem.setCommitteeDescription(cursorCommittee.getString(cursorCommittee.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
                     committeeDetailsItem.setCommitteeCity(cursorCommittee.getString(cursorCommittee.getColumnIndexOrThrow(COLUMN_COMMITTEE_CITY)));
-                    committeeDetailsItem.setCommAllMembers(cursorCommittee.getString(cursorCommittee.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBERS)));
+                    committeeDetailsItem.setCommAllMembers(cursorCommittee.getString(cursorCommittee.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBERS_EN)));
                     committeeDetailsItem.setCommIsActive(cursorCommittee.getString(cursorCommittee.getColumnIndexOrThrow(COLUMN_COMMITTEE_IS_ACTIVE)));
                     arrCommitteeList.add(committeeDetailsItem);
                 }

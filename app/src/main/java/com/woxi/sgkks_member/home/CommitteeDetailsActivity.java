@@ -87,7 +87,7 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
                     if (new AppCommonMethods(mContext).isNetworkAvailable()) {
                         requestCommitteeDetailsAPI(strCommId);
                     } else {
-                        new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.noInternet));
+                        //new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.noInternet));
                     }
                 }
             }
@@ -184,7 +184,16 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
     }
 
     private void loadCommitteeDetails(CommitteeDetailsItem committeeListItem) {
-        String strCommAllMembers = committeeListItem.getCommAllMembers();
+        String strCommAllMembers="";
+        if (new AppCommonMethods(mContext).isNetworkAvailable()){
+            strCommAllMembers = committeeListItem.getCommAllMembers();
+        } else {
+            if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+                strCommAllMembers = committeeListItem.getCommAllMembers();
+            } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
+                strCommAllMembers = committeeListItem.getCommAllMembersGujarati();
+            }
+        }
         if (strCommAllMembers != null && !strCommAllMembers.equalsIgnoreCase("")) {
             try {
                 arrCommMemberDetails = getAllCommMembers(strCommAllMembers);

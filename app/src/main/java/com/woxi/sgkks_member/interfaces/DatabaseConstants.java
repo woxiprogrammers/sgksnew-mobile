@@ -73,8 +73,9 @@ public interface DatabaseConstants {
     String COLUMN_COMMITTEE_NAME = "committee_name";
     String COLUMN_COMMITTEE_DESCRIPTION = "committee_description";
     String COLUMN_COMMITTEE_CITY = "committee_city";
-    String COLUMN_COMMITTEE_CITY_ID = "committee_city";
-    String COLUMN_COMMITTEE_MEMBERS = "committee_members";
+    String COLUMN_COMMITTEE_CITY_ID = "committee_city_id";
+    String COLUMN_COMMITTEE_MEMBERS_EN = "committee_members_en";
+    String COLUMN_COMMITTEE_MEMBERS_GJ = "committee_members_gj";
     String COLUMN_COMMITTEE_IS_ACTIVE = "is_active";
 
     //Message/News Details Table
@@ -174,5 +175,5 @@ public interface DatabaseConstants {
     String COLUMN_COMMITTEE_MEMBER_NUMBER = "mobile";
     String COLUMN_COMMITTEE_MEMBER_EMAIL = "email";
     String COLUMN_COMMITTEE_MEMBER_IS_ACTIVE = "is_active";
-    String COLUMN_COMMITTEE_MEMBER_PROFILE_IMAGE = "profile_img";
+    String COLUMN_COMMITTEE_MEMBER_AREA = "area";
 }

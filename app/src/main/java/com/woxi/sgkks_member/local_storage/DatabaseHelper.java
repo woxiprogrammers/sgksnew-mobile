@@ -229,7 +229,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + COLUMN_COMMITTEE_IS_ACTIVE + " VARCHAR(500), "
                 + COLUMN_COMMITTEE_CITY + " VARCHAR(500), "
                 + COLUMN_COMMITTEE_CITY_ID + " VARCAHR(500), "
-                + COLUMN_COMMITTEE_MEMBERS + " TEXT "
+                + COLUMN_COMMITTEE_MEMBERS_EN + " TEXT, "
+                + COLUMN_COMMITTEE_MEMBERS_GJ + " TEXT "
                 + ")";
         new AppCommonMethods().LOG(0,TAG,CREATE_TABLE_COMMITTEE_QUERY_EN);
 
@@ -243,11 +244,28 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + TABLE_COMMITTEE_DETAILS + "(" + COLUMN_COMMITTEE_ID_PRIMARY + ")"
                 + ")";
 
-        /*String CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_EN = "CREATE TABLE ";
+        String CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_EN = "CREATE TABLE " + TABLE_COMMITTEE_MEMBERS_EN
+                + "("
+                + COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_EN + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_MEMBER_NAME + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_MEMBER_DESIGNATION + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_MEMBER_NUMBER + " VARCAHR(500), "
+                + COLUMN_COMMITTEE_MEMBER_EMAIL + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_MEMBER_AREA + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_MEMBER_IS_ACTIVE + " VARCHAR(500) "
+                + ")";
+
         new AppCommonMethods().LOG(0,TAG,CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_EN);
 
-        String CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_GJ = "CREATE TABLE ";
-        new AppCommonMethods().LOG(0,TAG,CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_GJ);*/
+        String CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_GJ = "CREATE TABLE " + TABLE_COMMITTEE_MEMBERS_GJ
+                + "("
+                + COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_GJ + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_MEMBER_NAME + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_ID_FOREIGN + " VARCAHR(500), "
+                + "FOREIGN KEY ( " + COLUMN_COMMITTEE_ID_FOREIGN +") REFERENCES "
+                + TABLE_COMMITTEE_MEMBERS_EN + "(" + COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_EN + ")"
+                + ")";
+        new AppCommonMethods().LOG(0,TAG,CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_GJ);
 
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_EN);
         db.execSQL(CREATE_MEMBER_DETAILS_TABLE_QUERY_GJ);
@@ -265,8 +283,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
         db.execSQL(CREATE_COUNT_TABLE);
         db.execSQL(CREATE_TABLE_COMMITTEE_QUERY_EN);
         db.execSQL(CREATE_TABLE_COMMITTEE_QUERY_GJ);
-       /* db.execSQL(CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_GJ);
-        db.execSQL(CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_EN);*/
+        db.execSQL(CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_GJ);
+        db.execSQL(CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_EN);
     }
 
     // Called when the database needs to be upgraded.

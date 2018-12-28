@@ -2,6 +2,7 @@ package com.woxi.sgkks_member.utils;
 
 import android.util.Log;
 
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
@@ -284,6 +285,254 @@ public class AppParser implements AppConstants {
             return masterDataItem;
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static Object parseAccountDetailsResponse(String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            ArrayList<AccountDetailsItem> arrAccountDetails = new ArrayList<>();
+            if (jsonDataArray != null) {
+                AccountDetailsItem accountDetailsItem;
+                arrAccountDetails = new ArrayList<>();
+                for (int indexDetails = 0; indexDetails < jsonDataArray.length(); indexDetails++) {
+                    accountDetailsItem = new AccountDetailsItem();
+                    JSONObject jsonDetailsObject = jsonDataArray.optJSONObject(indexDetails);
+                    if (jsonDetailsObject.has("accounts_images") && jsonDetailsObject.optString("accounts_images") != null && !jsonDetailsObject.optString("accounts_images").equalsIgnoreCase("null")) {
+                        JSONArray imagesArray = jsonDetailsObject.getJSONArray("accounts_images");
+                        ArrayList<AccountImages> imageList = new ArrayList<>();
+                        if (imagesArray.length() > 0) {
+                            for (int imageIndex = 0; imageIndex < imagesArray.length(); imageIndex++) {
+                                String temp = imagesArray.getString(imageIndex);
+                                AccountImages img = new AccountImages();
+                                img.setImagePath(temp);
+                                imageList.add(img);
+                            }
+                        }
+                        accountDetailsItem.setImagesList(imageList);
+                    }
+                    if (jsonDetailsObject.has("name") && jsonDetailsObject.optString("name") != null && !jsonDetailsObject.optString("name").equalsIgnoreCase("null")) {
+                        accountDetailsItem.setStrAccountName(jsonDetailsObject.optString("name"));
+                    }
+                    if (jsonDetailsObject.has("description") && jsonDetailsObject.optString("description") != null && !jsonDetailsObject.optString("description").equalsIgnoreCase("null")) {
+                        accountDetailsItem.setStrAccountDescription(jsonDetailsObject.optString("description"));
+                    }
+                    arrAccountDetails.add(accountDetailsItem);
+                }
+            }
+            return arrAccountDetails;
+        }
+        /*if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            ArrayList<AccountYearItem> arrAccountYear = new ArrayList<>();
+            AccountYearItem accountYearItem;
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            for (int indexYear = 0; indexYear < jsonDataArray.length(); indexYear++) {
+                ArrayList<AccountDetailsItem> arrAccountDetails;
+                accountYearItem = new AccountYearItem();
+                JSONObject jsonYearObject = jsonDataArray.optJSONObject(indexYear);
+                String currentKey = "";
+                Iterator<String> iterator = jsonYearObject.keys();
+                while (iterator.hasNext()) {
+                    currentKey = iterator.next();
+                }
+                accountYearItem.setStrYear(currentKey);
+                if (jsonYearObject.has(currentKey) && jsonYearObject.optJSONArray(currentKey) != null) {
+                    AccountDetailsItem accountDetailsItem;
+                    arrAccountDetails = new ArrayList<>();
+                    JSONArray jsonDetailsArray = jsonYearObject.optJSONArray(currentKey);
+                    for (int indexDetails = 0; indexDetails < jsonDetailsArray.length(); indexDetails++) {
+                        accountDetailsItem = new AccountDetailsItem();
+                        JSONObject jsonDetailsObject = jsonDetailsArray.optJSONObject(indexDetails);
+                        if (jsonDetailsObject.has("account_image_url") && jsonDetailsObject.optString("account_image_url") != null && !jsonDetailsObject.optString("account_image_url").equalsIgnoreCase("null")) {
+                            accountDetailsItem.setStrAccountImageUrl(jsonDetailsObject.optString("account_image_url"));
+                        }
+                        if (jsonDetailsObject.has("name") && jsonDetailsObject.optString("name") != null && !jsonDetailsObject.optString("name").equalsIgnoreCase("null")) {
+                            accountDetailsItem.setStrAccountName(jsonDetailsObject.optString("name"));
+                        }
+                        arrAccountDetails.add(accountDetailsItem);
+                    }
+                    accountYearItem.setArrAccountDetails(arrAccountDetails);
+                }
+                arrAccountYear.add(accountYearItem);
+            }
+            return arrAccountYear;
+        }*/
+        return null;
+    }
+
+    public static Object parseEventDetailsResponse(String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            ArrayList<EventDataItem> mArrEventData = new ArrayList<>();
+            EventDataItem eventDataItem;
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            for (int indexYear = 0; indexYear < jsonDataArray.length(); indexYear++) {
+                ArrayList<String> arrEventImages;
+                eventDataItem = new EventDataItem();
+                JSONObject jsonEventObject = jsonDataArray.optJSONObject(indexYear);
+                if (jsonEventObject.has("event_name") && jsonEventObject.optString("event_name") != null) {
+                    String strEventName = jsonEventObject.optString("event_name");
+                    eventDataItem.setEventName(strEventName);
+                }
+                if (jsonEventObject.has("desc") && jsonEventObject.optString("desc") != null) {
+                    String strEventDesc = jsonEventObject.optString("desc");
+                    eventDataItem.setEventDescription(strEventDesc);
+                }
+                if (jsonEventObject.has("event_date") && jsonEventObject.optString("event_date") != null) {
+                    String strEventDate = jsonEventObject.optString("event_date");
+                    eventDataItem.setEventDate(strEventDate);
+                }
+                if (jsonEventObject.has("year") && jsonEventObject.optString("year") != null) {
+                    String strEventYear = jsonEventObject.optString("year");
+                    eventDataItem.setEventYear(strEventYear);
+                }
+                if(jsonEventObject.has("venue") && jsonEventObject.opt("venue") != null){
+                    String strEventVenue = jsonEventObject.optString("venue");
+                    eventDataItem.setVenue(strEventVenue);
+                }
+                if(jsonEventObject.has("city") && jsonEventObject.opt("city") != null){
+                    String strEventCity = jsonEventObject.optString("city");
+                    eventDataItem.setCity(strEventCity);
+                }
+                if (jsonEventObject.has("event_images") && jsonEventObject.optJSONArray("event_images") != null) {
+                    arrEventImages = new ArrayList<>();
+                    JSONArray jsonImageUrlArray = jsonEventObject.optJSONArray("event_images");
+                    for (int yearIndex = 0; yearIndex < jsonImageUrlArray.length(); yearIndex++) {
+                        String strImgUrl = jsonImageUrlArray.optString(yearIndex);
+                        arrEventImages.add(strImgUrl);
+                    }
+                    eventDataItem.setArrEventImageURLs(arrEventImages);
+                }
+                mArrEventData.add(eventDataItem);
+            }
+            return mArrEventData;
+        }
+        return null;
+    }
+
+    public static Object parseClassifiedResponse(String response) throws JSONException {
+        JSONObject jsonResponseObject = new JSONObject(response);
+        ClassifiedDetailsItem globalClassifiedDetailsItem = new ClassifiedDetailsItem();
+        if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
+            JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
+            ArrayList<ClassifiedDetailsItem> arrClassifiedDetails = new ArrayList<ClassifiedDetailsItem>();
+            if (jsonDataArray != null) {
+                for (int arrIndexData = 0; arrIndexData < jsonDataArray.length(); arrIndexData++) {
+                    ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
+                    JSONObject jsonNewsObject = jsonDataArray.optJSONObject(arrIndexData);
+                    if (jsonNewsObject.has("id") && jsonNewsObject.optString("id") != null && !jsonNewsObject.optString("_id").equalsIgnoreCase("null")) {
+                        classifiedDetailsItem.setClassifiedID(jsonNewsObject.optString("id"));
+                    }
+                    if (jsonNewsObject.has("title") && jsonNewsObject.optString("title") != null && !jsonNewsObject.optString("title").equalsIgnoreCase("null")) {
+                        classifiedDetailsItem.setClassifiedTitle(jsonNewsObject.optString("title"));
+                    }
+                    if (jsonNewsObject.has("city") && jsonNewsObject.optString("city") != null && !jsonNewsObject.optString("city").equalsIgnoreCase("null")) {
+                        classifiedDetailsItem.setClassifiedCity(jsonNewsObject.optString("city"));
+                    }
+                    if (jsonNewsObject.has("class_desc") && jsonNewsObject.optString("class_desc") != null && !jsonNewsObject.optString("class_desc").equalsIgnoreCase("null")) {
+                        classifiedDetailsItem.setClassifiedDescription(jsonNewsObject.optString("class_desc"));
+                    }
+                    if (jsonNewsObject.has("class_pkg") && jsonNewsObject.optString("class_pkg") != null && !jsonNewsObject.optString("class_pkg").equalsIgnoreCase("null")) {
+                        classifiedDetailsItem.setClassifiedPackage(jsonNewsObject.optString("class_pkg"));
+                    }
+                    if (jsonNewsObject.has("created_at") && jsonNewsObject.optString("created_at") != null && !jsonNewsObject.optString("created_at").equalsIgnoreCase("null")) {
+                        classifiedDetailsItem.setClassifiedCreateDate(jsonNewsObject.optString("created_at"));
+                    }
+                    if (jsonNewsObject.has("class_type") && jsonNewsObject.optString("class_type") != null && !jsonNewsObject.optString("class_type").equalsIgnoreCase("null")) {
+                        classifiedDetailsItem.setClassifiedType(jsonNewsObject.optString("class_type"));
+                    }
+                    if (jsonNewsObject.has("class_images") && jsonNewsObject.optJSONArray("class_images") != null) {
+                        JSONArray jsonImageArray = jsonNewsObject.optJSONArray("class_images");
+                        ArrayList<String> arrClassifiedImages = new ArrayList<>();
+                        for (int arrIndex = 0; arrIndex < jsonImageArray.length(); arrIndex++) {
+                            String strImageUrl = jsonImageArray.getString(arrIndex);
+                            arrClassifiedImages.add(strImageUrl);
+                        }
+                        classifiedDetailsItem.setArrClassifiedImages(arrClassifiedImages);
+                    }
+                    arrClassifiedDetails.add(classifiedDetailsItem);
+                }
+                globalClassifiedDetailsItem.setArrClassifiedList(arrClassifiedDetails);
+            }
+            return globalClassifiedDetailsItem;
+        }
+        return false;
+    }
+
+    public static Object parseCityResponse (String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            ArrayList<CityIteam> mArrCityData = new ArrayList<>();
+            CityIteam cityIteam;
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
+                cityIteam = new CityIteam();
+                JSONObject jsonCityObject = jsonDataArray.optJSONObject(indexCity);
+                if (jsonCityObject.has("city_name") && jsonCityObject.optString("city_name") != null) {
+                    String strCityName = jsonCityObject.optString("city_name");
+                    cityIteam.setStrCityName(strCityName);
+                }
+                if (jsonCityObject.has("city_id") && jsonCityObject.optString("city_id") != null) {
+                    int intCity_Id = jsonCityObject.optInt("city_id");
+                    cityIteam.setIntCityId(intCity_Id);
+                }
+                if (jsonCityObject.has("city_member_count") && jsonCityObject.optString("city_member_count") != null) {
+                    String strMemberCount = jsonCityObject.optString("city_member_count");
+                    cityIteam.setStrMemberCount(strMemberCount);
+                }
+                mArrCityData.add(cityIteam);
+            }
+            return mArrCityData;
+        }
+        return false;
+    }
+
+    public static Object parseBloodGroupResponse (String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            ArrayList<BloodGroupItems> mArrBloodGroupData = new ArrayList<>();
+            BloodGroupItems bloodGroupItems;
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
+                bloodGroupItems = new BloodGroupItems();
+                JSONObject jsonBloodGroupObject = jsonDataArray.optJSONObject(indexCity);
+                if (jsonBloodGroupObject.has("blood_group") && jsonBloodGroupObject.optString("blood_group") != null) {
+                    String strBloodGroup = jsonBloodGroupObject.optString("blood_group");
+                    bloodGroupItems.setStrBloodGroupName(strBloodGroup);;
+                }
+                if (jsonBloodGroupObject.has("blood_id") && jsonBloodGroupObject.optString("blood_id") != null) {
+                    String strBloodGroupId = jsonBloodGroupObject.optString("blood_id");
+                    bloodGroupItems.setStrBloodGroupId(strBloodGroupId);
+                }
+                mArrBloodGroupData.add(bloodGroupItems);
+            }
+            return mArrBloodGroupData;
+        }
+        return false;
+    }
+
+    public static Object parseSuggestionCategoryResponse (String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            ArrayList<SuggestionCategoriesItem> mArrSuggestionCategory = new ArrayList<>();
+            SuggestionCategoriesItem suggestionCategoriesItem;
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
+                suggestionCategoriesItem = new SuggestionCategoriesItem();
+                JSONObject jsonSuggestionCategoryObject = jsonDataArray.optJSONObject(indexCity);
+                if (jsonSuggestionCategoryObject.has("category_id") && jsonSuggestionCategoryObject.optString("category_id") != null) {
+                    String strCategoryId = jsonSuggestionCategoryObject.optString("category_id");
+                    suggestionCategoriesItem.setStrCategoryId(strCategoryId);
+                }
+                if (jsonSuggestionCategoryObject.has("category") && jsonSuggestionCategoryObject.optString("category") != null) {
+                    String strCategory = jsonSuggestionCategoryObject.optString("category");
+                    suggestionCategoriesItem.setStrCategoryName(strCategory);
+                }
+                mArrSuggestionCategory.add(suggestionCategoriesItem);
+            }
+            return mArrSuggestionCategory;
         }
         return false;
     }
@@ -754,284 +1003,80 @@ public class AppParser implements AppConstants {
                 Log.i(TAG, "parseLocalDataSyncResponse: account_gj is absent");
             }
         }
-        /*if (jsonResponseObject.has("committees") && jsonResponseObject.optString("committees") != null) {
+        if (jsonObject.has("committees") && jsonObject.optString("committees") != null) {
             ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems = new ArrayList<>();
-            JSONArray jsonCommitteeArray = jsonResponseObject.optJSONArray("committees");
-            if (jsonCommitteeArray != null) {
-                CommitteeDetailsItem committeeDetailsItem;
-                for (int arrIndex = 0; arrIndex < jsonCommitteeArray.length(); arrIndex++) {
-                    committeeDetailsItem = new CommitteeDetailsItem();
-                    JSONObject jsonObject = jsonCommitteeArray.optJSONObject(arrIndex);
-                    if (jsonObject.has("name") && jsonObject.getString("name") != null) {
-                        committeeDetailsItem.setCommitteeName(jsonObject.getString("name"));
+            ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItemsGujarati = new ArrayList<>();
+
+            JSONObject jsonCommitteeObj = jsonObject.optJSONObject("committees");
+            if (jsonCommitteeObj.has("committee_en") && jsonCommitteeObj.optJSONArray("committee_en") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: committee is present");
+                JSONArray jsonArrayCommitteeEnglish = jsonCommitteeObj.optJSONArray("committee_en");
+                for (int arrIndex = 0; arrIndex < jsonArrayCommitteeEnglish.length(); arrIndex++) {
+                    CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
+                    JSONObject jsonObjectEnglish = jsonArrayCommitteeEnglish.optJSONObject(arrIndex);
+                    if (jsonObjectEnglish.has("id") && jsonObjectEnglish.optString("id") != null ){
+                        committeeDetailsItem.setCommitteeID(jsonObjectEnglish.optString("id"));
                     }
-                    if (jsonObject.has("description") && jsonObject.getString("description") != null) {
-                        committeeDetailsItem.setCommitteeDescription(jsonObject.getString("description"));
+                    if (jsonObjectEnglish.has("name") && jsonObjectEnglish.optString("name") != null) {
+                        committeeDetailsItem.setCommitteeName(jsonObjectEnglish.optString("name"));
                     }
-                    if (jsonObject.has("city") && jsonObject.getString("city") != null) {
-                        committeeDetailsItem.setCommitteeCity(jsonObject.getString("city"));
+                    if (jsonObjectEnglish.has("description") && jsonObjectEnglish.optString("description") != null ){
+                        committeeDetailsItem.setCommitteeDescription(jsonObjectEnglish.optString("description"));
                     }
-                    if (jsonObject.has("committee_id") && jsonObject.getString("committee_id") != null) {
-                        committeeDetailsItem.setCommitteeID(jsonObject.getString("committee_id"));
+                    if (jsonObjectEnglish.has("is_active") && jsonObjectEnglish.optString("is_active") != null) {
+                        committeeDetailsItem.setCommIsActive(jsonObjectEnglish.optString("is_active"));
                     }
-                    if (jsonObject.has("comm_mem_details") && jsonObject.getString("comm_mem_details") != null) {
-                        committeeDetailsItem.setCommAllMembers(jsonObject.getString("comm_mem_details"));
+                    if (jsonObjectEnglish.has("city") && jsonObjectEnglish.optString("city") != null) {
+                        committeeDetailsItem.setCommitteeCity(jsonObjectEnglish.optString("city"));
+                    }
+                    if (jsonObjectEnglish.has("city_id") && jsonObjectEnglish.optString("city_id") != null) {
+                        committeeDetailsItem.setCityId(jsonObjectEnglish.optString("city_id"));
+                    }
+                    if (jsonObjectEnglish.has("members") && jsonObjectEnglish.optJSONObject("members") != null){
+                        Log.i(TAG, "parseLocalDataSyncResponse: members present inside committii");
+                        JSONObject jsonMember= jsonObjectEnglish.optJSONObject("members");
+                        if (jsonMember.has("member_en") && jsonMember.optString("member_en") != null ){
+                            committeeDetailsItem.setCommAllMembers(jsonMember.optString("member_en"));
+                        }
+                        if (jsonMember.has("member_gj") && jsonMember.optString("member_gj") != null) {
+                            committeeDetailsItem.setCommAllMembersGujarati(jsonMember.optString("member_gj"));
+                        }
+                    } else {
+                        Log.i(TAG, "parseLocalDataSyncResponse: members absent inside committii");
                     }
                     arrCommitteeDetailsItems.add(committeeDetailsItem);
                 }
+                localDataSyncItem.setArrCommitteeDetailsItems(arrCommitteeDetailsItems);
+            } else {
+                Log.i(TAG, "parseLocalDataSyncResponse: committee is absent");
             }
-            localDataSyncItem.setArrCommitteeDetailsItems(arrCommitteeDetailsItems);
+            if (jsonCommitteeObj.has("committee_gj") && jsonCommitteeObj.optJSONArray("committee_gj") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: committee_gj present");
+                JSONArray jsonArray = jsonCommitteeObj.optJSONArray("committee_gj");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++) {
+                    CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
+                    JSONObject jsonObjectGujarati = jsonArray.optJSONObject(arrIndex);
+                    if (jsonObjectGujarati.has("id") && jsonObjectGujarati.optString("id") != null ){
+                        committeeDetailsItem.setId(jsonObjectGujarati.optString("id"));
+                    }
+                    if (jsonObjectGujarati.has("committee_name") && jsonObjectGujarati.optString("committee_name") != null) {
+                        committeeDetailsItem.setCommitteeName(jsonObjectGujarati.optString("committee_name"));
+                    }
+                    if (jsonObjectGujarati.has("description") && jsonObjectGujarati.optString("description") != null ){
+                        committeeDetailsItem.setCommitteeDescription(jsonObjectGujarati.optString("description"));
+                    }
+                    if (jsonObjectGujarati.has("committee_id") && jsonObjectGujarati.optString("committee_id") != null ){
+                        committeeDetailsItem.setCommitteeID(jsonObjectGujarati.optString("committee_id"));
+                    }
+                    arrCommitteeDetailsItemsGujarati.add(committeeDetailsItem);
+                }
+                localDataSyncItem.setArrCommitteeDetailsGujaratiItems(arrCommitteeDetailsItemsGujarati);
+            } else {
+                Log.i(TAG, "parseLocalDataSyncResponse: committee_gj is absent");
+            }
+
         }
-       */
         return localDataSyncItem;
-    }
-
-    public static Object parseAccountDetailsResponse(String response) throws JSONException {
-        JSONObject jsonObject = new JSONObject(response);
-        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
-            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
-            ArrayList<AccountDetailsItem> arrAccountDetails = new ArrayList<>();
-            if (jsonDataArray != null) {
-                AccountDetailsItem accountDetailsItem;
-                arrAccountDetails = new ArrayList<>();
-                for (int indexDetails = 0; indexDetails < jsonDataArray.length(); indexDetails++) {
-                    accountDetailsItem = new AccountDetailsItem();
-                    JSONObject jsonDetailsObject = jsonDataArray.optJSONObject(indexDetails);
-                    if (jsonDetailsObject.has("accounts_images") && jsonDetailsObject.optString("accounts_images") != null && !jsonDetailsObject.optString("accounts_images").equalsIgnoreCase("null")) {
-                        JSONArray imagesArray = jsonDetailsObject.getJSONArray("accounts_images");
-                        ArrayList<AccountImages> imageList = new ArrayList<>();
-                        if (imagesArray.length() > 0) {
-                            for (int imageIndex = 0; imageIndex < imagesArray.length(); imageIndex++) {
-                                String temp = imagesArray.getString(imageIndex);
-                                AccountImages img = new AccountImages();
-                                img.setImagePath(temp);
-                                imageList.add(img);
-                            }
-                        }
-                        accountDetailsItem.setImagesList(imageList);
-                    }
-                    if (jsonDetailsObject.has("name") && jsonDetailsObject.optString("name") != null && !jsonDetailsObject.optString("name").equalsIgnoreCase("null")) {
-                        accountDetailsItem.setStrAccountName(jsonDetailsObject.optString("name"));
-                    }
-                    if (jsonDetailsObject.has("description") && jsonDetailsObject.optString("description") != null && !jsonDetailsObject.optString("description").equalsIgnoreCase("null")) {
-                        accountDetailsItem.setStrAccountDescription(jsonDetailsObject.optString("description"));
-                    }
-                    arrAccountDetails.add(accountDetailsItem);
-                }
-            }
-            return arrAccountDetails;
-        }
-        /*if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
-            ArrayList<AccountYearItem> arrAccountYear = new ArrayList<>();
-            AccountYearItem accountYearItem;
-            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
-            for (int indexYear = 0; indexYear < jsonDataArray.length(); indexYear++) {
-                ArrayList<AccountDetailsItem> arrAccountDetails;
-                accountYearItem = new AccountYearItem();
-                JSONObject jsonYearObject = jsonDataArray.optJSONObject(indexYear);
-                String currentKey = "";
-                Iterator<String> iterator = jsonYearObject.keys();
-                while (iterator.hasNext()) {
-                    currentKey = iterator.next();
-                }
-                accountYearItem.setStrYear(currentKey);
-                if (jsonYearObject.has(currentKey) && jsonYearObject.optJSONArray(currentKey) != null) {
-                    AccountDetailsItem accountDetailsItem;
-                    arrAccountDetails = new ArrayList<>();
-                    JSONArray jsonDetailsArray = jsonYearObject.optJSONArray(currentKey);
-                    for (int indexDetails = 0; indexDetails < jsonDetailsArray.length(); indexDetails++) {
-                        accountDetailsItem = new AccountDetailsItem();
-                        JSONObject jsonDetailsObject = jsonDetailsArray.optJSONObject(indexDetails);
-                        if (jsonDetailsObject.has("account_image_url") && jsonDetailsObject.optString("account_image_url") != null && !jsonDetailsObject.optString("account_image_url").equalsIgnoreCase("null")) {
-                            accountDetailsItem.setStrAccountImageUrl(jsonDetailsObject.optString("account_image_url"));
-                        }
-                        if (jsonDetailsObject.has("name") && jsonDetailsObject.optString("name") != null && !jsonDetailsObject.optString("name").equalsIgnoreCase("null")) {
-                            accountDetailsItem.setStrAccountName(jsonDetailsObject.optString("name"));
-                        }
-                        arrAccountDetails.add(accountDetailsItem);
-                    }
-                    accountYearItem.setArrAccountDetails(arrAccountDetails);
-                }
-                arrAccountYear.add(accountYearItem);
-            }
-            return arrAccountYear;
-        }*/
-        return null;
-    }
-
-    public static Object parseEventDetailsResponse(String response) throws JSONException {
-        JSONObject jsonObject = new JSONObject(response);
-        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
-            ArrayList<EventDataItem> mArrEventData = new ArrayList<>();
-            EventDataItem eventDataItem;
-            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
-            for (int indexYear = 0; indexYear < jsonDataArray.length(); indexYear++) {
-                ArrayList<String> arrEventImages;
-                eventDataItem = new EventDataItem();
-                JSONObject jsonEventObject = jsonDataArray.optJSONObject(indexYear);
-                if (jsonEventObject.has("event_name") && jsonEventObject.optString("event_name") != null) {
-                    String strEventName = jsonEventObject.optString("event_name");
-                    eventDataItem.setEventName(strEventName);
-                }
-                if (jsonEventObject.has("desc") && jsonEventObject.optString("desc") != null) {
-                    String strEventDesc = jsonEventObject.optString("desc");
-                    eventDataItem.setEventDescription(strEventDesc);
-                }
-                if (jsonEventObject.has("event_date") && jsonEventObject.optString("event_date") != null) {
-                    String strEventDate = jsonEventObject.optString("event_date");
-                    eventDataItem.setEventDate(strEventDate);
-                }
-                if (jsonEventObject.has("year") && jsonEventObject.optString("year") != null) {
-                    String strEventYear = jsonEventObject.optString("year");
-                    eventDataItem.setEventYear(strEventYear);
-                }
-                if(jsonEventObject.has("venue") && jsonEventObject.opt("venue") != null){
-                    String strEventVenue = jsonEventObject.optString("venue");
-                    eventDataItem.setVenue(strEventVenue);
-                }
-                if(jsonEventObject.has("city") && jsonEventObject.opt("city") != null){
-                    String strEventCity = jsonEventObject.optString("city");
-                    eventDataItem.setCity(strEventCity);
-                }
-                if (jsonEventObject.has("event_images") && jsonEventObject.optJSONArray("event_images") != null) {
-                    arrEventImages = new ArrayList<>();
-                    JSONArray jsonImageUrlArray = jsonEventObject.optJSONArray("event_images");
-                    for (int yearIndex = 0; yearIndex < jsonImageUrlArray.length(); yearIndex++) {
-                        String strImgUrl = jsonImageUrlArray.optString(yearIndex);
-                        arrEventImages.add(strImgUrl);
-                    }
-                    eventDataItem.setArrEventImageURLs(arrEventImages);
-                }
-                mArrEventData.add(eventDataItem);
-            }
-            return mArrEventData;
-        }
-        return null;
-    }
-
-    public static Object parseClassifiedResponse(String response) throws JSONException {
-        JSONObject jsonResponseObject = new JSONObject(response);
-        ClassifiedDetailsItem globalClassifiedDetailsItem = new ClassifiedDetailsItem();
-        if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
-            JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
-            ArrayList<ClassifiedDetailsItem> arrClassifiedDetails = new ArrayList<ClassifiedDetailsItem>();
-            if (jsonDataArray != null) {
-                for (int arrIndexData = 0; arrIndexData < jsonDataArray.length(); arrIndexData++) {
-                    ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
-                    JSONObject jsonNewsObject = jsonDataArray.optJSONObject(arrIndexData);
-                    if (jsonNewsObject.has("id") && jsonNewsObject.optString("id") != null && !jsonNewsObject.optString("_id").equalsIgnoreCase("null")) {
-                        classifiedDetailsItem.setClassifiedID(jsonNewsObject.optString("id"));
-                    }
-                    if (jsonNewsObject.has("title") && jsonNewsObject.optString("title") != null && !jsonNewsObject.optString("title").equalsIgnoreCase("null")) {
-                        classifiedDetailsItem.setClassifiedTitle(jsonNewsObject.optString("title"));
-                    }
-                    if (jsonNewsObject.has("city") && jsonNewsObject.optString("city") != null && !jsonNewsObject.optString("city").equalsIgnoreCase("null")) {
-                        classifiedDetailsItem.setClassifiedCity(jsonNewsObject.optString("city"));
-                    }
-                    if (jsonNewsObject.has("class_desc") && jsonNewsObject.optString("class_desc") != null && !jsonNewsObject.optString("class_desc").equalsIgnoreCase("null")) {
-                        classifiedDetailsItem.setClassifiedDescription(jsonNewsObject.optString("class_desc"));
-                    }
-                    if (jsonNewsObject.has("class_pkg") && jsonNewsObject.optString("class_pkg") != null && !jsonNewsObject.optString("class_pkg").equalsIgnoreCase("null")) {
-                        classifiedDetailsItem.setClassifiedPackage(jsonNewsObject.optString("class_pkg"));
-                    }
-                    if (jsonNewsObject.has("created_at") && jsonNewsObject.optString("created_at") != null && !jsonNewsObject.optString("created_at").equalsIgnoreCase("null")) {
-                        classifiedDetailsItem.setClassifiedCreateDate(jsonNewsObject.optString("created_at"));
-                    }
-                    if (jsonNewsObject.has("class_type") && jsonNewsObject.optString("class_type") != null && !jsonNewsObject.optString("class_type").equalsIgnoreCase("null")) {
-                        classifiedDetailsItem.setClassifiedType(jsonNewsObject.optString("class_type"));
-                    }
-                    if (jsonNewsObject.has("class_images") && jsonNewsObject.optJSONArray("class_images") != null) {
-                        JSONArray jsonImageArray = jsonNewsObject.optJSONArray("class_images");
-                        ArrayList<String> arrClassifiedImages = new ArrayList<>();
-                        for (int arrIndex = 0; arrIndex < jsonImageArray.length(); arrIndex++) {
-                            String strImageUrl = jsonImageArray.getString(arrIndex);
-                            arrClassifiedImages.add(strImageUrl);
-                        }
-                        classifiedDetailsItem.setArrClassifiedImages(arrClassifiedImages);
-                    }
-                    arrClassifiedDetails.add(classifiedDetailsItem);
-                }
-                globalClassifiedDetailsItem.setArrClassifiedList(arrClassifiedDetails);
-            }
-            return globalClassifiedDetailsItem;
-        }
-        return false;
-    }
-
-    public static Object parseCityResponse (String response) throws JSONException {
-        JSONObject jsonObject = new JSONObject(response);
-        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
-            ArrayList<CityIteam> mArrCityData = new ArrayList<>();
-            CityIteam cityIteam;
-            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
-            for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
-                cityIteam = new CityIteam();
-                JSONObject jsonCityObject = jsonDataArray.optJSONObject(indexCity);
-                if (jsonCityObject.has("city_name") && jsonCityObject.optString("city_name") != null) {
-                    String strCityName = jsonCityObject.optString("city_name");
-                    cityIteam.setStrCityName(strCityName);
-                }
-                if (jsonCityObject.has("city_id") && jsonCityObject.optString("city_id") != null) {
-                    int intCity_Id = jsonCityObject.optInt("city_id");
-                    cityIteam.setIntCityId(intCity_Id);
-                }
-                if (jsonCityObject.has("city_member_count") && jsonCityObject.optString("city_member_count") != null) {
-                    String strMemberCount = jsonCityObject.optString("city_member_count");
-                    cityIteam.setStrMemberCount(strMemberCount);
-                }
-                mArrCityData.add(cityIteam);
-            }
-            return mArrCityData;
-        }
-        return false;
-    }
-
-    public static Object parseBloodGroupResponse (String response) throws JSONException {
-        JSONObject jsonObject = new JSONObject(response);
-        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
-            ArrayList<BloodGroupItems> mArrBloodGroupData = new ArrayList<>();
-            BloodGroupItems bloodGroupItems;
-            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
-            for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
-                bloodGroupItems = new BloodGroupItems();
-                JSONObject jsonBloodGroupObject = jsonDataArray.optJSONObject(indexCity);
-                if (jsonBloodGroupObject.has("blood_group") && jsonBloodGroupObject.optString("blood_group") != null) {
-                    String strBloodGroup = jsonBloodGroupObject.optString("blood_group");
-                    bloodGroupItems.setStrBloodGroupName(strBloodGroup);;
-                }
-                if (jsonBloodGroupObject.has("blood_id") && jsonBloodGroupObject.optString("blood_id") != null) {
-                    String strBloodGroupId = jsonBloodGroupObject.optString("blood_id");
-                    bloodGroupItems.setStrBloodGroupId(strBloodGroupId);
-                }
-                mArrBloodGroupData.add(bloodGroupItems);
-            }
-            return mArrBloodGroupData;
-        }
-        return false;
-    }
-
-    public static Object parseSuggestionCategoryResponse (String response) throws JSONException {
-        JSONObject jsonObject = new JSONObject(response);
-        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
-            ArrayList<SuggestionCategoriesItem> mArrSuggestionCategory = new ArrayList<>();
-            SuggestionCategoriesItem suggestionCategoriesItem;
-            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
-            for (int indexCity = 0; indexCity < jsonDataArray.length(); indexCity++) {
-                suggestionCategoriesItem = new SuggestionCategoriesItem();
-                JSONObject jsonSuggestionCategoryObject = jsonDataArray.optJSONObject(indexCity);
-                if (jsonSuggestionCategoryObject.has("category_id") && jsonSuggestionCategoryObject.optString("category_id") != null) {
-                    String strCategoryId = jsonSuggestionCategoryObject.optString("category_id");
-                    suggestionCategoriesItem.setStrCategoryId(strCategoryId);
-                }
-                if (jsonSuggestionCategoryObject.has("category") && jsonSuggestionCategoryObject.optString("category") != null) {
-                    String strCategory = jsonSuggestionCategoryObject.optString("category");
-                    suggestionCategoriesItem.setStrCategoryName(strCategory);
-                }
-                mArrSuggestionCategory.add(suggestionCategoriesItem);
-            }
-            return mArrSuggestionCategory;
-        }
-        return false;
     }
 
 }
