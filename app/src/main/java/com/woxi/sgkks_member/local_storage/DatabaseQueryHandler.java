@@ -632,7 +632,6 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 } while (cursorEnglish.moveToNext());
             }
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")) {
-
             String fetchEventId = "SELECT " + COLUMN_EVENT_ID_PRIMARY_KEY + " FROM " + TABLE_EVENTS_EN
                     + " WHERE " + COLUMN_EVENT_IS_ACTIVE + "='true'";
             Cursor cursorEventId = mSqLiteDatabase.rawQuery(fetchEventId,null);
@@ -775,10 +774,9 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         String sqlQueryEnglish = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS
                 + " WHERE " + COLUMN_MESSAGES_IS_ACTIVE + "='true'" ;
         String sqlQueryGujarati = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS_GJ;
-        Cursor cursorMessages;
+        Cursor cursorMessages =mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);;
         Cursor cursorMessagesGujarati;
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
-            cursorMessages = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
             if (cursorMessages.moveToFirst()){
                 do {
                     MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
@@ -797,32 +795,38 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             }
 
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
-            cursorMessages = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
-            cursorMessagesGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
-            if (cursorMessagesGujarati.moveToFirst() && cursorMessages.moveToFirst()){
+            String fetchMessageId = "SELECT " + COLUMN_MESSAGES_ID_PRIMARY + " FROM " + TABLE_MESSAGE_NEWS_DETAILS
+                    + " WHERE " + COLUMN_MESSAGES_IS_ACTIVE + "='true'";
+            Cursor cursorMessageId = mSqLiteDatabase.rawQuery(fetchMessageId,null);
+            if (cursorMessageId.moveToFirst()) {
                 do {
-                    MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
-                    messageDetailsItem.setId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY_GJ)));
-                    if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)) != null){
-                        messageDetailsItem.setMessageTitle(cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
-                    } else {
-                        messageDetailsItem.setMessageTitle(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
+                    cursorMessagesGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
+                    if (cursorMessagesGujarati.moveToFirst() && cursorMessages.moveToFirst()){
+                        do {
+                            MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
+                            messageDetailsItem.setId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY_GJ)));
+                            if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)) != null){
+                                messageDetailsItem.setMessageTitle(cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
+                            } else {
+                                messageDetailsItem.setMessageTitle(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
+                            }
+                            if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)) != null){
+                                messageDetailsItem.setMessageDescription(cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
+                            } else {
+                                messageDetailsItem.setMessageDescription(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
+                            }
+                            messageDetailsItem.setMessageDescription(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
+                            messageDetailsItem.setMessageType(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TYPE)));
+                            messageDetailsItem.setMessageTypeId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TYPE_ID)));
+                            messageDetailsItem.setMessageIsActive(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_IS_ACTIVE)));
+                            messageDetailsItem.setMessageCity(cursorMessages.getColumnName(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CITY)));
+                            messageDetailsItem.setMessageCityId(cursorMessages.getColumnName(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CITY_ID)));
+                            messageDetailsItem.setMessageDate(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CREATED_DATE)));
+                            messageDetailsItem.setMessageImage(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_IMAGE_URL)));
+                            arrayListMessages.add(messageDetailsItem);
+                        } while (cursorMessagesGujarati.moveToNext() && cursorMessages.moveToNext());
                     }
-                    if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)) != null){
-                        messageDetailsItem.setMessageDescription(cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
-                    } else {
-                        messageDetailsItem.setMessageDescription(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
-                    }
-                    messageDetailsItem.setMessageDescription(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
-                    messageDetailsItem.setMessageType(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TYPE)));
-                    messageDetailsItem.setMessageTypeId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TYPE_ID)));
-                    messageDetailsItem.setMessageIsActive(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_IS_ACTIVE)));
-                    messageDetailsItem.setMessageCity(cursorMessages.getColumnName(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CITY)));
-                    messageDetailsItem.setMessageCityId(cursorMessages.getColumnName(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CITY_ID)));
-                    messageDetailsItem.setMessageDate(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_CREATED_DATE)));
-                    messageDetailsItem.setMessageImage(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_IMAGE_URL)));
-                    arrayListMessages.add(messageDetailsItem);
-                } while (cursorMessagesGujarati.moveToNext() && cursorMessages.moveToNext());
+                } while (cursorMessageId.moveToNext());
             }
         }
         return arrayListMessages;
