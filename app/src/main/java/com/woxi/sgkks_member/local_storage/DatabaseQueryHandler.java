@@ -345,22 +345,22 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         do {
                             MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
                             //Check if first name is present in Gujarati
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)).equalsIgnoreCase("null")) {
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)).equalsIgnoreCase("null")) {
                                 memberDetailsItem.setStrFirstName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
                             } else {
                                 memberDetailsItem.setStrFirstName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
                             }
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)).equalsIgnoreCase("null")) {
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)).equalsIgnoreCase("null")) {
                                 memberDetailsItem.setStrMiddleName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
                             } else {
                                 memberDetailsItem.setStrMiddleName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
                             }
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)).equalsIgnoreCase("null")) {
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)).equalsIgnoreCase("null")) {
                                 memberDetailsItem.setStrLastName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
                             } else {
                                 memberDetailsItem.setStrLastName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
                             }
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)) != null) {
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)).equalsIgnoreCase("null")) {
                                 memberDetailsItem.setStrAddress(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
                             } else {
                                 memberDetailsItem.setStrAddress(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
@@ -500,7 +500,11 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     if (cursorGujarati.moveToNext() && cityCursor.moveToFirst()) {
                         do {
                             CityIteam cityIteam = new CityIteam();
-                            cityIteam.setStrCityName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)).equalsIgnoreCase("null")) {
+                                cityIteam.setStrCityName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
+                            } else {
+                                cityIteam.setStrCityName(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
+                            }
                             cityIteam.setStrMemberCount(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_MEMBER_COUNT)));
                             arrCityIteam.add(cityIteam);
                         } while (cursorGujarati.moveToNext() && cityCursor.moveToNext());
@@ -632,7 +636,8 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")) {
             String fetchEventId = "SELECT " + COLUMN_EVENT_ID_PRIMARY_KEY + " FROM " + TABLE_EVENTS_EN
                     + " WHERE " + COLUMN_EVENT_IS_ACTIVE + "='true'"
-                    + " AND " + COLUMN_EVENT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'";
+                    + " AND " + COLUMN_EVENT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
+                    + " AND " + COLUMN_EVENT_YEAR + "='" + year + "'";
             Cursor cursorEventId = mSqLiteDatabase.rawQuery(fetchEventId,null);
             if (cursorEventId.moveToFirst()) {
                 do {
@@ -643,19 +648,19 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         do {
                             EventDataItem eventDataItem = new EventDataItem();
                             //Check if title is present in Gujarati
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_NAME)) != null) {
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_NAME)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_NAME)).equalsIgnoreCase("null")) {
                                 eventDataItem.setEventName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_NAME)));
                             } else {
                                 eventDataItem.setEventName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_NAME)));
                             }
                             //CHECK IF DESCRIPTION IS PRESENT IN GUJARATI
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)) != null) {
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)).equalsIgnoreCase("null")) {
                                 eventDataItem.setEventDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)));
                             } else {
                                 eventDataItem.setEventDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)));
                             }
                             //check if venue is present in Gujarati
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)) != null){
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)).equalsIgnoreCase("null")){
                                 eventDataItem.setVenue(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)));
                             } else {
                                 eventDataItem.setVenue(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)));
@@ -806,12 +811,12 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         do {
                             MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
                             messageDetailsItem.setId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY_GJ)));
-                            if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)) != null){
+                            if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)) != null && cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)).equalsIgnoreCase("null")){
                                 messageDetailsItem.setMessageTitle(cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
                             } else {
                                 messageDetailsItem.setMessageTitle(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
                             }
-                            if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)) != null){
+                            if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)) != null && cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)).equalsIgnoreCase("null")){
                                 messageDetailsItem.setMessageDescription(cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
                             } else {
                                 messageDetailsItem.setMessageDescription(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
@@ -951,13 +956,13 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         do {
                             ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
                             // Check if title is present in Gujarati
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)) != null){
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)).equalsIgnoreCase("null")){
                                 classifiedDetailsItem.setClassifiedTitle(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)));
                             } else {
                                 classifiedDetailsItem.setClassifiedTitle(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)));
                             }
                             //Check if description is present in Gujarati
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)) != null){
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)).equalsIgnoreCase("null")) {
                                 classifiedDetailsItem.setClassifiedDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)));
                             } else {
                                 classifiedDetailsItem.setClassifiedDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)));
@@ -1060,13 +1065,10 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 + " WHERE " + COLUMN_ACCOUNT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
                 + " AND " + COLUMN_ACCOUNT_IS_ACTIVE + "='true'"
                 + " AND " + COLUMN_ACCOUNT_YEAR + "='" + year + "'";
-        Log.i(TAG, "queryAccounts: "+sqlEnglish);
-        String sqlGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_ACCOUNT_GJ;
-        Log.i(TAG, "queryAccounts: "+sqlGujarati);
+
         Cursor cursorEnglish = mSqLiteDatabase.rawQuery(sqlEnglish,null);
-        Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlGujarati,null);
+
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
-            Log.i(TAG, "queryAccounts: "+cursorEnglish.moveToFirst());
             if (cursorEnglish.moveToFirst()) {
                 do {
                     AccountDetailsItem accountDetailsItem = new AccountDetailsItem();
@@ -1083,29 +1085,41 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 } while (cursorEnglish.moveToNext());
             }
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
-
-            if (cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()) {
+            String fetchAccountId = "SELECT " + COLUMN_ACCOUNT_ID_PRIMARY + " FROM " + TABLE_ACCOUNT_EN
+                    + " WHERE " + COLUMN_ACCOUNT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
+                    + " AND " + COLUMN_ACCOUNT_IS_ACTIVE + "='true'"
+                    + " AND " + COLUMN_ACCOUNT_YEAR + "='" + year + "'";
+            Cursor cursorAccountId = mSqLiteDatabase.rawQuery(fetchAccountId,null);
+            if (cursorAccountId.moveToFirst()) {
                 do {
-                    AccountDetailsItem accountDetailsItem = new AccountDetailsItem();
-                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME)) != null) {
-                        accountDetailsItem.setStrAccountName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME)));
-                    } else {
-                        accountDetailsItem.setStrAccountName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME)));
+                    String sqlGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_ACCOUNT_GJ
+                            + " WHERE " + COLUMN_ACCOUNT_ID_FOREIGN + "='" + cursorAccountId.getString(cursorAccountId.getColumnIndexOrThrow(COLUMN_ACCOUNT_ID_PRIMARY)) + "'";
+                    Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlGujarati,null);
+                    if (cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()) {
+                        do {
+                            AccountDetailsItem accountDetailsItem = new AccountDetailsItem();
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME)).equalsIgnoreCase("null")) {
+                                accountDetailsItem.setStrAccountName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME)));
+                            } else {
+                                accountDetailsItem.setStrAccountName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_NAME)));
+                            }
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_DESCRIPTION)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_DESCRIPTION)).equalsIgnoreCase("null") ){
+                                accountDetailsItem.setStrAccountDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_DESCRIPTION)));
+                            } else {
+                                accountDetailsItem.setStrAccountDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_DESCRIPTION)));
+                            }
+                            accountDetailsItem.setStrCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_CITY)));
+                            ArrayList<AccountImages> arrImages = new ArrayList<>();
+                            AccountImages img = new AccountImages();
+                            img.setImagePath("");
+                            arrImages.add(img);
+                            accountDetailsItem.setImagesList(arrImages);
+                            arrAccount.add(accountDetailsItem);
+                        } while (cursorEnglish.moveToNext() && cursorGujarati.moveToNext());
                     }
-                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_DESCRIPTION)) != null){
-                        accountDetailsItem.setStrAccountDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_ACCOUNT_DESCRIPTION)));
-                    } else {
-                        accountDetailsItem.setStrAccountDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_DESCRIPTION)));
-                    }
-                    accountDetailsItem.setStrCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_ACCOUNT_CITY)));
-                    ArrayList<AccountImages> arrImages = new ArrayList<>();
-                    AccountImages img = new AccountImages();
-                    img.setImagePath("");
-                    arrImages.add(img);
-                    accountDetailsItem.setImagesList(arrImages);
-                    arrAccount.add(accountDetailsItem);
-                } while (cursorEnglish.moveToNext() && cursorGujarati.moveToNext());
+                } while (cursorAccountId.moveToNext());
             }
+
         }
         return arrAccount;
     }
@@ -1307,7 +1321,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         if (cursorMemberGujarati.moveToFirst() && cursorMemberEnglish.moveToFirst()) {
             do {
                 CommMemberDetailsItem commMemberDetailItem = new CommMemberDetailsItem();
-                if (cursorMemberGujarati.getString(cursorMemberGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)) != null) {
+                if (cursorMemberGujarati.getString(cursorMemberGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)) != null && cursorMemberGujarati.getString(cursorMemberGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)).equalsIgnoreCase("null"))   {
                     commMemberDetailItem.setCommitteeMemName(cursorMemberGujarati.getString(cursorMemberGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)));
                 } else {
                     commMemberDetailItem.setCommitteeMemName(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)));
@@ -1337,12 +1351,12 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             if (cursorGujarati.moveToFirst() && cursorEnglish.moveToFirst()) {
                 do {
                     CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
-                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)) != null) {
+                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)).equalsIgnoreCase("null")) {
                         committeeDetailsItem.setCommitteeName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
                     } else {
                         committeeDetailsItem.setCommitteeName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
                     }
-                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)) != null) {
+                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)).equalsIgnoreCase("null")) {
                         committeeDetailsItem.setCommitteeDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
                     } else {
                         committeeDetailsItem.setCommitteeDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
