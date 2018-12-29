@@ -169,7 +169,7 @@ public interface DatabaseConstants {
     String COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_EN = "id";
     String COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_GJ = "id";
     String COLUMN_COMMITTEE_MEMBER_ID_FOREIGN = "foreign_id";
-    String COLUMN_MEMBERS_COMMITTEE_ID = "committee_id";
+    String COLUMN_MEMBERS_COMMITTEE_ID_FOREIGN = "committee_id";
     String COLUMN_COMMITTEE_MEMBER_NAME = "name";
     String COLUMN_COMMITTEE_MEMBER_DESIGNATION = "designation";
     String COLUMN_COMMITTEE_MEMBER_NUMBER = "mobile";

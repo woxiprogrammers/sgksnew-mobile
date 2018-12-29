@@ -246,23 +246,26 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
 
         String CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_EN = "CREATE TABLE " + TABLE_COMMITTEE_MEMBERS_EN
                 + "("
-                + COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_EN + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_EN + " VARCHAR(500) PRIMARY KEY, "
                 + COLUMN_COMMITTEE_MEMBER_NAME + " VARCHAR(500), "
                 + COLUMN_COMMITTEE_MEMBER_DESIGNATION + " VARCHAR(500), "
                 + COLUMN_COMMITTEE_MEMBER_NUMBER + " VARCAHR(500), "
                 + COLUMN_COMMITTEE_MEMBER_EMAIL + " VARCHAR(500), "
                 + COLUMN_COMMITTEE_MEMBER_AREA + " VARCHAR(500), "
-                + COLUMN_COMMITTEE_MEMBER_IS_ACTIVE + " VARCHAR(500) "
+                + COLUMN_COMMITTEE_MEMBER_IS_ACTIVE + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_MEMBER_ID_FOREIGN + " VARCHAR(500), "
+                + " FOREIGN KEY(" + COLUMN_COMMITTEE_MEMBER_ID_FOREIGN + ")REFERENCES "
+                + TABLE_COMMITTEE_DETAILS + "(" + COLUMN_COMMITTEE_ID_PRIMARY + ")"
                 + ")";
 
         new AppCommonMethods().LOG(0,TAG,CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_EN);
 
         String CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_GJ = "CREATE TABLE " + TABLE_COMMITTEE_MEMBERS_GJ
                 + "("
-                + COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_GJ + " VARCHAR(500), "
+                + COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_GJ + " VARCHAR(500) PRIMARY KEY, "
                 + COLUMN_COMMITTEE_MEMBER_NAME + " VARCHAR(500), "
-                + COLUMN_COMMITTEE_ID_FOREIGN + " VARCAHR(500), "
-                + "FOREIGN KEY ( " + COLUMN_COMMITTEE_ID_FOREIGN +") REFERENCES "
+                + COLUMN_MEMBERS_COMMITTEE_ID_FOREIGN + " VARCAHR(500), "
+                + "FOREIGN KEY(" + COLUMN_MEMBERS_COMMITTEE_ID_FOREIGN +")REFERENCES "
                 + TABLE_COMMITTEE_MEMBERS_EN + "(" + COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_EN + ")"
                 + ")";
         new AppCommonMethods().LOG(0,TAG,CREATE_TABLE_COMMITTEE_MEMBERS_QUERY_GJ);
@@ -310,6 +313,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_COUNTS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMMITTEE_DETAILS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMMITTEE_DETAILS_GJ);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMMITTEE_MEMBERS_EN);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMMITTEE_MEMBERS_GJ);
             onCreate(db);
         }
     }

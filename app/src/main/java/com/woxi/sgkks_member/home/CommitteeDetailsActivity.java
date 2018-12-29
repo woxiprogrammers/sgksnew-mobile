@@ -189,9 +189,9 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
             strCommAllMembers = committeeListItem.getCommAllMembers();
         } else {
             if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
-                strCommAllMembers = committeeListItem.getCommAllMembers();
+                arrCommMemberDetails = committeeListItem.getMembersEnglish();
             } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
-                strCommAllMembers = committeeListItem.getCommAllMembersGujarati();
+                arrCommMemberDetails = committeeListItem.getMembersGujarati();
             }
         }
         if (strCommAllMembers != null && !strCommAllMembers.equalsIgnoreCase("")) {
@@ -202,7 +202,11 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
                 e.printStackTrace();
             }
         } else {
-            arrCommMemberDetails = new ArrayList<>();
+            if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+                arrCommMemberDetails = committeeListItem.getMembersEnglish();
+            } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
+                arrCommMemberDetails = committeeListItem.getMembersGujarati();
+            }
         }
 
         ((TextView) findViewById(R.id.tvCommitteeName)).setText(committeeListItem.getCommitteeName() + "");
