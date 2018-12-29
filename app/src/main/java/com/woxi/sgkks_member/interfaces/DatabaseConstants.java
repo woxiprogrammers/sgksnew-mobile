@@ -108,6 +108,7 @@ public interface DatabaseConstants {
     String COLUMN_CITY_IS_ACTIVE = "is_active";
     String COLUMN_CITY_ID_FOREIGN = "city_id_foreign";
     String COLUMN_CITY_LANGUAGE_ID = "language_id";
+    String COLUMN_CITY_MEMBER_COUNT = "member_count";
 
     //TABLE EVENTS
     String TABLE_EVENTS_EN = "table_events_en";

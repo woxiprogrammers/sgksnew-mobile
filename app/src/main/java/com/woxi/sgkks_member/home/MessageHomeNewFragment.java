@@ -53,7 +53,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     private int pageNumber = 0, arrSize = 0;
     private boolean isApiInProgress = false, isApiRequested = false;
     private DatabaseQueryHandler databaseQueryHandler;
-    ArrayList<MessageDetailsItem> arrOfflineMessages;
+   // ArrayList<MessageDetailsItem> arrOfflineMessages;
     public MessageHomeNewFragment() {
         // Required empty public constructor
     }
@@ -85,8 +85,8 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                 pageNumber=0;
                 requestMessageList(pageNumber, true);
             } else {
-                arrOfflineMessages = databaseQueryHandler.querryMessages();
-                showMessages(arrOfflineMessages);
+                mArrMessageDetails = databaseQueryHandler.querryMessages();
+                showMessages(mArrMessageDetails);
             }
         }
     }
@@ -98,18 +98,10 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         onRvItemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (new AppCommonMethods(mContext).isNetworkAvailable()){
                     MessageDetailsItem messageDetailsItem = mArrMessageDetails.get(mRvMessageList.getChildAdapterPosition(v));
                     Intent intentDetails = new Intent(mContext, MessageDetailsActivity.class);
                     intentDetails.putExtra("currentNewsDetail", messageDetailsItem);
                     startActivity(intentDetails);
-                } else {
-                    MessageDetailsItem messageDetailsItem = arrOfflineMessages.get(mRvMessageList.getChildAdapterPosition(v));
-                    Intent intentDetails = new Intent(mContext, MessageDetailsActivity.class);
-                    intentDetails.putExtra("currentNewsDetail", messageDetailsItem);
-                    startActivity(intentDetails);
-                }
-
             }
         };
         recyclerViewScrollListener();
@@ -213,8 +205,8 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                 pageNumber=0;
                 requestMessageList(pageNumber,true);
             }else {
-                arrOfflineMessages = databaseQueryHandler.querryMessages();
-                showMessages(arrOfflineMessages);
+                mArrMessageDetails = databaseQueryHandler.querryMessages();
+                showMessages(mArrMessageDetails);
             }
         } 
     }

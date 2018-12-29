@@ -32,9 +32,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private Context mContext;
     private MemberDetailsItem memberDetailsItem;
     private String strMobileNUmber;
-    String strFirstName;
-    String strMiddleName;
-    String strLastName;
+    String strFirstName ="";
+    String strMiddleName="";
+    String strLastName="";
     String strAddress;
     TextView tvAddress;
     TextView tvEmail;
@@ -68,10 +68,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
         if (memberDetailsItem.getStrFirstName() != null) {
             strFirstName = memberDetailsItem.getStrFirstName();
         }
-        if (memberDetailsItem.getStrFirstName() != null) {
+        if (memberDetailsItem.getStrMiddleName() != null) {
             strMiddleName = memberDetailsItem.getStrMiddleName();
         }
-        if (memberDetailsItem.getStrFirstName() != null) {
+        if (memberDetailsItem.getStrLastName() != null) {
             strLastName = memberDetailsItem.getStrLastName();
         }
         final String strFullName = strFirstName + " " + strMiddleName + " " + strLastName;

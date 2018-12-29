@@ -52,7 +52,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
     private RecyclerView.Adapter mRvAdapter;
     public static View.OnClickListener onRvItemClickListener;
     public static ArrayList<ClassifiedDetailsItem> mArrClassifiedDetails;
-    public static ArrayList<ClassifiedDetailsItem> mArrClassifiedOfflineData;
+    //public static ArrayList<ClassifiedDetailsItem> mArrClassifiedOfflineData;
     DatabaseQueryHandler databaseQueryHandler;
     private String TAG = "ClassifiedHomeFragment";
     private int pageNumber = 0, arrSize =0;
@@ -91,13 +91,13 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                 pageNumber=0;
                 requestToGetClassifiedList(pageNumber, true);
             } else {
-                mArrClassifiedOfflineData = databaseQueryHandler.queryClassified();
-                setupClassifiedData(mArrClassifiedOfflineData);
+                mArrClassifiedDetails = databaseQueryHandler.queryClassified();
+                setupClassifiedData(mArrClassifiedDetails);
             }
         }
         if (!new AppCommonMethods(mContext).isNetworkAvailable()){
-            mArrClassifiedOfflineData = databaseQueryHandler.queryClassified();
-            setupClassifiedData(mArrClassifiedOfflineData);
+            mArrClassifiedDetails = databaseQueryHandler.queryClassified();
+            setupClassifiedData(mArrClassifiedDetails);
         }
     }
 
@@ -124,7 +124,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
             onRvItemClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ClassifiedDetailsItem classifiedDetailsItem = mArrClassifiedOfflineData.get(mRvClassifiedList.getChildAdapterPosition(v));
+                    ClassifiedDetailsItem classifiedDetailsItem = mArrClassifiedDetails.get(mRvClassifiedList.getChildAdapterPosition(v));
                     Intent intentDetails = new Intent(mContext, EventAndClassifiedDetailActivity.class);
                     intentDetails.putExtra("currentClassifiedDetail", classifiedDetailsItem);
                     startActivity(intentDetails);
@@ -233,9 +233,8 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                 pageNumber=0;
                 requestToGetClassifiedList(pageNumber, true);
             } else {
-                mArrClassifiedOfflineData = databaseQueryHandler.queryClassified();
-                Log.i(TAG, "fragmentBecameVisible: "+mArrClassifiedOfflineData);
-                setupClassifiedData(mArrClassifiedOfflineData);
+                mArrClassifiedDetails = databaseQueryHandler.queryClassified();
+                setupClassifiedData(mArrClassifiedDetails);
             }
         }
     }

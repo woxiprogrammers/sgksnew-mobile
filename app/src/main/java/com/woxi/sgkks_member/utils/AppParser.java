@@ -577,8 +577,8 @@ public class AppParser implements AppConstants {
                     if (jsonObjectMember_en.has("mobile") && jsonObjectMember_en.getString("mobile") != null) {
                         memberDetailsItem.setStrMobileNumber(jsonObjectMember_en.optString("mobile"));
                     }
-                    if (jsonObjectMember_en.has("member_image_url") && jsonObjectMember_en.getString("member_image_url") != null) {
-                        memberDetailsItem.setStrMemberImageUrl(jsonObjectMember_en.optString("member_image_url"));
+                    if (jsonObjectMember_en.has("profile_image") && jsonObjectMember_en.getString("profile_image") != null) {
+                        memberDetailsItem.setStrMemberImageUrl(jsonObjectMember_en.optString("profile_image"));
                     }
                     if (jsonObjectMember_en.has("latitude") && jsonObjectMember_en.getString("latitude") != null) {
                         memberDetailsItem.setStrLatitude(jsonObjectMember_en.optString("latitude"));
@@ -655,18 +655,21 @@ public class AppParser implements AppConstants {
                 for (int arrIndex=0; arrIndex < jsonArray.length(); arrIndex++){
                     cityIteam = new CityIteam();
                     JSONObject cityJsonObject = jsonArray.getJSONObject(arrIndex);
-                    if (cityJsonObject.has("id") && cityJsonObject.optString("id") != null && !cityJsonObject.optString("id").equalsIgnoreCase(null)){
+                    if (cityJsonObject.has("id") && cityJsonObject.optString("id") != null){
                         cityIteam.setIntCityId(Integer.valueOf(cityJsonObject.optString("id")));
                     }
-                    if(cityJsonObject.has("name") && cityJsonObject.optString("name") != null && !cityJsonObject.optString("name").equalsIgnoreCase(null)){
+                    if(cityJsonObject.has("name") && cityJsonObject.optString("name") != null){
                         cityIteam.setStrCityName(cityJsonObject.optString("name"));
                         Log.i(TAG, "parseLocalDataSyncResponse: "+(cityJsonObject.optString("name")));
                     }
-                    if(cityJsonObject.has("state_id") && cityJsonObject.optString("state_id") != null && !cityJsonObject.optString("state_id").equalsIgnoreCase(null)){
+                    if(cityJsonObject.has("state_id") && cityJsonObject.optString("state_id") != null){
                         cityIteam.setStrStateId(cityJsonObject.optString("state_id"));
                     }
-                    if(cityJsonObject.has("is_active") && cityJsonObject.optString("is_active") != null && !cityJsonObject.optString("is_active").equalsIgnoreCase(null)){
+                    if(cityJsonObject.has("is_active") && cityJsonObject.optString("is_active") != null){
                         cityIteam.setIs_active(cityJsonObject.optString("is_active"));
+                    }
+                    if (cityJsonObject.has("city_member_count") && cityJsonObject.optString("city_member_count") != null){
+                        cityIteam.setStrMemberCount(cityJsonObject.optString("city_member_count"));
                     }
                     arrCityItem.add(cityIteam);
                 }

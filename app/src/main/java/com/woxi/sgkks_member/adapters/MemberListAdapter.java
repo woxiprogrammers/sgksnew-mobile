@@ -58,10 +58,10 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
         if (mArrMemDetails.get(position).getStrFirstName() != null) {
             strFName = mArrMemDetails.get(position).getStrFirstName();
         }
-        if (mArrMemDetails.get(position).getStrFirstName() != null) {
+        if (mArrMemDetails.get(position).getStrMiddleName() != null) {
             strMName = mArrMemDetails.get(position).getStrMiddleName();
         }
-        if (mArrMemDetails.get(position).getStrFirstName() != null) {
+        if (mArrMemDetails.get(position).getStrLastName() != null) {
             strSurname = mArrMemDetails.get(position).getStrLastName();
         }
         final String strFullName = strFName + " " + strMName + " " + strSurname;

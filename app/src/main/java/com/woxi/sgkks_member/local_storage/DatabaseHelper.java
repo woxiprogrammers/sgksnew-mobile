@@ -91,7 +91,8 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + COLUMN_CITY_ID_PRIMARY + " VARCHAR(500) PRIMARY KEY, "
                 + COLUMN_CITY_NAME+ " VARCHAR(500), "
                 + COLUMN_STATE_ID+ " VARCHAR(500), "
-                + COLUMN_CITY_IS_ACTIVE+" BOOLEAN"
+                + COLUMN_CITY_IS_ACTIVE+" BOOLEAN, "
+                + COLUMN_CITY_MEMBER_COUNT + " VARCHAR(500)"
                 + ")";
         new AppCommonMethods().LOG(0,TAG,CREATE_CITY_TABLE_QUERY_EN);
 

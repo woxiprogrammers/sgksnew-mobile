@@ -69,7 +69,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
     private int pageNumber = 0;
     private ProgressBar pbMemberListing;
     private String strSearchFullName = "";
-    private ArrayList<MemberDetailsItem> arrTrial;
+    //private ArrayList<MemberDetailsItem> arrTrial;
     public MemberHomeNewFragment() {
         // Required empty public constructor
     }
@@ -116,8 +116,8 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
                         requestToGetMembersData(0,false, true);
                     } else {
-                        arrTrial = databaseQueryHandler.queryMembers("");
-                        fetchMembersOffline(arrTrial);
+                        mArrMemDetails = databaseQueryHandler.queryMembers("");
+                        fetchMembersOffline(mArrMemDetails);
                     }
                 }
             }
@@ -136,15 +136,15 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                     requestToGetMembersData(pageNumber,true,false);
                 }
             } else {
-                arrTrial = databaseQueryHandler.queryMembers("");
-                fetchMembersOffline(arrTrial);
+                mArrMemDetails = databaseQueryHandler.queryMembers("");
+                fetchMembersOffline(mArrMemDetails);
             }
         }
         if (new AppCommonMethods(mContext).isNetworkAvailable()){
             requestToGetMembersData(pageNumber,true,false);
         } else {
-            arrTrial = databaseQueryHandler.queryMembers("");
-            fetchMembersOffline(arrTrial);
+            mArrMemDetails = databaseQueryHandler.queryMembers("");
+            fetchMembersOffline(mArrMemDetails);
         }
     }
 
@@ -156,17 +156,10 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         onMemberClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(new AppCommonMethods(mContext).isNetworkAvailable()){
                     MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(v));
                     Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
                     intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
                     startActivity(intentDetails);
-                } else {
-                    MemberDetailsItem memberDetailsItem = arrTrial.get(mRvMemberList.getChildAdapterPosition(v));
-                    Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
-                    intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
-                    startActivity(intentDetails);
-                }
             }
         };
         //Following method call is for listening to scroll events
@@ -182,10 +175,9 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 requestToGetMembersData(pageNumber,true,false);
             }
         } else {
-            arrTrial = databaseQueryHandler.queryMembers(strSearchFullName);
-            Log.i(TAG, "fragmentBecameVisible: "+arrTrial);
+            mArrMemDetails = databaseQueryHandler.queryMembers(strSearchFullName);
             mRvMemberList.setHasFixedSize(true);
-            mRvAdapter = new MemberListAdapter(arrTrial);
+            mRvAdapter = new MemberListAdapter(mArrMemDetails);
             mRvMemberList.setAdapter(mRvAdapter);
         }
     }
