@@ -129,7 +129,7 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
                 + COLUMN_EVENT_VENUE + " VARCHAR(500), "
                 + COLUMN_EVENT_LANGUAGE_ID + " VARCHAR(500), "
                 + COLUMN_EVENTS_ID_FOREIGN_KEY + " VARCHAR(500), "
-                + " FOREIGN KEY("+COLUMN_EVENTS_ID_FOREIGN_KEY + ") REFERENCES "
+                + " FOREIGN KEY("+ COLUMN_EVENTS_ID_FOREIGN_KEY + ") REFERENCES "
                 + TABLE_EVENTS_EN + "(" + COLUMN_EVENT_ID_PRIMARY_KEY + ")"
                 + ")";
         new AppCommonMethods().LOG(0,TAG,CREATE_EVENTS_TABLE_QUERY_GJ);

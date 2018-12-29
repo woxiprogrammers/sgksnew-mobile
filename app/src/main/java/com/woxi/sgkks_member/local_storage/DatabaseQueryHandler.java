@@ -30,6 +30,7 @@ import java.lang.reflect.Array;
 import java.security.AccessControlContext;
 import java.util.ArrayList;
 
+import static com.woxi.sgkks_member.interfaces.AppConstants.CURRENT_PAGE;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LAST_COMMITTEE_ID;
@@ -510,7 +511,6 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             }
         }
 
-
         if (cityCursor !=null && !cityCursor.isClosed()){
             cityCursor.close();
         }
@@ -609,24 +609,6 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    public boolean insertOrUpdateEventImages(ArrayList<EventDataItem> arrayListEvents) {
-        String insertImages = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_EVENT_IMAGES + " VALUES (?,?,?)";
-        SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(insertImages);
-        mSqLiteDatabase.beginTransaction();
-        EventDataItem eventDataItem;
-        try {
-            for (int arrIndex = 0; arrIndex < arrayListEvents.size(); arrIndex++) {
-                eventDataItem = arrayListEvents.get(arrIndex);
-
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        } finally {
-            mSqLiteDatabase.endTransaction();
-        }
-    }
-
     public ArrayList<EventDataItem> queryEvents(String year){
         ArrayList<EventDataItem> arrayListEvents = new ArrayList<>();
         ArrayList<String> arrImage = new ArrayList<>();
@@ -634,14 +616,9 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 + " WHERE " + COLUMN_EVENT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
                 + " AND " + COLUMN_EVENT_IS_ACTIVE + "='true'"
                 + " AND " + COLUMN_EVENT_YEAR + "='" + year + "'";
-        String sqlEventGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_EVENTS_GJ;
-        Cursor cursorEnglish;
-        Cursor cursorGujarati;
+        Cursor cursorEnglish =mSqLiteDatabase.rawQuery(sqlEventEnglish,null);;
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")) {
-            cursorEnglish = mSqLiteDatabase.rawQuery(sqlEventEnglish,null);
-            Log.i(TAG, "queryEvents: "+sqlEventEnglish);
-            Log.i(TAG, "queryEvents: "+cursorEnglish.moveToFirst());
-            if (cursorEnglish.moveToFirst()){
+            if (cursorEnglish.moveToFirst()) {
                 do {
                     EventDataItem eventDataItem = new EventDataItem();
                     eventDataItem.setEventName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_NAME)));
@@ -653,41 +630,48 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     eventDataItem.setArrEventImageURLs(arrImage);
                     arrayListEvents.add(eventDataItem);
                 } while (cursorEnglish.moveToNext());
-            } else {
-
             }
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")) {
-            cursorEnglish = mSqLiteDatabase.rawQuery(sqlEventEnglish,null);
-            cursorGujarati = mSqLiteDatabase.rawQuery(sqlEventGujarati,null);
-            Log.i(TAG, "queryEvents: "+sqlEventGujarati);
-            if (cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()){
+
+            String fetchEventId = "SELECT " + COLUMN_EVENT_ID_PRIMARY_KEY + " FROM " + TABLE_EVENTS_EN
+                    + " WHERE " + COLUMN_EVENT_IS_ACTIVE + "='true'";
+            Cursor cursorEventId = mSqLiteDatabase.rawQuery(fetchEventId,null);
+            if (cursorEventId.moveToFirst()) {
                 do {
-                    EventDataItem eventDataItem = new EventDataItem();
-                    //Check if title is present in Gujarati
-                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_NAME)) != null) {
-                        eventDataItem.setEventName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_NAME)));
-                    } else {
-                        eventDataItem.setEventName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_NAME)));
+                    String sqlEventGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_EVENTS_GJ
+                            + " WHERE " + COLUMN_EVENTS_ID_FOREIGN_KEY + "='" + cursorEventId.getString(cursorEventId.getColumnIndexOrThrow(COLUMN_EVENT_ID_PRIMARY_KEY)) + "'";
+                    Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlEventGujarati,null);
+                    if (cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()){
+                        do {
+                            EventDataItem eventDataItem = new EventDataItem();
+                            //Check if title is present in Gujarati
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_NAME)) != null) {
+                                eventDataItem.setEventName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_NAME)));
+                            } else {
+                                eventDataItem.setEventName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_NAME)));
+                            }
+                            //CHECK IF DESCRIPTION IS PRESENT IN GUJARATI
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)) != null) {
+                                eventDataItem.setEventDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)));
+                            } else {
+                                eventDataItem.setEventDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)));
+                            }
+                            //check if venue is present in Gujarati
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)) != null){
+                                eventDataItem.setVenue(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)));
+                            } else {
+                                eventDataItem.setVenue(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)));
+                            }
+                            eventDataItem.setEventYear(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_DATE)));
+                            eventDataItem.setCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_CITY)));
+                            arrImage.add("");
+                            eventDataItem.setArrEventImageURLs(arrImage);
+                            arrayListEvents.add(eventDataItem);
+                        } while (cursorEnglish.moveToNext() && cursorGujarati.moveToNext());
                     }
-                    //CHECK IF DESCRIPTION IS PRESENT IN GUJARATI
-                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)) != null) {
-                        eventDataItem.setEventDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)));
-                    } else {
-                        eventDataItem.setEventDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_DESCRIPTION)));
-                    }
-                    //check if venue is present in Gujarati
-                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)) != null){
-                        eventDataItem.setVenue(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)));
-                    } else {
-                        eventDataItem.setVenue(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_VENUE)));
-                    }
-                    eventDataItem.setEventYear(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_DATE)));
-                    eventDataItem.setCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_EVENT_CITY)));
-                    arrImage.add("");
-                    eventDataItem.setArrEventImageURLs(arrImage);
-                    arrayListEvents.add(eventDataItem);
-                } while (cursorEnglish.moveToNext() && cursorGujarati.moveToNext());
+                } while (cursorEventId.moveToNext());
             }
+
         }
         return arrayListEvents;
     }
