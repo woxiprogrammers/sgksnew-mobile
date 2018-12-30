@@ -500,7 +500,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     if (cursorGujarati.moveToNext() && cityCursor.moveToFirst()) {
                         do {
                             CityIteam cityIteam = new CityIteam();
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)).equalsIgnoreCase("null")) {
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)).equalsIgnoreCase("null")) {
                                 cityIteam.setStrCityName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
                             } else {
                                 cityIteam.setStrCityName(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));

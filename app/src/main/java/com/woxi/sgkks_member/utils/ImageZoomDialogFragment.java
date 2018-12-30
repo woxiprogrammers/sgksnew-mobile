@@ -2,11 +2,13 @@ package com.woxi.sgkks_member.utils;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +16,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.home.EventAndClassifiedDetailActivity;
+import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
 import com.woxi.sgkks_member.models.AccountImages;
 
@@ -46,6 +50,7 @@ public class ImageZoomDialogFragment extends DialogFragment {
     private String strEventImageUrl;
     public static String strFinalImageUrl = "";
     private boolean isForClassifiedGallery;
+    private boolean isFromHomeBuzz;
     private Context mContext;
     private ArrayList<AccountImages> accountImages = new ArrayList<>();
     private List<View> mViewList;
@@ -64,6 +69,15 @@ public class ImageZoomDialogFragment extends DialogFragment {
     public static ImageZoomDialogFragment newInstance(String strImageUrl) {
         Bundle args = new Bundle();
         args.putString("eventImageUrl", strImageUrl);
+        ImageZoomDialogFragment fragment = new ImageZoomDialogFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static ImageZoomDialogFragment newInstance(String strImageUrl, int buzzId) {
+        Bundle args = new Bundle();
+        args.putString("buzzImageUrl", strImageUrl);
+        args.putInt("buzzId",buzzId);
         ImageZoomDialogFragment fragment = new ImageZoomDialogFragment();
         fragment.setArguments(args);
         return fragment;
@@ -119,7 +133,24 @@ public class ImageZoomDialogFragment extends DialogFragment {
                 isForClassifiedGallery = args.getBoolean("isForClassifiedGallery");
                 isForClassifiedGallery = true; //Make it true here
                 isFromEventList = false;
+            } else if (args.containsKey("buzzImageUrl")) {
+                strEventImageUrl = args.getString("buzzImageUrl");
+                isForClassifiedGallery = args.getBoolean("isForClassifiedGallery");
+                isForClassifiedGallery = false; //Make it true here
+                isFromEventList = false;
+                isFromHomeBuzz = true;
+                if(args.containsKey("buzzId")){
+                    int buzzId = args.getInt("buzzId");
+                    Log.i("@@@", "onCreateView IMAGE FRAGMENT BUZZ ID: "+buzzId);
+                    /*-------------------TEMP CODE-------------------*/
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt(String.valueOf(AppConstants.PREFS_BUZZ_ID),buzzId);
+                    editor.apply();
+                    /*-------------------TEMP CODE-------------------*/
+                }
             }
+
         }
 
         if (getDialog().getWindow() != null) {
@@ -152,6 +183,22 @@ public class ImageZoomDialogFragment extends DialogFragment {
             mTvAccountName.setVisibility(View.GONE);
             mIvAccountImage.setVisibility(View.VISIBLE);
             strFinalImageUrl = strEventImageUrl;
+            //Loading image from url.
+            Glide.with(mContext)
+                    .load(strFinalImageUrl)
+                    .crossFade()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .placeholder(R.drawable.ic_place_holder)
+                    .error(R.drawable.ic_broken_image)
+                    .into(mIvAccountImage);
+        } else if (isFromHomeBuzz) {
+            Toast.makeText(getActivity().getBaseContext(), "Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
+            floatingImageDownloadButton.setVisibility(View.GONE);
+            mTvAccountName.setVisibility(View.GONE);
+            mIvAccountImage.setVisibility(View.VISIBLE);
+            strFinalImageUrl = strEventImageUrl;
+            Log.i("@@@", "onCreateView: IMAGE URL: "+strEventImageUrl);
             //Loading image from url.
             Glide.with(mContext)
                     .load(strFinalImageUrl)

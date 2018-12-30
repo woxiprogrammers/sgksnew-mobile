@@ -33,6 +33,8 @@ public class AppURLs {
     public static final String API_MIN_VERSION = BASE_URL + "sgks-public/sgks-version";
     public static final String PLAYSTORE_APP_URL ="https://play.google.com/store/apps/details?id=com.woxi.sgkks_member";
     public static final String API_SUGGESTION_CATEGORIES = BASE_URL + "sgks-public/suggestion-category";
+    public static final String API_MASTER=BASE_URL + "sgks-public/master-list";
+
 
 
 

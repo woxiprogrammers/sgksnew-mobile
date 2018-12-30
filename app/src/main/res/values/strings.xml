@@ -83,4 +83,18 @@
     <string name="gujarati">Gujarati</string>
     <string name="update_app_dialog">You are using an older version of SGKKS app which is not being supported anymore. Please update.</string>
     <string name="otp_sent"> An OTP has been sent to mobile number, please check</string>
+    <string name="default_city_english">Pune</string>
+    <string name="default_city_gujarati">પુને</string>
+    <string name="buzz_en">Buzz</string>
+    <string name="dukhad_nidhan_en">Dukhad Nidhan</string>
+    <string name="birthday_en">Birthday</string>
+    <string name="achievement_en">Achievement</string>
+    <string name="general_en">General</string>
+    <string name="buzz_gj">બઝ</string>
+    <string name="dukhad_nidhan_gj">દુખદ નિધન</string>
+    <string name="birthday_gj">જન્મદિવસ</string>
+    <string name="achievement_gj">સિદ્ધિ</string>
+    <string name="general_gj">સામાન્ય</string>
+    <string name="dialog_title_gj">સંદેશ રંગ કોડ</string>
+    <string name="dialog_title_en">Message Color Code</string>
 </resources>
