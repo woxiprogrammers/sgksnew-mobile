@@ -118,13 +118,13 @@ public class DataSyncService extends Service {
     private void requestLocalDataSyncAPI() {
         JSONObject params = new JSONObject();
         try {
-            params.put("last_updated_date", AppCommonMethods.getStringPref(PREFS_LAST_UPDATED_DATE, getApplicationContext()));
+            params.put("current_timestamp", AppCommonMethods.getStringPref(PREFS_LAST_UPDATED_DATE, getApplicationContext()));
             Log.i("@@", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String url = "http://www.mocky.io/v2/5c27661630000011000bf70b";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,/* AppURLs.API_SKS_OFFLINE*/url, /*params*/null,
+       // String url = "http://www.mocky.io/v2/5c27661630000011000bf70b";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AppURLs.API_SKS_OFFLINE, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

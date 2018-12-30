@@ -372,6 +372,9 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                             arrMemDetails.add(memberDetailsItem);
                         } while (cursorGujarati.moveToNext() && cursorMember.moveToNext());
                     }
+                    if (cursorGujarati != null && !cursorGujarati.isClosed()) {
+                        cursorGujarati.close();
+                    }
                 } while (cursorMemberId.moveToNext());
             }
         }
@@ -484,6 +487,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         Log.i(TAG, "queryCities: "+(cityCursor.moveToFirst() && cursorGujarati.moveToFirst()));
                         do {
                             CityIteam cityIteam = new CityIteam();
+                            cityIteam.setIntCityId(Integer.parseInt(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY_EN))));
                             cityIteam.setStrCityName(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
                             cityIteam.setStrCityNameEnglish(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
                             cityIteam.setStrMemberCount(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_MEMBER_COUNT)));
@@ -494,6 +498,12 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                             }
                             arrCityIteam.add(cityIteam);
                         } while ( cityCursor.moveToNext() && cursorGujarati.moveToNext());
+                    }
+                    if (cursorGujarati != null && !cursorGujarati.isClosed()) {
+                        cursorGujarati.close();
+                    }
+                    if (cityCursor != null && !cityCursor.isClosed()) {
+                        cityCursor.close();
                     }
                 } while (cursorCityId.moveToNext());
             }
@@ -518,10 +528,14 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                             } else {
                                 cityIteam.setStrCityName(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
                             }
+                            cityIteam.setIntCityId(Integer.parseInt(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY_EN))));
                             cityIteam.setStrCityNameEnglish(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
                             cityIteam.setStrMemberCount(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_MEMBER_COUNT)));
                             arrCityIteam.add(cityIteam);
                         } while (cursorGujarati.moveToNext() && cityCursor.moveToNext());
+                    }
+                    if (cursorGujarati != null && !cursorGujarati.isClosed()) {
+                        cursorGujarati.close();
                     }
                 } while (cursorCityId.moveToNext());
             }
@@ -628,7 +642,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 + " WHERE " + COLUMN_EVENT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
                 + " AND " + COLUMN_EVENT_IS_ACTIVE + "='true'"
                 + " AND " + COLUMN_EVENT_YEAR + "='" + year + "'";
-        Cursor cursorEnglish =mSqLiteDatabase.rawQuery(sqlEventEnglish,null);;
+        Cursor cursorEnglish = mSqLiteDatabase.rawQuery(sqlEventEnglish,null);
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")) {
             if (cursorEnglish.moveToFirst()) {
                 do {
@@ -684,7 +698,12 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     }
                 } while (cursorEventId.moveToNext());
             }
-
+            if (cursorEnglish !=null && !cursorEnglish.isClosed()){
+                cursorEnglish.close();
+            }
+            if (cursorEventId !=null && !cursorEventId.isClosed()){
+                cursorEventId.close();
+            }
         }
         return arrayListEvents;
     }
@@ -782,12 +801,12 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    public ArrayList<MessageDetailsItem> querryMessages(){
+    public ArrayList<MessageDetailsItem> querryMessages() {
         ArrayList<MessageDetailsItem> arrayListMessages = new ArrayList<>();
 
         String sqlQueryEnglish = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS
                 + " WHERE " + COLUMN_MESSAGES_IS_ACTIVE + "='true'"
-                + " AND " + COLUMN_MESSAGES_CITY_ID + "+'" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'";
+                + " AND " + COLUMN_MESSAGES_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'";
         String sqlQueryGujarati = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS_GJ;
         Cursor cursorMessages =mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);;
         Cursor cursorMessagesGujarati;
@@ -821,12 +840,12 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         do {
                             MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
                             messageDetailsItem.setId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY_GJ)));
-                            if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)) != null && cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)).equalsIgnoreCase("null")){
+                            if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)) != null && !cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)).equalsIgnoreCase("null")){
                                 messageDetailsItem.setMessageTitle(cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
                             } else {
                                 messageDetailsItem.setMessageTitle(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
                             }
-                            if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)) != null && cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)).equalsIgnoreCase("null")){
+                            if (cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)) != null && !cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)).equalsIgnoreCase("null")){
                                 messageDetailsItem.setMessageDescription(cursorMessagesGujarati.getString(cursorMessagesGujarati.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
                             } else {
                                 messageDetailsItem.setMessageDescription(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_DESCRIPTION)));
@@ -842,7 +861,16 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                             arrayListMessages.add(messageDetailsItem);
                         } while (cursorMessagesGujarati.moveToNext() && cursorMessages.moveToNext());
                     }
+                    if (cursorMessagesGujarati != null && !cursorMessagesGujarati.isClosed()) {
+                        cursorMessagesGujarati.close();
+                    }
                 } while (cursorMessageId.moveToNext());
+            }
+            if (cursorMessageId != null && !cursorMessageId.isClosed()) {
+                cursorMessageId.close();
+            }
+            if (cursorMessages != null && !cursorMessages.isClosed()) {
+                cursorMessages.close();
             }
         }
         return arrayListMessages;
@@ -962,6 +990,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     String sqlQueryGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_GJ
                             + " WHERE " + COLUMN_CLASSIFIED_ID_FOREIGN_KEY + "='" + cursorClassifiedId.getString(cursorClassifiedId.getColumnIndexOrThrow(COLUMN_CLASSIFIED_ID_PRIMARY_KEY)) +  "'";
                     Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
+                    Log.i(TAG, "queryClassified: "+(cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()));
                     if (cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()){
                         do {
                             ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
@@ -987,7 +1016,15 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     }
                 } while (cursorClassifiedId.moveToNext());
             }
-
+            if ( cursorClassifiedId != null && !cursorClassifiedId.isClosed()) {
+                cursorClassifiedId.close();
+            }
+            if (cursorEnglish != null && !cursorEnglish.isClosed()) {
+                cursorEnglish.close();
+            }
+        }
+        if (cursorEnglish != null && !cursorEnglish.isClosed()) {
+            cursorEnglish.close();
         }
         return arrayListClassified;
     }
@@ -1217,164 +1254,234 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     }
 
     public void insertOrUpdateCommitteeMembers() {
-        String fetchMemberEnglishDetails = "SELECT " + COLUMN_COMMITTEE_MEMBERS_EN + " FROM " + DatabaseHelper.TABLE_COMMITTEE_DETAILS;
-        String fetchMemberGujaratiDetails = "SELECT " + COLUMN_COMMITTEE_MEMBERS_GJ + " FROM " + DatabaseHelper.TABLE_COMMITTEE_DETAILS;
-        Cursor cursorEnglish = mSqLiteDatabase.rawQuery(fetchMemberEnglishDetails, null);
-        Cursor cursorGujarati = mSqLiteDatabase.rawQuery(fetchMemberGujaratiDetails,null);
-        if (cursorEnglish.moveToFirst()) {
-            String membersEnglish = cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBERS_EN));
-            try {
-                String insertMemebrsEnglish = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_COMMITTEE_MEMBERS_EN + " VALUES(?,?,?,?,?,?,?,?)";
-                SQLiteStatement sqLiteStatement= mSqLiteDatabase.compileStatement(insertMemebrsEnglish);
-                mSqLiteDatabase.beginTransaction();
-                JSONArray jsonMemberArray = new JSONArray(membersEnglish);
-                for (int arrIndexMem = 0; arrIndexMem < jsonMemberArray.length(); arrIndexMem++) {
-                    JSONObject jsonObject = jsonMemberArray.optJSONObject(arrIndexMem);
-                    if (jsonObject.has("id") && jsonObject.optString("id") != null) {
-                        sqLiteStatement.bindString(1, jsonObject.optString("id"));
+        String fetchCommitteeId = "SELECT " + COLUMN_COMMITTEE_ID_PRIMARY + " FROM " + TABLE_COMMITTEE_DETAILS;
+        Cursor cursorId = mSqLiteDatabase.rawQuery(fetchCommitteeId,null);
+
+        if (cursorId.moveToFirst()){
+            do {
+                String fetchMemberEnglishDetails = "SELECT " + COLUMN_COMMITTEE_MEMBERS_EN + " FROM " + DatabaseHelper.TABLE_COMMITTEE_DETAILS
+                        + " WHERE " + COLUMN_COMMITTEE_ID_PRIMARY + "='" + cursorId.getString(cursorId.getColumnIndexOrThrow(COLUMN_COMMITTEE_ID_PRIMARY)) + "'";
+                Cursor cursorEnglish = mSqLiteDatabase.rawQuery(fetchMemberEnglishDetails, null);
+                if (cursorEnglish.moveToFirst()) {
+                    String membersEnglish = cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBERS_EN));
+                    try {
+                        String insertMemebrsEnglish = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_COMMITTEE_MEMBERS_EN + " VALUES(?,?,?,?,?,?,?,?)";
+                        SQLiteStatement sqLiteStatement= mSqLiteDatabase.compileStatement(insertMemebrsEnglish);
+                        mSqLiteDatabase.beginTransaction();
+                        JSONArray jsonMemberArray = new JSONArray(membersEnglish);
+                        for (int arrIndexMem = 0; arrIndexMem < jsonMemberArray.length(); arrIndexMem++) {
+                            JSONObject jsonObject = jsonMemberArray.optJSONObject(arrIndexMem);
+                            if (jsonObject.has("id") && jsonObject.optString("id") != null) {
+                                sqLiteStatement.bindString(1, jsonObject.optString("id"));
+                            }
+                            if (jsonObject.has("fullname") && jsonObject.getString("fullname") != null) {
+                                sqLiteStatement.bindString(2,jsonObject.getString("fullname"));
+                            }
+                            if (jsonObject.has("designation") && jsonObject.getString("designation") != null) {
+                                sqLiteStatement.bindString(3,jsonObject.getString("designation"));
+                            }
+                            if (jsonObject.has("cont_number") && jsonObject.getString("cont_number") != null) {
+                                sqLiteStatement.bindString(4,jsonObject.getString("cont_number"));
+                            }
+                            if (jsonObject.has("email_id") && jsonObject.getString("email_id") != null) {
+                                sqLiteStatement.bindString(5,jsonObject.getString("email_id"));
+                            }
+                            if (jsonObject.has("area") && jsonObject.getString("area") != null) {
+                                sqLiteStatement.bindString(6,jsonObject.getString("area"));
+                            }
+                            if (jsonObject.has("is_active") && jsonObject.getString("is_active") != null) {
+                                sqLiteStatement.bindString(7,jsonObject.getString("is_active"));
+                            }
+                            if (jsonObject.has("committee_id") && jsonObject.getString("committee_id") != null) {
+                                sqLiteStatement.bindString(8, jsonObject.getString("committee_id"));
+                            }
+                            sqLiteStatement.execute();
+                        }
+                        mSqLiteDatabase.setTransactionSuccessful();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        mSqLiteDatabase.endTransaction();
                     }
-                    if (jsonObject.has("fullname") && jsonObject.getString("fullname") != null) {
-                        sqLiteStatement.bindString(2,jsonObject.getString("fullname"));
-                    }
-                    if (jsonObject.has("designation") && jsonObject.getString("designation") != null) {
-                        sqLiteStatement.bindString(3,jsonObject.getString("designation"));
-                    }
-                    if (jsonObject.has("cont_number") && jsonObject.getString("cont_number") != null) {
-                        sqLiteStatement.bindString(4,jsonObject.getString("cont_number"));
-                    }
-                    if (jsonObject.has("email_id") && jsonObject.getString("email_id") != null) {
-                        sqLiteStatement.bindString(5,jsonObject.getString("email_id"));
-                    }
-                    if (jsonObject.has("area") && jsonObject.getString("area") != null) {
-                        sqLiteStatement.bindString(6,jsonObject.getString("area"));
-                    }
-                    if (jsonObject.has("is_active") && jsonObject.getString("is_active") != null) {
-                        sqLiteStatement.bindString(7,jsonObject.getString("is_active"));
-                    }
-                    if (jsonObject.has("committee_id") && jsonObject.getString("committee_id") != null) {
-                        sqLiteStatement.bindString(8, jsonObject.getString("committee_id"));
-                    }
-                    sqLiteStatement.execute();
                 }
-                mSqLiteDatabase.setTransactionSuccessful();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                mSqLiteDatabase.endTransaction();
-            }
-        }
-        if (cursorGujarati.moveToFirst()) {
-            String membersGuajrati = cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBERS_GJ));
-            try {
-                String insertMemebersGujarati = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_COMMITTEE_MEMBERS_GJ + " VALUES(?,?,?)";
-                SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(insertMemebersGujarati);
-                mSqLiteDatabase.beginTransaction();
-                JSONArray jsonMemberArray = new JSONArray(membersGuajrati);
-                for (int arrIndexMem = 0; arrIndexMem < jsonMemberArray.length(); arrIndexMem++) {
-                    JSONObject jsonObject = jsonMemberArray.optJSONObject(arrIndexMem);
-                    if (jsonObject.has("id") && jsonObject.optString("id") != null) {
-                        sqLiteStatement.bindString(1, jsonObject.optString("id"));
-                    }
-                    if (jsonObject.has("fullname") && jsonObject.getString("fullname") != null) {
-                        sqLiteStatement.bindString(2, jsonObject.getString("fullname"));
-                    }
-                    if (jsonObject.has("member_id") && jsonObject.getString("member_id") != null) {
-                        sqLiteStatement.bindString(3, jsonObject.getString("member_id"));
-                    }
-                    sqLiteStatement.execute();
+                if (cursorEnglish != null && !cursorEnglish.isClosed()) {
+                    cursorEnglish.close();
                 }
-                mSqLiteDatabase.setTransactionSuccessful();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                mSqLiteDatabase.endTransaction();
-            }
+            } while (cursorId.moveToNext());
         }
 
+
+        if (cursorId.moveToFirst()) {
+            do {
+                String fetchMemberGujaratiDetails = "SELECT " + COLUMN_COMMITTEE_MEMBERS_GJ + " FROM " + DatabaseHelper.TABLE_COMMITTEE_DETAILS
+                        + " WHERE " + COLUMN_COMMITTEE_ID_PRIMARY + "='" + cursorId.getString(cursorId.getColumnIndexOrThrow(COLUMN_COMMITTEE_ID_PRIMARY)) + "'";
+                Cursor cursorGujarati = mSqLiteDatabase.rawQuery(fetchMemberGujaratiDetails,null);
+
+                if (cursorGujarati.moveToFirst()) {
+                    String membersGuajrati = cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBERS_GJ));
+                    try {
+                        String insertMemebersGujarati = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_COMMITTEE_MEMBERS_GJ + " VALUES(?,?,?)";
+                        SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(insertMemebersGujarati);
+                        mSqLiteDatabase.beginTransaction();
+                        JSONArray jsonMemberArray = new JSONArray(membersGuajrati);
+                        for (int arrIndexMem = 0; arrIndexMem < jsonMemberArray.length(); arrIndexMem++) {
+                            JSONObject jsonObject = jsonMemberArray.optJSONObject(arrIndexMem);
+                            if (jsonObject.has("id") && jsonObject.optString("id") != null) {
+                                sqLiteStatement.bindString(1, jsonObject.optString("id"));
+                            }
+                            if (jsonObject.has("fullname") && jsonObject.getString("fullname") != null) {
+                                sqLiteStatement.bindString(2, jsonObject.getString("fullname"));
+                            }
+                            if (jsonObject.has("member_id") && jsonObject.getString("member_id") != null) {
+                                sqLiteStatement.bindString(3, jsonObject.getString("member_id"));
+                            }
+                            sqLiteStatement.execute();
+                        }
+                        mSqLiteDatabase.setTransactionSuccessful();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        mSqLiteDatabase.endTransaction();
+                    }
+                }
+
+            } while (cursorId.moveToNext());
+        }
+        if (cursorId != null && !cursorId.isClosed()) {
+            cursorId.close();
+        }
     }
 
     public ArrayList<CommitteeDetailsItem> queryCommittees() {
         ArrayList<CommitteeDetailsItem> arrayList = new ArrayList<>();
         ArrayList<CommMemberDetailsItem> arrMemberEnglish = new ArrayList<>();
         ArrayList<CommMemberDetailsItem> arrMemberGujarati = new ArrayList<>();
-        String strMemberEnglish = "";
-        String sqlEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_DETAILS
-                + " WHERE " + COLUMN_COMMITTEE_IS_ACTIVE + "='true'"
-                + " AND " + COLUMN_COMMITTEE_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'";
-        new AppCommonMethods(mContext).LOG(0,TAG,sqlEnglish);
 
-        String sqlMembersEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_MEMBERS_EN
-                + " WHERE " + COLUMN_COMMITTEE_MEMBER_IS_ACTIVE + "='true'";
+        //FETCH ACTIVE COMMITTEES ID
+        String fetchCommitteeId = "SELECT " + COLUMN_COMMITTEE_ID_PRIMARY + " FROM " + TABLE_COMMITTEE_DETAILS
+                + " WHERE " + COLUMN_COMMITTEE_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
+                + " AND " + COLUMN_COMMITTEE_IS_ACTIVE + "='true'";
+        Cursor cursorId = mSqLiteDatabase.rawQuery(fetchCommitteeId,null);
 
-
-        //FETCH MEMBER WITH NAMES IN ENGLISH
-        Cursor cursorEnglish = mSqLiteDatabase.rawQuery(sqlEnglish,null);
-        Cursor cursorMemberEnglish = mSqLiteDatabase.rawQuery(sqlMembersEnglish,null);
-        if (cursorMemberEnglish.moveToFirst()) {
-            do {
-                CommMemberDetailsItem commMemberDetailItem = new CommMemberDetailsItem();
-                commMemberDetailItem.setCommitteeMemName(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)));
-                commMemberDetailItem.setCommitteeMemDesignation(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_DESIGNATION)));
-                commMemberDetailItem.setCommitteeMemAddress(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_AREA)));
-                commMemberDetailItem.setCommitteeMemContact(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NUMBER)));
-                commMemberDetailItem.setCommitteeMemEmail(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_EMAIL)));
-                arrMemberEnglish.add(commMemberDetailItem);
-            } while (cursorMemberEnglish.moveToNext());
-        }
-
-        //FETCH MEMBERS WITH NAMES IN GUJARATI
-        String sqlMemberGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_MEMBERS_GJ;
-        String sqlGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_DETAILS_GJ;
-        new AppCommonMethods(mContext).LOG(0,TAG,sqlGujarati);
-        Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlGujarati,null);
-        Cursor cursorMemberGujarati = mSqLiteDatabase.rawQuery(sqlMemberGujarati,null);
-        if (cursorMemberGujarati.moveToFirst() && cursorMemberEnglish.moveToFirst()) {
-            do {
-                CommMemberDetailsItem commMemberDetailItem = new CommMemberDetailsItem();
-                if (cursorMemberGujarati.getString(cursorMemberGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)) != null && cursorMemberGujarati.getString(cursorMemberGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)).equalsIgnoreCase("null"))   {
-                    commMemberDetailItem.setCommitteeMemName(cursorMemberGujarati.getString(cursorMemberGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)));
-                } else {
-                    commMemberDetailItem.setCommitteeMemName(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)));
-                }
-                commMemberDetailItem.setCommitteeMemDesignation(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_DESIGNATION)));
-                commMemberDetailItem.setCommitteeMemAddress(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_AREA)));
-                commMemberDetailItem.setCommitteeMemContact(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NUMBER)));
-                commMemberDetailItem.setCommitteeMemEmail(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_EMAIL)));
-                arrMemberGujarati.add(commMemberDetailItem);
-            } while (cursorMemberGujarati.moveToNext() && cursorMemberEnglish.moveToNext());
-        }
-
-        //SET ARRLIST WITH COMMITTEE DETAILS
+        //Check Language selected
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")) {
-            if (cursorEnglish.moveToFirst()) {
+            if (cursorId.moveToFirst()){
                 do {
-                    CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
-                    committeeDetailsItem.setCommitteeName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
-                    committeeDetailsItem.setCommitteeDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
-                    committeeDetailsItem.setCommitteeCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_CITY)));
-                    committeeDetailsItem.setMembersEnglish(arrMemberEnglish);
-                    arrayList.add(committeeDetailsItem);
-                } while (cursorEnglish.moveToNext());
+                    String sqlEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_DETAILS
+                            + " WHERE " + COLUMN_COMMITTEE_IS_ACTIVE + "='true'"
+                            + " AND " + COLUMN_COMMITTEE_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
+                            + " AND " + COLUMN_COMMITTEE_ID_PRIMARY + "='" + cursorId.getString(cursorId.getColumnIndexOrThrow(COLUMN_COMMITTEE_ID_PRIMARY)) + "'";
+                    Cursor cursorEnglish = mSqLiteDatabase.rawQuery(sqlEnglish,null);
+                    Log.i(TAG, "queryCommittees: sqlEnglish"+ sqlEnglish);
+
+                    String sqlMembersEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_MEMBERS_EN
+                            + " WHERE " + COLUMN_COMMITTEE_MEMBER_IS_ACTIVE + "='true'"
+                            + " AND " + COLUMN_COMMITTEE_MEMBER_ID_FOREIGN + "='" + cursorId.getString(cursorId.getColumnIndexOrThrow(COLUMN_COMMITTEE_ID_PRIMARY)) + "'";
+                    Log.i(TAG, "queryCommittees: sqlMembersEnglish--- "+sqlMembersEnglish);
+                    //FETCH MEMBER WITH NAMES IN ENGLISH
+                    Cursor cursorMemberEnglish = mSqLiteDatabase.rawQuery(sqlMembersEnglish,null);
+                    Log.i(TAG, "queryCommittees: cursorMemberEnglish-----"+ cursorMemberEnglish.getCount());
+                    if (cursorMemberEnglish.moveToFirst()) {
+                        do {
+                            CommMemberDetailsItem commMemberDetailItem = new CommMemberDetailsItem();
+                            commMemberDetailItem.setCommitteeMemName(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)));
+                            commMemberDetailItem.setCommitteeMemDesignation(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_DESIGNATION)));
+                            commMemberDetailItem.setCommitteeMemAddress(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_AREA)));
+                            commMemberDetailItem.setCommitteeMemContact(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NUMBER)));
+                            commMemberDetailItem.setCommitteeMemEmail(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_EMAIL)));
+                            arrMemberEnglish.add(commMemberDetailItem);
+                        } while (cursorMemberEnglish.moveToNext());
+                    }
+                    //Adding Member with details in ENglish to arrList
+                    if (cursorEnglish.moveToFirst()) {
+                        do {
+                            CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
+                            committeeDetailsItem.setCommitteeName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
+                            committeeDetailsItem.setCommitteeDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
+                            committeeDetailsItem.setCommitteeCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_CITY)));
+                            committeeDetailsItem.setMembersEnglish(arrMemberEnglish);
+                            arrMemberEnglish = new ArrayList<>();
+                            arrayList.add(committeeDetailsItem);
+                        } while (cursorEnglish.moveToNext());
+                    }
+                } while (cursorId.moveToNext());
             }
         }
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
-            if (cursorGujarati.moveToFirst() && cursorEnglish.moveToFirst()) {
+            if (cursorId.moveToFirst()) {
                 do {
-                    CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
-                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)).equalsIgnoreCase("null")) {
-                        committeeDetailsItem.setCommitteeName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
-                    } else {
-                        committeeDetailsItem.setCommitteeName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
+
+                    String sqlMembersEnglishId = "SELECT " + COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_EN +" FROM " + DatabaseHelper.TABLE_COMMITTEE_MEMBERS_EN
+                            + " WHERE " + COLUMN_COMMITTEE_MEMBER_IS_ACTIVE + "='true'"
+                            + " AND " + COLUMN_COMMITTEE_MEMBER_ID_FOREIGN + "='" + cursorId.getString(cursorId.getColumnIndexOrThrow(COLUMN_COMMITTEE_ID_PRIMARY)) + "'";
+                    //FETCH MEMBER WITH NAMES IN ENGLISH
+                    Cursor cursorMemberEnglishId = mSqLiteDatabase.rawQuery(sqlMembersEnglishId,null);
+
+                    if (cursorMemberEnglishId.moveToFirst()) {
+                        do {
+                            String sqlMembersEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_MEMBERS_EN
+                                    + " WHERE " + COLUMN_COMMITTEE_MEMBER_IS_ACTIVE + "='true'"
+                                    + " AND " + COLUMN_COMMITTEE_MEMBER_ID_FOREIGN + "='" + cursorId.getString(cursorId.getColumnIndexOrThrow(COLUMN_COMMITTEE_ID_PRIMARY)) + "'";
+                            //FETCH MEMBER WITH NAMES IN ENGLISH
+                            Cursor cursorMemberEnglish = mSqLiteDatabase.rawQuery(sqlMembersEnglish,null);
+                            //FETCH MEMBERS WITH NAMES IN GUJARATI
+                            String sqlMemberGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_MEMBERS_GJ
+                                    + " WHERE " + COLUMN_MEMBERS_COMMITTEE_ID_FOREIGN + "='" +cursorMemberEnglishId.getString(cursorMemberEnglishId.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_ID_PRIMARY_EN)) + "'";
+                            Cursor cursorMemberGujarati = mSqLiteDatabase.rawQuery(sqlMemberGujarati,null);
+                            if (cursorMemberGujarati.moveToFirst() && cursorMemberEnglish.moveToFirst()) {
+                                do {
+                                    CommMemberDetailsItem commMemberDetailItem = new CommMemberDetailsItem();
+                                    if (cursorMemberGujarati.getString(cursorMemberGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)) != null && !cursorMemberGujarati.getString(cursorMemberGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)).equalsIgnoreCase("null"))   {
+                                        commMemberDetailItem.setCommitteeMemName(cursorMemberGujarati.getString(cursorMemberGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)));
+                                    } else {
+                                        commMemberDetailItem.setCommitteeMemName(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NAME)));
+                                    }
+                                    commMemberDetailItem.setCommitteeMemDesignation(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_DESIGNATION)));
+                                    commMemberDetailItem.setCommitteeMemAddress(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_AREA)));
+                                    commMemberDetailItem.setCommitteeMemContact(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_NUMBER)));
+                                    commMemberDetailItem.setCommitteeMemEmail(cursorMemberEnglish.getString(cursorMemberEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_MEMBER_EMAIL)));
+                                    arrMemberGujarati.add(commMemberDetailItem);
+                                } while (cursorMemberGujarati.moveToNext() && cursorMemberEnglish.moveToNext());
+                            }
+                        } while (cursorMemberEnglishId.moveToNext());
                     }
-                    if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)).equalsIgnoreCase("null")) {
-                        committeeDetailsItem.setCommitteeDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
-                    } else {
-                        committeeDetailsItem.setCommitteeDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
+
+                    String sqlGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_DETAILS_GJ
+                            + " WHERE " + COLUMN_COMMITTEE_ID_FOREIGN + "='" + cursorId.getString(cursorId.getColumnIndexOrThrow(COLUMN_COMMITTEE_ID_PRIMARY)) + "'";
+                    new AppCommonMethods(mContext).LOG(0,TAG,sqlGujarati);
+                    Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlGujarati,null);
+
+
+                    String sqlEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_COMMITTEE_DETAILS
+                            + " WHERE " + COLUMN_COMMITTEE_IS_ACTIVE + "='true'"
+                            + " AND " + COLUMN_COMMITTEE_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
+                            + " AND " + COLUMN_COMMITTEE_ID_PRIMARY + "='" + cursorId.getString(cursorId.getColumnIndexOrThrow(COLUMN_COMMITTEE_ID_PRIMARY)) + "'";
+                    Cursor cursorEnglish = mSqLiteDatabase.rawQuery(sqlEnglish,null);
+                    new AppCommonMethods(mContext).LOG(0,TAG,sqlEnglish);
+
+
+
+
+                    if (cursorGujarati.moveToFirst() && cursorEnglish.moveToFirst()) {
+                        do {
+                            CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)).equalsIgnoreCase("null")) {
+                                committeeDetailsItem.setCommitteeName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
+                            } else {
+                                committeeDetailsItem.setCommitteeName(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_NAME)));
+                            }
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)).equalsIgnoreCase("null")) {
+                                committeeDetailsItem.setCommitteeDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
+                            } else {
+                                committeeDetailsItem.setCommitteeDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_DESCRIPTION)));
+                            }
+                            committeeDetailsItem.setCommitteeCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_CITY)));
+                            committeeDetailsItem.setMembersGujarati(arrMemberGujarati);
+                            arrMemberGujarati = new ArrayList<>();
+                            arrayList.add(committeeDetailsItem);
+                        } while (cursorGujarati.moveToNext() && cursorEnglish.moveToNext());
                     }
-                    committeeDetailsItem.setCommitteeCity(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_COMMITTEE_CITY)));
-                    committeeDetailsItem.setMembersGujarati(arrMemberGujarati);
-                    arrayList.add(committeeDetailsItem);
-                } while (cursorGujarati.moveToNext() && cursorEnglish.moveToNext());
+                } while (cursorId.moveToNext());
             }
         }
         return arrayList;
