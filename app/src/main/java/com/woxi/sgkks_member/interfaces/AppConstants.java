@@ -11,6 +11,8 @@ public interface AppConstants {
     int SYNC_NOTIFICATION_ID = 111;
     String PREFS_CURRENT_CITY = "currentCity";
     String PREFS_CITY_NAME = "cityName";
+    String PREFS_CITY_NAME_EN = "cityNameEN";
+    String PREFS_CITY_NAME_GJ = "cityNameGJ";
     String REGEX_MEMBER_SEARCH_ALLOWED = "^[A-Za-z 0-9-]*";
     String PREFS_SGKS_AREA_LIST = "sgksAreaList";
     String PREFS_SUGGESTION_CATEGORY = "suggestionCategory";
@@ -37,4 +39,7 @@ public interface AppConstants {
     int CITY_SELECT_CODE = 100;
     String PREFS_IS_CITY_CHANGED = "isCityChanged";
     String PREFS_IS_LANGUAGE_CHANGED = "isLanguageChanged";
+    int PREFS_BUZZ_ID = 0;
+    String PREFS_LAST_MESSAGE_DATE = null;
+    String PREFS_LAST_CLASSIFIED_DATE = null;
 }

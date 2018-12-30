@@ -3,7 +3,9 @@ package com.woxi.sgkks_member.home;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +36,9 @@ import com.woxi.sgkks_member.utils.AppURLs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -109,6 +113,12 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
     }
 
     private void requestToGetClassifiedList(final int page_id, final boolean isFirstTime){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String format = simpleDateFormat.format(new Date());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(AppConstants.PREFS_LAST_CLASSIFIED_DATE,format);
+        editor.apply();
         isApiInProgress = true;
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         if(isFirstTime){

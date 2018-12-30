@@ -11,9 +11,8 @@ import com.woxi.sgkks_member.models.CommitteeDetailsItem;
 import com.woxi.sgkks_member.models.EventDataItem;
 import com.woxi.sgkks_member.models.LocalDataSyncItem;
 import com.woxi.sgkks_member.models.MasterDataItem;
-import com.woxi.sgkks_member.models.MemberAddressItem;
+import com.woxi.sgkks_member.models.MasterItem;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
-import com.woxi.sgkks_member.models.MemberSearchDataItem;
 import com.woxi.sgkks_member.models.MessageAndClassifiedResponseItem;
 import com.woxi.sgkks_member.models.MessageDetailsItem;
 import com.woxi.sgkks_member.models.SGKSAreaItem;
@@ -271,8 +270,8 @@ public class AppParser implements AppConstants {
                         int strMessage = jsonObjectResponse.optInt("sgks_messages");
                         masterDataItem.setStrMessageIds(strMessage);
                     }
-                    if (jsonObjectResponse.has("sgks_buzz") && jsonObjectResponse.optJSONObject("sgks_buzz") != null) {
-                        JSONObject jsonBuzzObject = jsonObjectResponse.optJSONObject("sgks_buzz");
+                    if (jsonObjectResponse.has("buzz") && jsonObjectResponse.optJSONObject("buzz") != null) {
+                        JSONObject jsonBuzzObject = jsonObjectResponse.optJSONObject("buzz");
                         /*String strBuzzId = jsonBuzzObject.optString("id");
                         masterDataItem.setStrSgksBuzz_Id(strBuzzId);*/
                         //
@@ -598,6 +597,14 @@ public class AppParser implements AppConstants {
                     String strCityName = jsonCityObject.optString("city_name");
                     cityIteam.setStrCityName(strCityName);
                 }
+                if (jsonCityObject.has("city_name_gj") && jsonCityObject.optString("city_name_gj") != null) {
+                    String strCityName = jsonCityObject.optString("city_name_gj");
+                    cityIteam.setStrCityNameGujarati(strCityName);
+                }
+                if (jsonCityObject.has("city_name_en") && jsonCityObject.optString("city_name_en") != null) {
+                    String strCityName = jsonCityObject.optString("city_name_en");
+                    cityIteam.setStrCityNameEnglish(strCityName);
+                }
                 if (jsonCityObject.has("city_id") && jsonCityObject.optString("city_id") != null) {
                     int intCity_Id = jsonCityObject.optInt("city_id");
                     cityIteam.setIntCityId(intCity_Id);
@@ -657,6 +664,41 @@ public class AppParser implements AppConstants {
                 mArrSuggestionCategory.add(suggestionCategoriesItem);
             }
             return mArrSuggestionCategory;
+        }
+        return false;
+    }
+
+    public static Object parseMasterResponse (String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
+            ArrayList<MasterItem> arrMasterItems = new ArrayList<>();
+            MasterItem masterItem = new MasterItem();
+            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
+            for (int index = 0; index < jsonDataArray.length(); index++) {
+                JSONObject jsonMasterObject = jsonDataArray.optJSONObject(index);
+                if (jsonMasterObject.has("classified_count") && jsonMasterObject.optString("classified_count") != null) {
+                    int intClassifiedCount = jsonMasterObject.optInt("classified_count");
+                    masterItem.setIntClassifiedCount(intClassifiedCount);
+                }
+                if (jsonMasterObject.has("message_count") && jsonMasterObject.optString("message_count") != null) {
+                    int intMessageCount = jsonMasterObject.optInt("message_count");
+                    masterItem.setIntMessagesCount(intMessageCount);
+                }
+                {
+                    JSONObject jsonBuzzObject = jsonMasterObject.optJSONObject("buzz");
+                    if(jsonBuzzObject.has("msg_img") && jsonBuzzObject.optString("msg_img") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
+                        String strBuzzUrl = jsonBuzzObject.optString("msg_img");
+                        masterItem.setStrBuzzImageUrl(strBuzzUrl);
+                        Log.i("@@1",strBuzzUrl);
+                    }
+                    if (jsonBuzzObject.has("id")&& jsonBuzzObject.optString("id") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
+                        int intId = jsonBuzzObject.optInt("id");
+                        masterItem.setIntBuzzId(intId);
+                    }
+
+                }
+            }
+            return masterItem;
         }
         return false;
     }

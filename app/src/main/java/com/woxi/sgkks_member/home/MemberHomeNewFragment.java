@@ -94,34 +94,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mPbLazyLoad.setVisibility(View.GONE);
         //databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
         pbMemberListing = mParentView.findViewById(R.id.pbMemberListing);
-        mEtMemberSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                if (charSequence.length() > 3) {
-                    strSearchFullName = charSequence.toString().toLowerCase();
-                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                        requestToGetMembersData(0,false,true);
-                    } else {
-                        new AppCommonMethods(mContext).showAlert("You are offline");
-                    }
-                } else if (charSequence.length()==0){
-                    strSearchFullName = "";
-                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                        requestToGetMembersData(0,false, true);
-                    } else {
-                        new AppCommonMethods(mContext).showAlert("You are offline");
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+        memberSearch();
         setUpRecyclerView();
         boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
         boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
@@ -134,6 +107,8 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             } else {
                 new AppCommonMethods(mContext).showAlert("You are Offline");
             }
+        } else {
+            requestToGetMembersData(pageNumber,true,false);
         }
     }
 
@@ -269,5 +244,36 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 new AppCommonMethods(mContext).showAlert("You are offline");
             }
         }
+    }
+
+    private void memberSearch(){
+        mEtMemberSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                if (charSequence.length() > 3) {
+                    strSearchFullName = charSequence.toString().toLowerCase();
+                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                        requestToGetMembersData(0,false,true);
+                    } else {
+                        new AppCommonMethods(mContext).showAlert("You are offline");
+                    }
+                } else if (charSequence.length()==0){
+                    strSearchFullName = "";
+                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                        requestToGetMembersData(0,false, true);
+                    } else {
+                        new AppCommonMethods(mContext).showAlert("You are offline");
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 }
