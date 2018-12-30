@@ -92,7 +92,7 @@ public class AccountsActivity extends AppCompatActivity {
         //Set-up Year spinner
         mSpinAccountYear =  findViewById(R.id.spinAccountYear);
         ((TextView) findViewById(R.id.tvYearTitle)).setText("Select Account Year");
-        for (int i = 2015; i <= 2030; i++){
+        for (int i = 2015; i <= 2025; i++){
             arrayYearIntegerList.add(i-2015,i);
         }
         ArrayAdapter<Integer> integerArrayAdapter = new ArrayAdapter<Integer>(AccountsActivity.this, android.R.layout.simple_spinner_item, arrayYearIntegerList);
@@ -145,7 +145,7 @@ public class AccountsActivity extends AppCompatActivity {
         pDialog.show();
         JSONObject params = new JSONObject();
         try {
-            params.put("sgks_city",1);
+            params.put("sgks_city",AppSettings.getStringPref(PREFS_CURRENT_CITY,mContext));
             params.put("language_id", AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
             params.put("year",year);
         } catch (JSONException e) {

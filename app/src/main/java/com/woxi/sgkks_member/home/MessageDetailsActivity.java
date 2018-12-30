@@ -50,8 +50,8 @@ public class MessageDetailsActivity extends AppCompatActivity {
         if (mMessageDetailsItem.getMessageTitle() != null) {
             mTvNewsTitle.setText(mMessageDetailsItem.getMessageTitle().toUpperCase());
         }
-        if (mMessageDetailsItem.getMessageCreateDate() != null) {
-            mTvNewsDate.setText("Created On: " + mMessageDetailsItem.getMessageCreateDate());
+        if (mMessageDetailsItem.getMessageDate() != null) {
+            mTvNewsDate.setText("Date : " + mMessageDetailsItem.getMessageDate());
         }
         if (mMessageDetailsItem.getMessageDescription() != null) {
             mTvNewsDescription.setText(mMessageDetailsItem.getMessageDescription());

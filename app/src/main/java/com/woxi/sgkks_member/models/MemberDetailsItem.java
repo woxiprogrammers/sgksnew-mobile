@@ -14,6 +14,7 @@ public class MemberDetailsItem implements Serializable {
     private String strMiddleName;
     private String strLastName;
     private String strCity;
+    private String strCityId;
     private String strEmail;
     private String strMemberId;
     private String strGender;
@@ -23,9 +24,36 @@ public class MemberDetailsItem implements Serializable {
     private String strLongitude;
     private String strMemberImageUrl;
     private String strBloodGroup;
+    private String strBloodGroupId;
     private String strAddress;
     private String strCreatedAt;
     private String strUpdatedAt;
+    private ArrayList<MemberDetailsItem> arrMemberList;
+
+    public ArrayList<MemberDetailsItem> getArrMemberList() {
+        return arrMemberList;
+    }
+
+    public void setArrMemberList(ArrayList<MemberDetailsItem> arrMemberList) {
+        this.arrMemberList = arrMemberList;
+    }
+
+    public String getStrBloodGroupId() {
+        return strBloodGroupId;
+    }
+
+    public void setStrBloodGroupId(String strBloodGroupId) {
+        this.strBloodGroupId = strBloodGroupId;
+    }
+
+
+    public String getStrCityId() {
+        return strCityId;
+    }
+
+    public void setStrCityId(String strCityId) {
+        this.strCityId = strCityId;
+    }
 
     public String getStrCreatedAt() {
         return strCreatedAt;

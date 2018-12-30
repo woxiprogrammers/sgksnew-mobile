@@ -8,14 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -28,12 +27,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.woxi.sgkks_member.AppController;
@@ -43,7 +38,6 @@ import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
 import com.woxi.sgkks_member.local_storage.DataSyncService;
 import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
-import com.woxi.sgkks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgkks_member.miscellaneous.MiscellaneousViewActivity;
 import com.woxi.sgkks_member.miscellaneous.SettingsActivity;
 import com.woxi.sgkks_member.miscellaneous.SuggestionActivity;
@@ -53,9 +47,12 @@ import com.woxi.sgkks_member.utils.LocaleHelper;
 
 import java.util.ArrayList;
 
+import static com.woxi.sgkks_member.interfaces.AppConstants.CURRENT_PAGE;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_ENGLISH;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_GUJURATI;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_IS_LANGUAGE_CHANGED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context mContext;
@@ -63,7 +60,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private ViewPager mViewPager;
     private HomeViewPagerAdapter viewPagerAdapter;
     private AlertDialog alertDialog;
-    private TextView mTvMemberCount;
+    private TextView mTvMemberCount, tvLableCityName;
     private LinearLayout mLL_MemberCount;
     private String TAG = "HomeActivity";
     private ArrayList<String> arrLocalMessageIds, arrMessageIds;
@@ -73,11 +70,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private TextView badgeClassifiedTab;
     private ArrayList<String> arrLocalClassifiedIds, arrClassifiedIds;
     private int intClassifiedTabIndex = 4;
-    private boolean isClassifiedCountApplied = false;
+    private boolean isClassifiedCountApplied = false, isFromSplash=false;
     private Toolbar toolbar;
     private FloatingActionButton mFabAddNewMember;
-    private Spinner spLanguage;
-    private ImageView ivLanguage;
+    private ImageView ivLanguage, ivCity;
 
 
     @Override
@@ -92,6 +88,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (extras != null) {
             if (extras.containsKey("isFromLanguage")) {
                 isFromLanguage = extras.getBoolean("isFromLanguage");
+            }
+            if(extras.containsKey("isFromSplash")){
+                isFromSplash = extras.getBoolean("isFromSplash");
             }
         }
 //        mTvMemberCount = toolbar.findViewById(R.id.tvMemberCount);
@@ -115,16 +114,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_add_me_sgks:
-//                Intent intentAdd = new Intent(mContext, Verification.class);
-//                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
-//                startActivity(intentAdd);
+                /*Intent intentAdd = new Intent(mContext, VerificationActivity.class);
+                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+                startActivity(intentAdd);*/
                 new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_suggestion:
-                /*Intent intentSug = new Intent(mContext, SuggestionActivity.class);
+                Intent intentSug = new Intent(mContext, SuggestionActivity.class);
                 intentSug.putExtra("activityType", getString(R.string.suggestion_box));
-                startActivity(intentSug);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentSug);
+//                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_accounts:
                 Intent intentAccount = new Intent(mContext, AccountsActivity.class);
@@ -176,30 +175,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Destroyed DataSyncService");
     }
 
-    private ArrayAdapter<String> getStringArrayAdapter(ArrayList<String> arrayList) {
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayList) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0) {
-                    // Set the hint text color gray
-                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextHint, null));
-                } else {
-                    tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorTextMain, null));
-                }
-                return view;
-            }
-        };
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return arrayAdapter;
-    }
-
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -210,10 +185,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initializeViews() {
+        tvLableCityName = findViewById(R.id.tvLableCityName);
+        tvLableCityName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        tvLableCityName.setText(AppCommonMethods.getStringPref(PREFS_CITY_NAME,mContext).toUpperCase());
         mViewPager =  findViewById(R.id.homeViewPager);
         TabLayout mTabLayout =  findViewById(R.id.tavLayout);
         mFabAddNewMember = findViewById(R.id.fabAddNewMember);
-        spLanguage = findViewById(R.id.spLang);
         viewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), mContext);
         mViewPager.setAdapter(viewPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -224,12 +201,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 showLangChangeDialog();
             }
         });
-        mViewPager.setCurrentItem(2);
-        mFabAddNewMember.setVisibility(View.GONE);
+        ivCity = findViewById(R.id.ivCitySelect);
+        ivCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppCommonMethods.putStringPref(CURRENT_PAGE,String.valueOf(mViewPager.getCurrentItem()),mContext);
+                Intent intentSelectCity = new Intent(mContext, SelectCityActivity.class);
+                startActivity(intentSelectCity);
+            }
+        });
+        if(isFromSplash){
+            mViewPager.setCurrentItem(2);
+        } else {
+            if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("") || AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("2")){
+                mViewPager.setCurrentItem(2);
+                mFabAddNewMember.setVisibility(View.GONE);
+            } else {
+                mFabAddNewMember.setVisibility(View.GONE);
+                mViewPager.setCurrentItem(Integer.valueOf(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext)));
+            }
+        }
         mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentAdd = new Intent(mContext, Verification.class);
+                Intent intentAdd = new Intent(mContext, VerificationActivity.class);
                 intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
                 startActivity(intentAdd);
             }
@@ -266,19 +261,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
                     AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
-                if (position == 2 || position == 1 || position == 0 || position == 3){
+                if (position == 2){
                     mFabAddNewMember.setVisibility(View.GONE);
                 } else {
                     mFabAddNewMember.setVisibility(View.GONE);
-                    mViewPager.setCurrentItem(2);
-                    //Other tabs not in use for 1st app release
-                    //remove when other tabs are ready
-
-
-                    if(position == 4){
-                        new AppCommonMethods(mContext).showAlert("Classifieds Coming Soon.....");
-                    }
-
                 }
             }
 
@@ -343,6 +329,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void showLangChangeDialog(){
+        AppCommonMethods.putStringPref(CURRENT_PAGE,String.valueOf(mViewPager.getCurrentItem()),mContext);
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mContext);
         builder.setCancelable(true);
         View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_language, null);
@@ -367,7 +354,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     tvValueEnglish.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlack));
                     tvValueGujurati.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlueDark));
                     mContext = LocaleHelper.onAttach(mContext, LANGUAGE_GUJURATI);
+                    AppCommonMethods.putBooleanPref(PREFS_IS_LANGUAGE_CHANGED,true,mContext);
                     restartActivity(mContext);
+
                 }
                 dialog.dismiss();
             }
@@ -380,17 +369,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     tvValueEnglish.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlueDark));
                     tvValueGujurati.setTextColor(ContextCompat.getColor(mContext, R.color.colorBlack));
                     mContext = LocaleHelper.onAttach(mContext, LANGUAGE_ENGLISH);
+                    AppCommonMethods.putBooleanPref(PREFS_IS_LANGUAGE_CHANGED,true,mContext);
                     restartActivity(mContext);
                 }
                 dialog.dismiss();
             }
         });
+
     }
 
     private void restartActivity(Context context) {
         try {
-//            String lang = AGAppSettings.getStringPref(PREFS_LANGUAGE_APPLIED, mContext);
-//            Context context = LocaleHelper.setLocale(this, lang);
             Intent intentHome = getIntent();
             Bundle bundleExtras = new Bundle();
             bundleExtras.putBoolean("isFromLanguage", true);
@@ -403,6 +392,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
     }
+
+
 
     @Override
     protected void attachBaseContext(Context newBase) {

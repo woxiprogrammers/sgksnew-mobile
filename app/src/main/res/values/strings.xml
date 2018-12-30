@@ -50,6 +50,7 @@
     <string name="alert_sync_failed">Data will not sync if you are not connected to internet.\nYou can still use application offline.</string>
     <string name="toast_allowed_characters_member_search">Allowed characters are A-Z a-z 0-9 - and space only</string>
     <string name="search_name_surname_member_id">Search Members</string>
+    <string name="search_city">Search City</string>
     <string name="member_image">committee member image</string>
     <string name="accounts">Accounts</string>
     <string name="select_year">Select Year</string>
@@ -72,13 +73,14 @@
     <string name="select_bloodGroup">Select Blood Group</string>
     <string name="bloodGroup">Blood Group</string>
     <string name="enter_address">Enter Address</string>
-    <string name="select_city">Select City</string>
+    <string name="select_city">Select Your City</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="enter_otp">Enter OTP</string>
-    <string name="verification">Verification</string>
+    <string name="verification">SGKKS Moblie Number Verification</string>
     <string name="change_language" translatable="true">Change Language</string>
     <string name="english">English</string>
     <string name="gujarati">Gujarati</string>
     <string name="update_app_dialog">You are using an older version of SGKKS app which is not being supported anymore. Please update.</string>
+    <string name="otp_sent"> An OTP has been sent to mobile number, please check</string>
 </resources>

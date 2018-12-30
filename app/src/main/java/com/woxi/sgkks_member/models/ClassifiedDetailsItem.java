@@ -12,6 +12,15 @@ import java.util.ArrayList;
 public class ClassifiedDetailsItem implements Serializable {
     private String classifiedID, classifiedTitle, classifiedDescription, classifiedPackage, classifiedType, classifiedCreateDate, classifiedCity;
     private ArrayList<String> arrClassifiedImages;
+    private ArrayList<ClassifiedDetailsItem> arrClassifiedList;
+
+    public ArrayList<ClassifiedDetailsItem> getArrClassifiedList() {
+        return arrClassifiedList;
+    }
+
+    public void setArrClassifiedList(ArrayList<ClassifiedDetailsItem> arrClassifiedList) {
+        this.arrClassifiedList = arrClassifiedList;
+    }
 
     public String getClassifiedID() {
         return classifiedID;

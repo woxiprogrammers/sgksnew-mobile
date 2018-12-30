@@ -122,7 +122,7 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
         String currentCity = AppCommonMethods.getStringPref(PREFS_CURRENT_CITY, mContext);
         JSONObject params = new JSONObject();
         try {
-            params.put("sgks_city",1);
+            params.put("sgks_city",currentCity);
             params.put("language_id", AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
         } catch (JSONException e) {
             e.printStackTrace();

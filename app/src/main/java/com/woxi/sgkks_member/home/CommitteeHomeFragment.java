@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -74,25 +75,25 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
     private void initializeViews() {
         mContext = getActivity();
         mRvCommitteeHome =  mParentView.findViewById(R.id.rvCommitteeList);
-
-        //Call API only if this page is home/landing page.
-        /*if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-            requestCommitteeListAPI();
-        } else {
-            new AppCommonMethods(mContext).showAlert(mContext
-                    .getString(R.string.noInternet));
-        }*/
+        boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
+        boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
+        if(isLanguageChanged || isCityChanged){
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                getAllCommitteesOnline();
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
+        }
     }
 
     private void requestCommitteeListAPI() {
-
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
         JSONObject params = new JSONObject();
         try {
-            params.put("sgks_city",1);
+            params.put("sgks_city",AppSettings.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
             params.put("language_id", AppSettings.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -109,6 +110,9 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
                                     ArrayList<CommitteeDetailsItem> arrMainCommList = (ArrayList<CommitteeDetailsItem>) resp;
                                     if (!arrMainCommList.isEmpty()) {
                                         setCommitteeAdapter(arrMainCommList, false);
+                                    } else {
+                                        setCommitteeAdapter(arrMainCommList, false);
+                                        Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }

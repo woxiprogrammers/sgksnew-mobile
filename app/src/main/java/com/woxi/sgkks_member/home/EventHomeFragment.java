@@ -26,6 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.adapters.EventsListAdapter;
+import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
 import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
 import com.woxi.sgkks_member.models.EventDataItem;
@@ -63,7 +64,6 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
     private ArrayList<EventDataItem> mArrEventData;
     private boolean isApiRequested = false;
     private String selectedYear = "";
-    private ArrayList<String> mArrEventYears;
     private Spinner mSpinAccountYear;
     private ArrayList<Integer> arrayYearIntegerList = new ArrayList<>();
 
@@ -92,7 +92,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
         mRvEventList =  mParentView.findViewById(R.id.rvAccountImages);
         mSpinAccountYear = mParentView.findViewById(R.id.spinAccountYear);
         ((TextView) mParentView.findViewById(R.id.tvYearTitle)).setText("Select Event Year");
-        for (int i = 2015; i <= 2030; i++){
+        for (int i = 2015; i <= 2025; i++){
             arrayYearIntegerList.add(i-2015,i);
         }
         ArrayAdapter<Integer> integerArrayAdapter = new ArrayAdapter<Integer>(mContext, android.R.layout.simple_spinner_item, arrayYearIntegerList);
@@ -134,25 +134,36 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
+        boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
+        if(isLanguageChanged || isCityChanged){
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
+        }
 
-        requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
     }
 
     @Override
     public void fragmentBecameVisible() {
         if (!isApiRequested) {
+            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                requestEventDetailsApi(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+            } else {
+                new AppCommonMethods(mContext).showAlert("You are Offline");
+            }
 
         }
     }
-
-
 
     private void requestEventDetailsApi(String year) {
         //ToDo Lazy Loading
         JSONObject params=new JSONObject();
         try {
             params.put("page_id",0);
-            params.put("sgks_city",1);
+            params.put("sgks_city",AppSettings.getStringPref(PREFS_CURRENT_CITY,mContext));
             params.put("language_id",AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext));
             params.put("year",year);
         } catch (JSONException e) {

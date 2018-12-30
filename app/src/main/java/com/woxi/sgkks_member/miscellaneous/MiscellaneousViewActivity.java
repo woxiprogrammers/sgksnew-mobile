@@ -88,7 +88,10 @@ public class MiscellaneousViewActivity extends AppCompatActivity implements AppC
         pDialog.setMessage("Loading, Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, AppURLs.API_MISCELLANEOUS_WEBVIEW + paramsWebViewURL+"/1/"+AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext),
+        StringRequest stringRequest = new StringRequest(Request.Method.GET,
+                AppURLs.API_MISCELLANEOUS_WEBVIEW + paramsWebViewURL
+                        +"/" +AppSettings.getStringPref(PREFS_CURRENT_CITY,mContext)
+                        +"/"+AppSettings.getStringPref(PREFS_LANGUAGE_APPLIED,mContext),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

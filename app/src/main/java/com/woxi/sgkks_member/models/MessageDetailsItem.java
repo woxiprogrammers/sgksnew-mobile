@@ -1,13 +1,40 @@
 package com.woxi.sgkks_member.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * This class is used as a Model class
  * Created by Rohit.
  */
 public class MessageDetailsItem implements Serializable {
-    private String messageID, messageTitle, messageDescription, messageImage, messageCreateDate, messageType, messageCity, messageIsActive;
+    private String messageID;
+    private String messageTitle;
+    private String messageDescription;
+    private String messageImage;
+    private String messageCreateDate;
+    private String messageType;
+    private String messageCity;
+    private String messageIsActive;
+
+    public String getMessageDate() {
+        return messageDate;
+    }
+
+    public void setMessageDate(String messageDate) {
+        this.messageDate = messageDate;
+    }
+
+    private String messageDate;
+    private ArrayList<MessageDetailsItem> arrMessageList;
+
+    public ArrayList<MessageDetailsItem> getArrMessageList() {
+        return arrMessageList;
+    }
+
+    public void setArrMessageList(ArrayList<MessageDetailsItem> arrMessageList) {
+        this.arrMessageList = arrMessageList;
+    }
 
     public MessageDetailsItem() {
     }

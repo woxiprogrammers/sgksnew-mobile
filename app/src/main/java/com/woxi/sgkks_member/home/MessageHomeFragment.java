@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -199,21 +200,28 @@ public class MessageHomeFragment extends Fragment implements AppConstants, Fragm
                                 MessageAndClassifiedResponseItem jsonResultObject = (MessageAndClassifiedResponseItem) resp;
                                 if (isFirstTime) {
                                     mArrMessageDetails = jsonResultObject.getArrMessageList();
-                                    intMessageArraySize = mArrMessageDetails.size();
-                                    mRvAdapter = new MessageListAdapter(mArrMessageDetails);
-                                    mRvMessageList.setAdapter(mRvAdapter);
-                                    mRvMessageList.getAdapter().notifyDataSetChanged();
+                                    if (mArrMessageDetails.size() != 0){
+                                        intMessageArraySize = mArrMessageDetails.size();
+                                        mRvAdapter = new MessageListAdapter(mArrMessageDetails);
+                                        mRvMessageList.setAdapter(mRvAdapter);
+                                        mRvMessageList.getAdapter().notifyDataSetChanged();
+                                    } else {
+                                        intMessageArraySize = mArrMessageDetails.size();
+                                        mRvAdapter = new MessageListAdapter(mArrMessageDetails);
+                                        mRvMessageList.setAdapter(mRvAdapter);
+                                        mRvMessageList.getAdapter().notifyDataSetChanged();
+                                        Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT).show();
+                                    }
                                 } else {
                                     //API requested on next load
                                     ArrayList<MessageDetailsItem> mArrNextNewsDetails = jsonResultObject.getArrMessageList();
-                                    if (mArrNextNewsDetails != null) {
+                                    if (mArrNextNewsDetails.size() != 0) {
                                         mArrMessageDetails.addAll(mArrNextNewsDetails);
                                         mRvMessageList.getAdapter().notifyItemRangeChanged(intMessageArraySize - 1, mArrMessageDetails.size() - 1);
                                         mRvMessageList.getAdapter().notifyDataSetChanged();
                                     } else {
                                         showNoRecordMessage();
                                     }
-//                                    Toast.makeText(mContext, "Api Requested", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 showNoRecordMessage();
