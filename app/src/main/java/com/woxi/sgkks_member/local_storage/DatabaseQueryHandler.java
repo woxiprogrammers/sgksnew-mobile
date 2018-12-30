@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
-import com.bumptech.glide.signature.MediaStoreSignature;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.DatabaseConstants;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
@@ -18,7 +17,6 @@ import com.woxi.sgkks_member.models.CommitteeDetailsItem;
 import com.woxi.sgkks_member.models.CountItem;
 import com.woxi.sgkks_member.models.EventDataItem;
 import com.woxi.sgkks_member.models.FamilyDetailsItem;
-import com.woxi.sgkks_member.models.MemberAddressItem;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
 import com.woxi.sgkks_member.models.MessageDetailsItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
@@ -26,16 +24,11 @@ import com.woxi.sgkks_member.utils.AppCommonMethods;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
-import java.security.AccessControlContext;
 import java.util.ArrayList;
 
-import static com.woxi.sgkks_member.interfaces.AppConstants.CURRENT_PAGE;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
-import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LAST_COMMITTEE_ID;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LAST_FAMILY_ID;
-import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LAST_MESSAGE_ID;
 
 /**
  * <b><b>public class DatabaseQueryHandler implements DatabaseConstants </b></b>
@@ -468,53 +461,70 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         ArrayList<CityIteam> arrCityIteam = new ArrayList<>();
 
         //FETCH CITY ENGLISH NAMES
-        String sqlQueryEnglish="SELECT * FROM "+ TABLE_CITIES_EN
-                + " WHERE " + COLUMN_CITY_IS_ACTIVE + "='true'";
-        new AppCommonMethods(mContext).LOG(0, TAG, sqlQueryEnglish);
-        Cursor cityCursor = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
+
 
         //FETCH CITY ID
-        String fetchCityId = "SELECT " + COLUMN_CITY_ID_PRIMARY + " FROM " + TABLE_CITIES_EN
+        String fetchCityId = "SELECT " + COLUMN_CITY_ID_PRIMARY_EN + " FROM " + TABLE_CITIES_EN
                 + " WHERE " + COLUMN_CITY_IS_ACTIVE + "='true'";
         Cursor cursorCityId = mSqLiteDatabase.rawQuery(fetchCityId,null);
 
         //SET arrCityIteam WITH RESPECTIVE LANGUAGE
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1") && strSearchKey.equalsIgnoreCase("")){
-            if (cityCursor.moveToFirst()){
+            if (cursorCityId.moveToFirst()) {
                 do {
-                    CityIteam cityIteam = new CityIteam();
-                    cityIteam.setIntCityId(Integer.parseInt(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY))));
-                    cityIteam.setStrCityName(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
-                    cityIteam.setStrStateId(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_STATE_ID)));
-                    cityIteam.setIs_active(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_IS_ACTIVE)));
-                    cityIteam.setStrMemberCount(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_MEMBER_COUNT)));
-                    arrCityIteam.add(cityIteam);
-                } while (cityCursor.moveToNext());
+                    String sqlQueryEnglish="SELECT * FROM "+ TABLE_CITIES_EN
+                            + " WHERE " + COLUMN_CITY_IS_ACTIVE + "='true'"
+                            + " AND " + COLUMN_CITY_ID_PRIMARY_EN + "='" + cursorCityId.getString(cursorCityId.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY_EN)) + "'";
+                    new AppCommonMethods(mContext).LOG(0, TAG, sqlQueryEnglish);
+                    Cursor cityCursor = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
+                    String sqlQueryGujarati = "SELECT " + COLUMN_CITY_NAME + " FROM " + TABLE_CITIES_GJ
+                            + " WHERE " + COLUMN_CITY_ID_FOREIGN + "='" + cursorCityId.getString(cursorCityId.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY_EN)) + "'";
+                    Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
+                    if (cityCursor.moveToFirst() && cursorGujarati.moveToFirst()) {
+                        Log.i(TAG, "queryCities: "+(cityCursor.moveToFirst() && cursorGujarati.moveToFirst()));
+                        do {
+                            CityIteam cityIteam = new CityIteam();
+                            cityIteam.setStrCityName(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
+                            cityIteam.setStrCityNameEnglish(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
+                            cityIteam.setStrMemberCount(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_MEMBER_COUNT)));
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)).equalsIgnoreCase("null")) {
+                                cityIteam.setStrCityNameGujarati(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
+                            } else {
+                                cityIteam.setStrCityNameGujarati(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
+                            }
+                            arrCityIteam.add(cityIteam);
+                        } while ( cityCursor.moveToNext() && cursorGujarati.moveToNext());
+                    }
+                } while (cursorCityId.moveToNext());
             }
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2") && strSearchKey.equalsIgnoreCase("")){
             if (cursorCityId.moveToFirst()) {
                 do {
-                    String sqlQueryGujarati = "SELECT * FROM " + TABLE_CITIES_GJ
-                            + " WHERE " + COLUMN_CITY_ID_FOREIGN + "='" + cursorCityId.getString(cursorCityId.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY)) + "'";
+                    String sqlQueryEnglish="SELECT * FROM "+ TABLE_CITIES_EN
+                            + " WHERE " + COLUMN_CITY_IS_ACTIVE + "='true'"
+                            + " AND " + COLUMN_CITY_ID_PRIMARY_EN + "='" + cursorCityId.getString(cursorCityId.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY_EN)) + "'";
+                    new AppCommonMethods(mContext).LOG(0, TAG, sqlQueryEnglish);
+                    Cursor cityCursor = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
+
+                    String sqlQueryGujarati = "SELECT " + COLUMN_CITY_NAME + " FROM " + TABLE_CITIES_GJ
+                            + " WHERE " + COLUMN_CITY_ID_FOREIGN + "='" + cursorCityId.getString(cursorCityId.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY_EN)) + "'";
                     Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
-                    if (cursorGujarati.moveToNext() && cityCursor.moveToFirst()) {
+                    if (cursorGujarati.moveToFirst() && cityCursor.moveToFirst()) {
                         do {
                             CityIteam cityIteam = new CityIteam();
                             if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)).equalsIgnoreCase("null")) {
                                 cityIteam.setStrCityName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
+                                cityIteam.setStrCityNameGujarati(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
                             } else {
                                 cityIteam.setStrCityName(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
                             }
+                            cityIteam.setStrCityNameEnglish(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
                             cityIteam.setStrMemberCount(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_MEMBER_COUNT)));
                             arrCityIteam.add(cityIteam);
                         } while (cursorGujarati.moveToNext() && cityCursor.moveToNext());
                     }
                 } while (cursorCityId.moveToNext());
             }
-        }
-
-        if (cityCursor !=null && !cityCursor.isClosed()){
-            cityCursor.close();
         }
         if (cursorCityId !=null && !cursorCityId.isClosed()){
             cursorCityId.close();

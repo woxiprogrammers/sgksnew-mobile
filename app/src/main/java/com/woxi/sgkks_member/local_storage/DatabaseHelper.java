@@ -88,7 +88,7 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
 
         String CREATE_CITY_TABLE_QUERY_EN = "CREATE TABLE "+ TABLE_CITIES_EN
                 + " ("
-                + COLUMN_CITY_ID_PRIMARY + " VARCHAR(500) PRIMARY KEY, "
+                + COLUMN_CITY_ID_PRIMARY_EN + " VARCHAR(500) PRIMARY KEY, "
                 + COLUMN_CITY_NAME+ " VARCHAR(500), "
                 + COLUMN_STATE_ID+ " VARCHAR(500), "
                 + COLUMN_CITY_IS_ACTIVE+" BOOLEAN, "
@@ -98,12 +98,12 @@ class DatabaseHelper extends SQLiteOpenHelper implements DatabaseConstants {
 
         String CREATE_CITY_TABLE_QUERY_GJ = "CREATE TABLE "+ TABLE_CITIES_GJ
                 + "("
-                + COLUMN_CITY_ID_PRIMARY + " VARCAHR(500) PRIMARY KEY,"
+                + COLUMN_CITY_ID_PRIMARY_GJ + " VARCAHR(500) PRIMARY KEY,"
                 + COLUMN_CITY_NAME+ " VARCHAR(500), "
                 + COLUMN_CITY_ID_FOREIGN + " VARCHAR(500), "
                 + COLUMN_CITY_LANGUAGE_ID+ " VARCHAR(500), "
                 + "FOREIGN KEY(" + COLUMN_CITY_ID_FOREIGN + ") REFERENCES "
-                + TABLE_CITIES_EN + " ("+ COLUMN_CITY_ID_PRIMARY + ")"
+                + TABLE_CITIES_EN + " ("+ COLUMN_CITY_ID_PRIMARY_EN + ")"
                 + ")";
         new AppCommonMethods().LOG(0,TAG,CREATE_CITY_TABLE_QUERY_GJ);
 

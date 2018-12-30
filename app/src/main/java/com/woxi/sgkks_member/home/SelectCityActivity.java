@@ -92,7 +92,7 @@ public class SelectCityActivity extends AppCompatActivity {
                 if(new AppCommonMethods(mContext).isNetworkAvailable()){
                     requestCityList();
                 } else {
-                    new AppCommonMethods(mContext).showAlert("You are Offline");
+                    new AppCommonMethods(mContext).showAlert("You need to be online to search city");
                 }
             }
 
@@ -185,32 +185,31 @@ public class SelectCityActivity extends AppCompatActivity {
         onCityClickListener = new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                    if (isFromCreateMember) {
-                        CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));
-                        String strCityName = cityIteam.getStrCityName();
-                        String strCityId = String.valueOf(cityIteam.getIntCityId());
-                        Intent intent = new Intent();
-                        intent.putExtra("cityName", strCityName);
-                        intent.putExtra("cityId", strCityId);
-                        setResult(Activity.RESULT_OK, intent);
-                        finish();
-                    } else {
-                        CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));
-                        String strCityName = cityIteam.getStrCityName();
-                        String strCityId = String.valueOf(cityIteam.getIntCityId());
-                        String strCityNameGujarati = cityIteam.getStrCityNameGujarati();
-                        String strCityNameEnglish = cityIteam.getStrCityNameEnglish();
-                        AppCommonMethods.putBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED, true, mContext);
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString(AppConstants.PREFS_CURRENT_CITY, strCityId);
-                        editor.putString(AppConstants.PREFS_CITY_NAME, strCityName);
-                        editor.putString(AppConstants.PREFS_CITY_NAME_GJ,strCityNameGujarati);
-                        editor.putString(AppConstants.PREFS_CITY_NAME_EN,strCityNameEnglish);
-                        editor.apply();
-                        restartActivity(mContext);
-                    }
-
+                if (isFromCreateMember) {
+                    CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));
+                    String strCityName = cityIteam.getStrCityName();
+                    String strCityId = String.valueOf(cityIteam.getIntCityId());
+                    Intent intent = new Intent();
+                    intent.putExtra("cityName", strCityName);
+                    intent.putExtra("cityId", strCityId);
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
+                } else {
+                    CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));
+                    String strCityName = cityIteam.getStrCityName();
+                    String strCityId = String.valueOf(cityIteam.getIntCityId());
+                    String strCityNameGujarati = cityIteam.getStrCityNameGujarati();
+                    String strCityNameEnglish = cityIteam.getStrCityNameEnglish();
+                    AppCommonMethods.putBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED, true, mContext);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString(AppConstants.PREFS_CURRENT_CITY, strCityId);
+                    editor.putString(AppConstants.PREFS_CITY_NAME, strCityName);
+                    editor.putString(AppConstants.PREFS_CITY_NAME_GJ,strCityNameGujarati);
+                    editor.putString(AppConstants.PREFS_CITY_NAME_EN,strCityNameEnglish);
+                    editor.apply();
+                    restartActivity(mContext);
+                }
             }
         };
 
