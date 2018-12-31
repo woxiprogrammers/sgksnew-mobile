@@ -22,7 +22,8 @@
             android:paddingBottom="@dimen/v4"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
-            android:paddingTop="@dimen/v4" />
+            android:paddingTop="@dimen/v4"
+            android:text="TITLE" />
 
         <TextView
             android:id="@+id/tv_news_details_created_date"
@@ -31,7 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/v16"
             android:layout_marginLeft="@dimen/activity_vertical_margin"
-            android:layout_marginRight="@dimen/activity_vertical_margin" />
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:text="Message Title"/>
 
         <ImageView
             android:id="@+id/iv_news_details_image"
@@ -46,6 +48,8 @@
             style="@style/customTextView_12"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/activity_vertical_margin"
-            android:layout_marginRight="@dimen/activity_vertical_margin" />
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:text="Description"
+            android:textSize="@dimen/textsize_normal_18dp"/>
     </LinearLayout>
 </ScrollView>
