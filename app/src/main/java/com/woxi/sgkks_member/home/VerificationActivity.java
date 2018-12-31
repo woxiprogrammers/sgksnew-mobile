@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -42,6 +43,7 @@ public class VerificationActivity extends AppCompatActivity {
     private MemberDetailsItem memberDetailsItem;
     private String strActivityType;
     private boolean isFromEdit = false, isOtpSent = false;
+    private Button btnMobileNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +79,8 @@ public class VerificationActivity extends AppCompatActivity {
         etMobileNumber = findViewById(R.id.etMobileNumber);
         tvVerificationFor = findViewById(R.id.verificationFor);
         tvOtpSent = findViewById(R.id.tvOtpSent);
+        btnMobileNumber = findViewById(R.id.btnSendMobileNo);
+        btnMobileNumber.setText("Send Mobile Number");
         if(!isOtpSent){
             mobileNumberListener();
         }
@@ -101,18 +105,13 @@ public class VerificationActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence otp, int start, int before, int count) {
-                if(otp.length() == 6){
-                    strOtp = otp.toString();
-                    tvErrorMessage.setVisibility(View.GONE);
-                    if(new AppCommonMethods(mContext).isNetworkAvailable()){
-                        verifyOtp();
-                    } else {
-                        new AppCommonMethods(mContext).showAlert("You are Offline");
-                    }
-                } else {
+                /* if(otp.length() == 6){*/
+                strOtp = otp.toString();
+
+               /* } else {
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText("Please enter a valid 6 digit OTP");
-                }
+                }*/
             }
 
             @Override
@@ -120,10 +119,12 @@ public class VerificationActivity extends AppCompatActivity {
 
             }
         });
+        btnNextListener();
     }
 
     private void verifyOtp() {
         pbVerify.setVisibility(View.VISIBLE);
+        btnMobileNumber.setText("Send OTP");
         JSONObject params = new JSONObject();
         try {
             params.put("mobile_number", strMobileNumber);
@@ -139,15 +140,15 @@ public class VerificationActivity extends AppCompatActivity {
                                 pbVerify.setVisibility(View.GONE);
                                 new AppCommonMethods(mContext).LOG(0,"OTP_VERIFIED",response.toString());
                                 if(response.has("message")){
-                                        Intent addMemberIntent = new Intent(VerificationActivity.this, AddMeToSgksActivity.class);
-                                        if(isFromEdit){
-                                            addMemberIntent.putExtra("memberItems",memberDetailsItem);
-                                            addMemberIntent.putExtra("activityType", "EditProfile");
-                                        } else {
-                                            addMemberIntent.putExtra("contactNumber",strMobileNumber);
-                                            addMemberIntent.putExtra("activityType", getString(R.string.add_me_sgks));
-                                        }
-                                        startActivity(addMemberIntent);
+                                    Intent addMemberIntent = new Intent(VerificationActivity.this, AddMeToSgksActivity.class);
+                                    if(isFromEdit){
+                                        addMemberIntent.putExtra("memberItems",memberDetailsItem);
+                                        addMemberIntent.putExtra("activityType", "EditProfile");
+                                    } else {
+                                        addMemberIntent.putExtra("contactNumber",strMobileNumber);
+                                        addMemberIntent.putExtra("activityType", getString(R.string.add_me_sgks));
+                                    }
+                                    startActivity(addMemberIntent);
                                 }
                             }
                         }, new Response.ErrorListener(){
@@ -185,6 +186,7 @@ public class VerificationActivity extends AppCompatActivity {
                                         etMobileNumber.setVisibility(View.GONE);
                                         etOtp.setVisibility(View.VISIBLE);
                                         tvOtpSent.setVisibility(View.VISIBLE);
+                                        btnMobileNumber.setText("SEND OTP");
                                         Toast.makeText(mContext, "" + response.getString("message"), Toast.LENGTH_SHORT).show();
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -215,23 +217,59 @@ public class VerificationActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence mobileNumber, int start, int before, int count) {
-                if(mobileNumber.length() == 10){
-                    tvErrorMessage.setVisibility(View.GONE);
-                    strMobileNumber = mobileNumber.toString();
-                    if(new AppCommonMethods(mContext).isNetworkAvailable()){
-                        sendMobileNumberToServer();
-
-                    } else {
-                        new AppCommonMethods(mContext).showAlert("You are Offline");
-                    }
-                } else {
+                /*if(mobileNumber.length() == 10){*/
+                tvErrorMessage.setVisibility(View.GONE);
+                strMobileNumber = mobileNumber.toString();
+                /*} else {
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText("Please enter a valid Mobile Number");
-                }
+                }*/
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
+    public void btnNextListener () {
+        btnMobileNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isOtpSent) {
+                    if (strOtp != null && !strOtp.equalsIgnoreCase("null")){
+                        if (strOtp.length() == 6) {
+                            tvErrorMessage.setVisibility(View.GONE);
+                            if(new AppCommonMethods(mContext).isNetworkAvailable()){
+                                verifyOtp();
+                            } else {
+                                new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                            }
+                        }else {
+                            tvErrorMessage.setVisibility(View.VISIBLE);
+                            tvErrorMessage.setText("Please enter a valid OTP");
+                        }
+                    } else {
+                        tvErrorMessage.setVisibility(View.VISIBLE);
+                        tvErrorMessage.setText("Please enter a valid OTP");
+                    }
+                } else {
+                    if (strMobileNumber != null && !strMobileNumber.equalsIgnoreCase("null")) {
+                        if (strMobileNumber.length() == 10) {
+                            if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                                sendMobileNumberToServer();
+                            } else {
+                                new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                            }
+                        } else {
+                            tvErrorMessage.setVisibility(View.VISIBLE);
+                            tvErrorMessage.setText("Please enter a valid Mobile Number");
+                        }
+                    } else {
+                        tvErrorMessage.setVisibility(View.VISIBLE);
+                        tvErrorMessage.setText("Please enter a valid Mobile Number");
+                    }
+                }
 
             }
         });
