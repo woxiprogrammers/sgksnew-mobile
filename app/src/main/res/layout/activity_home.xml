@@ -118,7 +118,7 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|right"
         android:src="@drawable/ic_add_green"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabMessageInfo"

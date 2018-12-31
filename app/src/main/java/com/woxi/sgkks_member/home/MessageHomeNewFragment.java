@@ -157,13 +157,15 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                                     } else {
                                         Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT);
                                     }
-                                    mRvMessageList.setHasFixedSize(true);
+                                   /* mRvMessageList.setHasFixedSize(true);
                                     mRvAdapter = new MessageListAdapter(mArrMessageDetails);
-                                    mRvMessageList.setAdapter(mRvAdapter);
+                                    mRvMessageList.setAdapter(mRvAdapter);*/
                                 } else {
                                     ArrayList <MessageDetailsItem> arrNextMessages = messageDetailsItem.getArrMessageList();
                                     if(arrNextMessages.size() != 0){
-                                        showMessages(arrNextMessages);
+                                        mArrMessageDetails.addAll(arrNextMessages);
+                                        mRvMessageList.getAdapter().notifyItemRangeChanged(arrSize -1, mArrMessageDetails.size() - 1);
+                                        mRvMessageList.getAdapter().notifyDataSetChanged();
                                     } else {
                                         Toast.makeText(mContext,"All the Records are Listed",Toast.LENGTH_SHORT);
                                     }
@@ -192,7 +194,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         mRvMessageList.addOnScrollListener(new EndlessRvScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                requestLazyLoadMembersApi();
+                    requestLazyLoadMembersApi();
             }
         });
     }
@@ -221,6 +223,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
             }
         } 
     }
+
     public void showMessages(ArrayList<MessageDetailsItem> arrayList){
         mRvMessageList.setHasFixedSize(true);
         mRvAdapter = new MessageListAdapter(arrayList);

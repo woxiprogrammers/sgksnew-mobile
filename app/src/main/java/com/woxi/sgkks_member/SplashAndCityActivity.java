@@ -77,7 +77,6 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
 
         if (new AppCommonMethods(mContext).isNetworkAvailable()){
             requestToGetMinVersion();
-            //requestMasterApi();
         } else {
             showOfflineAlertDialog();
             getNextScreen();

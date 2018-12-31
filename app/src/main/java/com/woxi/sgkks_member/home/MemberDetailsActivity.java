@@ -21,6 +21,7 @@ import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
+import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppSettings;
 
 /**
@@ -64,7 +65,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
         tvEmail = findViewById(R.id.tvMemEmail);
         tvMemCity = findViewById(R.id.tvMemCity);
         strMobileNUmber = memberDetailsItem.getStrMobileNumber();
-        
+
         if (memberDetailsItem.getStrFirstName() != null) {
             strFirstName = memberDetailsItem.getStrFirstName();
         }
@@ -138,14 +139,18 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         FloatingActionButton mFloatingEdit = findViewById(R.id.memFloatingEdit);
         if (AppSettings.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
-            mFloatingEdit.setVisibility(View.GONE);
+            mFloatingEdit.setVisibility(View.VISIBLE);
             mFloatingEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent verificationIntent = new Intent(mContext,VerificationActivity.class);
-                    verificationIntent.putExtra("memberItems",memberDetailsItem);
-                    verificationIntent.putExtra("activityType","EditProfile");
-                    startActivity(verificationIntent);
+                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                        Intent verificationIntent = new Intent(mContext,VerificationActivity.class);
+                        verificationIntent.putExtra("memberItems",memberDetailsItem);
+                        verificationIntent.putExtra("activityType","EditProfile");
+                        startActivity(verificationIntent);
+                    } else {
+                        new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                    }
                 }
             });
         } else {

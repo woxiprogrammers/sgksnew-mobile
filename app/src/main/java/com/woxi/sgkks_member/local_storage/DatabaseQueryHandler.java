@@ -804,10 +804,10 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     public ArrayList<MessageDetailsItem> querryMessages() {
         ArrayList<MessageDetailsItem> arrayListMessages = new ArrayList<>();
 
-        String sqlQueryEnglish = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS
+        String sqlQueryEnglish = "SELECT * FROM "+ TABLE_MESSAGE_NEWS_DETAILS
                 + " WHERE " + COLUMN_MESSAGES_IS_ACTIVE + "='true'"
                 + " AND " + COLUMN_MESSAGES_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'";
-        String sqlQueryGujarati = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS_GJ;
+
         Cursor cursorMessages =mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);;
         Cursor cursorMessagesGujarati;
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
@@ -831,10 +831,13 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
             String fetchMessageId = "SELECT " + COLUMN_MESSAGES_ID_PRIMARY + " FROM " + TABLE_MESSAGE_NEWS_DETAILS
                     + " WHERE " + COLUMN_MESSAGES_IS_ACTIVE + "='true'"
-                    + " AND " + COLUMN_MESSAGES_CITY_ID + "+'" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'";
+                    + " AND " + COLUMN_MESSAGES_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'";
             Cursor cursorMessageId = mSqLiteDatabase.rawQuery(fetchMessageId,null);
+            Log.i(TAG, "querryMessages: "+cursorMessageId.getCount());
             if (cursorMessageId.moveToFirst()) {
                 do {
+                    String sqlQueryGujarati = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS_GJ
+                            + " WHERE " + COLUMN_MESSAGES_ID_FOREIGN + "='" + cursorMessageId.getString(cursorMessageId.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY)) + "'";
                     cursorMessagesGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
                     if (cursorMessagesGujarati.moveToFirst() && cursorMessages.moveToFirst()){
                         do {
@@ -1404,6 +1407,12 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                             arrayList.add(committeeDetailsItem);
                         } while (cursorEnglish.moveToNext());
                     }
+                    if (cursorEnglish != null && !cursorEnglish.isClosed()) {
+                        cursorEnglish.close();
+                    }
+                    if (cursorMemberEnglish != null && cursorMemberEnglish.isClosed()) {
+                        cursorMemberEnglish.close();
+                    }
                 } while (cursorId.moveToNext());
             }
         }
@@ -1459,9 +1468,6 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     Cursor cursorEnglish = mSqLiteDatabase.rawQuery(sqlEnglish,null);
                     new AppCommonMethods(mContext).LOG(0,TAG,sqlEnglish);
 
-
-
-
                     if (cursorGujarati.moveToFirst() && cursorEnglish.moveToFirst()) {
                         do {
                             CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
@@ -1481,11 +1487,22 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                             arrayList.add(committeeDetailsItem);
                         } while (cursorGujarati.moveToNext() && cursorEnglish.moveToNext());
                     }
+                    if (cursorEnglish != null && !cursorEnglish.isClosed()) {
+                        cursorEnglish.close();
+                    }
+                    if (cursorGujarati != null && !cursorGujarati.isClosed()) {
+                        cursorGujarati.close();
+                    }
                 } while (cursorId.moveToNext());
             }
         }
+        if (cursorId != null && !cursorId.isClosed()){
+            cursorId.close();
+        }
         return arrayList;
     }
+
+    /*-------------------------------------------Committee LISTING-------------------------------------------*/
 
     /*-------------------------------------------Committee LISTING-------------------------------------------*/
 
@@ -1494,19 +1511,20 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         CountItem countItem;
         ArrayList<CountItem> arrayListCount = new ArrayList<>();
         //arrCityIndex = 1 as city ID starts from 1
-        for (int arrCityIndex = 1; arrCityIndex <= arrCity.size(); arrCityIndex++){
+        for (int arrCityIndex = 0; arrCityIndex < arrCity.size(); arrCityIndex++){
             messageCount = 0;
             classifiedCount = 0;
-            cityID = arrCityIndex;
+            CityIteam cityIteam = arrCity.get(arrCityIndex);
+            cityID = cityIteam.getIntCityId();
             countItem = new CountItem();
             String sqlMessage ="SELECT * FROM " + DatabaseHelper.TABLE_MESSAGE_NEWS_DETAILS
-                    + " WHERE " + COLUMN_MESSAGES_CITY_ID + "='" + arrCityIndex + "'"
+                    + " WHERE " + COLUMN_MESSAGES_CITY_ID + "='" + cityID + "'"
                     + " AND " + COLUMN_MESSAGES_IS_ACTIVE + "='true'";
 
             Log.i(TAG, "insertCount: "+sqlMessage);
 
             String sqlClassified = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_EN
-                    + " WHERE " + COLUMN_CLASSIFIED_CITY_ID + "='" + arrCityIndex + "'"
+                    + " WHERE " + COLUMN_CLASSIFIED_CITY_ID + "='" + cityID + "'"
                     + " AND " + COLUMN_CLASSIFIED_IS_ACTIVE + "='true'";
 
             Log.i(TAG, "insertCount: "+sqlClassified);
@@ -1550,6 +1568,61 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
+    public boolean updateMessageCount (int intMessageCount, String cityId) {
+        String updateMessageCount = "UPDATE " + TABLE_COUNTS
+                + " SET " + COLUMN_COUNT_MESSAGE + "='" + intMessageCount + "'"
+                + " WHERE " + COLUMN_COUNT_CITY_ID + "='" + cityId + "'";
+        SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(updateMessageCount);
+        mSqLiteDatabase.beginTransaction();
+        try {
+            sqLiteStatement.execute();
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public boolean updateClassifiedCount (int intClassifiedCount, String cityId) {
+        String updateMessageCount = "UPDATE " + TABLE_COUNTS
+                + " SET " + COLUMN_COUNT_CLASSIFIED + "='" + intClassifiedCount + "'"
+                + " WHERE " + COLUMN_COUNT_CITY_ID + "='" + cityId + "'";
+        SQLiteStatement sqLiteStatement = mSqLiteDatabase.compileStatement(updateMessageCount);
+        mSqLiteDatabase.beginTransaction();
+        try {
+            sqLiteStatement.execute();
+            mSqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+    }
+
+    public CountItem queryCount (String cityId) {
+        CountItem countItem = new CountItem();
+        String queryCounts = "SELECT * FROM " + DatabaseHelper.TABLE_COUNTS
+                + " WHERE " + COLUMN_CITY_ID_PRIMARY_EN + "='" + cityId + "'";
+        Cursor cursorCount = mSqLiteDatabase.rawQuery(queryCounts,null);
+        if (cursorCount.moveToFirst()) {
+            do {
+                countItem.setStrCityId(cursorCount.getString(cursorCount.getColumnIndexOrThrow(COLUMN_COUNT_CITY_ID)));
+                countItem.setIntClassifiedCount(Integer.parseInt(cursorCount.getString(cursorCount.getColumnIndexOrThrow(COLUMN_COUNT_CLASSIFIED))));
+                countItem.setIntMessageCount(Integer.parseInt(cursorCount.getString(cursorCount.getColumnIndexOrThrow(COLUMN_COUNT_MESSAGE))));
+            } while (cursorCount.moveToNext());
+        }
+        if (cursorCount != null && !cursorCount.isClosed()) {
+            cursorCount.close();
+        }
+        return  countItem;
+    }
+
+    /*-------------------------------------------Committee LISTING-------------------------------------------*/
     public ArrayList<CommitteeDetailsItem> queryCommittees(String strCommitteeID, String strCurrentCity) {
         ArrayList<CommitteeDetailsItem> arrCommitteeList = new ArrayList<>();
 

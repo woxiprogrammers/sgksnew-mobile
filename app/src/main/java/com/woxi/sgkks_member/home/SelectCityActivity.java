@@ -107,6 +107,7 @@ public class SelectCityActivity extends AppCompatActivity {
         } else {
             arrCityList = databaseQueryHandler.queryCities("");
             setupCityList(arrCityList);
+            pbSearchCity.setVisibility(View.GONE);
         }
 
     }

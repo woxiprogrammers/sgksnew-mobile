@@ -209,8 +209,13 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
             requestCommitteeListAPI();
             isApiRequested = true;
         } else {
-            new AppCommonMethods(mContext).showAlert(mContext
-                    .getString(R.string.noInternet));
+            arrMainCommList = databaseQueryHandler.queryCommittees();
+            if (arrMainCommList == null || arrMainCommList.size() == 0) {
+                getAllCommitteesOnline();
+            } else {
+                setCommitteeAdapter(arrMainCommList, true);
+                isApiRequested = true;
+            }
         }
     }
 }

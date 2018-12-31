@@ -43,10 +43,12 @@ import com.woxi.sgkks_member.adapters.HomeViewPagerAdapter;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.interfaces.FragmentInterface;
 import com.woxi.sgkks_member.local_storage.DataSyncService;
+import com.woxi.sgkks_member.local_storage.DatabaseQueryHandler;
 import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
 import com.woxi.sgkks_member.miscellaneous.MiscellaneousViewActivity;
 import com.woxi.sgkks_member.miscellaneous.SettingsActivity;
 import com.woxi.sgkks_member.miscellaneous.SuggestionActivity;
+import com.woxi.sgkks_member.models.CountItem;
 import com.woxi.sgkks_member.models.MasterItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppParser;
@@ -66,6 +68,7 @@ import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_ENGLISH;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_GUJURATI;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME_EN;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME_GJ;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_IS_LANGUAGE_CHANGED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME;
@@ -90,10 +93,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private FloatingActionButton mFabAddNewMember, mFabMessageInfo;
     private ImageView ivLanguage, ivCity;
-    int intMessageCount,intClassifiedCount,intBuzzId;
+    int intMessageCount = 0,intClassifiedCount = 0,intBuzzId;
     private String strBuzzImageUrl;
     private  MasterItem masterItem = new MasterItem();
     private TabLayout mTabLayout;
+    private DatabaseQueryHandler databaseQueryHandler;
+    private CountItem countItem = new CountItem();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,52 +137,80 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_add_me_sgks:
-                /*Intent intentAdd = new Intent(mContext, VerificationActivity.class);
-                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
-                startActivity(intentAdd);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                    Intent intentAdd = new Intent(mContext, VerificationActivity.class);
+                    intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+                    startActivity(intentAdd);
+                } else {
+                    new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                }
+                // new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_suggestion:
-                Intent intentSug = new Intent(mContext, SuggestionActivity.class);
-                intentSug.putExtra("activityType", getString(R.string.suggestion_box));
-                startActivity(intentSug);
+                if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                    Intent intentSug = new Intent(mContext, SuggestionActivity.class);
+                    intentSug.putExtra("activityType", getString(R.string.suggestion_box));
+                    startActivity(intentSug);
+                } else {
+                    new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                }
 //                new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
             case R.id.nav_accounts:
-                Intent intentAccount = new Intent(mContext, AccountsActivity.class);
-                intentAccount.putExtra("activityType", getString(R.string.accounts));
-                startActivity(intentAccount);
+                    Intent intentAccount = new Intent(mContext, AccountsActivity.class);
+                    intentAccount.putExtra("activityType", getString(R.string.accounts));
+                    startActivity(intentAccount);
                 break;
             case R.id.nav_contact_us:
-                Intent intentCon = new Intent(mContext, MiscellaneousViewActivity.class);
-                intentCon.putExtra("activityType", getString(R.string.contactUs));
-                startActivity(intentCon);
+                if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                    Intent intentCon = new Intent(mContext, MiscellaneousViewActivity.class);
+                    intentCon.putExtra("activityType", getString(R.string.contactUs));
+                    startActivity(intentCon);
+                } else {
+                    new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                }
                 break;
             case R.id.nav_health_plus:
-                Intent intentIntro = new Intent(mContext, MiscellaneousViewActivity.class);
-                intentIntro.putExtra("activityType", getString(R.string.healthPlus));
-                startActivity(intentIntro);
+                if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                    Intent intentIntro = new Intent(mContext, MiscellaneousViewActivity.class);
+                    intentIntro.putExtra("activityType", getString(R.string.healthPlus));
+                    startActivity(intentIntro);
+                } else {
+                    new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                }
                 break;
             case R.id.nav_help:
-                Intent intentHelp = new Intent(mContext, MiscellaneousViewActivity.class);
-                intentHelp.putExtra("activityType", getString(R.string.help));
-                startActivity(intentHelp);
+                if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                    Intent intentHelp = new Intent(mContext, MiscellaneousViewActivity.class);
+                    intentHelp.putExtra("activityType", getString(R.string.help));
+                    startActivity(intentHelp);
+                } else {
+                    new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                }
                 break;
             case R.id.nav_privacy_policy:
-                Intent intentPP = new Intent(mContext, MiscellaneousViewActivity.class);
-                intentPP.putExtra("activityType", getString(R.string.privacyPolicy));
-                startActivity(intentPP);
+                if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                    Intent intentPP = new Intent(mContext, MiscellaneousViewActivity.class);
+                    intentPP.putExtra("activityType", getString(R.string.privacyPolicy));
+                    startActivity(intentPP);
+                } else {
+                    new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                }
                 break;
             case R.id.nav_qa:
-                Intent intentQA = new Intent(mContext, MiscellaneousViewActivity.class);
-                intentQA.putExtra("activityType", getString(R.string.q_and_a));
-                startActivity(intentQA);
+                if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                    Intent intentQA = new Intent(mContext, MiscellaneousViewActivity.class);
+                    intentQA.putExtra("activityType", getString(R.string.q_and_a));
+                    startActivity(intentQA);
+                } else {
+                    new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                }
                 break;
             case R.id.app_settings:
-                /*Intent intentSettings = new Intent(mContext, SettingsActivity.class);
+                Intent intentSettings = new Intent(mContext, SettingsActivity.class);
                 intentSettings.putExtra("activityType", getString(R.string.settings));
-                startActivity(intentSettings);*/
-                new AppCommonMethods(mContext).showAlert("In Progress");
+                startActivity(intentSettings);
+                //new AppCommonMethods(mContext).showAlert("In Progress");
                 break;
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -203,7 +236,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initializeViews() {
-        requestMasterApi();
+        if (new AppCommonMethods(mContext).isNetworkAvailable()){
+            requestMasterApi();
+        }
+        databaseQueryHandler = new DatabaseQueryHandler(mContext,false);
+        countItem = databaseQueryHandler.queryCount(AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext));
         tvLableCityName = findViewById(R.id.tvLableCityName);
         tvLableCityName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         setupCityNameInHeader();
@@ -235,7 +272,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("") || AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("2")){
                 mViewPager.setCurrentItem(2);
-                mFabAddNewMember.setVisibility(View.GONE);
+                mFabAddNewMember.setVisibility(View.VISIBLE);
                 mFabMessageInfo.setVisibility(View.GONE);
             } else if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("3")){
                 mViewPager.setCurrentItem(3);
@@ -250,44 +287,48 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mFabAddNewMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentAdd = new Intent(mContext, VerificationActivity.class);
-                intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
-                startActivity(intentAdd);
+                if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                    Intent intentAdd = new Intent(mContext, VerificationActivity.class);
+                    intentAdd.putExtra("activityType", getString(R.string.add_me_sgks));
+                    startActivity(intentAdd);
+                } else {
+                    new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                }
             }
         });
 
         mFabMessageInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    //AppCommonMethods.putStringPref(CURRENT_PAGE,String.valueOf(mViewPager.getCurrentItem()),mContext);
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mContext);
-                    builder.setCancelable(true);
-                    View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_message_info, null);
-                    builder.setView(view);
-                    TextView tvBuzz, tvDukhadNidhan, tvBirthday, tvAchievement, tvGeneral, tvDialogTitle;
-                    tvDialogTitle = view.findViewById(R.id.dialog_title);
-                    tvBuzz = view.findViewById(R.id.tvBuzzInfo);
-                    tvDukhadNidhan = view.findViewById(R.id.tvDukhadNidhanInfo);
-                    tvBirthday = view.findViewById(R.id.tvBirthdayInfo);
-                    tvAchievement = view.findViewById(R.id.tvAchievementInfo);
-                    tvGeneral = view.findViewById(R.id.tvGeneralInfo);
-                    if(AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
-                        tvDialogTitle.setText(R.string.dialog_title_en);
-                        tvBuzz.setText(R.string.buzz_en);
-                        tvDukhadNidhan.setText(R.string.dukhad_nidhan_en);
-                        tvBirthday.setText(R.string.birthday_en);
-                        tvAchievement.setText(R.string.achievement_en);
-                        tvGeneral.setText(R.string.general_en);
-                    } else if(AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
-                        tvDialogTitle.setText(R.string.dialog_title_gj);
-                        tvBuzz.setText(R.string.buzz_gj);
-                        tvDukhadNidhan.setText(R.string.dukhad_nidhan_gj);
-                        tvBirthday.setText(R.string.birthday_gj);
-                        tvAchievement.setText(R.string.achievement_gj);
-                        tvGeneral.setText(R.string.general_gj);
-                    }
-                    final android.support.v7.app.AlertDialog dialog = builder.create();
-                    dialog.show();
+                //AppCommonMethods.putStringPref(CURRENT_PAGE,String.valueOf(mViewPager.getCurrentItem()),mContext);
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mContext);
+                builder.setCancelable(true);
+                View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_message_info, null);
+                builder.setView(view);
+                TextView tvBuzz, tvDukhadNidhan, tvBirthday, tvAchievement, tvGeneral, tvDialogTitle;
+                tvDialogTitle = view.findViewById(R.id.dialog_title);
+                tvBuzz = view.findViewById(R.id.tvBuzzInfo);
+                tvDukhadNidhan = view.findViewById(R.id.tvDukhadNidhanInfo);
+                tvBirthday = view.findViewById(R.id.tvBirthdayInfo);
+                tvAchievement = view.findViewById(R.id.tvAchievementInfo);
+                tvGeneral = view.findViewById(R.id.tvGeneralInfo);
+                if(AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+                    tvDialogTitle.setText(R.string.dialog_title_en);
+                    tvBuzz.setText(R.string.buzz_en);
+                    tvDukhadNidhan.setText(R.string.dukhad_nidhan_en);
+                    tvBirthday.setText(R.string.birthday_en);
+                    tvAchievement.setText(R.string.achievement_en);
+                    tvGeneral.setText(R.string.general_en);
+                } else if(AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
+                    tvDialogTitle.setText(R.string.dialog_title_gj);
+                    tvBuzz.setText(R.string.buzz_gj);
+                    tvDukhadNidhan.setText(R.string.dukhad_nidhan_gj);
+                    tvBirthday.setText(R.string.birthday_gj);
+                    tvAchievement.setText(R.string.achievement_gj);
+                    tvGeneral.setText(R.string.general_gj);
+                }
+                final android.support.v7.app.AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
@@ -306,6 +347,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
                 if (position == intMessageTabIndex && isMessageCountApplied) {
                     badgeMessageTab.setVisibility(View.GONE);
+                    databaseQueryHandler.updateMessageCount(0,AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext));
                     try {
                         arrLocalMessageIds.addAll(arrMessageIds);
                     } catch (Exception e) {
@@ -315,6 +357,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
                 if (position == intClassifiedTabIndex && isClassifiedCountApplied) {
                     badgeClassifiedTab.setVisibility(View.GONE);
+                    databaseQueryHandler.updateClassifiedCount(0,AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext));
                     try {
                         arrLocalClassifiedIds.addAll(arrClassifiedIds);
                     } catch (Exception e) {
@@ -323,7 +366,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //                    AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
                 if (position == 2){
-                    mFabAddNewMember.setVisibility(View.GONE);
+                    mFabAddNewMember.setVisibility(View.VISIBLE);
                     mFabMessageInfo.setVisibility(View.GONE);
                 } else if (position == 3){
                     mFabAddNewMember.setVisibility(View.GONE);
@@ -470,6 +513,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         badgeClassifiedTab = (TextView) view.findViewById(R.id.tvTabBadge);
         ImageView ivTabIcon = (ImageView) view.findViewById(R.id.ivTabIcon);
         ivTabIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_classified, null));
+        intClassifiedCount = countItem.getIntClassifiedCount();
         if(intClassifiedCount != 0){
             badgeClassifiedTab.setText(String.valueOf(intClassifiedCount));
         } else {
@@ -484,6 +528,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         badgeMessageTab = (TextView) view.findViewById(R.id.tvTabBadge);
         ImageView ivTabIcon = (ImageView) view.findViewById(R.id.ivTabIcon);
         ivTabIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_messages, null));
+        intMessageCount = countItem.getIntMessageCount();
         if(intMessageCount != 0){
             badgeMessageTab.setText(String.valueOf(intMessageCount));
         } else {
@@ -517,12 +562,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void requestMasterApi(){
         JSONObject params = new JSONObject();
-        Log.i(TAG, "requestMasterApi: "+AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_MESSAGE_DATE,mContext));
-        Log.i(TAG, "requestMasterApi: "+AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_CLASSIFIED_DATE,mContext));
         try {
             params.put("sgks_city",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
-            params.put("last_updated_date_message",AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_MESSAGE_DATE,mContext));
-            params.put("last_updated_date_classified",AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_CLASSIFIED_DATE,mContext));
+            params.put("last_updated",AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_UPDATED_DATE,mContext));
+            Log.i(TAG, "requestMasterApi: "+AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_UPDATED_DATE,mContext));
             Log.i(TAG, "requestMasterApi: params \n"+params);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -535,8 +578,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     Object resp = AppParser.parseMasterResponse(response.toString());
                     masterItem = (MasterItem) resp;
                     strBuzzImageUrl = masterItem.getStrBuzzImageUrl();
-                    intMessageCount = masterItem.getIntMessagesCount();
-                    intClassifiedCount = masterItem.getIntMessagesCount();
+                   /* intMessageCount = masterItem.getIntMessagesCount();
+                    intClassifiedCount = masterItem.getIntMessagesCount();*/
                     intBuzzId = masterItem.getIntBuzzId();
                     showBuzzImage();
                     setMessageCount(mTabLayout);

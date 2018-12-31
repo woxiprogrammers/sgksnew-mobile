@@ -2,7 +2,9 @@ package com.woxi.sgkks_member.local_storage;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -17,6 +19,7 @@ import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.home.HomeActivity;
 import com.woxi.sgkks_member.home.MemberHomeNewFragment;
+import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
 import com.woxi.sgkks_member.models.CityIteam;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
@@ -97,7 +100,9 @@ public class DataSyncService extends Service {
             e.printStackTrace();
         }
         //Request Data Sync Api
-        requestLocalDataSyncAPI();
+        if (new AppCommonMethods(getApplicationContext()).isNetworkAvailable()){
+            requestLocalDataSyncAPI();
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -153,6 +158,10 @@ public class DataSyncService extends Service {
                                     if (response.has("current_timestamp") && !response.getString("current_timestamp").equalsIgnoreCase("")) {
                                         //This Server TimeStamp is used to maintain consistency in time
                                         strCurrentServerTime = response.getString("current_timestamp");
+                                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                        SharedPreferences.Editor editor = preferences.edit();
+                                        editor.putString(AppConstants.PREFS_LAST_UPDATED_DATE, strCurrentServerTime);
+                                        editor.apply();
                                         new AppCommonMethods().LOG(0, TAG + "  CurrentServerTime- ", strCurrentServerTime);
                                     }
                                     if (arrMemberDetailsItems != null) {
