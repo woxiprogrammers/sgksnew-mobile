@@ -105,13 +105,7 @@ public class VerificationActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence otp, int start, int before, int count) {
-                /* if(otp.length() == 6){*/
                 strOtp = otp.toString();
-
-               /* } else {
-                    tvErrorMessage.setVisibility(View.VISIBLE);
-                    tvErrorMessage.setText("Please enter a valid 6 digit OTP");
-                }*/
             }
 
             @Override
@@ -208,7 +202,7 @@ public class VerificationActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
-    public void mobileNumberListener(){
+    public void mobileNumberListener() {
         etMobileNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -217,13 +211,8 @@ public class VerificationActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence mobileNumber, int start, int before, int count) {
-                /*if(mobileNumber.length() == 10){*/
                 tvErrorMessage.setVisibility(View.GONE);
                 strMobileNumber = mobileNumber.toString();
-                /*} else {
-                    tvErrorMessage.setVisibility(View.VISIBLE);
-                    tvErrorMessage.setText("Please enter a valid Mobile Number");
-                }*/
             }
 
             @Override
