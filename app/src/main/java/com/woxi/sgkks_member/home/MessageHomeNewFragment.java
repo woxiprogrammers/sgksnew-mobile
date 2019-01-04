@@ -148,14 +148,14 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                             Object resp= AppParser.parseMessageNewResponse(response.toString());
                             MessageDetailsItem messageDetailsItem = (MessageDetailsItem) resp;
                             if(resp instanceof Boolean){
-                                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                               // Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
                             }else if(resp instanceof MessageDetailsItem){
                                 if(isFirstTime){
                                     mArrMessageDetails = messageDetailsItem.getArrMessageList();
                                     if(mArrMessageDetails.size() != 0){
                                        showMessages(mArrMessageDetails);
                                     } else {
-                                        Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT);
+                                      //  Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT);
                                     }
                                    /* mRvMessageList.setHasFixedSize(true);
                                     mRvAdapter = new MessageListAdapter(mArrMessageDetails);
@@ -167,7 +167,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                                         mRvMessageList.getAdapter().notifyItemRangeChanged(arrSize -1, mArrMessageDetails.size() - 1);
                                         mRvMessageList.getAdapter().notifyDataSetChanged();
                                     } else {
-                                        Toast.makeText(mContext,"All the Records are Listed",Toast.LENGTH_SHORT);
+                                        //Toast.makeText(mContext,"All the Records are Listed",Toast.LENGTH_SHORT);
                                     }
                                 }
                             }

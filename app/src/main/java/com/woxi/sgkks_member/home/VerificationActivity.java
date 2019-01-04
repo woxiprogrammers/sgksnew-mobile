@@ -80,7 +80,8 @@ public class VerificationActivity extends AppCompatActivity {
         tvVerificationFor = findViewById(R.id.verificationFor);
         tvOtpSent = findViewById(R.id.tvOtpSent);
         btnMobileNumber = findViewById(R.id.btnSendMobileNo);
-        btnMobileNumber.setText("Send Mobile Number");
+        etOtp = findViewById(R.id.etOtp);
+        btnMobileNumber.setText("SEND OTP");
         if(!isOtpSent){
             mobileNumberListener();
         }
@@ -89,14 +90,16 @@ public class VerificationActivity extends AppCompatActivity {
             etMobileNumber.setText(memberDetailsItem.getStrMobileNumber());
             etMobileNumber.setEnabled(false);
             tvConfirmMobileNumber.setVisibility(View.VISIBLE);
-            tvConfirmMobileNumber.setText("An OTP is sent on "+strMobile);
             tvVerificationFor.setText("Update Information");
-            etOtp.setVisibility(View.VISIBLE);
+            tvEtLable.setVisibility(View.GONE);
+            tvConfirmMobileNumber.setText("An OTP will be sent on "+strMobile);
+            etOtp.setVisibility(View.GONE);
             etMobileNumber.setVisibility(View.GONE);
+        } else {
+            // etOtp = findViewById(R.id.etOtp);
+            etOtp.setVisibility(View.GONE);
+            tvVerificationFor.setText("Adding New Member");
         }
-        etOtp = findViewById(R.id.etOtp);
-        etOtp.setVisibility(View.GONE);
-        tvVerificationFor.setText("Adding New Member");
         etOtp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -118,7 +121,6 @@ public class VerificationActivity extends AppCompatActivity {
 
     private void verifyOtp() {
         pbVerify.setVisibility(View.VISIBLE);
-        btnMobileNumber.setText("Send OTP");
         JSONObject params = new JSONObject();
         try {
             params.put("mobile_number", strMobileNumber);
@@ -176,11 +178,12 @@ public class VerificationActivity extends AppCompatActivity {
                                 if (response.has("message")) {
                                     try {
                                         isOtpSent = true;
+                                        tvConfirmMobileNumber.setVisibility(View.GONE);
                                         tvEtLable.setText("Enter OTP");
                                         etMobileNumber.setVisibility(View.GONE);
                                         etOtp.setVisibility(View.VISIBLE);
                                         tvOtpSent.setVisibility(View.VISIBLE);
-                                        btnMobileNumber.setText("SEND OTP");
+                                        btnMobileNumber.setText("VERIFY OTP");
                                         Toast.makeText(mContext, "" + response.getString("message"), Toast.LENGTH_SHORT).show();
                                     } catch (JSONException e) {
                                         e.printStackTrace();

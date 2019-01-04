@@ -189,7 +189,7 @@ public class EventHomeFragment extends Fragment implements FragmentInterface {
                                     mEventListAdapter = new EventsListAdapter(mArrEventData);
                                     mRvEventList.setAdapter(mEventListAdapter);
                                 } else {
-                                    Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT).show();
                                     mEventListAdapter = new EventsListAdapter(mArrEventData);
                                     mRvEventList.setAdapter(mEventListAdapter);
                                 }

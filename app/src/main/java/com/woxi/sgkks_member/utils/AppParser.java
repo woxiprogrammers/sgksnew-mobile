@@ -1097,26 +1097,23 @@ public class AppParser implements AppConstants {
             JSONArray jsonDataArray = jsonObject.optJSONArray("data");
             for (int index = 0; index < jsonDataArray.length(); index++) {
                 JSONObject jsonMasterObject = jsonDataArray.optJSONObject(index);
-                if (jsonMasterObject.has("classified_count") && jsonMasterObject.optString("classified_count") != null) {
-                    int intClassifiedCount = jsonMasterObject.optInt("classified_count");
-                    masterItem.setIntClassifiedCount(intClassifiedCount);
-                }
-                if (jsonMasterObject.has("message_count") && jsonMasterObject.optString("message_count") != null) {
-                    int intMessageCount = jsonMasterObject.optInt("message_count");
-                    masterItem.setIntMessagesCount(intMessageCount);
+                if (jsonMasterObject.has("is_add_edit_member_enable") && jsonMasterObject.optBoolean("is_add_edit_member_enable")) {
+                    masterItem.setAddEditEnabled(jsonMasterObject.optBoolean("is_add_edit_member_enable"));
+                    Log.i(TAG, "parseMasterResponse: Add Edit is Enable?...."+jsonMasterObject.optBoolean("is_add_edit_member_enable"));
                 }
                 {
                     JSONObject jsonBuzzObject = jsonMasterObject.optJSONObject("buzz");
-                    if(jsonBuzzObject.has("msg_img") && jsonBuzzObject.optString("msg_img") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
-                        String strBuzzUrl = jsonBuzzObject.optString("msg_img");
-                        masterItem.setStrBuzzImageUrl(strBuzzUrl);
-                        Log.i("@@1",strBuzzUrl);
+                    if (jsonBuzzObject != null) {
+                        if(jsonBuzzObject.has("msg_img") && jsonBuzzObject.optString("msg_img") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
+                            String strBuzzUrl = jsonBuzzObject.optString("msg_img");
+                            masterItem.setStrBuzzImageUrl(strBuzzUrl);
+                            Log.i("@@1",strBuzzUrl);
+                        }
+                        if (jsonBuzzObject.has("id")&& jsonBuzzObject.optString("id") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
+                            int intId = jsonBuzzObject.optInt("id");
+                            masterItem.setIntBuzzId(intId);
+                        }
                     }
-                    if (jsonBuzzObject.has("id")&& jsonBuzzObject.optString("id") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
-                        int intId = jsonBuzzObject.optInt("id");
-                        masterItem.setIntBuzzId(intId);
-                    }
-
                 }
             }
             return masterItem;

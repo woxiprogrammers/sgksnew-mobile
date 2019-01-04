@@ -176,7 +176,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                             Object resp= AppParser.parseClassifiedResponse(response.toString());
                             ClassifiedDetailsItem classifiedDetailsItem = (ClassifiedDetailsItem) resp;
                             if(resp instanceof Boolean){
-                                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                              //  Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
                             }else if(resp instanceof ClassifiedDetailsItem){
                                 if(isFirstTime){
                                     mArrClassifiedDetails = classifiedDetailsItem.getArrClassifiedList();
@@ -185,7 +185,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                                         mRvAdapter = new ClassifiedListAdapter(mArrClassifiedDetails);
                                         mRvClassifiedList.setAdapter(mRvAdapter);
                                     } else {
-                                        Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT);
+                                      //  Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT);
                                     }
                                 } else {
                                     ArrayList<ClassifiedDetailsItem> arrNextClassified = classifiedDetailsItem.getArrClassifiedList();
@@ -194,7 +194,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                                         mRvClassifiedList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrClassifiedDetails.size() - 1);
                                         mRvClassifiedList.getAdapter().notifyDataSetChanged();
                                     } else {
-                                        Toast.makeText(mContext,"That's all",Toast.LENGTH_SHORT);
+                                     //   Toast.makeText(mContext,"That's all",Toast.LENGTH_SHORT);
                                     }
                                 }
                             }

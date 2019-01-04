@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +85,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
                 getAllCommitteesOnline();
             } else {
                 arrMainCommList = databaseQueryHandler.queryCommittees();
+                Log.i(TAG, "initializeViews: arrMainCommList.size()----"+arrMainCommList.size());
                 if (arrMainCommList == null || arrMainCommList.size() == 0) {
                     getAllCommitteesOnline();
                 } else {
@@ -120,7 +122,7 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
                                         setCommitteeAdapter(arrMainCommList, false);
                                     } else {
                                         setCommitteeAdapter(arrMainCommList, false);
-                                        Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT).show();
+                                       // Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -209,13 +211,13 @@ public class CommitteeHomeFragment extends Fragment implements AppConstants, Fra
             requestCommitteeListAPI();
             isApiRequested = true;
         } else {
-            arrMainCommList = databaseQueryHandler.queryCommittees();
+            /*arrMainCommList = databaseQueryHandler.queryCommittees();
             if (arrMainCommList == null || arrMainCommList.size() == 0) {
                 getAllCommitteesOnline();
             } else {
                 setCommitteeAdapter(arrMainCommList, true);
                 isApiRequested = true;
-            }
+            }*/
         }
     }
 }

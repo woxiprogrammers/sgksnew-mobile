@@ -78,6 +78,8 @@ public class DataSyncService extends Service {
     private DatabaseQueryHandler databaseQueryHandler;
     private String strCurrentServerTime = "";
     private boolean isVersionChanged;
+    boolean isCommitteeSuccessful = false;
+    boolean isMessageSuccessful = false;
 
     @Nullable
     @Override
@@ -152,8 +154,7 @@ public class DataSyncService extends Service {
                                 arrAccountGujarati = localDataSyncItem.getArrAccountGujaratiItem();
                                 arrCommitteeDetailsItems = localDataSyncItem.getArrCommitteeDetailsItems();
                                 arrCommitteeGujarati = localDataSyncItem.getArrCommitteeDetailsGujaratiItems();
-                                boolean isCommitteeSuccessful = false;
-                                boolean isMessageSuccessful = false;
+
                                 try {
                                     if (response.has("current_timestamp") && !response.getString("current_timestamp").equalsIgnoreCase("")) {
                                         //This Server TimeStamp is used to maintain consistency in time
@@ -165,7 +166,7 @@ public class DataSyncService extends Service {
                                         new AppCommonMethods().LOG(0, TAG + "  CurrentServerTime- ", strCurrentServerTime);
                                     }
                                     if (arrMemberDetailsItems != null) {
-                                        databaseQueryHandler.insertOrUpdateAllMembersEnglish(arrMemberDetailsItems);
+                                        isMessageSuccessful = databaseQueryHandler.insertOrUpdateAllMembersEnglish(arrMemberDetailsItems);
                                     }
                                     if (arrMemberDetailsGujaratiItems != null) {
                                         databaseQueryHandler.insertOrUpdateAllMembersGujarati(arrMemberDetailsGujaratiItems);
@@ -183,7 +184,7 @@ public class DataSyncService extends Service {
                                         databaseQueryHandler.insertOrUpdateEventGujarati(arrEventGujarati);
                                     }
                                     if (arrMessageDetailsItems != null){
-                                        databaseQueryHandler.insertOrUpdateMessageEnglish(arrMessageDetailsItems);
+                                         databaseQueryHandler.insertOrUpdateMessageEnglish(arrMessageDetailsItems);
                                     }
                                     if (arrMessageGujaratiDetailsItems != null){
                                         databaseQueryHandler.insertOrUpdateMessageGujarati(arrMessageGujaratiDetailsItems);
@@ -201,7 +202,7 @@ public class DataSyncService extends Service {
                                         databaseQueryHandler.insertOrUpdateAccountGujarati(arrAccountGujarati);
                                     }
                                     if (arrCommitteeDetailsItems != null) {
-                                        databaseQueryHandler.insertOrUpdateCommitteeDetailsEnglish(arrCommitteeDetailsItems);
+                                        isCommitteeSuccessful = databaseQueryHandler.insertOrUpdateCommitteeDetailsEnglish(arrCommitteeDetailsItems);
                                     }
                                     if (arrCommitteeGujarati != null) {
                                         databaseQueryHandler.insertOrUpdateCommitteeDetailsGuajrati(arrCommitteeGujarati);
@@ -211,7 +212,7 @@ public class DataSyncService extends Service {
                                     e.printStackTrace();
                                 }
                                 //If any of transaction is true(successful) then request api again else sync is complete
-                                if (isCommitteeSuccessful || isMessageSuccessful) {
+                                if (isMessageSuccessful) {
                                     HomeActivity.stopLocalStorageSyncService(getApplicationContext());
                                     AppCommonMethods.putStringPref(PREFS_LAST_UPDATED_DATE, strCurrentServerTime, getApplicationContext());
                                     new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Data Sync Complete At " + strCurrentServerTime);

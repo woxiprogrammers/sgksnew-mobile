@@ -199,7 +199,12 @@ public class SelectCityActivity extends AppCompatActivity {
                     CityIteam cityIteam = arrCityList.get(rvCityList.getChildLayoutPosition(v));
                     String strCityName = cityIteam.getStrCityName();
                     String strCityId = String.valueOf(cityIteam.getIntCityId());
-                    String strCityNameGujarati = cityIteam.getStrCityNameGujarati();
+                    String strCityNameGujarati;
+                    if (cityIteam.getStrCityNameGujarati() != null && !cityIteam.getStrCityNameGujarati().equalsIgnoreCase("null")){
+                        strCityNameGujarati = cityIteam.getStrCityNameGujarati();
+                    } else {
+                        strCityNameGujarati = cityIteam.getStrCityNameEnglish();
+                    }
                     String strCityNameEnglish = cityIteam.getStrCityNameEnglish();
                     AppCommonMethods.putBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED, true, mContext);
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);

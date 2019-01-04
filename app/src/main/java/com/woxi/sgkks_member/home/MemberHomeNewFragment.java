@@ -188,7 +188,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                             Object resp = AppParser.parseMemberList(response.toString());
                             MemberDetailsItem memberDetailsItem = (MemberDetailsItem) resp;
                             if (resp instanceof Boolean) {
-                                Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
                             } else if (resp instanceof MemberDetailsItem) {
                                 if(isFirstTime || isFromSearch){
                                     mArrMemDetails = memberDetailsItem.getArrMemberList();
@@ -200,7 +200,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                         mRvMemberList.setHasFixedSize(true);
                                         mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                         mRvMemberList.setAdapter(mRvAdapter);
-                                        Toast.makeText(mContext,"No Records Found", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(mContext,"No Records Found", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
                                     ArrayList<MemberDetailsItem> arrNextMembers = memberDetailsItem.getArrMemberList();
@@ -212,7 +212,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                         mArrMemDetails.addAll(arrNextMembers);
                                         mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
                                         mRvMemberList.getAdapter().notifyDataSetChanged();
-                                        Toast.makeText(mContext,"All the Records are Listed", Toast.LENGTH_SHORT).show();
+                                       // Toast.makeText(mContext,"All the Records are Listed", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }

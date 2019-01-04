@@ -209,7 +209,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     spBloodGroup.setAdapter(arrBloodGroupAdapter);
                     if (isFromEdit){
                         // Reduce 1 from the recieved ID as the Blood group ID's start from 1
-                        spBloodGroup.setSelection(Integer.parseInt(memberDetailsItem.getStrBloodGroupId())-1);
+                        spBloodGroup.setSelection(Integer.parseInt(strBloodGroupId)-1);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -291,9 +291,9 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                                pDialog.hide();
-                                new AppCommonMethods(mContext).LOG(0, "member_edited", response.toString());
-                                showAlert("Information of "+strFirstName+" "+strMiddleName+ " "+strLastName+" updated successfully.");
+                            pDialog.hide();
+                            new AppCommonMethods(mContext).LOG(0, "member_edited", response.toString());
+                            showAlert("Information of "+strFirstName+" "+strMiddleName+ " "+strLastName+" updated successfully.");
                         }
                     },
                     new Response.ErrorListener() {
@@ -328,9 +328,9 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                                pDialog.hide();
-                                new AppCommonMethods(mContext).LOG(0, "member_added", response.toString());
-                                showAlert(strFirstName+" "+strMiddleName+ " "+strLastName+" added successfully to SGKKS");
+                            pDialog.hide();
+                            new AppCommonMethods(mContext).LOG(0, "member_added", response.toString());
+                            showAlert(strFirstName+" "+strMiddleName+ " "+strLastName+" added successfully to SGKKS");
 
                         }
                     },
@@ -471,6 +471,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         findViewById(R.id.addSgksMember).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                findViewById(R.id.addSgksMember).setClickable(false);
                 strFirstName = metFirstName.getText().toString().trim();
                 strLastName = metLastName.getText().toString().trim();
                 strMiddleName = metMiddleName.getText().toString().trim();
@@ -480,22 +481,52 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
                 if (strFirstName.isEmpty()) {
                     metFirstName.setError("Please Enter your First Name");
                     metFirstName.requestFocus();
+                    findViewById(R.id.addSgksMember).setClickable(true);
                     return;
                 }
                 if (strMiddleName.isEmpty()) {
                     metMiddleName.setError("Please Enter your Middle Name");
                     metMiddleName.requestFocus();
+                    findViewById(R.id.addSgksMember).setClickable(true);
                     return;
                 }
                 if (strLastName.isEmpty()) {
                     metLastName.setError("Please Enter your Last Name");
                     metLastName.requestFocus();
+                    findViewById(R.id.addSgksMember).setClickable(true);
                     return;
                 }
                 if (strContact.isEmpty()) {
                     Toast.makeText(mContext, "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
+                    findViewById(R.id.addSgksMember).setClickable(true);
                     return;
-                } else {
+                }
+                if (strCityId == null) {
+                    new AppCommonMethods(mContext).showAlert("Please Select City");
+                    findViewById(R.id.addSgksMember).setClickable(true);
+                    return;
+                }
+                if (strEmail == null) {
+                    new AppCommonMethods(mContext).showAlert("Please Enter Email");
+                    findViewById(R.id.addSgksMember).setClickable(true);
+                    return;
+                }
+                if (strDateOfBirth == null) {
+                    new AppCommonMethods(mContext).showAlert("Please Enter Date Of Birth");
+                    findViewById(R.id.addSgksMember).setClickable(true);
+                    return;
+                }
+                if (strGender == null) {
+                    new AppCommonMethods(mContext).showAlert("Please Select Gender");
+                    findViewById(R.id.addSgksMember).setClickable(true);
+                    return;
+                }
+                if (strAddress == null) {
+                    new AppCommonMethods(mContext).showAlert("Please Enter The Address");
+                    findViewById(R.id.addSgksMember).setClickable(true);
+                    return;
+                }
+                else {
                     if (new AppCommonMethods(mContext).isNetworkAvailable()) {
                         requestAddMember();
                     } else {
@@ -516,12 +547,20 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metContact.setText(strContact);
         metContact.setEnabled(true);
         strDateOfBirth = chageDateFormat(memberDetailsItem.getStrDateOfBirth());
-        tvDob.setText(memberDetailsItem.getStrDateOfBirth());
+        if (strDateOfBirth != null && !strDateOfBirth.equalsIgnoreCase("null")) {
+            tvDob.setText(memberDetailsItem.getStrDateOfBirth());
+        }
         String strImgUrl = memberDetailsItem.getStrMemberImageUrl();
         setProfileImage(strImgUrl);
         strCityId = memberDetailsItem.getStrCityId();
         strBloodGroupId = memberDetailsItem.getStrBloodGroupId();
-        spBloodGroup.setSelection(Integer.parseInt(strBloodGroupId));
+        if (strBloodGroupId != null && strBloodGroupId.equalsIgnoreCase("null")) {
+            spBloodGroup.setSelection(Integer.parseInt(strBloodGroupId));
+        } else {
+            strBloodGroupId = "1";
+            spBloodGroup.setSelection(1);
+        }
+
         strGender = memberDetailsItem.getStrGender();
         setGengerRadioButton();
         tvSelectCity.setText(memberDetailsItem.getStrCity());

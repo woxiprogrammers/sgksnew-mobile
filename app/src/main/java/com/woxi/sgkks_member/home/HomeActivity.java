@@ -97,7 +97,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private String strBuzzImageUrl;
     private  MasterItem masterItem = new MasterItem();
     private TabLayout mTabLayout;
-    private DatabaseQueryHandler databaseQueryHandler;
+    private DatabaseQueryHandler databaseQueryHandler, databaseQueryHandlerWrite;
     private CountItem countItem = new CountItem();
 
     @Override
@@ -240,6 +240,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             requestMasterApi();
         }
         databaseQueryHandler = new DatabaseQueryHandler(mContext,false);
+        databaseQueryHandlerWrite = new DatabaseQueryHandler(mContext,true);
         countItem = databaseQueryHandler.queryCount(AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext));
         tvLableCityName = findViewById(R.id.tvLableCityName);
         tvLableCityName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
@@ -347,7 +348,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
                 if (position == intMessageTabIndex && isMessageCountApplied) {
                     badgeMessageTab.setVisibility(View.GONE);
-                    databaseQueryHandler.updateMessageCount(0,AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext));
+                    databaseQueryHandlerWrite.updateMessageCount(0,AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext));
                     try {
                         arrLocalMessageIds.addAll(arrMessageIds);
                     } catch (Exception e) {
@@ -357,7 +358,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
                 if (position == intClassifiedTabIndex && isClassifiedCountApplied) {
                     badgeClassifiedTab.setVisibility(View.GONE);
-                    databaseQueryHandler.updateClassifiedCount(0,AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext));
+                    databaseQueryHandlerWrite.updateClassifiedCount(0,AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext));
                     try {
                         arrLocalClassifiedIds.addAll(arrClassifiedIds);
                     } catch (Exception e) {
