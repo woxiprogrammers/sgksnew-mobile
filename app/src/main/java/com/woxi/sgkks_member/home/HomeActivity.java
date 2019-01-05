@@ -593,7 +593,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.i(TAG, "onErrorResponse: "+error);
-                Toast.makeText(mContext,"Something went wrong",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext,"Something went wrong",Toast.LENGTH_SHORT).show();
             }
         });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest,TAG);

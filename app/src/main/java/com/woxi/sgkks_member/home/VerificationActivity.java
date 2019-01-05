@@ -177,6 +177,7 @@ public class VerificationActivity extends AppCompatActivity {
                                 new AppCommonMethods(mContext).LOG(0,"GET_OTP",response.toString());
                                 if (response.has("message")) {
                                     try {
+                                        btnMobileNumber.setClickable(true);
                                         isOtpSent = true;
                                         tvConfirmMobileNumber.setVisibility(View.GONE);
                                         tvEtLable.setText("Enter OTP");
@@ -194,6 +195,7 @@ public class VerificationActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         pbVerify.setVisibility(View.GONE);
+                        btnMobileNumber.setClickable(true);
                         new AppCommonMethods(mContext).LOG(0,"GET_OTP",error.toString());
                         Toast.makeText(mContext, "Something Went Wrong", Toast.LENGTH_SHORT).show();
                     }
@@ -229,6 +231,7 @@ public class VerificationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isOtpSent) {
+                    btnMobileNumber.setClickable(false);
                     if (strOtp != null && !strOtp.equalsIgnoreCase("null")){
                         if (strOtp.length() == 6) {
                             tvErrorMessage.setVisibility(View.GONE);
@@ -236,28 +239,35 @@ public class VerificationActivity extends AppCompatActivity {
                                 verifyOtp();
                             } else {
                                 new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                                btnMobileNumber.setClickable(true);
                             }
                         }else {
                             tvErrorMessage.setVisibility(View.VISIBLE);
                             tvErrorMessage.setText("Please enter a valid OTP");
+                            btnMobileNumber.setClickable(false);
                         }
                     } else {
                         tvErrorMessage.setVisibility(View.VISIBLE);
                         tvErrorMessage.setText("Please enter a valid OTP");
+                        btnMobileNumber.setClickable(false);
                     }
                 } else {
+                    btnMobileNumber.setClickable(false);
                     if (strMobileNumber != null && !strMobileNumber.equalsIgnoreCase("null")) {
                         if (strMobileNumber.length() == 10) {
                             if (new AppCommonMethods(mContext).isNetworkAvailable()) {
                                 sendMobileNumberToServer();
                             } else {
                                 new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                                btnMobileNumber.setClickable(true);
                             }
                         } else {
+                            btnMobileNumber.setClickable(true);
                             tvErrorMessage.setVisibility(View.VISIBLE);
                             tvErrorMessage.setText("Please enter a valid Mobile Number");
                         }
                     } else {
+                        btnMobileNumber.setClickable(true);
                         tvErrorMessage.setVisibility(View.VISIBLE);
                         tvErrorMessage.setText("Please enter a valid Mobile Number");
                     }

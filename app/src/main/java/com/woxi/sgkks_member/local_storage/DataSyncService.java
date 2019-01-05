@@ -78,8 +78,13 @@ public class DataSyncService extends Service {
     private DatabaseQueryHandler databaseQueryHandler;
     private String strCurrentServerTime = "";
     private boolean isVersionChanged;
-    boolean isCommitteeSuccessful = false;
-    boolean isMessageSuccessful = false;
+    boolean isCommitteeSuccessful = false, isGujaratiCommitteeSuccessful = false;
+    boolean isMessageSuccessful = false, isGujaratiMessagesSuccessful = false;
+    boolean isMemberSuccessful = false, isGujaratiMemberSuccessful = false;
+    boolean isEventSuccessful = false, isGujaratiEventSuccessful = false;
+    boolean isAccountSuccessful = false, isGujaratiAccountSuccessful = false;
+    boolean isClassifiedSuccessful = false, isGujaratiClassifiedSuccessful = false;
+    boolean isCitySuccessful = false, isGujaratiCitySuccessful = false;
 
     @Nullable
     @Override
@@ -166,53 +171,59 @@ public class DataSyncService extends Service {
                                         new AppCommonMethods().LOG(0, TAG + "  CurrentServerTime- ", strCurrentServerTime);
                                     }
                                     if (arrMemberDetailsItems != null) {
-                                        isMessageSuccessful = databaseQueryHandler.insertOrUpdateAllMembersEnglish(arrMemberDetailsItems);
+                                        isMemberSuccessful = databaseQueryHandler.insertOrUpdateAllMembersEnglish(arrMemberDetailsItems);
                                     }
                                     if (arrMemberDetailsGujaratiItems != null) {
-                                        databaseQueryHandler.insertOrUpdateAllMembersGujarati(arrMemberDetailsGujaratiItems);
+                                        isGujaratiMemberSuccessful = databaseQueryHandler.insertOrUpdateAllMembersGujarati(arrMemberDetailsGujaratiItems);
                                     }
                                     if(arrCityEnglishItems != null){
-                                        databaseQueryHandler.insertOrUpdateCitiesEnglish(arrCityEnglishItems);
+                                        isCitySuccessful = databaseQueryHandler.insertOrUpdateCitiesEnglish(arrCityEnglishItems);
                                     }
                                     if (arrCityGujaratiItems != null){
-                                        databaseQueryHandler.insertOrUpdateCitiesGujarati(arrCityGujaratiItems);
+                                        isGujaratiCitySuccessful = databaseQueryHandler.insertOrUpdateCitiesGujarati(arrCityGujaratiItems);
                                     }
                                     if(arrEventEnglish != null){
-                                        databaseQueryHandler.insertOrUpdateEventsEnglish(arrEventEnglish);
+                                        isEventSuccessful = databaseQueryHandler.insertOrUpdateEventsEnglish(arrEventEnglish);
                                     }
                                     if(arrEventGujarati != null){
-                                        databaseQueryHandler.insertOrUpdateEventGujarati(arrEventGujarati);
+                                        isGujaratiCitySuccessful = databaseQueryHandler.insertOrUpdateEventGujarati(arrEventGujarati);
                                     }
                                     if (arrMessageDetailsItems != null){
-                                         databaseQueryHandler.insertOrUpdateMessageEnglish(arrMessageDetailsItems);
+                                         isMessageSuccessful = databaseQueryHandler.insertOrUpdateMessageEnglish(arrMessageDetailsItems);
                                     }
                                     if (arrMessageGujaratiDetailsItems != null){
-                                        databaseQueryHandler.insertOrUpdateMessageGujarati(arrMessageGujaratiDetailsItems);
+                                        isGujaratiMessagesSuccessful = databaseQueryHandler.insertOrUpdateMessageGujarati(arrMessageGujaratiDetailsItems);
                                     }
                                     if (arrClassifiedEnglish != null) {
-                                        databaseQueryHandler.inserOrUpdateClassifiedEnglish(arrClassifiedEnglish);
+                                        isClassifiedSuccessful = databaseQueryHandler.inserOrUpdateClassifiedEnglish(arrClassifiedEnglish);
                                     }
                                     if (arrClassifiedGujarati != null) {
-                                        databaseQueryHandler.insertOrUpdateClassifiedGujarati(arrClassifiedGujarati);
+                                        isGujaratiClassifiedSuccessful = databaseQueryHandler.insertOrUpdateClassifiedGujarati(arrClassifiedGujarati);
                                     }
                                     if (arrAccountEnglish != null) {
-                                        databaseQueryHandler.insertOrUpdateAccountsEnglish(arrAccountEnglish);
+                                        isAccountSuccessful = databaseQueryHandler.insertOrUpdateAccountsEnglish(arrAccountEnglish);
                                     }
                                     if (arrAccountGujarati != null){
-                                        databaseQueryHandler.insertOrUpdateAccountGujarati(arrAccountGujarati);
+                                        isGujaratiAccountSuccessful = databaseQueryHandler.insertOrUpdateAccountGujarati(arrAccountGujarati);
                                     }
                                     if (arrCommitteeDetailsItems != null) {
                                         isCommitteeSuccessful = databaseQueryHandler.insertOrUpdateCommitteeDetailsEnglish(arrCommitteeDetailsItems);
                                     }
                                     if (arrCommitteeGujarati != null) {
-                                        databaseQueryHandler.insertOrUpdateCommitteeDetailsGuajrati(arrCommitteeGujarati);
+                                        isGujaratiCommitteeSuccessful = databaseQueryHandler.insertOrUpdateCommitteeDetailsGuajrati(arrCommitteeGujarati);
                                     }
                                     databaseQueryHandler.insertCount(arrCityEnglishItems,arrMessageDetailsItems,arrClassifiedEnglish);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                                 //If any of transaction is true(successful) then request api again else sync is complete
-                                if (isMessageSuccessful) {
+                                if ((isEventSuccessful || isGujaratiEventSuccessful) &&
+                                        (isCommitteeSuccessful || isGujaratiCommitteeSuccessful) &&
+                                        (isMemberSuccessful || isGujaratiMemberSuccessful) &&
+                                        (isMessageSuccessful || isGujaratiMessagesSuccessful) &&
+                                        (isClassifiedSuccessful || isGujaratiClassifiedSuccessful) &&
+                                        (isAccountSuccessful || isGujaratiAccountSuccessful) &&
+                                        (isCitySuccessful || isGujaratiCitySuccessful)) {
                                     HomeActivity.stopLocalStorageSyncService(getApplicationContext());
                                     AppCommonMethods.putStringPref(PREFS_LAST_UPDATED_DATE, strCurrentServerTime, getApplicationContext());
                                     new AppCommonMethods(getBaseContext()).LOG(0, TAG, "Data Sync Complete At " + strCurrentServerTime);

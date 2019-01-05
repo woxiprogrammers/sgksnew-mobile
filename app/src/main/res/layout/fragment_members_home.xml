@@ -44,7 +44,9 @@
             android:background="@null"
             android:hint="@string/search_name_surname_member_id"
             android:imeOptions="actionDone"
-            android:paddingLeft="@dimen/v8"/>
+            android:paddingLeft="@dimen/v8"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
 
         <ImageView
             android:id="@+id/ivSearchMember"
