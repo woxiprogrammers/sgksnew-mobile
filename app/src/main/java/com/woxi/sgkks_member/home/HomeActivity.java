@@ -241,7 +241,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         databaseQueryHandler = new DatabaseQueryHandler(mContext,false);
         databaseQueryHandlerWrite = new DatabaseQueryHandler(mContext,true);
-        countItem = databaseQueryHandler.queryCount(AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext));
+
         tvLableCityName = findViewById(R.id.tvLableCityName);
         tvLableCityName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         setupCityNameInHeader();
@@ -400,6 +400,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.alert_sync_failed));
             }
+        }
+        try {
+            countItem = databaseQueryHandler.queryCount(AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -14,13 +14,20 @@ android {
         applicationId 'com.woxi.sgkks_member'
         minSdkVersion 18
         targetSdkVersion 27
-        versionName '1.7'
-        versionCode 7
+        versionName '1.9'
+        versionCode 9
         flavorDimensions "prod"
     }
     buildTypes {
         release {
             debuggable false
+            zipAlignEnabled true
+            shrinkResources true
+            minifyEnabled true  // enables ProGuard
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
             zipAlignEnabled true
             shrinkResources true
             minifyEnabled true  // enables ProGuard

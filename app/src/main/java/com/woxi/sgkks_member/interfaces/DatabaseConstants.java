@@ -8,8 +8,8 @@ package com.woxi.sgkks_member.interfaces;
 
 public interface DatabaseConstants {
     //Database Info
-    String DATABASE_NAME = "sgks_database.db";
-    int DATABASE_VERSION = 2;
+    String DATABASE_NAME = "sgkks_database.db";
+    int DATABASE_VERSION = 1;
 
     //Family Details Table
     String TABLE_FAMILY_DETAILS = "table_families";
