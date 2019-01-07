@@ -205,22 +205,21 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    public ArrayList<MemberDetailsItem> queryMembers(String searchString) {
+    public ArrayList<MemberDetailsItem> queryMembers(String searchString , int pageNumber) {
         int intLimit = 10;
-        //int intOffset = intLimit * pageNumber;
+        int intOffset = intLimit * pageNumber;
         ArrayList<MemberDetailsItem> arrMemDetails = new ArrayList<>();
         String sqlQuery = "";
         //FETCH ACTIVE MEMBER ID's
-        String fetchMemberId = "SELECT " + COLUMN_MEMBER_ID_PRIMARY_EN + " FROM " + TABLE_MEMBER_DETAILS_EN
-                + " WHERE "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
-                + " AND " + COLUMN_MEMBER_SGKS_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'";
-        Cursor cursorMemberId = mSqLiteDatabase.rawQuery(fetchMemberId,null);
+
+        Cursor cursorMemberId = null;
         if (searchString.equalsIgnoreCase("")){
             Log.i(TAG, "Display all records");
             sqlQuery = "select * from "
                     +TABLE_MEMBER_DETAILS_EN
                     + " where "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext)
-                    + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";
+                    + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
+                    + " limit " + intLimit + " offset "+ intOffset;
             new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
         }  else if (searchString.matches("^[A-Za-z]*$")) {
             //TODO Search in name OR surname column
@@ -229,7 +228,8 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     +TABLE_MEMBER_DETAILS_EN
                     + " where "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext)
                     + " and "+ COLUMN_MEMBER_FIRST_NAME +" like "+"'%"+searchString+"%'"
-                    + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";
+                    + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
+                    + " limit " + intLimit + " offset "+ intOffset;
 
             new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
         } else if (searchString.contains(" ")) {
@@ -242,7 +242,8 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 sqlQuery = "select * from "
                         + TABLE_MEMBER_DETAILS_EN
                         + " where " + COLUMN_MEMBER_FIRST_NAME + " like '%" + firstString + "%'"
-                        + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";;
+                        + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
+                        + " limit " + intLimit + " offset "+ intOffset;
                 new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
             }
             if (splitStrings.length == 2) {
@@ -253,7 +254,8 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         + TABLE_MEMBER_DETAILS_EN
                         + " where " + COLUMN_MEMBER_FIRST_NAME + " like '%" + firstString + "%'"
                         + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'%" + secondString + "%'"
-                        + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";;
+                        + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
+                        + " limit " + intLimit + " offset "+ intOffset;
                 new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
             }
             if (splitStrings.length == 3) {
@@ -266,7 +268,8 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         + " where " + COLUMN_MEMBER_FIRST_NAME + " like " + "'%" + firstString + "%'"
                         + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'%" + secondString + "%'"
                         + " or " + COLUMN_MEMBER_LAST_NAME + " like " + "'%" + thirdString + "%'"
-                        + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";;
+                        + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
+                        + " limit " + intLimit + " offset "+ intOffset;
                 new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
             }
         }
@@ -295,6 +298,11 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 } while (cursorMember.moveToNext());
             }
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
+            String fetchMemberId = "SELECT " + COLUMN_MEMBER_ID_PRIMARY_EN + " FROM " + TABLE_MEMBER_DETAILS_EN
+                    + " WHERE "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
+                    + " AND " + COLUMN_MEMBER_SGKS_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'"
+                    + " limit " + intLimit + " offset " + intOffset ;
+            cursorMemberId = mSqLiteDatabase.rawQuery(fetchMemberId,null);
             if (cursorMemberId.moveToFirst()){
                 do {
                     sqlQuery = "select * from "

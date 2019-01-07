@@ -103,23 +103,23 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
         boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
         if(isLanguageChanged || isCityChanged){
+            pageNumber=0;
             if(new AppCommonMethods(mContext).isNetworkAvailable()){
                 if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                    pageNumber=0;
                     requestToGetMembersData(pageNumber,true,false);
                 }
             } else {
-                mArrMemDetails = databaseQueryHandler.queryMembers("");
-                fetchMembersOffline(mArrMemDetails);
+                mArrMemDetails = databaseQueryHandler.queryMembers("",pageNumber);
+                fetchMembersOffline(mArrMemDetails,true,false);
             }
         } else {
-            requestToGetMembersData(pageNumber,true,false);
-        }
-        if (new AppCommonMethods(mContext).isNetworkAvailable()){
-            requestToGetMembersData(pageNumber,true,false);
-        } else {
-            mArrMemDetails = databaseQueryHandler.queryMembers("");
-            fetchMembersOffline(mArrMemDetails);
+            pageNumber=0;
+            if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                requestToGetMembersData(pageNumber,true,false);
+            } else {
+                mArrMemDetails = databaseQueryHandler.queryMembers("",pageNumber);
+                fetchMembersOffline(mArrMemDetails,true,false);
+            }
         }
     }
 
@@ -150,7 +150,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 requestToGetMembersData(pageNumber,true,false);
             }
         } else {
-            mArrMemDetails = databaseQueryHandler.queryMembers(strSearchFullName);
+            mArrMemDetails = databaseQueryHandler.queryMembers(strSearchFullName,0);
             mRvMemberList.setHasFixedSize(true);
             mRvAdapter = new MemberListAdapter(mArrMemDetails);
             mRvMemberList.setAdapter(mRvAdapter);
@@ -243,6 +243,9 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mRvMemberList.addOnScrollListener(new EndlessRvScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
+                if (!new AppCommonMethods(mContext).isNetworkAvailable()){
+                    pageNumber++;
+                }
                 requestLazyLoadMembersApi();
             }
         });
@@ -255,15 +258,44 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
                 requestToGetMembersData(pageNumber,false,false);
             } else {
-               // new AppCommonMethods(mContext).showAlert("You are offline");
+                ArrayList <MemberDetailsItem> arrayList = new ArrayList<>();
+                arrayList = databaseQueryHandler.queryMembers(strSearchFullName,pageNumber);
+                fetchMembersOffline(arrayList,false,false);
+
             }
         }
     }
 
-    private void fetchMembersOffline(ArrayList <MemberDetailsItem> arrTrial){
-        mRvMemberList.setHasFixedSize(true);
-        mRvAdapter = new MemberListAdapter(arrTrial);
-        mRvMemberList.setAdapter(mRvAdapter);
+    private void fetchMembersOffline(ArrayList <MemberDetailsItem> arrTrial, boolean isFirstTime, boolean isFromSearch){
+//        mRvMemberList.setHasFixedSize(true);
+//        mRvAdapter = new MemberListAdapter(arrTrial);
+//        mRvMemberList.setAdapter(mRvAdapter);
+
+        if(isFirstTime || isFromSearch){
+            mArrMemDetails = arrTrial;
+            if (mArrMemDetails.size() != 0){
+                mRvMemberList.setHasFixedSize(true);
+                mRvAdapter = new MemberListAdapter(mArrMemDetails);
+                mRvMemberList.setAdapter(mRvAdapter);
+            } else {
+                mRvMemberList.setHasFixedSize(true);
+                mRvAdapter = new MemberListAdapter(mArrMemDetails);
+                mRvMemberList.setAdapter(mRvAdapter);
+                //Toast.makeText(mContext,"No Records Found", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            ArrayList<MemberDetailsItem> arrNextMembers = arrTrial;
+            if(arrNextMembers.size() != 0){
+                mArrMemDetails.addAll(arrNextMembers);
+                mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
+                mRvMemberList.getAdapter().notifyDataSetChanged();
+            } else {
+                mArrMemDetails.addAll(arrNextMembers);
+                mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
+                mRvMemberList.getAdapter().notifyDataSetChanged();
+                // Toast.makeText(mContext,"All the Records are Listed", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 
@@ -280,16 +312,16 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
                         requestToGetMembersData(0,false,true);
                     } else {
-                        mArrMemDetails = databaseQueryHandler.queryMembers(strSearchFullName);
-                        fetchMembersOffline(mArrMemDetails);
+                        mArrMemDetails = databaseQueryHandler.queryMembers(strSearchFullName,0);
+                        fetchMembersOffline(mArrMemDetails,false,true);
                     }
                 } else if (charSequence.length()==0){
                     strSearchFullName = "";
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
                         requestToGetMembersData(0,false, true);
                     } else {
-                        mArrMemDetails = databaseQueryHandler.queryMembers(strSearchFullName);
-                        fetchMembersOffline(mArrMemDetails);
+                        mArrMemDetails = databaseQueryHandler.queryMembers(strSearchFullName,0);
+                        fetchMembersOffline(mArrMemDetails,false,true);
                     }
                 }
             }
