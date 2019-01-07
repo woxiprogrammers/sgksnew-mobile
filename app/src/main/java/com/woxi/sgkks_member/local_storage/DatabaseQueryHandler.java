@@ -807,12 +807,15 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    public ArrayList<MessageDetailsItem> querryMessages() {
+    public ArrayList<MessageDetailsItem> querryMessages(int pageNumber) {
+        int intLimit = 10;
+        int intOffset = intLimit * pageNumber;
         ArrayList<MessageDetailsItem> arrayListMessages = new ArrayList<>();
 
         String sqlQueryEnglish = "SELECT * FROM "+ TABLE_MESSAGE_NEWS_DETAILS
                 + " WHERE " + COLUMN_MESSAGES_IS_ACTIVE + "='true'"
-                + " AND " + COLUMN_MESSAGES_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'";
+                + " AND " + COLUMN_MESSAGES_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
+                + " LIMIT " + intLimit + " OFFSET " + intOffset;
 
         Cursor cursorMessages =mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);;
         Cursor cursorMessagesGujarati;
@@ -843,7 +846,8 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             if (cursorMessageId.moveToFirst()) {
                 do {
                     String sqlQueryGujarati = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS_GJ
-                            + " WHERE " + COLUMN_MESSAGES_ID_FOREIGN + "='" + cursorMessageId.getString(cursorMessageId.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY)) + "'";
+                            + " WHERE " + COLUMN_MESSAGES_ID_FOREIGN + "='" + cursorMessageId.getString(cursorMessageId.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY)) + "'"
+                            + " LIMIT " + intLimit + " OFFSET " + intOffset;
                     cursorMessagesGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
                     if (cursorMessagesGujarati.moveToFirst() && cursorMessages.moveToFirst()){
                         do {
