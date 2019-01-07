@@ -968,10 +968,13 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    public  ArrayList<ClassifiedDetailsItem> queryClassified () {
+    public  ArrayList<ClassifiedDetailsItem> queryClassified (int pageNumber) {
+        int intLimit = 10;
+        int intOffset = intLimit * pageNumber;
         String sqlQueryEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_EN
                 + " WHERE " + COLUMN_CLASSIFIED_IS_ACTIVE + "='true'"
-                + " AND " + COLUMN_CLASSIFIED_CITY_ID + "='"+ AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'" ;
+                + " AND " + COLUMN_CLASSIFIED_CITY_ID + "='"+ AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'"
+                + " LIMIT " + intLimit + " OFFSET " + intOffset;
 
         ArrayList<ClassifiedDetailsItem> arrayListClassified = new ArrayList<>();
         ArrayList<String> arrImage = new ArrayList<>();
@@ -1001,9 +1004,15 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             if (cursorClassifiedId.moveToFirst()) {
                 do {
                     String sqlQueryGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_GJ
-                            + " WHERE " + COLUMN_CLASSIFIED_ID_FOREIGN_KEY + "='" + cursorClassifiedId.getString(cursorClassifiedId.getColumnIndexOrThrow(COLUMN_CLASSIFIED_ID_PRIMARY_KEY)) +  "'";
+                            + " WHERE " + COLUMN_CLASSIFIED_ID_FOREIGN_KEY + "='" + cursorClassifiedId.getString(cursorClassifiedId.getColumnIndexOrThrow(COLUMN_CLASSIFIED_ID_PRIMARY_KEY)) +  "'"
+                            + " LIMIT " + intLimit + " OFFSET " + intOffset;
                     Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
-                    Log.i(TAG, "queryClassified: "+(cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()));
+                    sqlQueryEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_EN
+                            + " WHERE " + COLUMN_CLASSIFIED_IS_ACTIVE + "='true'"
+                            + " AND " + COLUMN_CLASSIFIED_CITY_ID + "='"+ AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'"
+                            + " AND " + COLUMN_CLASSIFIED_ID_PRIMARY_KEY + "='" + cursorClassifiedId.getString(cursorClassifiedId.getColumnIndexOrThrow(COLUMN_CLASSIFIED_ID_PRIMARY_KEY)) +  "'"
+                            + " LIMIT " + intLimit + " OFFSET " + intOffset;
+                    cursorEnglish = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
                     if (cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()){
                         do {
                             ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
