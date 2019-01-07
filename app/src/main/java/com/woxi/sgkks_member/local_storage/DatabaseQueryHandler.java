@@ -337,54 +337,51 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     String sqlMemberGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_MEMBER_DETAILS_GJ
                             + " WHERE " + COLUMN_MEMBER_ID_FOREIGN_KEY + "='" + cursorMemberId.getString(cursorMemberId.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY_EN)) +"'";
                     new AppCommonMethods(mContext).LOG(0,TAG,sqlMemberGujarati);
-                    Log.i(TAG, "queryMembers: CE:---"+cursorMember.getCount());
-
                     Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlMemberGujarati,null);
-                    Log.i(TAG, "queryMembers: CG:-----"+cursorGujarati.getCount());
                     if ((cursorGujarati.moveToFirst() && cursorMember.moveToFirst()) || (cursorGujarati.getCount() == 0 && cursorMember.moveToFirst())){
                         //do {
-                            MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
-                            //Check if first name is present in Gujarati
-                            if (cursorGujarati.getCount() != 0) {
-                                if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)).equalsIgnoreCase("null")) {
-                                    memberDetailsItem.setStrFirstName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
-                                } else {
-                                    memberDetailsItem.setStrFirstName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
-                                }
-                                if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)).equalsIgnoreCase("null")) {
-                                    memberDetailsItem.setStrMiddleName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
-                                } else {
-                                    memberDetailsItem.setStrMiddleName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
-                                }
-                                if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)).equalsIgnoreCase("null")) {
-                                    memberDetailsItem.setStrLastName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
-                                } else {
-                                    memberDetailsItem.setStrLastName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
-                                }
-                                if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)).equalsIgnoreCase("null")) {
-                                    memberDetailsItem.setStrAddress(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
-                                } else {
-                                    memberDetailsItem.setStrAddress(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
-                                }
+                        MemberDetailsItem memberDetailsItem = new MemberDetailsItem();
+                        //Check if first name is present in Gujarati
+                        if (cursorGujarati.getCount() != 0) {
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)).equalsIgnoreCase("null")) {
+                                memberDetailsItem.setStrFirstName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
                             } else {
                                 memberDetailsItem.setStrFirstName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
+                            }
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)).equalsIgnoreCase("null")) {
+                                memberDetailsItem.setStrMiddleName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
+                            } else {
                                 memberDetailsItem.setStrMiddleName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
+                            }
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)).equalsIgnoreCase("null")) {
+                                memberDetailsItem.setStrLastName(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
+                            } else {
                                 memberDetailsItem.setStrLastName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
+                            }
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)).equalsIgnoreCase("null")) {
+                                memberDetailsItem.setStrAddress(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
+                            } else {
                                 memberDetailsItem.setStrAddress(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
                             }
-                            memberDetailsItem.setStrCity(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY)));
-                            memberDetailsItem.setStrCityId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY_ID)));
-                            memberDetailsItem.setStrGender(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_GENDER)));
-                            memberDetailsItem.setStrMobileNumber(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MOBILE)));
-                            memberDetailsItem.setStrDateOfBirth(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH)));
-                            memberDetailsItem.setStrEmail(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_EMAIL)));
-                            memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP)));
-                            memberDetailsItem.setStrBloodGroupId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP_ID)));
-                            memberDetailsItem.setStrLatitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LATITUDE)));
-                            memberDetailsItem.setStrLongitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LONGITUDE)));
-                            memberDetailsItem.setStrMemberImageUrl(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IMAGE_URL)));
-                            arrMemDetails.add(memberDetailsItem);
-                        } while ((cursorGujarati.moveToNext() && cursorMember.moveToNext()) || (cursorMember.moveToNext()));
+                        } else {
+                            memberDetailsItem.setStrFirstName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_FIRST_NAME)));
+                            memberDetailsItem.setStrMiddleName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MIDDLE_NAME)));
+                            memberDetailsItem.setStrLastName(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LAST_NAME)));
+                            memberDetailsItem.setStrAddress(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_ADDRESS)));
+                        }
+                        memberDetailsItem.setStrCity(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY)));
+                        memberDetailsItem.setStrCityId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_SGKS_CITY_ID)));
+                        memberDetailsItem.setStrGender(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_GENDER)));
+                        memberDetailsItem.setStrMobileNumber(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_MOBILE)));
+                        memberDetailsItem.setStrDateOfBirth(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH)));
+                        memberDetailsItem.setStrEmail(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_EMAIL)));
+                        memberDetailsItem.setStrBloodGroup(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP)));
+                        memberDetailsItem.setStrBloodGroupId(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_BLOOD_GROUP_ID)));
+                        memberDetailsItem.setStrLatitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LATITUDE)));
+                        memberDetailsItem.setStrLongitude(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_LONGITUDE)));
+                        memberDetailsItem.setStrMemberImageUrl(cursorMember.getString(cursorMember.getColumnIndexOrThrow(COLUMN_MEMBER_IMAGE_URL)));
+                        arrMemDetails.add(memberDetailsItem);
+                    } while ((cursorGujarati.moveToNext() && cursorMember.moveToNext()) || (cursorMember.moveToNext()));
 
                     if (cursorGujarati != null && !cursorGujarati.isClosed()) {
                         cursorGujarati.close();
@@ -481,24 +478,44 @@ public class DatabaseQueryHandler implements DatabaseConstants {
 
 
         //FETCH CITY ID
-        String fetchCityId = "SELECT " + COLUMN_CITY_ID_PRIMARY_EN + " FROM " + TABLE_CITIES_EN
-                + " WHERE " + COLUMN_CITY_IS_ACTIVE + "='true'";
+        String fetchCityId = "";
+        if (strSearchKey.equalsIgnoreCase("")) {
+            fetchCityId = "SELECT " + COLUMN_CITY_ID_PRIMARY_EN + " FROM " + TABLE_CITIES_EN
+                    + " WHERE " + COLUMN_CITY_IS_ACTIVE + "='true'"
+                    + " ORDER BY " + COLUMN_CITY_NAME + " ASC ";;
+        } else {
+            fetchCityId = "SELECT " + COLUMN_CITY_ID_PRIMARY_EN + " FROM " + TABLE_CITIES_EN
+                    + " WHERE " + COLUMN_CITY_IS_ACTIVE + "='true'"
+                    + " AND " + COLUMN_CITY_NAME + " LIKE '%" + strSearchKey + "%'"
+                    + " ORDER BY " + COLUMN_CITY_NAME + " ASC ";;
+        }
+        new AppCommonMethods(mContext).LOG(0, TAG, fetchCityId);
         Cursor cursorCityId = mSqLiteDatabase.rawQuery(fetchCityId,null);
 
         //SET arrCityIteam WITH RESPECTIVE LANGUAGE
-        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1") && strSearchKey.equalsIgnoreCase("")){
+        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1") /*&& strSearchKey.equalsIgnoreCase("")*/){
             if (cursorCityId.moveToFirst()) {
                 do {
-                    String sqlQueryEnglish="SELECT * FROM "+ TABLE_CITIES_EN
-                            + " WHERE " + COLUMN_CITY_IS_ACTIVE + "='true'"
-                            + " AND " + COLUMN_CITY_ID_PRIMARY_EN + "='" + cursorCityId.getString(cursorCityId.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY_EN)) + "'";
+                    String sqlQueryEnglish = "";
+                    if (strSearchKey.equalsIgnoreCase("")){
+                        sqlQueryEnglish = "SELECT * FROM "+ TABLE_CITIES_EN
+                                + " WHERE " + COLUMN_CITY_IS_ACTIVE + "='true'"
+                                + " AND " + COLUMN_CITY_ID_PRIMARY_EN + "='" + cursorCityId.getString(cursorCityId.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY_EN)) + "'"
+                                + " ORDER BY " + COLUMN_CITY_NAME + " ASC ";
+                    } else {
+                        sqlQueryEnglish = "SELECT * FROM "+ TABLE_CITIES_EN
+                                + " WHERE " + COLUMN_CITY_NAME + " LIKE '%" + strSearchKey + "%'"
+                                + " AND " + COLUMN_CITY_ID_PRIMARY_EN + "='" + cursorCityId.getString(cursorCityId.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY_EN)) + "'"
+                                + " AND " + COLUMN_CITY_IS_ACTIVE + "='true'"
+                                + " ORDER BY " + COLUMN_CITY_NAME + " ASC ";;
+                    }
+
                     new AppCommonMethods(mContext).LOG(0, TAG, sqlQueryEnglish);
                     Cursor cityCursor = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
                     String sqlQueryGujarati = "SELECT " + COLUMN_CITY_NAME + " FROM " + TABLE_CITIES_GJ
                             + " WHERE " + COLUMN_CITY_ID_FOREIGN + "='" + cursorCityId.getString(cursorCityId.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY_EN)) + "'";
                     Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
-                    if (cityCursor.moveToFirst() && cursorGujarati.moveToFirst()) {
-                        Log.i(TAG, "queryCities: "+(cityCursor.moveToFirst() && cursorGujarati.moveToFirst()));
+                    if ((cityCursor.moveToFirst() && cursorGujarati.moveToFirst())) {
                         do {
                             CityIteam cityIteam = new CityIteam();
                             cityIteam.setIntCityId(Integer.parseInt(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_ID_PRIMARY_EN))));
@@ -511,7 +528,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                                 cityIteam.setStrCityNameGujarati(cityCursor.getString(cityCursor.getColumnIndexOrThrow(COLUMN_CITY_NAME)));
                             }
                             arrCityIteam.add(cityIteam);
-                        } while ( cityCursor.moveToNext() && cursorGujarati.moveToNext());
+                        } while ((cityCursor.moveToNext() && cursorGujarati.moveToNext()));
                     }
                     if (cursorGujarati != null && !cursorGujarati.isClosed()) {
                         cursorGujarati.close();
@@ -521,7 +538,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     }
                 } while (cursorCityId.moveToNext());
             }
-        } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2") && strSearchKey.equalsIgnoreCase("")){
+        } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2") /*&& strSearchKey.equalsIgnoreCase("")*/){
             if (cursorCityId.moveToFirst()) {
                 do {
                     String sqlQueryEnglish="SELECT * FROM "+ TABLE_CITIES_EN

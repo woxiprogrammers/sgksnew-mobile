@@ -92,7 +92,18 @@ public class SelectCityActivity extends AppCompatActivity {
                 if(new AppCommonMethods(mContext).isNetworkAvailable()){
                     requestCityList();
                 } else {
-                    new AppCommonMethods(mContext).showAlert("You need to be online to search city");
+                    if (charSequence.length() >= 2){
+                        strSearchCity = charSequence.toString();
+                        arrCityList = databaseQueryHandler.queryCities(strSearchCity);
+                        setupCityList(arrCityList);
+                        pbSearchCity.setVisibility(View.GONE);
+                    } else {
+                        strSearchCity = charSequence.toString();
+                        arrCityList = databaseQueryHandler.queryCities("");
+                        setupCityList(arrCityList);
+                        pbSearchCity.setVisibility(View.GONE);
+                    }
+
                 }
             }
 
