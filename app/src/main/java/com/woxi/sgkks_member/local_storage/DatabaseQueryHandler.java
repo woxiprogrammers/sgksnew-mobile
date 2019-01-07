@@ -53,50 +53,6 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    boolean insertOrUpdateAllFamilies(ArrayList<FamilyDetailsItem> arrFamilyDetailsItems, boolean isUpdate) {
-        //SQL Prepared Statement
-        String insertFamilyPreparedStatement = "INSERT OR REPLACE INTO " + DatabaseHelper.TABLE_FAMILY_DETAILS + " VALUES (?,?,?,?,?);";
-
-        SQLiteStatement familyStatement = mSqLiteDatabase.compileStatement(insertFamilyPreparedStatement);
-        mSqLiteDatabase.beginTransaction();
-        FamilyDetailsItem familyDetailsItem;
-        try {
-            for (int arrIndex = 0; arrIndex < arrFamilyDetailsItems.size(); arrIndex++) {
-                familyStatement.clearBindings();
-                familyDetailsItem = arrFamilyDetailsItems.get(arrIndex);
-                if (familyDetailsItem.getFamily_id() != null) {
-                    familyStatement.bindString(1, familyDetailsItem.getFamily_id());
-
-                    //Save last inserted id
-                    if (!isUpdate && arrIndex == arrFamilyDetailsItems.size() - 1) {
-                        String lastFamilyId = familyDetailsItem.getFamily_id();
-                        AppCommonMethods.putStringPref(PREFS_LAST_FAMILY_ID, lastFamilyId, mContext);
-                    }
-                }
-                if (familyDetailsItem.getSgks_family_id() != null) {
-                    familyStatement.bindString(2, familyDetailsItem.getSgks_family_id());
-                }
-                if (familyDetailsItem.getSurname() != null) {
-                    familyStatement.bindString(3, familyDetailsItem.getSurname());
-                }
-                if (familyDetailsItem.getNative_place() != null) {
-                    familyStatement.bindString(4, familyDetailsItem.getNative_place());
-                }
-                if (familyDetailsItem.getSgks_city() != null) {
-                    familyStatement.bindString(5, familyDetailsItem.getSgks_city());
-                }
-                familyStatement.executeInsert();
-            }
-            mSqLiteDatabase.setTransactionSuccessful();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            mSqLiteDatabase.endTransaction();
-        }
-    }
-
     /*-------------------------------------------MEMBER LISTING-------------------------------------------*/
 
     public boolean insertOrUpdateAllMembersEnglish(ArrayList<MemberDetailsItem> arrMemDetails) {
@@ -250,6 +206,8 @@ public class DatabaseQueryHandler implements DatabaseConstants {
     }
 
     public ArrayList<MemberDetailsItem> queryMembers(String searchString) {
+        int intLimit = 10;
+        //int intOffset = intLimit * pageNumber;
         ArrayList<MemberDetailsItem> arrMemDetails = new ArrayList<>();
         String sqlQuery = "";
         //FETCH ACTIVE MEMBER ID's
@@ -270,7 +228,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             sqlQuery = "select * from "
                     +TABLE_MEMBER_DETAILS_EN
                     + " where "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext)
-                    + " and "+ COLUMN_MEMBER_FIRST_NAME +"="+"'"+searchString+"'"
+                    + " and "+ COLUMN_MEMBER_FIRST_NAME +" like "+"'%"+searchString+"%'"
                     + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";
 
             new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
@@ -278,14 +236,23 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             //TODO Search in name & surname column and vice-versa
             String[] splitStrings = searchString.split("\\s+");
             String firstString, secondString, thirdString;
+            if (splitStrings.length == 1) {
+                Log.d(TAG, "search by: Name");
+                firstString = splitStrings[0].trim();
+                sqlQuery = "select * from "
+                        + TABLE_MEMBER_DETAILS_EN
+                        + " where " + COLUMN_MEMBER_FIRST_NAME + " like '%" + firstString + "%'"
+                        + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";;
+                new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
+            }
             if (splitStrings.length == 2) {
                 Log.d(TAG, "search by: Name Surname");
                 firstString = splitStrings[0].trim();
                 secondString = splitStrings[1].trim();
                 sqlQuery = "select * from "
                         + TABLE_MEMBER_DETAILS_EN
-                        + " where " + COLUMN_MEMBER_FIRST_NAME + " like " + "'" + firstString + "'"
-                        + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'" + secondString + "'"
+                        + " where " + COLUMN_MEMBER_FIRST_NAME + " like '%" + firstString + "%'"
+                        + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'%" + secondString + "%'"
                         + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";;
                 new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
             }
@@ -296,9 +263,9 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 thirdString = splitStrings[2].trim();
                 sqlQuery = "select * from "
                         + TABLE_MEMBER_DETAILS_EN
-                        + " where " + COLUMN_MEMBER_FIRST_NAME + " like " + "'" + firstString + "'"
-                        + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'" + secondString + "'"
-                        + " or " + COLUMN_MEMBER_LAST_NAME + " like " + "'" + thirdString + "'"
+                        + " where " + COLUMN_MEMBER_FIRST_NAME + " like " + "'%" + firstString + "%'"
+                        + " or " + COLUMN_MEMBER_MIDDLE_NAME + " like " + "'%" + secondString + "%'"
+                        + " or " + COLUMN_MEMBER_LAST_NAME + " like " + "'%" + thirdString + "%'"
                         + " and "+COLUMN_MEMBER_IS_ACTIVE+"='true'";;
                 new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
             }

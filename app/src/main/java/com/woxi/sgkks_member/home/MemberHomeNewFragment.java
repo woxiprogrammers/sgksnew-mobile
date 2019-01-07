@@ -280,14 +280,16 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
                         requestToGetMembersData(0,false,true);
                     } else {
-                        new AppCommonMethods(mContext).showAlert("You need to be Online to search Members");
+                        mArrMemDetails = databaseQueryHandler.queryMembers(strSearchFullName);
+                        fetchMembersOffline(mArrMemDetails);
                     }
                 } else if (charSequence.length()==0){
                     strSearchFullName = "";
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
                         requestToGetMembersData(0,false, true);
                     } else {
-                        new AppCommonMethods(mContext).showAlert("You are offline");
+                        mArrMemDetails = databaseQueryHandler.queryMembers(strSearchFullName);
+                        fetchMembersOffline(mArrMemDetails);
                     }
                 }
             }
