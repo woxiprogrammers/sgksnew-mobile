@@ -67,7 +67,13 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
         }
         final String strFullName = AppCommonMethods.toTitleCase(strFName + " " + strMName + " " + strSurname);
         memberName.setText(strFullName);
-        memberID.setText("Address: "+mArrMemDetails.get(position).getStrAddress());
+        String strAddress = mArrMemDetails.get(position).getStrAddress();
+        if ( strAddress != null && !strAddress.equalsIgnoreCase("null")) {
+            memberID.setText("Address: "+strAddress);
+        } else {
+            memberID.setText("Address: -");
+        }
+
 
 
         /*if (mArrMemDetails.get(position).getMemSgksMainCity() != null) {

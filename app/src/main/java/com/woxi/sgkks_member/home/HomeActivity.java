@@ -248,8 +248,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mTabLayout =  findViewById(R.id.tavLayout);
         mFabAddNewMember = findViewById(R.id.fabAddNewMember);
         isAddEditEnable = AppCommonMethods.getBooleanPref(PREFS_IS_MEMBER_ADD_EDIT_ENABLE,mContext);
-        if (isAddEditEnable){
-            mFabAddNewMember.setVisibility(View.VISIBLE);
+        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+            if (isAddEditEnable){
+                mFabAddNewMember.setVisibility(View.VISIBLE);
+            } else {
+                mFabAddNewMember.setVisibility(View.GONE);
+            }
         } else {
             mFabAddNewMember.setVisibility(View.GONE);
         }
@@ -278,8 +282,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("") || AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("2")){
                 mViewPager.setCurrentItem(2);
-                if (isAddEditEnable){
-                    mFabAddNewMember.setVisibility(View.VISIBLE);
+                if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+                    if (isAddEditEnable){
+                        mFabAddNewMember.setVisibility(View.VISIBLE);
+                    } else {
+                        mFabAddNewMember.setVisibility(View.GONE);
+                    }
                 } else {
                     mFabAddNewMember.setVisibility(View.GONE);
                 }
@@ -376,8 +384,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //                    AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
                 if (position == 2){
-                    if (isAddEditEnable){
-                        mFabAddNewMember.setVisibility(View.VISIBLE);
+                    if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+                        if (isAddEditEnable){
+                            mFabAddNewMember.setVisibility(View.VISIBLE);
+                        } else {
+                            mFabAddNewMember.setVisibility(View.GONE);
+                        }
                     } else {
                         mFabAddNewMember.setVisibility(View.GONE);
                     }

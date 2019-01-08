@@ -225,7 +225,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     }
 
     private void sendImageToServerRequest() {
-        String strImageBase64 = convertImageToBase64(bitmapProfile,100);
+        String strImageBase64 = convertImageToBase64(bitmapProfile,0);
         JSONObject params = new JSONObject();
         try {
             params.put("image_for", "profile_img");
