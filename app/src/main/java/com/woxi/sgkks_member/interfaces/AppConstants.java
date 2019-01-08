@@ -42,4 +42,5 @@ public interface AppConstants {
     int PREFS_BUZZ_ID = 0;
     String PREFS_LAST_MESSAGE_DATE = null;
     String PREFS_LAST_CLASSIFIED_DATE = null;
+    String PREFS_IS_MEMBER_ADD_EDIT_ENABLE = "ismemberAddEditEnable";
 }

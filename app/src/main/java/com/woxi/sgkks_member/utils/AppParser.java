@@ -1097,11 +1097,12 @@ public class AppParser implements AppConstants {
             JSONArray jsonDataArray = jsonObject.optJSONArray("data");
             for (int index = 0; index < jsonDataArray.length(); index++) {
                 JSONObject jsonMasterObject = jsonDataArray.optJSONObject(index);
-                if (jsonMasterObject.has("is_add_edit_member_enable") && jsonMasterObject.optBoolean("is_add_edit_member_enable")) {
-                    masterItem.setAddEditEnabled(jsonMasterObject.optBoolean("is_add_edit_member_enable"));
-                    Log.i(TAG, "parseMasterResponse: Add Edit is Enable?...."+jsonMasterObject.optBoolean("is_add_edit_member_enable"));
-                }
                 {
+                    Log.i(TAG, "@@1"+(jsonMasterObject.optBoolean("is_add_edit_member_enable") || !jsonMasterObject.optBoolean("is_add_edit_member_enable")));
+                    if (jsonMasterObject.has("is_add_edit_member_enable") && (jsonMasterObject.optBoolean("is_add_edit_member_enable") || !jsonMasterObject.optBoolean("is_add_edit_member_enable"))) {
+                        masterItem.setAddEditEnabled(jsonMasterObject.optBoolean("is_add_edit_member_enable"));
+                        Log.i(TAG, "parseMasterResponse: Add Edit is Enable?...."+jsonMasterObject.optBoolean("is_add_edit_member_enable"));
+                    }
                     JSONObject jsonBuzzObject = jsonMasterObject.optJSONObject("buzz");
                     if (jsonBuzzObject != null) {
                         if(jsonBuzzObject.has("msg_img") && jsonBuzzObject.optString("msg_img") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){

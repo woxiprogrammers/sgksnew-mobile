@@ -66,6 +66,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
         tvMemCity = findViewById(R.id.tvMemCity);
         strMobileNUmber = memberDetailsItem.getStrMobileNumber();
 
+
         if (memberDetailsItem.getStrFirstName() != null) {
             strFirstName = memberDetailsItem.getStrFirstName();
         }
@@ -137,22 +138,25 @@ public class MemberDetailsActivity extends AppCompatActivity {
             mFloatingLocation.setVisibility(View.GONE);
         }
 
+        boolean isEditEnable = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_MEMBER_ADD_EDIT_ENABLE,mContext);
         FloatingActionButton mFloatingEdit = findViewById(R.id.memFloatingEdit);
         if (AppSettings.getStringPref(AppConstants.PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
-            mFloatingEdit.setVisibility(View.VISIBLE);
-            mFloatingEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                        Intent verificationIntent = new Intent(mContext,VerificationActivity.class);
-                        verificationIntent.putExtra("memberItems",memberDetailsItem);
-                        verificationIntent.putExtra("activityType","EditProfile");
-                        startActivity(verificationIntent);
-                    } else {
-                        new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+            if (isEditEnable) {
+                mFloatingEdit.setVisibility(View.VISIBLE);
+                mFloatingEdit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                            Intent verificationIntent = new Intent(mContext,VerificationActivity.class);
+                            verificationIntent.putExtra("memberItems",memberDetailsItem);
+                            verificationIntent.putExtra("activityType","EditProfile");
+                            startActivity(verificationIntent);
+                        } else {
+                            new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
+                        }
                     }
-                }
-            });
+                });
+            }
         } else {
             mFloatingEdit.setVisibility(View.GONE);
         }

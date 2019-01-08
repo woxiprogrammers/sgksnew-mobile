@@ -31,7 +31,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -61,7 +60,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static com.woxi.sgkks_member.interfaces.AppConstants.CURRENT_PAGE;
 import static com.woxi.sgkks_member.interfaces.AppConstants.LANGUAGE_ENGLISH;
@@ -70,8 +68,8 @@ import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME_EN;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME_GJ;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CURRENT_CITY;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_IS_LANGUAGE_CHANGED;
+import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_IS_MEMBER_ADD_EDIT_ENABLE;
 import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_LANGUAGE_APPLIED;
-import static com.woxi.sgkks_member.interfaces.AppConstants.PREFS_CITY_NAME;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context mContext;
@@ -99,6 +97,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private TabLayout mTabLayout;
     private DatabaseQueryHandler databaseQueryHandler, databaseQueryHandlerWrite;
     private CountItem countItem = new CountItem();
+    private boolean isAddEditEnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,6 +247,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mViewPager =  findViewById(R.id.homeViewPager);
         mTabLayout =  findViewById(R.id.tavLayout);
         mFabAddNewMember = findViewById(R.id.fabAddNewMember);
+        isAddEditEnable = AppCommonMethods.getBooleanPref(PREFS_IS_MEMBER_ADD_EDIT_ENABLE,mContext);
+        if (isAddEditEnable){
+            mFabAddNewMember.setVisibility(View.VISIBLE);
+        } else {
+            mFabAddNewMember.setVisibility(View.GONE);
+        }
         mFabMessageInfo = findViewById(R.id.fabMessageInfo);
         viewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), mContext);
         mViewPager.setAdapter(viewPagerAdapter);
@@ -273,7 +278,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("") || AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("2")){
                 mViewPager.setCurrentItem(2);
-                mFabAddNewMember.setVisibility(View.VISIBLE);
+                if (isAddEditEnable){
+                    mFabAddNewMember.setVisibility(View.VISIBLE);
+                } else {
+                    mFabAddNewMember.setVisibility(View.GONE);
+                }
                 mFabMessageInfo.setVisibility(View.GONE);
             } else if(AppCommonMethods.getStringPref(CURRENT_PAGE,mContext).equalsIgnoreCase("3")){
                 mViewPager.setCurrentItem(3);
@@ -367,7 +376,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //                    AppCommonMethods.putStringPref(AppConstants.PREFS_LOCAL_CLASSIFIED_ID, arrLocalClassifiedIds.toString(), mContext);
                 }
                 if (position == 2){
-                    mFabAddNewMember.setVisibility(View.VISIBLE);
+                    if (isAddEditEnable){
+                        mFabAddNewMember.setVisibility(View.VISIBLE);
+                    } else {
+                        mFabAddNewMember.setVisibility(View.GONE);
+                    }
                     mFabMessageInfo.setVisibility(View.GONE);
                 } else if (position == 3){
                     mFabAddNewMember.setVisibility(View.GONE);
@@ -571,8 +584,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         try {
             params.put("sgks_city",AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext));
             params.put("last_updated",AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_UPDATED_DATE,mContext));
-            Log.i(TAG, "requestMasterApi: "+AppCommonMethods.getStringPref(AppConstants.PREFS_LAST_UPDATED_DATE,mContext));
-            Log.i(TAG, "requestMasterApi: params \n"+params);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -587,6 +598,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                    /* intMessageCount = masterItem.getIntMessagesCount();
                     intClassifiedCount = masterItem.getIntMessagesCount();*/
                     intBuzzId = masterItem.getIntBuzzId();
+                    isAddEditEnable = masterItem.isAddEditEnabled();
+                    AppCommonMethods.putBooleanPref(PREFS_IS_MEMBER_ADD_EDIT_ENABLE,isAddEditEnable,mContext);
                     showBuzzImage();
                     setMessageCount(mTabLayout);
                     setClassifiedCount(mTabLayout);
