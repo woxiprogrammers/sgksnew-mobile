@@ -323,41 +323,6 @@ public class AppParser implements AppConstants {
             }
             return arrAccountDetails;
         }
-        /*if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
-            ArrayList<AccountYearItem> arrAccountYear = new ArrayList<>();
-            AccountYearItem accountYearItem;
-            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
-            for (int indexYear = 0; indexYear < jsonDataArray.length(); indexYear++) {
-                ArrayList<AccountDetailsItem> arrAccountDetails;
-                accountYearItem = new AccountYearItem();
-                JSONObject jsonYearObject = jsonDataArray.optJSONObject(indexYear);
-                String currentKey = "";
-                Iterator<String> iterator = jsonYearObject.keys();
-                while (iterator.hasNext()) {
-                    currentKey = iterator.next();
-                }
-                accountYearItem.setStrYear(currentKey);
-                if (jsonYearObject.has(currentKey) && jsonYearObject.optJSONArray(currentKey) != null) {
-                    AccountDetailsItem accountDetailsItem;
-                    arrAccountDetails = new ArrayList<>();
-                    JSONArray jsonDetailsArray = jsonYearObject.optJSONArray(currentKey);
-                    for (int indexDetails = 0; indexDetails < jsonDetailsArray.length(); indexDetails++) {
-                        accountDetailsItem = new AccountDetailsItem();
-                        JSONObject jsonDetailsObject = jsonDetailsArray.optJSONObject(indexDetails);
-                        if (jsonDetailsObject.has("account_image_url") && jsonDetailsObject.optString("account_image_url") != null && !jsonDetailsObject.optString("account_image_url").equalsIgnoreCase("null")) {
-                            accountDetailsItem.setStrAccountImageUrl(jsonDetailsObject.optString("account_image_url"));
-                        }
-                        if (jsonDetailsObject.has("name") && jsonDetailsObject.optString("name") != null && !jsonDetailsObject.optString("name").equalsIgnoreCase("null")) {
-                            accountDetailsItem.setStrAccountName(jsonDetailsObject.optString("name"));
-                        }
-                        arrAccountDetails.add(accountDetailsItem);
-                    }
-                    accountYearItem.setArrAccountDetails(arrAccountDetails);
-                }
-                arrAccountYear.add(accountYearItem);
-            }
-            return arrAccountYear;
-        }*/
         return null;
     }
 
