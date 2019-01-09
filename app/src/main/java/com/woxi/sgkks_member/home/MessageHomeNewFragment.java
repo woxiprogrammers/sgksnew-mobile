@@ -191,6 +191,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                pDialog.dismiss();
                 VolleyLog.e("Error: ", error.getMessage());
             }
         });

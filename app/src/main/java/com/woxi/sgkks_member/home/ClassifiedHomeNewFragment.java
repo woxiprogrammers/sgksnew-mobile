@@ -217,6 +217,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                pDialog.dismiss();
                 VolleyLog.e("Error: ", error.getMessage());
             }
         });

@@ -117,7 +117,6 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
                 requestToGetMembersData(pageNumber,true,false);
             } else {
-                pageNumber=0;
                 mArrMemDetails = databaseQueryHandler.queryMembers("",pageNumber);
                 fetchMembersOffline(mArrMemDetails,true,false);
             }
@@ -310,27 +309,27 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                Log.i(TAG, "onTextChanged: charSequence.length()"+charSequence.length());
                 if (charSequence.length() > 1) {
                     strSearchFullName = charSequence.toString().toLowerCase();
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
 
                         requestToGetMembersData(0,false,true);
                     } else {
-
                         pageNumber = 0;
                         mArrMemDetails = databaseQueryHandler.queryMembers(strSearchFullName,pageNumber);
                         fetchMembersOffline(mArrMemDetails,false,true);
                     }
                 } else if (charSequence.length()==0){
-
+                    Log.i(TAG, "onTextChanged: charSequence.length()==0"+(charSequence.length()==0));
                     strSearchFullName = "";
                     if (new AppCommonMethods(mContext).isNetworkAvailable()){
 
                         requestToGetMembersData(0,true, true);
                     } else {
-
+                        pageNumber = 0;
                         mArrMemDetails = databaseQueryHandler.queryMembers("",pageNumber);
-                        fetchMembersOffline(mArrMemDetails,true,true);
+                        fetchMembersOffline(mArrMemDetails,true,false);
                     }
                 }
             }
