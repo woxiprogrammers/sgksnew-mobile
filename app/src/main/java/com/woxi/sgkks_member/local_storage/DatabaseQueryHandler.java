@@ -906,6 +906,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         String sqlQueryEnglish = "SELECT * FROM "+ TABLE_MESSAGE_NEWS_DETAILS
                 + " WHERE " + COLUMN_MESSAGES_IS_ACTIVE + "='true'"
                 + " AND " + COLUMN_MESSAGES_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
+                + " ORDER BY " + COLUMN_MESSAGES_ID_PRIMARY + " DESC"
                 + " LIMIT " + intLimit + " OFFSET " + intOffset;
 
         Cursor cursorMessages =mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
@@ -913,6 +914,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
             if (cursorMessages.moveToFirst()){
                 do {
+                    Log.i(TAG, "querryMessages: MESSAGE ID---"+(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY))));
                     MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
                     messageDetailsItem.setId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY)));
                     messageDetailsItem.setMessageTitle(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
@@ -931,13 +933,15 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
             String fetchMessageId = "SELECT " + COLUMN_MESSAGES_ID_PRIMARY + " FROM " + TABLE_MESSAGE_NEWS_DETAILS
                     + " WHERE " + COLUMN_MESSAGES_IS_ACTIVE + "='true'"
-                    + " AND " + COLUMN_MESSAGES_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'";
+                    + " AND " + COLUMN_MESSAGES_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
+                    + " ORDER BY " + COLUMN_MESSAGES_ID_PRIMARY + " DESC";
             Cursor cursorMessageId = mSqLiteDatabase.rawQuery(fetchMessageId,null);
             Log.i(TAG, "querryMessages: "+cursorMessageId.getCount());
             if (cursorMessageId.moveToFirst()) {
                 do {
                     String sqlQueryGujarati = "SELECT * FROM "+TABLE_MESSAGE_NEWS_DETAILS_GJ
                             + " WHERE " + COLUMN_MESSAGES_ID_FOREIGN + "='" + cursorMessageId.getString(cursorMessageId.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY)) + "'"
+                            + " ORDER BY " + COLUMN_MESSAGES_ID_FOREIGN + " DESC"
                             + " LIMIT " + intLimit + " OFFSET " + intOffset;
                     cursorMessagesGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
 
@@ -945,6 +949,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                             + " WHERE " + COLUMN_MESSAGES_IS_ACTIVE + "='true'"
                             + " AND " + COLUMN_MESSAGES_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
                             + " AND " + COLUMN_MESSAGES_ID_PRIMARY + "='" + cursorMessageId.getString(cursorMessageId.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY)) + "'"
+                            + " ORDER BY " + COLUMN_MESSAGES_ID_PRIMARY + " DESC"
                             + " LIMIT " + intLimit + " OFFSET " + intOffset;
 
                     cursorMessages = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);;
