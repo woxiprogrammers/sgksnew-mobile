@@ -219,7 +219,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     +TABLE_MEMBER_DETAILS_EN
                     + " WHERE "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext)
                     + " AND "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
-                    
+                    + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                     + " LIMIT " + intLimit + " OFFSET "+ intOffset;
             new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
         }  else if (searchString.matches("^[A-Za-z]*$")) {
@@ -232,7 +232,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + searchString + "%'"
                     + " OR " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + searchString + "%'"
                     + " AND "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
-                    
+                    + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                     + " LIMIT " + intLimit + " OFFSET "+ intOffset;
 
             new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
@@ -247,7 +247,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         + TABLE_MEMBER_DETAILS_EN
                         + " WHERE " + COLUMN_MEMBER_FIRST_NAME + " like '%" + firstString + "%'"
                         + " AND "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
-                        
+                        + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                         + " LIMIT " + intLimit + " OFFSET "+ intOffset;
                 new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
             }
@@ -260,7 +260,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         + " WHERE " + COLUMN_MEMBER_FIRST_NAME + " like '%" + firstString + "%'"
                         + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + secondString + "%'"
                         + " AND "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
-                        
+                        + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                         + " LIMIT " + intLimit + " OFFSET "+ intOffset;
                 new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
             }
@@ -275,7 +275,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + secondString + "%'"
                         + " OR " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + thirdString + "%'"
                         + " AND "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
-                        
+                        + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                         + " LIMIT " + intLimit + " OFFSET "+ intOffset;
                 new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
             }
@@ -310,7 +310,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 fetchMemberId = "SELECT " + COLUMN_MEMBER_ID_PRIMARY_EN + " FROM " + TABLE_MEMBER_DETAILS_EN
                         + " WHERE "+ COLUMN_MEMBER_IS_ACTIVE +"='true'"
                         + " AND " + COLUMN_MEMBER_SGKS_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'"
-                        
+                        + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                         + " LIMIT " + intLimit + " OFFSET " + intOffset ;
                 new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
             }  else if (searchString.matches("^[A-Za-z]*$")) {
@@ -322,7 +322,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                         + " AND "+ COLUMN_MEMBER_FIRST_NAME +" LIKE " + "'%" + searchString + "%'"
                         + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + searchString + "%'"
                         + " OR " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + searchString + "%'"
-                        
+                        + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                         + " LIMIT " + intLimit + " OFFSET " + intOffset ;
                 new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
             } else if (searchString.contains(" ")) {
@@ -338,7 +338,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                             + " AND "+ COLUMN_MEMBER_FIRST_NAME +" LIKE " + "'%" + firstString + "%'"
                             + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + firstString + "%'"
                             + " OR " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + firstString + "%'"
-                            
+                            + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                             + " LIMIT " + intLimit + " OFFSET " + intOffset ;
                 }
                 if (splitStrings.length == 2) {
@@ -350,7 +350,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                             + " AND " + COLUMN_MEMBER_SGKS_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'"
                             + " WHERE " + COLUMN_MEMBER_FIRST_NAME + " like '%" + firstString + "%'"
                             + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + secondString + "%'"
-                            
+                            + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                             + " LIMIT " + intLimit + " OFFSET " + intOffset ;
                 }
                 if (splitStrings.length == 3) {
@@ -364,7 +364,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                             + " AND " + COLUMN_MEMBER_FIRST_NAME + " LIKE " + "'%" + firstString + "%'"
                             + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + secondString + "%'"
                             + " OR " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + thirdString + "%'"
-                            
+                            + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                             + " LIMIT " + intLimit + " OFFSET " + intOffset ;
                     sqlQuery = "SELECT * FROM "
                             + TABLE_MEMBER_DETAILS_EN
@@ -372,7 +372,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                             + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + secondString + "%'"
                             + " OR " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + thirdString + "%'"
                             + " AND "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
-                            
+                            + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                             + " LIMIT " + intLimit + " OFFSET "+ intOffset;
                     new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
                 }
@@ -384,11 +384,12 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     sqlQuery = "SELECT * FROM "
                             + TABLE_MEMBER_DETAILS_EN
                             + " WHERE " + COLUMN_MEMBER_ID_PRIMARY_EN + "='" + cursorMemberId.getString(cursorMemberId.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY_EN)) +"'"
+                            + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                             ;
                     cursorMember = mSqLiteDatabase.rawQuery(sqlQuery,null);
                     String sqlMemberGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_MEMBER_DETAILS_GJ
                             + " WHERE " + COLUMN_MEMBER_ID_FOREIGN_KEY + "='" + cursorMemberId.getString(cursorMemberId.getColumnIndexOrThrow(COLUMN_MEMBER_ID_PRIMARY_EN)) +"'"
-                            + " ORDER BY " + COLUMN_MEMBER_ID_FOREIGN_KEY + " DESC ";
+                            + " ORDER BY " + COLUMN_MEMBER_ID_FOREIGN_KEY + " ASC ";
                     new AppCommonMethods(mContext).LOG(0,TAG,sqlMemberGujarati);
                     Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlMemberGujarati,null);
                     if ((cursorGujarati.moveToFirst() && cursorMember.moveToFirst()) || (cursorGujarati.getCount() == 0 && cursorMember.moveToFirst())){
@@ -546,7 +547,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         Cursor cursorCityId = mSqLiteDatabase.rawQuery(fetchCityId,null);
 
         //SET arrCityIteam WITH RESPECTIVE LANGUAGE
-        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1") /*&& strSearchKey.equalsIgnoreCase("")*/){
+        if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
             if (cursorCityId.moveToFirst()) {
                 do {
                     String sqlQueryEnglish = "";
@@ -591,7 +592,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     }
                 } while (cursorCityId.moveToNext());
             }
-        } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2") /*&& strSearchKey.equalsIgnoreCase("")*/){
+        } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
             if (cursorCityId.moveToFirst()) {
                 do {
                     String sqlQueryEnglish="SELECT * FROM "+ TABLE_CITIES_EN
@@ -914,7 +915,6 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
             if (cursorMessages.moveToFirst()){
                 do {
-                    Log.i(TAG, "querryMessages: MESSAGE ID---"+(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY))));
                     MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
                     messageDetailsItem.setId(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_ID_PRIMARY)));
                     messageDetailsItem.setMessageTitle(cursorMessages.getString(cursorMessages.getColumnIndexOrThrow(COLUMN_MESSAGES_TITLE)));
@@ -1078,6 +1078,7 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         String sqlQueryEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_EN
                 + " WHERE " + COLUMN_CLASSIFIED_IS_ACTIVE + "='true'"
                 + " AND " + COLUMN_CLASSIFIED_CITY_ID + "='"+ AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'"
+                + " ORDER BY " + COLUMN_CLASSIFIED_ID_PRIMARY_KEY + " DESC"
                 + " LIMIT " + intLimit + " OFFSET " + intOffset;
 
         ArrayList<ClassifiedDetailsItem> arrayListClassified = new ArrayList<>();
@@ -1103,31 +1104,34 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")) {
             String fetchClassifiedId = "SELECT " + COLUMN_CLASSIFIED_ID_PRIMARY_KEY + " FROM " + TABLE_CLASSIFIED_EN
                     + " WHERE " + COLUMN_CLASSIFIED_IS_ACTIVE + "='true'"
-                    + " AND " + COLUMN_CLASSIFIED_CITY_ID + "='"+ AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'" ;
+                    + " AND " + COLUMN_CLASSIFIED_CITY_ID + "='"+ AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'"
+                    + " ORDER BY " + COLUMN_CLASSIFIED_ID_PRIMARY_KEY + " DESC";
             Cursor cursorClassifiedId = mSqLiteDatabase.rawQuery(fetchClassifiedId,null);
             if (cursorClassifiedId.moveToFirst()) {
                 do {
                     String sqlQueryGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_GJ
                             + " WHERE " + COLUMN_CLASSIFIED_ID_FOREIGN_KEY + "='" + cursorClassifiedId.getString(cursorClassifiedId.getColumnIndexOrThrow(COLUMN_CLASSIFIED_ID_PRIMARY_KEY)) +  "'"
+                            + " ORDER BY " + COLUMN_CLASSIFIED_ID_FOREIGN_KEY + " DESC"
                             + " LIMIT " + intLimit + " OFFSET " + intOffset;
                     Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlQueryGujarati,null);
                     sqlQueryEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_CLASSIFIED_EN
                             + " WHERE " + COLUMN_CLASSIFIED_IS_ACTIVE + "='true'"
                             + " AND " + COLUMN_CLASSIFIED_CITY_ID + "='"+ AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'"
                             + " AND " + COLUMN_CLASSIFIED_ID_PRIMARY_KEY + "='" + cursorClassifiedId.getString(cursorClassifiedId.getColumnIndexOrThrow(COLUMN_CLASSIFIED_ID_PRIMARY_KEY)) +  "'"
+                            + " ORDER BY " + COLUMN_CLASSIFIED_ID_PRIMARY_KEY + " DESC"
                             + " LIMIT " + intLimit + " OFFSET " + intOffset;
                     cursorEnglish = mSqLiteDatabase.rawQuery(sqlQueryEnglish,null);
                     if (cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()){
                         do {
                             ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
                             // Check if title is present in Gujarati
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)).equalsIgnoreCase("null")){
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)).equalsIgnoreCase("null")){
                                 classifiedDetailsItem.setClassifiedTitle(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)));
                             } else {
                                 classifiedDetailsItem.setClassifiedTitle(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_TITLE)));
                             }
                             //Check if description is present in Gujarati
-                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)) != null && cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)).equalsIgnoreCase("null")) {
+                            if (cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)) != null && !cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)).equalsIgnoreCase("null")) {
                                 classifiedDetailsItem.setClassifiedDescription(cursorGujarati.getString(cursorGujarati.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)));
                             } else {
                                 classifiedDetailsItem.setClassifiedDescription(cursorEnglish.getString(cursorEnglish.getColumnIndexOrThrow(COLUMN_CLASSIFIED_DESCRIPTION)));
@@ -1237,7 +1241,8 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         String sqlEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_ACCOUNT_EN
                 + " WHERE " + COLUMN_ACCOUNT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
                 + " AND " + COLUMN_ACCOUNT_IS_ACTIVE + "='true'"
-                + " AND " + COLUMN_ACCOUNT_YEAR + "='" + year + "'";
+                + " AND " + COLUMN_ACCOUNT_YEAR + "='" + year + "'"
+                + " ORDER BY " + COLUMN_ACCOUNT_ID_PRIMARY + " DESC";
 
         Cursor cursorEnglish = mSqLiteDatabase.rawQuery(sqlEnglish,null);
 
@@ -1261,13 +1266,24 @@ public class DatabaseQueryHandler implements DatabaseConstants {
             String fetchAccountId = "SELECT " + COLUMN_ACCOUNT_ID_PRIMARY + " FROM " + TABLE_ACCOUNT_EN
                     + " WHERE " + COLUMN_ACCOUNT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
                     + " AND " + COLUMN_ACCOUNT_IS_ACTIVE + "='true'"
-                    + " AND " + COLUMN_ACCOUNT_YEAR + "='" + year + "'";
+                    + " AND " + COLUMN_ACCOUNT_YEAR + "='" + year + "'"
+                    + " ORDER BY " + COLUMN_ACCOUNT_ID_PRIMARY + " DESC";
             Cursor cursorAccountId = mSqLiteDatabase.rawQuery(fetchAccountId,null);
             if (cursorAccountId.moveToFirst()) {
                 do {
                     String sqlGujarati = "SELECT * FROM " + DatabaseHelper.TABLE_ACCOUNT_GJ
-                            + " WHERE " + COLUMN_ACCOUNT_ID_FOREIGN + "='" + cursorAccountId.getString(cursorAccountId.getColumnIndexOrThrow(COLUMN_ACCOUNT_ID_PRIMARY)) + "'";
+                            + " WHERE " + COLUMN_ACCOUNT_ID_FOREIGN + "='" + cursorAccountId.getString(cursorAccountId.getColumnIndexOrThrow(COLUMN_ACCOUNT_ID_PRIMARY)) + "'"
+                            + " ORDER BY " + COLUMN_ACCOUNT_ID_FOREIGN + " DESC";
                     Cursor cursorGujarati = mSqLiteDatabase.rawQuery(sqlGujarati,null);
+
+                    sqlEnglish = "SELECT * FROM " + DatabaseHelper.TABLE_ACCOUNT_EN
+                            + " WHERE " + COLUMN_ACCOUNT_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) + "'"
+                            + " AND " + COLUMN_ACCOUNT_IS_ACTIVE + "='true'"
+                            + " AND " + COLUMN_ACCOUNT_YEAR + "='" + year + "'"
+                            + " AND " + COLUMN_ACCOUNT_ID_PRIMARY + "='" + cursorAccountId.getString(cursorAccountId.getColumnIndexOrThrow(COLUMN_ACCOUNT_ID_PRIMARY)) + "'"
+                            + " ORDER BY " + COLUMN_ACCOUNT_ID_PRIMARY + " DESC";
+                    cursorEnglish = mSqLiteDatabase.rawQuery(sqlEnglish,null);
+
                     if (cursorEnglish.moveToFirst() && cursorGujarati.moveToFirst()) {
                         do {
                             AccountDetailsItem accountDetailsItem = new AccountDetailsItem();
