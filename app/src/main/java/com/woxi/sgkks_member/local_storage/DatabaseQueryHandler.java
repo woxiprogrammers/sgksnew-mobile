@@ -345,11 +345,13 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 //TODO Search in name OR surname column
                 Log.d(TAG, "search by: Name AND Surname");
                 fetchMemberId = "SELECT " + COLUMN_MEMBER_ID_PRIMARY_EN + " FROM " + TABLE_MEMBER_DETAILS_EN
-                        + " WHERE "+ COLUMN_MEMBER_IS_ACTIVE +"='true'"
+                        + " WHERE ("
+                            +COLUMN_MEMBER_FIRST_NAME +" LIKE " + "'%" + searchString + "%'"
+                            + " OR  " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + searchString + "%'"
+                            + " OR  " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + searchString + "%'"
+                        +")"
+                        + " AND "+ COLUMN_MEMBER_IS_ACTIVE +"='true'"
                         + " AND " + COLUMN_MEMBER_SGKS_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'"
-                        + " AND "+ COLUMN_MEMBER_FIRST_NAME +" LIKE " + "'%" + searchString + "%'"
-                        + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + searchString + "%'"
-                        + " OR " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + searchString + "%'"
                         + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                         + " LIMIT " + intLimit + " OFFSET " + intOffset ;
                 new AppCommonMethods(mContext).LOG(0,TAG,sqlQuery);
@@ -374,10 +376,18 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     firstString = splitStrings[0].trim();
                     secondString = splitStrings[1].trim();
                     fetchMemberId = "SELECT " + COLUMN_MEMBER_ID_PRIMARY_EN + " FROM " + TABLE_MEMBER_DETAILS_EN
-                            + " WHERE "+ COLUMN_MEMBER_IS_ACTIVE +"='true'"
+                            + " WHERE ("
+                                +COLUMN_MEMBER_FIRST_NAME +" LIKE " + "'%" + firstString + "%'"
+                                + " OR  " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + firstString + "%'"
+                                + " OR  " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + firstString + "%'"
+                            +")"
+                            + " AND ("
+                                +COLUMN_MEMBER_FIRST_NAME +" LIKE " + "'%" + secondString + "%'"
+                                + " OR  " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + secondString + "%'"
+                                + " OR  " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + secondString + "%'"
+                            +")"
+                            + " AND "+ COLUMN_MEMBER_IS_ACTIVE +"='true'"
                             + " AND " + COLUMN_MEMBER_SGKS_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'"
-                            + " WHERE " + COLUMN_MEMBER_FIRST_NAME + " like '%" + firstString + "%'"
-                            + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + secondString + "%'"
                             + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                             + " LIMIT " + intLimit + " OFFSET " + intOffset ;
                 }
@@ -387,25 +397,28 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                     secondString = splitStrings[1].trim();
                     thirdString = splitStrings[2].trim();
                     fetchMemberId = "SELECT " + COLUMN_MEMBER_ID_PRIMARY_EN + " FROM " + TABLE_MEMBER_DETAILS_EN
-                            + " WHERE "+ COLUMN_MEMBER_IS_ACTIVE +"='true'"
+                            + " WHERE ("
+                                +COLUMN_MEMBER_FIRST_NAME +" LIKE " + "'%" + firstString + "%'"
+                                + " OR  " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + firstString + "%'"
+                                + " OR  " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + firstString + "%'"
+                            +")"
+                            + " AND ("
+                                +COLUMN_MEMBER_FIRST_NAME +" LIKE " + "'%" + secondString + "%'"
+                                + " OR  " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + secondString + "%'"
+                                + " OR  " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + secondString + "%'"
+                            +")"
+                            + " AND ("
+                                +COLUMN_MEMBER_FIRST_NAME +" LIKE " + "'%" + thirdString + "%'"
+                                + " OR  " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + thirdString + "%'"
+                                + " OR  " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + thirdString + "%'"
+                            +")"
+                            + " AND "+ COLUMN_MEMBER_IS_ACTIVE +"='true'"
                             + " AND " + COLUMN_MEMBER_SGKS_CITY_ID + "='" + AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext) +"'"
-                            + " AND " + COLUMN_MEMBER_FIRST_NAME + " LIKE " + "'%" + firstString + "%'"
-                            + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + secondString + "%'"
-                            + " OR " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + thirdString + "%'"
                             + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
                             + " LIMIT " + intLimit + " OFFSET " + intOffset ;
-                    sqlQuery = "SELECT * FROM "
-                            + TABLE_MEMBER_DETAILS_EN
-                            + " WHERE " + COLUMN_MEMBER_FIRST_NAME + " LIKE " + "'%" + firstString + "%'"
-                            + " OR " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + secondString + "%'"
-                            + " OR " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + thirdString + "%'"
-                            + " AND "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
-                            + " ORDER BY " + COLUMN_MEMBER_ID_PRIMARY_EN + " ASC"
-                            + " LIMIT " + intLimit + " OFFSET "+ intOffset;
-                    new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
                 }
             }
-
+            new AppCommonMethods(mContext).LOG(0, TAG, sqlQuery);
             cursorMemberId = mSqLiteDatabase.rawQuery(fetchMemberId,null);
             if (cursorMemberId.moveToFirst()){
                 do {
