@@ -18,6 +18,7 @@ import com.woxi.sgkks_member.models.CountItem;
 import com.woxi.sgkks_member.models.EventDataItem;
 import com.woxi.sgkks_member.models.FamilyDetailsItem;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
+import com.woxi.sgkks_member.models.MemberOfflineItem;
 import com.woxi.sgkks_member.models.MessageDetailsItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 
@@ -205,10 +206,12 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         }
     }
 
-    public ArrayList<MemberDetailsItem> queryMembers(String searchString , int pageNumber) {
+    public ArrayList<MemberOfflineItem> queryMembers(String searchString , int pageNumber) {
         int intLimit = 10;
         int intOffset = intLimit * pageNumber;
         ArrayList<MemberDetailsItem> arrMemDetails = new ArrayList<>();
+        ArrayList<MemberOfflineItem> arrMemberOffline = new ArrayList<>();
+        MemberOfflineItem memberOfflineItem = new MemberOfflineItem();
         String sqlQuery = "";
         //FETCH ACTIVE MEMBER ID's
         String fetchMemberId = "";
@@ -247,9 +250,11 @@ public class DatabaseQueryHandler implements DatabaseConstants {
                 firstString = splitStrings[0].trim();
                 sqlQuery = "SELECT * FROM "
                         + TABLE_MEMBER_DETAILS_EN
-                        + " WHERE ("+COLUMN_MEMBER_FIRST_NAME +" LIKE " + "'%" + firstString + "%'"
-                        + " OR  " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + firstString + "%'"
-                        + " OR  " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + firstString + "%'" +")"
+                        + " WHERE ("
+                            +COLUMN_MEMBER_FIRST_NAME +" LIKE " + "'%" + firstString + "%'"
+                            + " OR  " + COLUMN_MEMBER_MIDDLE_NAME + " LIKE " + "'%" + firstString + "%'"
+                            + " OR  " + COLUMN_MEMBER_LAST_NAME + " LIKE " + "'%" + firstString + "%'"
+                        +")"
                         + " AND "+COLUMN_MEMBER_SGKS_CITY_ID+"="+AppCommonMethods.getStringPref(PREFS_CURRENT_CITY,mContext)
                         + " AND "+COLUMN_MEMBER_IS_ACTIVE+"='true'"
 
@@ -490,7 +495,10 @@ public class DatabaseQueryHandler implements DatabaseConstants {
         if (cursorMemberId != null && !cursorMemberId.isClosed()) {
             cursorMemberId.close();
         }
-        return arrMemDetails;
+        memberOfflineItem.setPageNumber(pageNumber+1);
+        memberOfflineItem.setArrMemberDetails(arrMemDetails);
+        arrMemberOffline.add(memberOfflineItem);
+        return arrMemberOffline;
     }
 
     /*-------------------------------------------MEMBER LISTING-------------------------------------------*/
