@@ -55,24 +55,43 @@ import java.util.ArrayList;
  */
 public class MemberHomeNewFragment extends Fragment implements FragmentInterface, AppConstants {
     public static View.OnClickListener onMemberClickListener;
+
     private Context mContext;
+
     private RecyclerView mRvMemberList;
+
     private RecyclerView.Adapter mRvAdapter;
+
     private View mParentView;
+
     private EditText mEtMemberSearch;
+
     private RelativeLayout mPbLazyLoad;
+
     private String TAG = "MemberHomeFragment";
+
     public static ArrayList<MemberDetailsItem> mArrMemDetails;
+
     public static ArrayList<MemberDetailsItem> fetchOfflineMemberDetails;
+
     public static ArrayList<MemberOfflineItem> arrFetchOfflineMemberDetails;
+
     //    private boolean isApiRequested = false;
+
     private int arrSize = 0;
+
     private LinearLayoutManager linearLayoutManager;
+
     private boolean isApiInProgress = false;
-    private DatabaseQueryHandler databaseQueryHandler;
+
+    private DatabaseQueryHandler databaseQueryHandler
+            ;
     private int pageNumber = 0, offlinePageNumber = 0;
+
     private ProgressBar pbMemberListing;
+
     private String strSearchFullName = "";
+
     //private ArrayList<MemberDetailsItem> arrTrial;
     public MemberHomeNewFragment() {
         // Required empty public constructor
@@ -340,6 +359,8 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                     offlinePageNumber = arrFetchOfflineMemberDetails.get(0).getPageNumber();
                     fetchMembersOffline(fetchOfflineMemberDetails,false,true);
                 }
+                recyclerViewScrollListener();
+
             }
 
             @Override
