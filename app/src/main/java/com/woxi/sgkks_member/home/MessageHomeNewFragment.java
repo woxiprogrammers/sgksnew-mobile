@@ -228,6 +228,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
 
     @Override
     public void fragmentBecameVisible() {
+        recyclerViewScrollListener();
         if (!isApiRequested){
             if (new AppCommonMethods(mContext).isNetworkAvailable()) {
                 pageNumber = 0;

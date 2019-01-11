@@ -14,8 +14,8 @@ android {
         applicationId 'com.woxi.sgkks_member'
         minSdkVersion 18
         targetSdkVersion 27
-        versionName '2.0'
-        versionCode 10
+        versionName '2.1'
+        versionCode 11
         flavorDimensions "prod"
     }
     buildTypes {

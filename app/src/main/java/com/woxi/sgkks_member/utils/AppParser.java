@@ -302,6 +302,7 @@ public class AppParser implements AppConstants {
                     if (jsonDetailsObject.has("accounts_images") && jsonDetailsObject.optString("accounts_images") != null && !jsonDetailsObject.optString("accounts_images").equalsIgnoreCase("null")) {
                         JSONArray imagesArray = jsonDetailsObject.getJSONArray("accounts_images");
                         ArrayList<AccountImages> imageList = new ArrayList<>();
+                        Log.i(TAG, "parseAccountDetailsResponse: "+imagesArray.length());
                         if (imagesArray.length() > 0) {
                             for (int imageIndex = 0; imageIndex < imagesArray.length(); imageIndex++) {
                                 String temp = imagesArray.getString(imageIndex);

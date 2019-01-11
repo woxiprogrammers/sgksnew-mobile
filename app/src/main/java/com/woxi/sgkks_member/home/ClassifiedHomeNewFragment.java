@@ -252,6 +252,7 @@ public class ClassifiedHomeNewFragment extends Fragment implements FragmentInter
 
     @Override
     public void fragmentBecameVisible() {
+        recyclerViewScrollListener();
         if (!isApiRequested) {
             if (new AppCommonMethods(mContext).isNetworkAvailable()) {
                 pageNumber = 0;

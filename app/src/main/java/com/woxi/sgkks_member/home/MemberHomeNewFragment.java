@@ -168,6 +168,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
 
     @Override
     public void fragmentBecameVisible() {
+        recyclerViewScrollListener();
         mParentView.findViewById(R.id.etSearchMember).clearFocus();
         if(new AppCommonMethods(mContext).isNetworkAvailable()){
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
@@ -354,7 +355,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                         offlinePageNumber = 0;
                     }
                     Log.i(TAG, "onTextChanged: pagenumber requested to search---"+offlinePageNumber);
-                    arrFetchOfflineMemberDetails = databaseQueryHandler.queryMembers(strSearchFullName,offlinePageNumber);
+                    arrFetchOfflineMemberDetails = databaseQueryHandler.queryMembers(strSearchFullName,0);
                     fetchOfflineMemberDetails = arrFetchOfflineMemberDetails.get(0).getArrMemberDetails();
                     offlinePageNumber = arrFetchOfflineMemberDetails.get(0).getPageNumber();
                     fetchMembersOffline(fetchOfflineMemberDetails,false,true);
