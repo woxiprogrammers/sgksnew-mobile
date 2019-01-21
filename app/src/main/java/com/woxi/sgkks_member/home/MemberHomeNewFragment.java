@@ -157,6 +157,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             @Override
             public void onClick(View v) {
                     MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(v));
+                    mEtMemberSearch.setText("");
                     Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
                     intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
                     startActivity(intentDetails);
@@ -327,7 +328,6 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             }
         }
     }
-
 
     private void memberSearch(){
         mEtMemberSearch.addTextChangedListener(new TextWatcher() {

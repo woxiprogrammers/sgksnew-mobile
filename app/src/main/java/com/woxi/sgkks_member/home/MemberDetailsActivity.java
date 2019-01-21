@@ -23,6 +23,7 @@ import com.woxi.sgkks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.AppSettings;
+import com.woxi.sgkks_member.utils.ImageZoomDialogFragment;
 
 /**
  * <b>public class MemberDetailsActivity extends AppCompatActivity</b>
@@ -147,7 +148,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                            Intent verificationIntent = new Intent(mContext,VerificationActivity.class);
+                            finish();// close the current activity before going to next activity
+                            Intent verificationIntent = new Intent(mContext,AddMeToSgksActivity.class);
                             verificationIntent.putExtra("memberItems",memberDetailsItem);
                             verificationIntent.putExtra("activityType","EditProfile");
                             startActivity(verificationIntent);
@@ -164,7 +166,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         //Loading member image from url.
         final ImageView mIvMemImage = ((ImageView) findViewById(R.id.ivMemDetImage));
-        String strUrl = memberDetailsItem.getStrMemberImageUrl();
+        final String strUrl = memberDetailsItem.getStrMemberImageUrl();
         mIvMemImage.setImageDrawable(null);
         if (strUrl != null && !strUrl.equalsIgnoreCase("")) {
             Glide.with(mContext)
@@ -185,6 +187,14 @@ public class MemberDetailsActivity extends AppCompatActivity {
                         }
                     });
         }
+        mIvMemImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(true, strUrl);
+                imageZoomDialogFragment.setCancelable(true);
+                imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
+            }
+        });
     }
 
     @Override
@@ -195,5 +205,11 @@ public class MemberDetailsActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }
