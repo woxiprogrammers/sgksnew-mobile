@@ -41,7 +41,8 @@
                 android:maxLines="2"
                 android:textColor="@color/colorTextHintDark"
                 android:textStyle="italic"
-                android:singleLine="false"/>
+                android:singleLine="false"
+                android:textSize="@dimen/text_16"/>
 
            <!-- <TextView
                 android:id="@+id/tvNewsCreatedAt"

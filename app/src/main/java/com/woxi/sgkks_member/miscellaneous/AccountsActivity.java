@@ -25,6 +25,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.AppController;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.adapters.AccountAndEventDetailsAdapter;
+import com.woxi.sgkks_member.local_storage.DatabaseQueryHandler;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
 import com.woxi.sgkks_member.models.AccountYearItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
@@ -61,6 +62,8 @@ public class AccountsActivity extends AppCompatActivity {
     private RecyclerView mRvAccountImages;
     private Spinner mSpinAccountYear;
     private ArrayList<AccountDetailsItem> mArrAccountDetails;
+    private ArrayList<AccountDetailsItem> mArrAccountDetailsOffline;
+    private DatabaseQueryHandler databaseQueryHandler;
     private ArrayList<AccountYearItem> arrAccountYear;
     private AccountAndEventDetailsAdapter accountAndEventDetailsAdapter;
     private ArrayList<Integer> arrayYearIntegerList = new ArrayList<>();
@@ -76,7 +79,8 @@ public class AccountsActivity extends AppCompatActivity {
         if(new AppCommonMethods(mContext).isNetworkAvailable()){
             requestAccountsAPI(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
         } else {
-            new AppCommonMethods(mContext).showAlert("You are offline");
+            mArrAccountDetailsOffline = databaseQueryHandler.queryAccounts("2018");
+            setCurrentYearAccount(mArrAccountDetailsOffline);
         }
 
     }
@@ -88,7 +92,7 @@ public class AccountsActivity extends AppCompatActivity {
      */
     private void initializeViews() {
         mContext = AccountsActivity.this;
-
+        databaseQueryHandler = new DatabaseQueryHandler(mContext,false);
         //Set-up Year spinner
         mSpinAccountYear =  findViewById(R.id.spinAccountYear);
         ((TextView) findViewById(R.id.tvYearTitle)).setText("Select Account Year");
@@ -109,15 +113,7 @@ public class AccountsActivity extends AppCompatActivity {
         mRvAccountImages.setAdapter(accountAndEventDetailsAdapter);
 
         //Function for account image click listener
-        onGridImageClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View selectedView) {
-                AccountDetailsItem accountDetailsItem = mArrAccountDetails.get(mRvAccountImages.getChildAdapterPosition(selectedView));
-                ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(accountDetailsItem);
-                imageZoomDialogFragment.setCancelable(true);
-                imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
-            }
-        };
+        imageLister();
 
         //Function for spinner year change listener
         mSpinAccountYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -127,7 +123,8 @@ public class AccountsActivity extends AppCompatActivity {
                     if(new AppCommonMethods(mContext).isNetworkAvailable()){
                         requestAccountsAPI(String.valueOf(parent.getSelectedItem()));
                     } else {
-                        new AppCommonMethods(mContext).showAlert("You are offline");
+                        mArrAccountDetailsOffline = databaseQueryHandler.queryAccounts(String.valueOf(parent.getSelectedItem()));
+                        setCurrentYearAccount(mArrAccountDetailsOffline);
                     }
                 }
             }
@@ -243,5 +240,29 @@ public class AccountsActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void imageLister() {
+        if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+            onGridImageClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View selectedView) {
+                    AccountDetailsItem accountDetailsItem = mArrAccountDetails.get(mRvAccountImages.getChildAdapterPosition(selectedView));
+                    ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(accountDetailsItem);
+                    imageZoomDialogFragment.setCancelable(true);
+                    imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
+                }
+            };
+        } else {
+            onGridImageClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View selectedView) {
+                    AccountDetailsItem accountDetailsItem = mArrAccountDetailsOffline.get(mRvAccountImages.getChildAdapterPosition(selectedView));
+                    ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(accountDetailsItem);
+                    imageZoomDialogFragment.setCancelable(true);
+                    imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
+                }
+            };
+        }
     }
 }

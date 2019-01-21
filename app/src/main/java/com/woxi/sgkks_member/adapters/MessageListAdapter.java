@@ -58,7 +58,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .placeholder(R.drawable.ic_place_holder)
-                .error(R.drawable.ic_broken_image)
+                .error(R.drawable.ic_message_error)
                 .into(ivNewsListImg);
 
         if (mArrNewsDetails.get(position).getMessageDescription() != null) {

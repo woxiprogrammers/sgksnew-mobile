@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +57,8 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     private ArrayList<MessageDetailsItem> mArrMessageDetails;
     private int pageNumber = 0, arrSize = 0;
     private boolean isApiInProgress = false, isApiRequested = false;
+    private DatabaseQueryHandler databaseQueryHandler;
+    // ArrayList<MessageDetailsItem> arrOfflineMessages;
     public MessageHomeNewFragment() {
         // Required empty public constructor
     }
@@ -79,16 +80,28 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         //databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
         mRvMessageList = mParentView.findViewById(R.id.rvNewsAndClassified);
         mPbLazyLoad = mParentView.findViewById(R.id.rlLazyLoad);
+        databaseQueryHandler = new DatabaseQueryHandler(mContext,false);
         setUpRecyclerView();
         pbMessages = mParentView.findViewById(R.id.pbMessages);
         boolean isLanguageChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_LANGUAGE_CHANGED,mContext);
         boolean isCityChanged = AppCommonMethods.getBooleanPref(AppConstants.PREFS_IS_CITY_CHANGED,mContext);
         if(isLanguageChanged || isCityChanged){
             if(new AppCommonMethods(mContext).isNetworkAvailable()){
-                pageNumber=0;
+                pageNumber = 0;
                 requestMessageList(pageNumber, true);
             } else {
-                new AppCommonMethods(mContext).showAlert("You are Offline");
+                pageNumber = 0;
+                mArrMessageDetails = databaseQueryHandler.querryMessages(pageNumber);
+                showMessages(mArrMessageDetails, true);
+            }
+        } else {
+            if (new AppCommonMethods(mContext).isNetworkAvailable()) {
+                pageNumber = 0;
+                requestMessageList(pageNumber,true);
+            }else {
+                pageNumber = 0;
+                mArrMessageDetails = databaseQueryHandler.querryMessages(pageNumber);
+                showMessages(mArrMessageDetails,true);
             }
         }
     }
@@ -112,7 +125,6 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
     private void requestMessageList(int page_id, final boolean isFirstTime) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String format = simpleDateFormat.format(new Date());
-        Log.i("@@@", "requestMessageList: "+format);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(AppConstants.PREFS_LAST_MESSAGE_DATE,format);
@@ -146,7 +158,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                             Object resp= AppParser.parseMessageNewResponse(response.toString());
                             MessageDetailsItem messageDetailsItem = (MessageDetailsItem) resp;
                             if(resp instanceof Boolean){
-                                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                                // Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
                             }else if(resp instanceof MessageDetailsItem){
                                 if(isFirstTime){
                                     mArrMessageDetails = messageDetailsItem.getArrMessageList();
@@ -155,11 +167,8 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                                         mRvAdapter = new MessageListAdapter(mArrMessageDetails);
                                         mRvMessageList.setAdapter(mRvAdapter);
                                     } else {
-                                        Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT);
+                                        //  Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT);
                                     }
-                                    mRvMessageList.setHasFixedSize(true);
-                                    mRvAdapter = new MessageListAdapter(mArrMessageDetails);
-                                    mRvMessageList.setAdapter(mRvAdapter);
                                 } else {
                                     ArrayList <MessageDetailsItem> arrNextMessages = messageDetailsItem.getArrMessageList();
                                     if(arrNextMessages.size() != 0){
@@ -167,7 +176,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                                         mRvMessageList.getAdapter().notifyItemRangeChanged(arrSize -1, mArrMessageDetails.size() - 1);
                                         mRvMessageList.getAdapter().notifyDataSetChanged();
                                     } else {
-                                        Toast.makeText(mContext,"All the Records are Listed",Toast.LENGTH_SHORT);
+                                        //Toast.makeText(mContext,"All the Records are Listed",Toast.LENGTH_SHORT);
                                     }
                                 }
                             }
@@ -182,6 +191,7 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                pDialog.dismiss();
                 VolleyLog.e("Error: ", error.getMessage());
             }
         });
@@ -194,6 +204,9 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
         mRvMessageList.addOnScrollListener(new EndlessRvScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
+                if (!new AppCommonMethods(mContext).isNetworkAvailable()){
+                    pageNumber++;
+                }
                 requestLazyLoadMembersApi();
             }
         });
@@ -206,22 +219,46 @@ public class MessageHomeNewFragment extends Fragment implements AppConstants, Fr
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
                 requestMessageList(pageNumber,false);
             } else {
-                new AppCommonMethods(mContext).showAlert("You are offline");
+                ArrayList <MessageDetailsItem> arrayList = new ArrayList<>();
+                arrayList = databaseQueryHandler.querryMessages(pageNumber);
+                showMessages(arrayList, false);
             }
         }
     }
 
     @Override
     public void fragmentBecameVisible() {
+        recyclerViewScrollListener();
         if (!isApiRequested){
             if (new AppCommonMethods(mContext).isNetworkAvailable()) {
-                pageNumber=0;
+                pageNumber = 0;
                 requestMessageList(pageNumber,true);
             }else {
-                new AppCommonMethods(mContext).showAlert("You are Offline");
+                mArrMessageDetails = databaseQueryHandler.querryMessages(0);
+                showMessages(mArrMessageDetails, true);
             }
-        } 
+        }
     }
 
-
+    public void showMessages(ArrayList<MessageDetailsItem> arrayList, boolean isFirstTime){
+        if(isFirstTime){
+            mArrMessageDetails = arrayList;
+            if(mArrMessageDetails.size() != 0){
+                mRvMessageList.setHasFixedSize(true);
+                mRvAdapter = new MessageListAdapter(mArrMessageDetails);
+                mRvMessageList.setAdapter(mRvAdapter);
+            } else {
+                //  Toast.makeText(mContext,"No Records Found",Toast.LENGTH_SHORT);
+            }
+        } else {
+            ArrayList <MessageDetailsItem> arrNextMessages = arrayList;
+            if(arrNextMessages.size() != 0){
+                mArrMessageDetails.addAll(arrNextMessages);
+                mRvMessageList.getAdapter().notifyItemRangeChanged(arrSize -1, mArrMessageDetails.size() - 1);
+                mRvMessageList.getAdapter().notifyDataSetChanged();
+            } else {
+                //Toast.makeText(mContext,"All the Records are Listed",Toast.LENGTH_SHORT);
+            }
+        }
+    }
 }

@@ -98,7 +98,7 @@
                         android:maxLines="1"
                         android:maxLength="10"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
 
             </RelativeLayout>
@@ -118,7 +118,7 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|right"
         android:src="@drawable/ic_add_green"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabMessageInfo"

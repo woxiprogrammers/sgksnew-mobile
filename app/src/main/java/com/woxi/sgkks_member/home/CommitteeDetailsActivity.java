@@ -87,7 +87,7 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
                     if (new AppCommonMethods(mContext).isNetworkAvailable()) {
                         requestCommitteeDetailsAPI(strCommId);
                     } else {
-                        new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.noInternet));
+                        //new AppCommonMethods(mContext).showAlert(mContext.getString(R.string.noInternet));
                     }
                 }
             }
@@ -184,7 +184,16 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
     }
 
     private void loadCommitteeDetails(CommitteeDetailsItem committeeListItem) {
-        String strCommAllMembers = committeeListItem.getCommAllMembers();
+        String strCommAllMembers="";
+        if (new AppCommonMethods(mContext).isNetworkAvailable()){
+            strCommAllMembers = committeeListItem.getCommAllMembers();
+        } else {
+            if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+                arrCommMemberDetails = committeeListItem.getMembersEnglish();
+            } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
+                arrCommMemberDetails = committeeListItem.getMembersGujarati();
+            }
+        }
         if (strCommAllMembers != null && !strCommAllMembers.equalsIgnoreCase("")) {
             try {
                 arrCommMemberDetails = getAllCommMembers(strCommAllMembers);
@@ -193,7 +202,11 @@ public class CommitteeDetailsActivity extends AppCompatActivity implements AppCo
                 e.printStackTrace();
             }
         } else {
-            arrCommMemberDetails = new ArrayList<>();
+            if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("1")){
+                arrCommMemberDetails = committeeListItem.getMembersEnglish();
+            } else if (AppCommonMethods.getStringPref(PREFS_LANGUAGE_APPLIED,mContext).equalsIgnoreCase("2")){
+                arrCommMemberDetails = committeeListItem.getMembersGujarati();
+            }
         }
 
         ((TextView) findViewById(R.id.tvCommitteeName)).setText(committeeListItem.getCommitteeName() + "");

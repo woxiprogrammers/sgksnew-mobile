@@ -58,7 +58,7 @@ public class ClassifiedListAdapter extends RecyclerView.Adapter<ClassifiedListAd
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .placeholder(R.drawable.ic_place_holder)
-                    .error(R.drawable.ic_broken_image)
+                    .error(R.drawable.img_classified)
                     .into(ivClassifiedListImg);
         } else {
             ivClassifiedListImg.setImageResource(R.drawable.img_classified);

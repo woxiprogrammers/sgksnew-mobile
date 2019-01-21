@@ -20,6 +20,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.home.MemberHomeNewFragment;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
+import com.woxi.sgkks_member.utils.AppCommonMethods;
 
 import java.util.ArrayList;
 
@@ -58,15 +59,21 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Me
         if (mArrMemDetails.get(position).getStrFirstName() != null) {
             strFName = mArrMemDetails.get(position).getStrFirstName();
         }
-        if (mArrMemDetails.get(position).getStrFirstName() != null) {
+        if (mArrMemDetails.get(position).getStrMiddleName() != null) {
             strMName = mArrMemDetails.get(position).getStrMiddleName();
         }
-        if (mArrMemDetails.get(position).getStrFirstName() != null) {
+        if (mArrMemDetails.get(position).getStrLastName() != null) {
             strSurname = mArrMemDetails.get(position).getStrLastName();
         }
-        final String strFullName = strFName + " " + strMName + " " + strSurname;
+        final String strFullName = AppCommonMethods.toTitleCase(strFName + " " + strMName + " " + strSurname);
         memberName.setText(strFullName);
-        memberID.setText("Address: "+mArrMemDetails.get(position).getStrAddress());
+        String strAddress = mArrMemDetails.get(position).getStrAddress();
+        if ( strAddress != null && !strAddress.equalsIgnoreCase("null")) {
+            memberID.setText("Address: "+strAddress);
+        } else {
+            memberID.setText("Address: -");
+        }
+
 
 
         /*if (mArrMemDetails.get(position).getMemSgksMainCity() != null) {

@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.facebook.stetho.Stetho;
 import com.woxi.sgkks_member.home.HomeActivity;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.MasterDataItem;
@@ -53,6 +54,7 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Stetho.initializeWithDefaults(this);
         setContentView(R.layout.activity_main);
         mContext = SplashAndCityActivity.this;
         String strCityId = AppCommonMethods.getStringPref(AppConstants.PREFS_CURRENT_CITY,mContext);
@@ -75,9 +77,9 @@ public class SplashAndCityActivity extends AppCompatActivity implements AppConst
 
         if (new AppCommonMethods(mContext).isNetworkAvailable()){
             requestToGetMinVersion();
-            //requestMasterApi();
         } else {
             showOfflineAlertDialog();
+            getNextScreen();
         }
     }
 

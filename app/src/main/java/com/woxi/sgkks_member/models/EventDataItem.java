@@ -14,9 +14,53 @@ public class EventDataItem implements Serializable {
     private String eventName, eventYear;
     private String eventDescription;
     private String eventDate;
-    private String city;
+    private String city,citryId;
     private String venue;
     private ArrayList<String> arrEventImageURLs;
+    private String strEventId;
+    private String strId;
+    private String strlanguageId;
+    private String strIsActive;
+
+    public String getCitryId() {
+        return citryId;
+    }
+
+    public void setCitryId(String citryId) {
+        this.citryId = citryId;
+    }
+
+    public String getStrIsActive() {
+        return strIsActive;
+    }
+
+    public void setStrIsActive(String strIsActive) {
+        this.strIsActive = strIsActive;
+    }
+
+    public String getStrlanguageId() {
+        return strlanguageId;
+    }
+
+    public void setStrlanguageId(String strlanguageId) {
+        this.strlanguageId = strlanguageId;
+    }
+
+    public String getStrEventId() {
+        return strEventId;
+    }
+
+    public void setStrEventId(String strEventId) {
+        this.strEventId = strEventId;
+    }
+
+    public String getStrId() {
+        return strId;
+    }
+
+    public void setStrId(String strId) {
+        this.strId = strId;
+    }
 
     public String getEventName() {
         return eventName;

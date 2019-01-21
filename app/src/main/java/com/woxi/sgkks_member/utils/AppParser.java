@@ -2,6 +2,8 @@ package com.woxi.sgkks_member.utils;
 
 import android.util.Log;
 
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.woxi.sgkks_member.interfaces.AppConstants;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
 import com.woxi.sgkks_member.models.BloodGroupItems;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
  * created by - Rohit
  */
 public class AppParser implements AppConstants {
+    private static String TAG = "###";
     public static Object parseCommitteeListResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
         //
@@ -138,14 +141,6 @@ public class AppParser implements AppConstants {
     public static Object parseMessageResponse(String response) throws JSONException {
         JSONObject jsonResponseObject = new JSONObject(response);
         MessageAndClassifiedResponseItem messageAndClassifiedResponseItem = new MessageAndClassifiedResponseItem();
-        /*if (jsonResponseObject.has("pagination") && jsonResponseObject.optJSONObject("pagination") != null) {
-            JSONObject jsonPaginationObject = jsonResponseObject.optJSONObject("pagination");
-            if (jsonPaginationObject != null) {
-                if (jsonPaginationObject.has("next_page_url") && jsonPaginationObject.optString("next_page_url") != null) {
-                    messageAndClassifiedResponseItem.setStrNextPageUrl(jsonPaginationObject.optString("next_page_url"));
-                }
-            }
-        }*/
         if (jsonResponseObject.has("data") && jsonResponseObject.optJSONArray("data") != null) {
             JSONArray jsonDataArray = jsonResponseObject.optJSONArray("data");
             ArrayList<MessageDetailsItem> arrNewsDetails = new ArrayList<>();
@@ -293,125 +288,6 @@ public class AppParser implements AppConstants {
         return false;
     }
 
-    public static Object parseLocalDataSyncResponse(String response) throws JSONException {
-        JSONObject jsonResponseObjecResp = new JSONObject(response);
-        LocalDataSyncItem localDataSyncItem = new LocalDataSyncItem();
-        JSONObject jsonResponseObject=jsonResponseObjecResp.getJSONObject("data");
-        if (jsonResponseObject.has("members") && jsonResponseObject.optString("members") != null) {
-            ArrayList<MemberDetailsItem> arrMemberDetailsItems = new ArrayList<>();
-            JSONArray jsonMemberArray = jsonResponseObject.optJSONArray("members");
-            if (jsonMemberArray != null) {
-                MemberDetailsItem memberDetailsItem;
-                for (int arrIndex = 0; arrIndex < jsonMemberArray.length(); arrIndex++) {
-                    memberDetailsItem = new MemberDetailsItem();
-                    JSONObject jsonObject = jsonMemberArray.optJSONObject(arrIndex);
-                    if (jsonObject.has("id") && jsonObject.getString("id") != null) {
-                        memberDetailsItem.setStrId(String.valueOf(jsonObject.getInt("id")));
-
-                    }
-                    if (jsonObject.has("member_id") && jsonObject.getString("member_id") != null) {
-                        memberDetailsItem.setStrMemberId(jsonObject.getString("member_id"));
-                    }
-                    if (jsonObject.has("first_name") && jsonObject.getString("first_name") != null) {
-                        memberDetailsItem.setStrFirstName(jsonObject.getString("first_name"));
-                    }
-                    if (jsonObject.has("middle_name") && jsonObject.getString("middle_name") != null) {
-                        memberDetailsItem.setStrMiddleName(jsonObject.getString("middle_name"));
-                    }
-                    if (jsonObject.has("last_name") && jsonObject.getString("last_name") != null) {
-                        memberDetailsItem.setStrLastName(jsonObject.getString("last_name"));
-                    }
-                    if (jsonObject.has("gender") && jsonObject.getString("gender") != null) {
-                        memberDetailsItem.setStrGender(jsonObject.getString("gender"));
-                    }
-                    if (jsonObject.has("mobile") && jsonObject.getString("mobile") != null) {
-                        memberDetailsItem.setStrMobileNumber(jsonObject.getString("mobile"));
-                    }
-                    if (jsonObject.has("email") && jsonObject.getString("email") != null ) {
-                        memberDetailsItem.setStrEmail(jsonObject.getString("email"));
-                    }
-                    if (jsonObject.has("city") && jsonObject.getString("city") != null) {
-                        memberDetailsItem.setStrCity(jsonObject.getString("city"));
-                    }
-                    if (jsonObject.has("memLatitude") && jsonObject.getString("memLatitude") != null) {
-                        memberDetailsItem.setStrLatitude(jsonObject.getString("memLatitude"));
-                    }
-                    if (jsonObject.has("memLongitude") && jsonObject.getString("memLongitude") != null) {
-                        memberDetailsItem.setStrLongitude(jsonObject.getString("memLongitude"));
-                    }
-                    if (jsonObject.has("image_url") && jsonObject.getString("image_url") != null) {
-                        memberDetailsItem.setStrMemberImageUrl(jsonObject.getString("image_url"));
-                    }
-                    arrMemberDetailsItems.add(memberDetailsItem);
-                }
-            }
-            localDataSyncItem.setArrMemberDetailsItems(arrMemberDetailsItems);
-        }
-        if (jsonResponseObject.has("committees") && jsonResponseObject.optString("committees") != null) {
-            ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems = new ArrayList<>();
-            JSONArray jsonCommitteeArray = jsonResponseObject.optJSONArray("committees");
-            if (jsonCommitteeArray != null) {
-                CommitteeDetailsItem committeeDetailsItem;
-                for (int arrIndex = 0; arrIndex < jsonCommitteeArray.length(); arrIndex++) {
-                    committeeDetailsItem = new CommitteeDetailsItem();
-                    JSONObject jsonObject = jsonCommitteeArray.optJSONObject(arrIndex);
-                    if (jsonObject.has("name") && jsonObject.getString("name") != null) {
-                        committeeDetailsItem.setCommitteeName(jsonObject.getString("name"));
-                    }
-                    if (jsonObject.has("description") && jsonObject.getString("description") != null) {
-                        committeeDetailsItem.setCommitteeDescription(jsonObject.getString("description"));
-                    }
-                    if (jsonObject.has("city") && jsonObject.getString("city") != null) {
-                        committeeDetailsItem.setCommitteeCity(jsonObject.getString("city"));
-                    }
-                    if (jsonObject.has("committee_id") && jsonObject.getString("committee_id") != null) {
-                        committeeDetailsItem.setCommitteeID(jsonObject.getString("committee_id"));
-                    }
-                    if (jsonObject.has("comm_mem_details") && jsonObject.getString("comm_mem_details") != null) {
-                        committeeDetailsItem.setCommAllMembers(jsonObject.getString("comm_mem_details"));
-                    }
-                    arrCommitteeDetailsItems.add(committeeDetailsItem);
-                }
-            }
-            localDataSyncItem.setArrCommitteeDetailsItems(arrCommitteeDetailsItems);
-        }
-        if (jsonResponseObject.has("messages") && jsonResponseObject.optString("messages") != null) {
-            ArrayList<MessageDetailsItem> arrMessageDetailsItems = new ArrayList<>();
-            JSONArray jsonMessageArray = jsonResponseObject.optJSONArray("messages");
-            if (jsonMessageArray != null) {
-                MessageDetailsItem messageDetailsItem;
-                for (int arrIndex = 0; arrIndex < jsonMessageArray.length(); arrIndex++) {
-                    messageDetailsItem = new MessageDetailsItem();
-                    JSONObject jsonObject = jsonMessageArray.optJSONObject(arrIndex);
-                    if (jsonObject.has("id") && jsonObject.getString("id") != null) {
-                        messageDetailsItem.setMessageID(jsonObject.getString("id"));
-                    }
-                    if (jsonObject.has("title") && jsonObject.getString("title") != null) {
-                        messageDetailsItem.setMessageTitle(jsonObject.getString("title"));
-                    }
-                    if (jsonObject.has("msg_desc") && jsonObject.getString("msg_desc") != null) {
-                        messageDetailsItem.setMessageDescription(jsonObject.getString("msg_desc"));
-                    }
-                    if (jsonObject.has("msg_url") && jsonObject.getString("msg_url") != null) {
-                        messageDetailsItem.setMessageImage(jsonObject.getString("msg_url"));
-                    }
-                    if (jsonObject.has("created_at") && jsonObject.getString("created_at") != null) {
-                        messageDetailsItem.setMessageCreateDate(jsonObject.getString("created_at"));
-                    }
-                    if (jsonObject.has("msg_type") && jsonObject.getString("msg_type") != null) {
-                        messageDetailsItem.setMessageType(jsonObject.getString("msg_type"));
-                    }
-                    if (jsonObject.has("city") && jsonObject.getString("city") != null) {
-                        messageDetailsItem.setMessageCity(jsonObject.getString("city"));
-                    }
-                    arrMessageDetailsItems.add(messageDetailsItem);
-                }
-            }
-            localDataSyncItem.setArrMessageDetailsItems(arrMessageDetailsItems);
-        }
-        return localDataSyncItem;
-    }
-
     public static Object parseAccountDetailsResponse(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
         if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
@@ -426,6 +302,7 @@ public class AppParser implements AppConstants {
                     if (jsonDetailsObject.has("accounts_images") && jsonDetailsObject.optString("accounts_images") != null && !jsonDetailsObject.optString("accounts_images").equalsIgnoreCase("null")) {
                         JSONArray imagesArray = jsonDetailsObject.getJSONArray("accounts_images");
                         ArrayList<AccountImages> imageList = new ArrayList<>();
+                        Log.i(TAG, "parseAccountDetailsResponse: "+imagesArray.length());
                         if (imagesArray.length() > 0) {
                             for (int imageIndex = 0; imageIndex < imagesArray.length(); imageIndex++) {
                                 String temp = imagesArray.getString(imageIndex);
@@ -447,41 +324,6 @@ public class AppParser implements AppConstants {
             }
             return arrAccountDetails;
         }
-        /*if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
-            ArrayList<AccountYearItem> arrAccountYear = new ArrayList<>();
-            AccountYearItem accountYearItem;
-            JSONArray jsonDataArray = jsonObject.optJSONArray("data");
-            for (int indexYear = 0; indexYear < jsonDataArray.length(); indexYear++) {
-                ArrayList<AccountDetailsItem> arrAccountDetails;
-                accountYearItem = new AccountYearItem();
-                JSONObject jsonYearObject = jsonDataArray.optJSONObject(indexYear);
-                String currentKey = "";
-                Iterator<String> iterator = jsonYearObject.keys();
-                while (iterator.hasNext()) {
-                    currentKey = iterator.next();
-                }
-                accountYearItem.setStrYear(currentKey);
-                if (jsonYearObject.has(currentKey) && jsonYearObject.optJSONArray(currentKey) != null) {
-                    AccountDetailsItem accountDetailsItem;
-                    arrAccountDetails = new ArrayList<>();
-                    JSONArray jsonDetailsArray = jsonYearObject.optJSONArray(currentKey);
-                    for (int indexDetails = 0; indexDetails < jsonDetailsArray.length(); indexDetails++) {
-                        accountDetailsItem = new AccountDetailsItem();
-                        JSONObject jsonDetailsObject = jsonDetailsArray.optJSONObject(indexDetails);
-                        if (jsonDetailsObject.has("account_image_url") && jsonDetailsObject.optString("account_image_url") != null && !jsonDetailsObject.optString("account_image_url").equalsIgnoreCase("null")) {
-                            accountDetailsItem.setStrAccountImageUrl(jsonDetailsObject.optString("account_image_url"));
-                        }
-                        if (jsonDetailsObject.has("name") && jsonDetailsObject.optString("name") != null && !jsonDetailsObject.optString("name").equalsIgnoreCase("null")) {
-                            accountDetailsItem.setStrAccountName(jsonDetailsObject.optString("name"));
-                        }
-                        arrAccountDetails.add(accountDetailsItem);
-                    }
-                    accountYearItem.setArrAccountDetails(arrAccountDetails);
-                }
-                arrAccountYear.add(accountYearItem);
-            }
-            return arrAccountYear;
-        }*/
         return null;
     }
 
@@ -668,6 +510,551 @@ public class AppParser implements AppConstants {
         return false;
     }
 
+    public static Object parseLocalDataSyncResponse(String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        LocalDataSyncItem localDataSyncItem = new LocalDataSyncItem();
+        if (jsonObject.has("members") && jsonObject.optJSONObject("members") != null) {
+            ArrayList<MemberDetailsItem> arrMemberDetailsItems = new ArrayList<>();
+            ArrayList<MemberDetailsItem> arrMemberDetailsGujaratiItems = new ArrayList<>();
+            JSONObject jsonObjectMembers = jsonObject.optJSONObject("members");
+            MemberDetailsItem memberDetailsItem;
+            if (jsonObjectMembers.has("member_en") && jsonObjectMembers.optJSONArray("member_en") != null) {
+                JSONArray jsonArrayMember_en = jsonObjectMembers.optJSONArray("member_en");
+                for (int arrIndex = 0; arrIndex < jsonArrayMember_en.length(); arrIndex++) {
+                    memberDetailsItem = new MemberDetailsItem();
+                    JSONObject jsonObjectMember_en = jsonArrayMember_en.getJSONObject(arrIndex);
+                    if (jsonObjectMember_en.has("id") && jsonObjectMember_en.optString("id") != null && !jsonObjectMember_en.optString("id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrId(jsonObjectMember_en.optString("id"));
+                    }
+                    if (jsonObjectMember_en.has("first_name") && jsonObjectMember_en.optString("first_name") != null && !jsonObjectMember_en.optString("first_name").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrFirstName(jsonObjectMember_en.optString("first_name"));
+                    }
+                    if (jsonObjectMember_en.has("middle_name") && jsonObjectMember_en.optString("middle_name") != null && !jsonObjectMember_en.optString("middle_name").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrMiddleName(jsonObjectMember_en.optString("middle_name"));
+                    }
+                    if (jsonObjectMember_en.has("last_name") && jsonObjectMember_en.optString("last_name") != null && !jsonObjectMember_en.optString("last_name").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrLastName(jsonObjectMember_en.optString("last_name"));
+                    }
+                    if (jsonObjectMember_en.has("city") && jsonObjectMember_en.optString("city") != null && !jsonObjectMember_en.optString("city").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrCity(jsonObjectMember_en.optString("city"));
+                    }
+                    if (jsonObjectMember_en.has("city_id") && jsonObjectMember_en.optString("city_id") != null && !jsonObjectMember_en.optString("city_id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrCityId(jsonObjectMember_en.optString("city_id"));
+                    }
+                    if (jsonObjectMember_en.has("member_id") && jsonObjectMember_en.optString("member_id") != null && !jsonObjectMember_en.optString("member_id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrMemberId(jsonObjectMember_en.optString("member_id"));
+                    }
+                    if (jsonObjectMember_en.has("gender") && jsonObjectMember_en.optString("gender") != null && !jsonObjectMember_en.optString("gender").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrGender(jsonObjectMember_en.optString("gender"));
+                    }
+                    if (jsonObjectMember_en.has("mobile") && jsonObjectMember_en.getString("mobile") != null) {
+                        memberDetailsItem.setStrMobileNumber(jsonObjectMember_en.optString("mobile"));
+                    }
+                    if (jsonObjectMember_en.has("profile_image") && jsonObjectMember_en.getString("profile_image") != null) {
+                        memberDetailsItem.setStrMemberImageUrl(jsonObjectMember_en.optString("profile_image"));
+                    }
+                    if (jsonObjectMember_en.has("latitude") && jsonObjectMember_en.getString("latitude") != null) {
+                        memberDetailsItem.setStrLatitude(jsonObjectMember_en.optString("latitude"));
+                    }
+                    if (jsonObjectMember_en.has("longitude") && jsonObjectMember_en.getString("longitude") != null) {
+                        memberDetailsItem.setStrLongitude(jsonObjectMember_en.optString("longitude"));
+                    }
+                    if (jsonObjectMember_en.has("blood_group") && jsonObjectMember_en.optString("blood_group") != null && !jsonObjectMember_en.optString("blood_group").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrBloodGroup(jsonObjectMember_en.optString("blood_group"));
+                    }
+                    if (jsonObjectMember_en.has("blood_group_id") && jsonObjectMember_en.optString("blood_group_id") != null && !jsonObjectMember_en.optString("blood_group_id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrBloodGroupId(jsonObjectMember_en.optString("blood_group_id"));
+                    }
+                    if (jsonObjectMember_en.has("address") && jsonObjectMember_en.optString("address") != null && !jsonObjectMember_en.optString("address").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrAddress(jsonObjectMember_en.optString("address"));
+                    }
+                    if (jsonObjectMember_en.has("date_of_birth") && jsonObjectMember_en.optString("date_of_birth") != null && !jsonObjectMember_en.optString("date_of_birth").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrDateOfBirth(jsonObjectMember_en.optString("date_of_birth"));
+                    }
+                    if (jsonObjectMember_en.has("email") && jsonObjectMember_en.getString("email") != null && !jsonObjectMember_en.optString("email").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrEmail(jsonObjectMember_en.getString("email"));
+                    }
+                    if (jsonObjectMember_en.has("is_active") && jsonObjectMember_en.getString("is_active") != null && !jsonObjectMember_en.optString("is_active").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setBolIsActive(jsonObjectMember_en.getString("is_active"));
+                    }
+                    arrMemberDetailsItems.add(memberDetailsItem);
+                }
+                localDataSyncItem.setArrMemberDetailsItems(arrMemberDetailsItems);
+
+            }
+            if (jsonObjectMembers.has("member_gj") && jsonObjectMembers.optJSONArray("member_gj") != null) {
+                JSONArray jsonArrayMember_en = jsonObjectMembers.optJSONArray("member_gj");
+                for (int arrIndex = 0; arrIndex < jsonArrayMember_en.length(); arrIndex++) {
+                    memberDetailsItem = new MemberDetailsItem();
+                    JSONObject jsonObjectMember_en = jsonArrayMember_en.getJSONObject(arrIndex);
+                    if (jsonObjectMember_en.has("id") && jsonObjectMember_en.optString("id") != null && !jsonObjectMember_en.optString("id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrId(jsonObjectMember_en.optString("id"));
+                    }
+                    if (jsonObjectMember_en.has("first_name") && jsonObjectMember_en.optString("first_name") != null && !jsonObjectMember_en.optString("first_name").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrFirstName(jsonObjectMember_en.optString("first_name"));
+                    }
+                    if (jsonObjectMember_en.has("middle_name") && jsonObjectMember_en.optString("middle_name") != null && !jsonObjectMember_en.optString("middle_name").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrMiddleName(jsonObjectMember_en.optString("middle_name"));
+                    }
+                    if (jsonObjectMember_en.has("last_name") && jsonObjectMember_en.optString("last_name") != null && !jsonObjectMember_en.optString("last_name").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrLastName(jsonObjectMember_en.optString("last_name"));
+                    }
+                    if (jsonObjectMember_en.has("member_id") && jsonObjectMember_en.optString("member_id") != null && !jsonObjectMember_en.optString("member_id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrMemberId(jsonObjectMember_en.optString("member_id"));
+                    }
+                    if (jsonObjectMember_en.has("address") && jsonObjectMember_en.optString("address") != null && !jsonObjectMember_en.optString("address").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrAddress(jsonObjectMember_en.optString("address"));
+                    }
+                    if (jsonObjectMember_en.has("language_id") && jsonObjectMember_en.optString("language_id") != null && !jsonObjectMember_en.optString("language_id").equalsIgnoreCase("null")) {
+                        memberDetailsItem.setStrLanguageId(jsonObjectMember_en.optString("language_id"));
+                    }
+                    arrMemberDetailsGujaratiItems.add(memberDetailsItem);
+                }
+                localDataSyncItem.setArrMemberDetailsGujaratiItems(arrMemberDetailsGujaratiItems);
+
+            }
+        } else {
+            Log.i(TAG, "parseLocalDataSyncResponse: members not present");
+        }
+
+        if (jsonObject.has("cities") && jsonObject.optJSONObject("cities") != null) {
+            ArrayList<CityIteam> arrCityItem = new ArrayList<>();
+            ArrayList<CityIteam> arrCityItemGujarati = new ArrayList<>();
+            CityIteam cityIteam;
+            JSONObject jsonObjectCity = jsonObject.optJSONObject("cities");
+            if (jsonObjectCity.has("city_en") && jsonObjectCity.optJSONArray("city_en") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: city_en present");
+                JSONArray jsonArray = jsonObjectCity.optJSONArray("city_en");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++) {
+                    cityIteam = new CityIteam();
+                    JSONObject cityJsonObject = jsonArray.getJSONObject(arrIndex);
+                    if (cityJsonObject.has("id") && cityJsonObject.optString("id") != null) {
+                        cityIteam.setIntCityId(Integer.valueOf(cityJsonObject.optString("id")));
+                    }
+                    if (cityJsonObject.has("name") && cityJsonObject.optString("name") != null) {
+                        cityIteam.setStrCityName(cityJsonObject.optString("name"));
+                        Log.i(TAG, "parseLocalDataSyncResponse: " + (cityJsonObject.optString("name")));
+                    }
+                    if (cityJsonObject.has("state_id") && cityJsonObject.optString("state_id") != null) {
+                        cityIteam.setStrStateId(cityJsonObject.optString("state_id"));
+                    }
+                    if (cityJsonObject.has("is_active") && cityJsonObject.optString("is_active") != null) {
+                        cityIteam.setIs_active(cityJsonObject.optString("is_active"));
+                    }
+                    if (cityJsonObject.has("city_member_count") && cityJsonObject.optString("city_member_count") != null) {
+                        cityIteam.setStrMemberCount(cityJsonObject.optString("city_member_count"));
+                    }
+                    arrCityItem.add(cityIteam);
+                }
+                localDataSyncItem.setArrCityItems(arrCityItem);
+            }
+            if (jsonObjectCity.has("city_gj") && jsonObjectCity.optJSONArray("city_gj") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: city_gj present");
+                JSONArray jsonArray = jsonObjectCity.optJSONArray("city_gj");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++) {
+                    cityIteam = new CityIteam();
+                    JSONObject cityJsonObject = jsonArray.getJSONObject(arrIndex);
+                    if (cityJsonObject.has("id") && cityJsonObject.optString("id") != null && !cityJsonObject.optString("id").equalsIgnoreCase(null)) {
+                        cityIteam.setId(cityJsonObject.optString("id"));
+                    }
+                    if (cityJsonObject.has("city_id") && cityJsonObject.optString("city_id") != null && !cityJsonObject.optString("city_id").equalsIgnoreCase(null)) {
+                        cityIteam.setIntCityId(Integer.valueOf(cityJsonObject.optString("city_id")));
+                    }
+                    if (cityJsonObject.has("name") && cityJsonObject.optString("name") != null && !cityJsonObject.optString("name").equalsIgnoreCase(null)) {
+                        cityIteam.setStrCityName(cityJsonObject.optString("name"));
+                    }
+                    if (cityJsonObject.has("language_id") && cityJsonObject.optString("language_id") != null && !cityJsonObject.optString("language_id").equalsIgnoreCase(null)) {
+                        cityIteam.setLanguageId(cityJsonObject.optString("language_id"));
+                    }
+                    arrCityItemGujarati.add(cityIteam);
+                }
+                localDataSyncItem.setArrCityItemsGujarati(arrCityItemGujarati);
+            }
+        } else {
+            Log.i(TAG, "parseLocalDataSyncResponse: Cities not present");
+        }
+        if (jsonObject.has("events") && jsonObject.optJSONObject("events") != null) {
+            Log.i(TAG, "parseLocalDataSyncResponse: Events is present");
+            ArrayList<EventDataItem> arrEventDataItems = new ArrayList<>();
+            ArrayList<EventDataItem> arrEventGujaratiDataItems = new ArrayList<>();
+            EventDataItem eventDataItem;
+            JSONObject jsonObjectEvents = jsonObject.optJSONObject("events");
+            if (jsonObjectEvents.has("event_en") && jsonObjectEvents.optJSONArray("event_en") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: event_en is present");
+                JSONArray jsonDataArray = jsonObjectEvents.optJSONArray("event_en");
+                for (int indexYear = 0; indexYear < jsonDataArray.length(); indexYear++) {
+                    ArrayList<String> arrEventImages;
+                    eventDataItem = new EventDataItem();
+                    JSONObject jsonEventObject = jsonDataArray.optJSONObject(indexYear);
+                    if (jsonEventObject.has("id") && jsonEventObject.optString("id") != null) {
+                        eventDataItem.setStrEventId(jsonEventObject.optString("id"));
+                    }
+                    if (jsonEventObject.has("event_name") && jsonEventObject.optString("event_name") != null) {
+                        String strEventName = jsonEventObject.optString("event_name");
+                        eventDataItem.setEventName(strEventName);
+                    }
+                    if (jsonEventObject.has("description") && jsonEventObject.optString("description") != null) {
+                        String strEventDesc = jsonEventObject.optString("description");
+                        eventDataItem.setEventDescription(strEventDesc);
+                    }
+                    if (jsonEventObject.has("event_date") && jsonEventObject.optString("event_date") != null) {
+                        String strEventDate = jsonEventObject.optString("event_date");
+                        eventDataItem.setEventDate(strEventDate);
+                    }
+                    if (jsonEventObject.has("year") && jsonEventObject.optString("year") != null) {
+                        String strEventYear = jsonEventObject.optString("year");
+                        eventDataItem.setEventYear(strEventYear);
+                    }
+                    if (jsonEventObject.has("venue") && jsonEventObject.opt("venue") != null) {
+                        String strEventVenue = jsonEventObject.optString("venue");
+                        eventDataItem.setVenue(strEventVenue);
+                    }
+                    if (jsonEventObject.has("city") && jsonEventObject.opt("city") != null) {
+                        String strEventCity = jsonEventObject.optString("city");
+                        eventDataItem.setCity(strEventCity);
+                    }
+                    if (jsonEventObject.has("city_id") && jsonEventObject.optString("city_id") != null) {
+                        eventDataItem.setCitryId(jsonEventObject.optString("city_id"));
+                    }
+                    if (jsonEventObject.has("is_active") && jsonEventObject.optString("is_active") != null) {
+                        eventDataItem.setStrIsActive(jsonEventObject.optString("is_active"));
+                    }
+                    if (jsonEventObject.has("event_images") && jsonEventObject.optJSONArray("event_images") != null) {
+                        arrEventImages = new ArrayList<>();
+                        JSONArray jsonImageUrlArray = jsonEventObject.optJSONArray("event_images");
+                        for (int yearIndex = 0; yearIndex < jsonImageUrlArray.length(); yearIndex++) {
+                            String strImgUrl = jsonImageUrlArray.optString(yearIndex);
+                            arrEventImages.add(strImgUrl);
+                        }
+                        eventDataItem.setArrEventImageURLs(arrEventImages);
+                        localDataSyncItem.setArrEventImageURLs(arrEventImages);
+                    }
+                    arrEventDataItems.add(eventDataItem);
+                }
+                localDataSyncItem.setArrEventDataItem(arrEventDataItems);
+
+            }
+            if (jsonObjectEvents.has("event_gj") && jsonObjectEvents.optJSONArray("event_gj") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: event_gj is present");
+                JSONArray jsonDataArray = jsonObjectEvents.optJSONArray("event_gj");
+                for (int indexYear = 0; indexYear < jsonDataArray.length(); indexYear++) {
+                    eventDataItem = new EventDataItem();
+                    JSONObject jsonEventObject = jsonDataArray.optJSONObject(indexYear);
+                    if (jsonEventObject.has("id") && jsonEventObject.optString("id") != null) {
+                        eventDataItem.setStrId(jsonEventObject.optString("id"));
+                    }
+                    if (jsonEventObject.has("event_name") && jsonEventObject.optString("event_name") != null) {
+                        String strEventName = jsonEventObject.optString("event_name");
+                        eventDataItem.setEventName(strEventName);
+                    }
+                    if (jsonEventObject.has("description") && jsonEventObject.optString("description") != null) {
+                        String strEventDesc = jsonEventObject.optString("description");
+                        eventDataItem.setEventDescription(strEventDesc);
+                    }
+                    if (jsonEventObject.has("year") && jsonEventObject.optString("year") != null) {
+                        String strEventYear = jsonEventObject.optString("year");
+                        eventDataItem.setEventYear(strEventYear);
+                    }
+                    if (jsonEventObject.has("venue") && jsonEventObject.opt("venue") != null) {
+                        String strEventVenue = jsonEventObject.optString("venue");
+                        eventDataItem.setVenue(strEventVenue);
+                    }
+                    if (jsonEventObject.has("language_id") && jsonEventObject.opt("language_id") != null) {
+                        eventDataItem.setStrlanguageId(jsonEventObject.optString("language_id"));
+                    }
+                    if (jsonEventObject.has("event_id") && jsonEventObject.opt("event_id") != null) {
+                        eventDataItem.setStrEventId(jsonEventObject.optString("event_id"));
+                    }
+                    arrEventGujaratiDataItems.add(eventDataItem);
+                }
+                localDataSyncItem.setArrEventDataGujaratiItem(arrEventGujaratiDataItems);
+            }
+        } else {
+            Log.i(TAG, "parseLocalDataSyncResponse: Events not present");
+        }
+        if (jsonObject.has("messages") && jsonObject.optJSONObject("messages") != null) {
+            ArrayList<MessageDetailsItem> arrMessageDetailsItems = new ArrayList<>();
+            ArrayList<MessageDetailsItem> arrMessageGujaratiDetailsItems = new ArrayList<>();
+            JSONObject jsonObjectMessages = jsonObject.optJSONObject("messages");
+            if (jsonObjectMessages.has("message_en") && jsonObjectMessages.optJSONArray("message_en") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: message_en present");
+                JSONArray jsonArray = jsonObjectMessages.optJSONArray("message_en");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++) {
+                    MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
+                    JSONObject jsonObjectMessage = jsonArray.optJSONObject(arrIndex);
+                    if (jsonObjectMessage.has("id") && jsonObjectMessage.optString("id") != null) {
+                        messageDetailsItem.setId(jsonObjectMessage.optString("id"));
+                    }
+                    if (jsonObjectMessage.has("title") && jsonObjectMessage.optString("title") != null) {
+                        messageDetailsItem.setMessageTitle(jsonObjectMessage.optString("title"));
+                    }
+                    if (jsonObjectMessage.has("description") && jsonObjectMessage.optString("description") != null) {
+                        messageDetailsItem.setMessageDescription(jsonObjectMessage.optString("description"));
+                    }
+                    if (jsonObjectMessage.has("message_type") && jsonObjectMessage.optString("message_type") != null) {
+                        messageDetailsItem.setMessageType(jsonObjectMessage.optString("message_type"));
+                    }
+                    if (jsonObjectMessage.has("message_type_id") && jsonObjectMessage.optString("message_type_id") != null) {
+                        messageDetailsItem.setMessageTypeId(jsonObjectMessage.optString("message_type_id"));
+                    }
+                    if (jsonObjectMessage.has("is_active") && jsonObjectMessage.optString("is_active") != null) {
+                        messageDetailsItem.setIsActive(jsonObjectMessage.optString("is_active"));
+                    }
+                    if (jsonObjectMessage.has("city") && jsonObjectMessage.optString("city") != null) {
+                        messageDetailsItem.setMessageCity(jsonObjectMessage.optString("city"));
+                    }
+                    if (jsonObjectMessage.has("city_id") && jsonObjectMessage.optString("city_id") != null) {
+                        messageDetailsItem.setMessageCityId(jsonObjectMessage.optString("city_id"));
+                    }
+                    if (jsonObjectMessage.has("message_date") && jsonObjectMessage.optString("message_date") != null) {
+                        messageDetailsItem.setMessageDate(jsonObjectMessage.optString("message_date"));
+                    }
+                    if (jsonObjectMessage.has("image_url") && jsonObjectMessage.optString("image_url") != null) {
+                        messageDetailsItem.setMessageImage(jsonObjectMessage.optString("image_url"));
+                    }
+                    arrMessageDetailsItems.add(messageDetailsItem);
+                }
+                localDataSyncItem.setArrMessageDetailsItems(arrMessageDetailsItems);
+
+            }
+            if (jsonObjectMessages.has("message_gj") && jsonObjectMessages.optJSONArray("message_gj") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: message_gj present");
+                JSONArray jsonArray = jsonObjectMessages.optJSONArray("message_gj");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++) {
+                    MessageDetailsItem messageDetailsItem = new MessageDetailsItem();
+                    JSONObject jsonObjectMessage = jsonArray.optJSONObject(arrIndex);
+                    if (jsonObjectMessage.has("id") && jsonObjectMessage.optString("id") != null) {
+                        messageDetailsItem.setId(jsonObjectMessage.optString("id"));
+                    }
+                    if (jsonObjectMessage.has("title") && jsonObjectMessage.optString("title") != null) {
+                        messageDetailsItem.setMessageTitle(jsonObjectMessage.optString("title"));
+                    }
+                    if (jsonObjectMessage.has("description") && jsonObjectMessage.optString("description") != null) {
+                        messageDetailsItem.setMessageDescription(jsonObjectMessage.optString("description"));
+                    }
+                    if (jsonObjectMessage.has("message_id") && jsonObjectMessage.optString("message_id") != null) {
+                        messageDetailsItem.setMessageID(jsonObjectMessage.optString("message_id"));
+                    }
+                    if (jsonObjectMessage.has("language_id") && jsonObject.optString("language_id") != null) {
+                        messageDetailsItem.setLangugeId(jsonObjectMessage.optString("language_id"));
+                    }
+                    arrMessageGujaratiDetailsItems.add(messageDetailsItem);
+                }
+                localDataSyncItem.setArrMessageDetailsGujaratiItems(arrMessageGujaratiDetailsItems);
+            }
+        } else {
+            Log.i(TAG, "parseLocalDataSyncResponse: Messages not present");
+        }
+        if (jsonObject.has("classifieds") && jsonObject.optJSONObject("classifieds") != null) {
+            ArrayList<ClassifiedDetailsItem> arrClassifiedDetailsItemsEnglish = new ArrayList<>();
+            ArrayList<ClassifiedDetailsItem> arrClassifiedDetailsItemsGujarati = new ArrayList<>();
+            JSONObject jsonObjectClassified = jsonObject.optJSONObject("classifieds");
+
+            if (jsonObjectClassified.has("classified_en") && jsonObjectClassified.optJSONArray("classified_en") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: classified_en present");
+                JSONArray jsonArray = jsonObjectClassified.optJSONArray("classified_en");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++) {
+                    JSONObject jsonObjectClassifiedEn = jsonArray.optJSONObject(arrIndex);
+                    ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
+                    if (jsonObjectClassifiedEn.has("id") && jsonObjectClassifiedEn.optString("id") != null) {
+                        classifiedDetailsItem.setClassifiedID(jsonObjectClassifiedEn.optString("id"));
+                    }
+                    if (jsonObjectClassifiedEn.has("title") && jsonObjectClassifiedEn.optString("title") != null) {
+                        classifiedDetailsItem.setClassifiedTitle(jsonObjectClassifiedEn.optString("title"));
+                    }
+                    if (jsonObjectClassifiedEn.has("description") && jsonObjectClassifiedEn.optString("description") != null) {
+                        classifiedDetailsItem.setClassifiedDescription(jsonObjectClassifiedEn.optString("description"));
+                    }
+                    if (jsonObjectClassifiedEn.has("is_active") && jsonObjectClassifiedEn.optString("is_active") != null) {
+                        classifiedDetailsItem.setIsActive(jsonObjectClassifiedEn.optString("is_active"));
+                    }
+                    if (jsonObjectClassifiedEn.has("city") && jsonObjectClassifiedEn.optString("city") != null) {
+                        classifiedDetailsItem.setClassifiedCity(jsonObjectClassifiedEn.optString("city"));
+                    }
+                    if (jsonObjectClassifiedEn.has("city_id") && jsonObjectClassifiedEn.optString("city_id") != null) {
+                        classifiedDetailsItem.setCityId(jsonObjectClassifiedEn.optString("city_id"));
+                    }
+                    if (jsonObjectClassifiedEn.has("created_at") && jsonObjectClassifiedEn.optString("created_at") != null) {
+                        classifiedDetailsItem.setClassifiedCreateDate(jsonObjectClassifiedEn.optString("created_at"));
+                    }
+                    arrClassifiedDetailsItemsEnglish.add(classifiedDetailsItem);
+                }
+                localDataSyncItem.setArrClassifiedItems(arrClassifiedDetailsItemsEnglish);
+            }
+            if (jsonObjectClassified.has("classified_gj") && jsonObjectClassified.optJSONArray("classified_gj") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: classified_gj present");
+                JSONArray jsonArray = jsonObjectClassified.optJSONArray("classified_gj");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++) {
+                    JSONObject jsonObjectGujarati = jsonArray.optJSONObject(arrIndex);
+                    ClassifiedDetailsItem classifiedDetailsItem = new ClassifiedDetailsItem();
+                    if (jsonObjectGujarati.has("id") && jsonObjectGujarati.optString("id") != null) {
+                        classifiedDetailsItem.setId(jsonObjectGujarati.optString("id"));
+                    }
+                    if (jsonObjectGujarati.has("title") && jsonObjectGujarati.optString("title") != null) {
+                        classifiedDetailsItem.setClassifiedTitle(jsonObjectGujarati.optString("title"));
+                    }
+                    if (jsonObjectGujarati.has("classified_desc") && jsonObjectGujarati.optString("classified_desc") != null) {
+                        classifiedDetailsItem.setClassifiedDescription(jsonObjectGujarati.optString("classified_desc"));
+                    }
+                    if (jsonObjectGujarati.has("classified_id") && jsonObjectGujarati.optString("classified_id") != null) {
+                        classifiedDetailsItem.setClassifiedID(jsonObjectGujarati.optString("classified_id"));
+                    }
+                    arrClassifiedDetailsItemsGujarati.add(classifiedDetailsItem);
+                }
+                localDataSyncItem.setArrClassifiedGujaratiItems(arrClassifiedDetailsItemsGujarati);
+            }
+        }
+        if (jsonObject.has("accounts") && jsonObject.optJSONObject("accounts") != null) {
+            JSONObject jsonObjectAccounts = jsonObject.getJSONObject("accounts");
+            ArrayList<AccountDetailsItem> arrAccountDetailsEnglish = new ArrayList<>();
+            ArrayList<AccountDetailsItem> arrAccountDetailsGujarati = new ArrayList<>();
+            if (jsonObjectAccounts.has("account_en") && jsonObjectAccounts.optJSONArray("account_en") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: account_en is present");
+                JSONArray jsonArrayEnglish = jsonObjectAccounts.optJSONArray("account_en");
+                for (int arrIndex = 0; arrIndex < jsonArrayEnglish.length(); arrIndex++) {
+                    JSONObject jsonObjectEnglish = jsonArrayEnglish.optJSONObject(arrIndex);
+                    AccountDetailsItem accountDetailsItem = new AccountDetailsItem();
+                    if (jsonObjectEnglish.has("id") && jsonObjectEnglish.optString("id") != null) {
+                        accountDetailsItem.setStrAccountId(jsonObjectEnglish.optString("id"));
+                    }
+                    if (jsonObjectEnglish.has("name") && jsonObjectEnglish.optString("name") != null) {
+                        accountDetailsItem.setStrAccountName(jsonObjectEnglish.optString("name"));
+                    }
+                    if (jsonObjectEnglish.has("description") && jsonObjectEnglish.optString("description") != null) {
+                        accountDetailsItem.setStrAccountDescription(jsonObjectEnglish.optString("description"));
+                    }
+                    if (jsonObjectEnglish.has("is_active") && jsonObjectEnglish.optString("is_active") != null) {
+                        accountDetailsItem.setStrIsActive(jsonObjectEnglish.optString("is_active"));
+                    }
+                    if (jsonObjectEnglish.has("city") && jsonObjectEnglish.optString("city") != null) {
+                        accountDetailsItem.setStrCity(jsonObjectEnglish.optString("city"));
+                    }
+                    if (jsonObjectEnglish.has("city_id") && jsonObjectEnglish.optString("city_id") != null) {
+                        accountDetailsItem.setStrCityId(jsonObjectEnglish.optString("city_id"));
+                    }
+                    if (jsonObjectEnglish.has("year") && jsonObjectEnglish.optString("year") != null) {
+                        accountDetailsItem.setStrYear(jsonObjectEnglish.optString("year"));
+                    }
+                    if (jsonObjectEnglish.has("accounts_images") && jsonObjectEnglish.optString("accounts_images") != null && !jsonObjectEnglish.optString("accounts_images").equalsIgnoreCase("null")) {
+                        JSONArray imagesArray = jsonObjectEnglish.getJSONArray("accounts_images");
+                        ArrayList<AccountImages> imageList = new ArrayList<>();
+                        if (imagesArray.length() > 0) {
+                            for (int imageIndex = 0; imageIndex < imagesArray.length(); imageIndex++) {
+                                String temp = imagesArray.getString(imageIndex);
+                                AccountImages img = new AccountImages();
+                                img.setImagePath(temp);
+                                imageList.add(img);
+                            }
+                        }
+                        accountDetailsItem.setImagesList(imageList);
+                    }
+                    arrAccountDetailsEnglish.add(accountDetailsItem);
+                }
+                localDataSyncItem.setArrAccountItem(arrAccountDetailsEnglish);
+            } else {
+                Log.i(TAG, "parseLocalDataSyncResponse: account_en is absent");
+            }
+            if (jsonObjectAccounts.has("account_gj") && jsonObjectAccounts.optJSONArray("account_gj") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: account_gj is present");
+                JSONArray jsonArrayGujarati = jsonObjectAccounts.optJSONArray("account_gj");
+                for (int arrIndex = 0; arrIndex < jsonArrayGujarati.length(); arrIndex++) {
+                    AccountDetailsItem accountDetailsItem = new AccountDetailsItem();
+                    JSONObject jsonObjectGujarati = jsonArrayGujarati.optJSONObject(arrIndex);
+                    if (jsonObjectGujarati.has("id") && jsonObjectGujarati.optString("id") != null) {
+                        accountDetailsItem.setStrId(jsonObjectGujarati.optString("id"));
+                    }
+                    if (jsonObjectGujarati.has("name") && jsonObjectGujarati.optString("name") != null) {
+                        accountDetailsItem.setStrAccountName(jsonObjectGujarati.optString("name"));
+                    }
+                    if (jsonObjectGujarati.has("description") && jsonObjectGujarati.optString("description") != null) {
+                        accountDetailsItem.setStrAccountDescription(jsonObjectGujarati.optString("description"));
+                    }
+                    if (jsonObjectGujarati.has("account_id") && jsonObjectGujarati.optString("account_id") != null) {
+                        accountDetailsItem.setStrAccountId(jsonObjectGujarati.optString("account_id"));
+                    }
+                    arrAccountDetailsGujarati.add(accountDetailsItem);
+                }
+                localDataSyncItem.setArrAccountGujaratiItem(arrAccountDetailsGujarati);
+            } else {
+                Log.i(TAG, "parseLocalDataSyncResponse: account_gj is absent");
+            }
+        }
+        if (jsonObject.has("committees") && jsonObject.optString("committees") != null) {
+            ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItems = new ArrayList<>();
+            ArrayList<CommitteeDetailsItem> arrCommitteeDetailsItemsGujarati = new ArrayList<>();
+
+            JSONObject jsonCommitteeObj = jsonObject.optJSONObject("committees");
+            if (jsonCommitteeObj.has("committee_en") && jsonCommitteeObj.optJSONArray("committee_en") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: committee is present");
+                JSONArray jsonArrayCommitteeEnglish = jsonCommitteeObj.optJSONArray("committee_en");
+                for (int arrIndex = 0; arrIndex < jsonArrayCommitteeEnglish.length(); arrIndex++) {
+                    CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
+                    JSONObject jsonObjectEnglish = jsonArrayCommitteeEnglish.optJSONObject(arrIndex);
+                    if (jsonObjectEnglish.has("id") && jsonObjectEnglish.optString("id") != null) {
+                        committeeDetailsItem.setCommitteeID(jsonObjectEnglish.optString("id"));
+                    }
+                    if (jsonObjectEnglish.has("name") && jsonObjectEnglish.optString("name") != null) {
+                        committeeDetailsItem.setCommitteeName(jsonObjectEnglish.optString("name"));
+                    }
+                    if (jsonObjectEnglish.has("description") && jsonObjectEnglish.optString("description") != null) {
+                        committeeDetailsItem.setCommitteeDescription(jsonObjectEnglish.optString("description"));
+                    }
+                    if (jsonObjectEnglish.has("is_active") && jsonObjectEnglish.optString("is_active") != null) {
+                        committeeDetailsItem.setCommIsActive(jsonObjectEnglish.optString("is_active"));
+                    }
+                    if (jsonObjectEnglish.has("city") && jsonObjectEnglish.optString("city") != null) {
+                        committeeDetailsItem.setCommitteeCity(jsonObjectEnglish.optString("city"));
+                    }
+                    if (jsonObjectEnglish.has("city_id") && jsonObjectEnglish.optString("city_id") != null) {
+                        committeeDetailsItem.setCityId(jsonObjectEnglish.optString("city_id"));
+                    }
+                    if (jsonObjectEnglish.has("members") && jsonObjectEnglish.optJSONObject("members") != null) {
+                        Log.i(TAG, "parseLocalDataSyncResponse: members present inside committii");
+                        JSONObject jsonMember = jsonObjectEnglish.optJSONObject("members");
+                        if (jsonMember.has("member_en") && jsonMember.optString("member_en") != null) {
+                            committeeDetailsItem.setCommAllMembers(jsonMember.optString("member_en"));
+                        }
+                        if (jsonMember.has("member_gj") && jsonMember.optString("member_gj") != null) {
+                            committeeDetailsItem.setCommAllMembersGujarati(jsonMember.optString("member_gj"));
+                        }
+                    } else {
+                        Log.i(TAG, "parseLocalDataSyncResponse: members absent inside committii");
+                    }
+                    arrCommitteeDetailsItems.add(committeeDetailsItem);
+                }
+                localDataSyncItem.setArrCommitteeDetailsItems(arrCommitteeDetailsItems);
+            } else {
+                Log.i(TAG, "parseLocalDataSyncResponse: committee is absent");
+            }
+            if (jsonCommitteeObj.has("committee_gj") && jsonCommitteeObj.optJSONArray("committee_gj") != null) {
+                Log.i(TAG, "parseLocalDataSyncResponse: committee_gj present");
+                JSONArray jsonArray = jsonCommitteeObj.optJSONArray("committee_gj");
+                for (int arrIndex = 0; arrIndex < jsonArray.length(); arrIndex++) {
+                    CommitteeDetailsItem committeeDetailsItem = new CommitteeDetailsItem();
+                    JSONObject jsonObjectGujarati = jsonArray.optJSONObject(arrIndex);
+                    if (jsonObjectGujarati.has("id") && jsonObjectGujarati.optString("id") != null) {
+                        committeeDetailsItem.setId(jsonObjectGujarati.optString("id"));
+                    }
+                    if (jsonObjectGujarati.has("committee_name") && jsonObjectGujarati.optString("committee_name") != null) {
+                        committeeDetailsItem.setCommitteeName(jsonObjectGujarati.optString("committee_name"));
+                    }
+                    if (jsonObjectGujarati.has("description") && jsonObjectGujarati.optString("description") != null) {
+                        committeeDetailsItem.setCommitteeDescription(jsonObjectGujarati.optString("description"));
+                    }
+                    if (jsonObjectGujarati.has("committee_id") && jsonObjectGujarati.optString("committee_id") != null) {
+                        committeeDetailsItem.setCommitteeID(jsonObjectGujarati.optString("committee_id"));
+                    }
+                    arrCommitteeDetailsItemsGujarati.add(committeeDetailsItem);
+                }
+                localDataSyncItem.setArrCommitteeDetailsGujaratiItems(arrCommitteeDetailsItemsGujarati);
+            } else {
+                Log.i(TAG, "parseLocalDataSyncResponse: committee_gj is absent");
+            }
+
+        }
+        return localDataSyncItem;
+    }
+
     public static Object parseMasterResponse (String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
         if (jsonObject.has("data") && jsonObject.optJSONArray("data") != null) {
@@ -676,26 +1063,24 @@ public class AppParser implements AppConstants {
             JSONArray jsonDataArray = jsonObject.optJSONArray("data");
             for (int index = 0; index < jsonDataArray.length(); index++) {
                 JSONObject jsonMasterObject = jsonDataArray.optJSONObject(index);
-                if (jsonMasterObject.has("classified_count") && jsonMasterObject.optString("classified_count") != null) {
-                    int intClassifiedCount = jsonMasterObject.optInt("classified_count");
-                    masterItem.setIntClassifiedCount(intClassifiedCount);
-                }
-                if (jsonMasterObject.has("message_count") && jsonMasterObject.optString("message_count") != null) {
-                    int intMessageCount = jsonMasterObject.optInt("message_count");
-                    masterItem.setIntMessagesCount(intMessageCount);
-                }
                 {
+                    Log.i(TAG, "@@1"+(jsonMasterObject.optBoolean("is_add_edit_member_enable") || !jsonMasterObject.optBoolean("is_add_edit_member_enable")));
+                    if (jsonMasterObject.has("is_add_edit_member_enable") && (jsonMasterObject.optBoolean("is_add_edit_member_enable") || !jsonMasterObject.optBoolean("is_add_edit_member_enable"))) {
+                        masterItem.setAddEditEnabled(jsonMasterObject.optBoolean("is_add_edit_member_enable"));
+                        Log.i(TAG, "parseMasterResponse: Add Edit is Enable?...."+jsonMasterObject.optBoolean("is_add_edit_member_enable"));
+                    }
                     JSONObject jsonBuzzObject = jsonMasterObject.optJSONObject("buzz");
-                    if(jsonBuzzObject.has("msg_img") && jsonBuzzObject.optString("msg_img") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
-                        String strBuzzUrl = jsonBuzzObject.optString("msg_img");
-                        masterItem.setStrBuzzImageUrl(strBuzzUrl);
-                        Log.i("@@1",strBuzzUrl);
+                    if (jsonBuzzObject != null) {
+                        if(jsonBuzzObject.has("msg_img") && jsonBuzzObject.optString("msg_img") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
+                            String strBuzzUrl = jsonBuzzObject.optString("msg_img");
+                            masterItem.setStrBuzzImageUrl(strBuzzUrl);
+                            Log.i("@@1",strBuzzUrl);
+                        }
+                        if (jsonBuzzObject.has("id")&& jsonBuzzObject.optString("id") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
+                            int intId = jsonBuzzObject.optInt("id");
+                            masterItem.setIntBuzzId(intId);
+                        }
                     }
-                    if (jsonBuzzObject.has("id")&& jsonBuzzObject.optString("id") != null && !jsonBuzzObject.optString("msg_img").equalsIgnoreCase("null")){
-                        int intId = jsonBuzzObject.optInt("id");
-                        masterItem.setIntBuzzId(intId);
-                    }
-
                 }
             }
             return masterItem;

@@ -1,6 +1,7 @@
 package com.woxi.sgkks_member.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * <b><b> public class CommitteeDetailsItem implements Serializable</b></b>
@@ -8,7 +9,57 @@ import java.io.Serializable;
  * Created by Rohit.
  */
 public class CommitteeDetailsItem implements Serializable {
-    private String committeeName, committeeDescription, committeeCity, committeeID, commAllMembers, commIsActive;
+    private String committeeName;
+    private String committeeDescription;
+    private String committeeCity, cityId;
+    private String committeeID;
+    private String commAllMembers;
+    private String commIsActive;
+    private String id;
+    private ArrayList<CommMemberDetailsItem> membersEnglish;
+    private ArrayList<CommMemberDetailsItem> membersGujarati;
+
+    public ArrayList<CommMemberDetailsItem> getMembersEnglish() {
+        return membersEnglish;
+    }
+
+    public void setMembersEnglish(ArrayList<CommMemberDetailsItem> membersEnglish) {
+        this.membersEnglish = membersEnglish;
+    }
+
+    public ArrayList<CommMemberDetailsItem> getMembersGujarati() {
+        return membersGujarati;
+    }
+
+    public void setMembersGujarati(ArrayList<CommMemberDetailsItem> membersGujarati) {
+        this.membersGujarati = membersGujarati;
+    }
+
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCommAllMembersGujarati() {
+        return commAllMembersGujarati;
+    }
+
+    public void setCommAllMembersGujarati(String commAllMembersGujarati) {
+        this.commAllMembersGujarati = commAllMembersGujarati;
+    }
+
+    private String commAllMembersGujarati;
 
     public CommitteeDetailsItem() {
     }

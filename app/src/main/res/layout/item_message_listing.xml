@@ -48,7 +48,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextHintDark"
-                android:textStyle="italic" />
+                android:textStyle="italic"
+                android:textSize="@dimen/text_16"/>
 
             <TextView
                 android:id="@+id/tvNewsCreatedAt"

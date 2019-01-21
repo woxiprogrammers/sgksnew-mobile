@@ -2,7 +2,16 @@ package com.woxi.sgkks_member.models;
 
 public class MasterItem {
     String strBuzzImageUrl;
-    int intBuzzId, intClassifiedCount, intMessagesCount;
+    int intBuzzId;
+    boolean isAddEditEnabled;
+
+    public boolean isAddEditEnabled() {
+        return isAddEditEnabled;
+    }
+
+    public void setAddEditEnabled(boolean addEditEnabled) {
+        isAddEditEnabled = addEditEnabled;
+    }
 
     public String getStrBuzzImageUrl() {
         return strBuzzImageUrl;
@@ -20,19 +29,5 @@ public class MasterItem {
         this.intBuzzId = intBuzzId;
     }
 
-    public int getIntClassifiedCount() {
-        return intClassifiedCount;
-    }
 
-    public void setIntClassifiedCount(int intClassifiedCount) {
-        this.intClassifiedCount = intClassifiedCount;
-    }
-
-    public int getIntMessagesCount() {
-        return intMessagesCount;
-    }
-
-    public void setIntMessagesCount(int intMessagesCount) {
-        this.intMessagesCount = intMessagesCount;
-    }
 }

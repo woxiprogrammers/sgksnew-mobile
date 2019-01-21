@@ -25,6 +25,7 @@ import com.woxi.sgkks_member.R;
 import com.woxi.sgkks_member.adapters.AccountAndEventDetailsAdapter;
 import com.woxi.sgkks_member.models.ClassifiedDetailsItem;
 import com.woxi.sgkks_member.models.EventDataItem;
+import com.woxi.sgkks_member.utils.AppCommonMethods;
 import com.woxi.sgkks_member.utils.ImageZoomDialogFragment;
 
 import java.io.File;

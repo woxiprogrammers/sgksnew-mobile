@@ -1,5 +1,6 @@
 package com.woxi.sgkks_member.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.woxi.sgkks_member.home.EventAndClassifiedDetailActivity;
 import com.woxi.sgkks_member.miscellaneous.AccountsActivity;
 import com.woxi.sgkks_member.models.AccountDetailsItem;
 import com.woxi.sgkks_member.models.AccountImages;
+import com.woxi.sgkks_member.utils.AppCommonMethods;
 
 import java.util.ArrayList;
 
@@ -82,14 +84,16 @@ public class AccountAndEventDetailsAdapter extends RecyclerView.Adapter<AccountA
         }
 
         //Loading image from url.
-        Glide.with(holder.mContext)
-                .load(strImageUrl)
-                .crossFade()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .placeholder(R.drawable.ic_place_holder)
-                .error(R.drawable.ic_broken_image)
-                .into(holder.accountImage);
+        if (new AppCommonMethods(holder.mContext).isNetworkAvailable()) {
+            Glide.with(holder.mContext)
+                    .load(strImageUrl)
+                    .crossFade()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .placeholder(R.drawable.ic_place_holder)
+                    .error(R.drawable.ic_broken_image)
+                    .into(holder.accountImage);
+        }
     }
 
     @Override

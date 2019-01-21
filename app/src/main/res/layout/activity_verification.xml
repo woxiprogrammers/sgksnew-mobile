@@ -103,6 +103,14 @@
                 android:textAlignment="center"
                 android:visibility="gone"/>
         </LinearLayout>
+        <Button
+            android:id="@+id/btnSendMobileNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="159dp"
+            android:text="Next" />
         <TextView
             android:id="@+id/tvOtpSent"
             style="@style/customTextView_16_Normal"

@@ -3,6 +3,7 @@ package com.woxi.sgkks_member.home;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -34,6 +36,7 @@ import com.woxi.sgkks_member.interfaces.FragmentInterface;
 import com.woxi.sgkks_member.local_storage.DatabaseQueryHandler;
 import com.woxi.sgkks_member.miscellaneous.AddMeToSgksActivity;
 import com.woxi.sgkks_member.models.MemberDetailsItem;
+import com.woxi.sgkks_member.models.MemberOfflineItem;
 import com.woxi.sgkks_member.models.MemberSearchDataItem;
 import com.woxi.sgkks_member.models.MessageDetailsItem;
 import com.woxi.sgkks_member.utils.AppCommonMethods;
@@ -52,22 +55,44 @@ import java.util.ArrayList;
  */
 public class MemberHomeNewFragment extends Fragment implements FragmentInterface, AppConstants {
     public static View.OnClickListener onMemberClickListener;
+
     private Context mContext;
+
     private RecyclerView mRvMemberList;
+
     private RecyclerView.Adapter mRvAdapter;
+
     private View mParentView;
+
     private EditText mEtMemberSearch;
+
     private RelativeLayout mPbLazyLoad;
+
     private String TAG = "MemberHomeFragment";
+
     public static ArrayList<MemberDetailsItem> mArrMemDetails;
+
+    public static ArrayList<MemberDetailsItem> fetchOfflineMemberDetails;
+
+    public static ArrayList<MemberOfflineItem> arrFetchOfflineMemberDetails;
+
     //    private boolean isApiRequested = false;
+
     private int arrSize = 0;
+
     private LinearLayoutManager linearLayoutManager;
+
     private boolean isApiInProgress = false;
-    private DatabaseQueryHandler databaseQueryHandler;
-    private int pageNumber = 0;
+
+    private DatabaseQueryHandler databaseQueryHandler
+            ;
+    private int pageNumber = 0, offlinePageNumber = 0;
+
     private ProgressBar pbMemberListing;
+
     private String strSearchFullName = "";
+
+    //private ArrayList<MemberDetailsItem> arrTrial;
     public MemberHomeNewFragment() {
         // Required empty public constructor
     }
@@ -82,6 +107,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mParentView = inflater.inflate(R.layout.fragment_members_home, container, false);
         //Calling function to initialize required views.
         initializeViews();
+
         return mParentView;
     }
 
@@ -92,7 +118,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         mEtMemberSearch = mParentView.findViewById(R.id.etSearchMember);
         new AppCommonMethods(mContext).hideKeyBoard(mEtMemberSearch);
         mPbLazyLoad.setVisibility(View.GONE);
-        //databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
+        databaseQueryHandler = new DatabaseQueryHandler(mContext, false);
         pbMemberListing = mParentView.findViewById(R.id.pbMemberListing);
         memberSearch();
         setUpRecyclerView();
@@ -101,14 +127,24 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         if(isLanguageChanged || isCityChanged){
             if(new AppCommonMethods(mContext).isNetworkAvailable()){
                 if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                    pageNumber=0;
-                    requestToGetMembersData(pageNumber,true,false);
+                    requestToGetMembersData(0,true,false);
                 }
             } else {
-                new AppCommonMethods(mContext).showAlert("You are Offline");
+                arrFetchOfflineMemberDetails = databaseQueryHandler.queryMembers("",0);
+                fetchOfflineMemberDetails = arrFetchOfflineMemberDetails.get(0).getArrMemberDetails();
+                offlinePageNumber = arrFetchOfflineMemberDetails.get(0).getPageNumber();
+                Log.i(TAG, "initializeViews: "+arrFetchOfflineMemberDetails.size());
+                fetchMembersOffline(fetchOfflineMemberDetails,true,false);
             }
         } else {
-            requestToGetMembersData(pageNumber,true,false);
+            if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                requestToGetMembersData(0,true,false);
+            } else {
+                arrFetchOfflineMemberDetails = databaseQueryHandler.queryMembers("",0);
+                fetchOfflineMemberDetails = arrFetchOfflineMemberDetails.get(0).getArrMemberDetails();
+                offlinePageNumber = arrFetchOfflineMemberDetails.get(0).getPageNumber();
+                fetchMembersOffline(fetchOfflineMemberDetails,true,false);
+            }
         }
     }
 
@@ -120,10 +156,10 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
         onMemberClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(v));
-                Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
-                intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
-                startActivity(intentDetails);
+                    MemberDetailsItem memberDetailsItem = mArrMemDetails.get(mRvMemberList.getChildAdapterPosition(v));
+                    Intent intentDetails = new Intent(mContext, MemberDetailsActivity.class);
+                    intentDetails.putExtra("currentMemberDetail", memberDetailsItem);
+                    startActivity(intentDetails);
             }
         };
         //Following method call is for listening to scroll events
@@ -132,14 +168,19 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
 
     @Override
     public void fragmentBecameVisible() {
+        recyclerViewScrollListener();
         mParentView.findViewById(R.id.etSearchMember).clearFocus();
         if(new AppCommonMethods(mContext).isNetworkAvailable()){
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                pageNumber=0;
-                requestToGetMembersData(pageNumber,true,false);
+                requestToGetMembersData(0,true,false);
             }
         } else {
-            new AppCommonMethods(mContext).showAlert("You are Offline");
+            arrFetchOfflineMemberDetails = databaseQueryHandler.queryMembers("",0);
+            mArrMemDetails = arrFetchOfflineMemberDetails.get(0).getArrMemberDetails();
+            offlinePageNumber = arrFetchOfflineMemberDetails.get(0).getPageNumber();
+            mRvMemberList.setHasFixedSize(true);
+            mRvAdapter = new MemberListAdapter(mArrMemDetails);
+            mRvMemberList.setAdapter(mRvAdapter);
         }
     }
 
@@ -171,11 +212,12 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                             new AppCommonMethods(mContext).LOG(0,"member_listing_success",response.toString());
                             if (!response.getString("page_id").equalsIgnoreCase("")) {
                                 pageNumber = Integer.parseInt(response.getString("page_id"));
+                                Log.i(TAG, "onResponse: "+pageNumber);
                             }
                             Object resp = AppParser.parseMemberList(response.toString());
                             MemberDetailsItem memberDetailsItem = (MemberDetailsItem) resp;
                             if (resp instanceof Boolean) {
-                                Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
                             } else if (resp instanceof MemberDetailsItem) {
                                 if(isFirstTime || isFromSearch){
                                     mArrMemDetails = memberDetailsItem.getArrMemberList();
@@ -187,9 +229,8 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                         mRvMemberList.setHasFixedSize(true);
                                         mRvAdapter = new MemberListAdapter(mArrMemDetails);
                                         mRvMemberList.setAdapter(mRvAdapter);
-                                        Toast.makeText(mContext,"No Records Found", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(mContext,"No Records Found", Toast.LENGTH_SHORT).show();
                                     }
-                                    //databaseQueryHandler.insertOrUpdateAllMembers(mArrMemDetails);
                                 } else {
                                     ArrayList<MemberDetailsItem> arrNextMembers = memberDetailsItem.getArrMemberList();
                                     if(arrNextMembers.size() != 0){
@@ -200,7 +241,7 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                                         mArrMemDetails.addAll(arrNextMembers);
                                         mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
                                         mRvMemberList.getAdapter().notifyDataSetChanged();
-                                        Toast.makeText(mContext,"All the Records are Listed", Toast.LENGTH_SHORT).show();
+                                       // Toast.makeText(mContext,"All the Records are Listed", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -214,8 +255,9 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                isApiInProgress = false;
+                pDialog.dismiss();
                 pbMemberListing.setVisibility(View.GONE);
+                isApiInProgress = false;
                 new AppCommonMethods(mContext).LOG(0,"error_member_listing",error.toString());
                 new AppCommonMethods(mContext).showAlert("Something went wrong");
                 VolleyLog.e("Error: ", error.getMessage());
@@ -240,11 +282,52 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             AppController.getInstance().cancelPendingRequests("memberSearchList");
             if (new AppCommonMethods(mContext).isNetworkAvailable()){
                 requestToGetMembersData(pageNumber,false,false);
+                Log.i(TAG, "requestLazyLoadMembersApi: online---"+pageNumber);
             } else {
-                new AppCommonMethods(mContext).showAlert("You are offline");
+                ArrayList <MemberDetailsItem> arrayList = new ArrayList<>();
+                Log.i(TAG, "requestLazyLoadMembersApi: "+ strSearchFullName);
+                Log.i(TAG, "requestLazyLoadMembersApi: requested page no.--"+ offlinePageNumber);
+                arrFetchOfflineMemberDetails = databaseQueryHandler.queryMembers(strSearchFullName,offlinePageNumber);
+                arrayList = arrFetchOfflineMemberDetails.get(0).getArrMemberDetails();
+                offlinePageNumber = arrFetchOfflineMemberDetails.get(0).getPageNumber();
+                Log.i(TAG, "requestLazyLoadMembersApi: page no. recieved on scroll--"+ offlinePageNumber);
+                fetchMembersOffline(arrayList,false,false);
             }
         }
     }
+
+    private void fetchMembersOffline(ArrayList <MemberDetailsItem> arrTrial, boolean isFirstTime, boolean isFromSearch){
+//        mRvMemberList.setHasFixedSize(true);
+//        mRvAdapter = new MemberListAdapter(arrTrial);
+//        mRvMemberList.setAdapter(mRvAdapter);
+
+        if(isFirstTime || isFromSearch){
+            mArrMemDetails = arrTrial;
+            if (mArrMemDetails.size() != 0){
+                mRvMemberList.setHasFixedSize(true);
+                mRvAdapter = new MemberListAdapter(mArrMemDetails);
+                mRvMemberList.setAdapter(mRvAdapter);
+            } else {
+                mRvMemberList.setHasFixedSize(true);
+                mRvAdapter = new MemberListAdapter(mArrMemDetails);
+                mRvMemberList.setAdapter(mRvAdapter);
+                //Toast.makeText(mContext,"No Records Found", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            ArrayList<MemberDetailsItem> arrNextMembers = arrTrial;
+            if(arrNextMembers.size() != 0){
+                mArrMemDetails.addAll(arrNextMembers);
+                mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
+                mRvMemberList.getAdapter().notifyDataSetChanged();
+            } else {
+                mArrMemDetails.addAll(arrNextMembers);
+                mRvMemberList.getAdapter().notifyItemRangeChanged(arrSize - 1, mArrMemDetails.size() - 1);
+                mRvMemberList.getAdapter().notifyDataSetChanged();
+                // Toast.makeText(mContext,"All the Records are Listed", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
     private void memberSearch(){
         mEtMemberSearch.addTextChangedListener(new TextWatcher() {
@@ -254,21 +337,31 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                if (charSequence.length() > 3) {
-                    strSearchFullName = charSequence.toString().toLowerCase();
-                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                        requestToGetMembersData(0,false,true);
-                    } else {
-                        new AppCommonMethods(mContext).showAlert("You are offline");
+                strSearchFullName = charSequence.toString().toLowerCase();
+                Log.i(TAG, "onTextChanged: online-"+pageNumber);
+                if (new AppCommonMethods(mContext).isNetworkAvailable()){
+                    if (pageNumber!=0 && strSearchFullName.length()!=0){
+                        pageNumber = 0;
+                    } else if (pageNumber!=0 && strSearchFullName.length()==0){
+                        pageNumber = 0;
                     }
-                } else if (charSequence.length()==0){
-                    strSearchFullName = "";
-                    if (new AppCommonMethods(mContext).isNetworkAvailable()){
-                        requestToGetMembersData(0,false, true);
-                    } else {
-                        new AppCommonMethods(mContext).showAlert("You are offline");
+                    Log.i(TAG, "onTextChanged: online before request-"+pageNumber);
+                    requestToGetMembersData(0,false,true);
+                } else {
+                    Log.i(TAG, "onTextChanged: pageNumber when search--"+offlinePageNumber);
+                    if (offlinePageNumber !=0 && strSearchFullName.length()!=0){
+                        offlinePageNumber = 0;
+                    } else if (offlinePageNumber!=0 && strSearchFullName.length()==0){
+                        offlinePageNumber = 0;
                     }
+                    Log.i(TAG, "onTextChanged: pagenumber requested to search---"+offlinePageNumber);
+                    arrFetchOfflineMemberDetails = databaseQueryHandler.queryMembers(strSearchFullName,0);
+                    fetchOfflineMemberDetails = arrFetchOfflineMemberDetails.get(0).getArrMemberDetails();
+                    offlinePageNumber = arrFetchOfflineMemberDetails.get(0).getPageNumber();
+                    fetchMembersOffline(fetchOfflineMemberDetails,false,true);
                 }
+                recyclerViewScrollListener();
+
             }
 
             @Override
@@ -276,4 +369,5 @@ public class MemberHomeNewFragment extends Fragment implements FragmentInterface
             }
         });
     }
+
 }
