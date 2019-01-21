@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
@@ -24,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -103,6 +105,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     private MemberDetailsItem memberDetailsItem;
     private Boolean isFromEdit = false;
     private ArrayList <BloodGroupItems>arrbloodGroupList;
+    private LinearLayout llAddImage;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +148,8 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
 
     private void initializeViews() {
         mContext = AddMeToSgksActivity.this;
+        fragmentManager = getSupportFragmentManager();
+        llAddImage = findViewById(R.id.llAddImage);
         metFirstName = findViewById(R.id.etFirstName);
         metMiddleName = findViewById(R.id.etMiddleName);
         metLastName = findViewById(R.id.etLastName);
@@ -168,6 +174,7 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         metFirstName.requestFocus();
         imageUtilityHelper = new ImageUtilityHelper(mContext);
         ivAddImage.setOnClickListener(AddMeToSgksActivity.this);
+        llAddImage.setOnClickListener(AddMeToSgksActivity.this);
         requestBloodGroup();
         if(isFromEdit){
             setupDataToEdit();
@@ -178,8 +185,6 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
         }
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -188,6 +193,12 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     private void requestBloodGroup() {
@@ -225,12 +236,14 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     }
 
     private void sendImageToServerRequest() {
-        String strImageBase64 = convertImageToBase64(bitmapProfile,0);
+        String strImageBase64 = convertImageToBase64(bitmapProfile,50);
         JSONObject params = new JSONObject();
         try {
             params.put("image_for", "profile_img");
             params.put("image", strImageBase64);
+            Log.i(TAG, "sendImageToServerRequest: "+strImageBase64);
             params.put("extension","png");
+            Log.i(TAG, "sendImageToServerRequest: "+params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -390,9 +403,10 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     }
 
     private void goToHomeScreen() {
-        Intent goToHomeIntent = new Intent(AddMeToSgksActivity.this, HomeActivity.class);
-        startActivity(goToHomeIntent);
-
+        super.onBackPressed();
+        finish();
+        Intent intent = new Intent(AddMeToSgksActivity.this, HomeActivity.class);
+        startActivity(intent);
     }
 
 
@@ -411,6 +425,13 @@ public class AddMeToSgksActivity extends AppCompatActivity implements AppConstan
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ivAddImage:
+                if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_PERMISSION_CODE);
+                } else {
+                    getImageChooser();
+                }
+                break;
+            case R.id.llAddImage:
                 if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_PERMISSION_CODE);
                 } else {

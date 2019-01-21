@@ -17,9 +17,6 @@
         android:fillViewport="true"
         tools:mContext="com.woxi.miscellaneous.AddMeToSgksActivity">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/ivProfileImage"
@@ -28,21 +25,39 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="@dimen/v8"
                 android:contentDescription="Member Image"
-               android:src="@drawable/ic_profile"/>
+               android:src="@drawable/ic_profile"
+                android:layout_gravity="center"/>
+
+        <LinearLayout
+            android:id="@+id/llAddImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@style/customButton_16"
+           >
 
             <ImageView
                 android:id="@+id/ivAddImage"
                 android:layout_width="30dip"
-                android:layout_height="30dip"
+                android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/ivProfileImage"
+                android:layout_centerHorizontal="true"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/ic_add_image_black"
-                android:layout_centerHorizontal="true" />
-        </RelativeLayout>
+                android:src="@drawable/ic_add_image_white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/textsize_normal_18dp"
+                android:text="Click Here To Upload Profile Image"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
 
         <EditText

@@ -144,6 +144,8 @@ public class VerificationActivity extends AppCompatActivity {
                                         addMemberIntent.putExtra("contactNumber",strMobileNumber);
                                         addMemberIntent.putExtra("activityType", getString(R.string.add_me_sgks));
                                     }
+                                    onBackPressed();
+                                    finish();
                                     startActivity(addMemberIntent);
                                 }
                             }
@@ -239,17 +241,17 @@ public class VerificationActivity extends AppCompatActivity {
                                 verifyOtp();
                             } else {
                                 new AppCommonMethods(mContext).showAlert(getString(R.string.noInternet));
-                                btnMobileNumber.setClickable(true);
                             }
                         }else {
                             tvErrorMessage.setVisibility(View.VISIBLE);
                             tvErrorMessage.setText("Please enter a valid OTP");
                             btnMobileNumber.setClickable(false);
                         }
+                        btnMobileNumber.setClickable(true);
                     } else {
                         tvErrorMessage.setVisibility(View.VISIBLE);
                         tvErrorMessage.setText("Please enter a valid OTP");
-                        btnMobileNumber.setClickable(false);
+                        btnMobileNumber.setClickable(true);
                     }
                 } else {
                     btnMobileNumber.setClickable(false);
@@ -275,5 +277,11 @@ public class VerificationActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

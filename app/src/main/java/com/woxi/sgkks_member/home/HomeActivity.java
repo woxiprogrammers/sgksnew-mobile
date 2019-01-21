@@ -98,6 +98,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DatabaseQueryHandler databaseQueryHandler, databaseQueryHandlerWrite;
     private CountItem countItem = new CountItem();
     private boolean isAddEditEnable;
+    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +121,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mLL_MemberCount = findViewById(R.id.llMemberCount);
         setSupportActionBar(toolbar);
         setupActionBar();
-        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        drawer =  findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -627,5 +628,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest,TAG);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }
